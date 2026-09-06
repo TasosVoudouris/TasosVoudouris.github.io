@@ -1,0 +1,509 @@
+<div class="crypto-backdrop" aria-hidden="true">
+
+	<div class="matrix-grid"></div>
+
+	<div class="glow glow-one"></div>
+	<div class="glow glow-two"></div>
+
+	<div class="crypto-orbit orbit-outer">
+		<span class="node n1"></span>
+		<span class="node n2"></span>
+		<span class="node n3"></span>
+	</div>
+
+	<div class="crypto-orbit orbit-middle">
+		<span class="node n4"></span>
+		<span class="node n5"></span>
+	</div>
+
+	<div class="crypto-orbit orbit-inner">
+		<span class="node n6"></span>
+	</div>
+
+	<div class="crypto-core">
+		<div class="core-ring"></div>
+		<div class="core-mark">λ</div>
+	</div>
+
+	<div class="scan-line"></div>
+
+	<div class="fragment f1">SHA3-256(0x7f3a...)</div>
+	<div class="fragment f2">gˣ mod p</div>
+	<div class="fragment f3">ZK :: VERIFY</div>
+	<div class="fragment f4">e(gᵃ,gᵇ)=e(g,g)ᵃᵇ</div>
+	<div class="fragment f5">0x91F4A02C</div>
+	<div class="fragment f6">Fᵣ[x]</div>
+	<div class="fragment f7">H(m) → {0,1}ⁿ</div>
+	<div class="fragment f8">PQC // LATTICE</div>
+
+	<div class="vertical-code code-one">
+		<span>01</span>
+		<span>10</span>
+		<span>11</span>
+		<span>00</span>
+		<span>λ</span>
+		<span>π</span>
+	</div>
+
+	<div class="vertical-code code-two">
+		<span>7F</span>
+		<span>A3</span>
+		<span>91</span>
+		<span>C2</span>
+		<span>FF</span>
+	</div>
+
+</div>
+
+<style>
+	.crypto-backdrop {
+		position: absolute;
+		inset: 0;
+
+		overflow: hidden;
+		pointer-events: none;
+
+		z-index: 0;
+	}
+
+	.matrix-grid {
+		position: absolute;
+		inset: 0;
+
+		background-image:
+			linear-gradient(
+				rgba(88, 255, 138, 0.035) 1px,
+				transparent 1px
+			),
+			linear-gradient(
+				90deg,
+				rgba(88, 255, 138, 0.035) 1px,
+				transparent 1px
+			);
+
+		background-size: 62px 62px;
+
+		mask-image:
+			radial-gradient(
+				circle at 50% 45%,
+				black 10%,
+				rgba(0, 0, 0, 0.75) 55%,
+				transparent 92%
+			);
+	}
+
+	.glow {
+		position: absolute;
+
+		border-radius: 50%;
+
+		filter: blur(120px);
+	}
+
+	.glow-one {
+		width: 650px;
+		height: 650px;
+
+		top: 8%;
+		left: 50%;
+
+		transform: translateX(-50%);
+
+		background: rgba(22, 147, 65, 0.09);
+	}
+
+	.glow-two {
+		width: 420px;
+		height: 420px;
+
+		right: 4%;
+		bottom: 0;
+
+		background: rgba(88, 255, 138, 0.04);
+	}
+
+	.crypto-orbit {
+		position: absolute;
+
+		top: 50%;
+		left: 50%;
+
+		border-radius: 50%;
+
+		transform: translate(-50%, -50%);
+
+		border:
+			1px solid rgba(88, 255, 138, 0.09);
+	}
+
+	.orbit-outer {
+		width: min(78vw, 950px);
+		aspect-ratio: 1;
+
+		animation: rotate-clockwise 60s linear infinite;
+	}
+
+	.orbit-middle {
+		width: min(58vw, 710px);
+		aspect-ratio: 1;
+
+		border-style: dashed;
+
+		animation: rotate-counter 46s linear infinite;
+	}
+
+	.orbit-inner {
+		width: min(38vw, 470px);
+		aspect-ratio: 1;
+
+		animation: rotate-clockwise 28s linear infinite;
+	}
+
+	.orbit-outer::before,
+	.orbit-middle::before,
+	.orbit-inner::before {
+		content: '';
+
+		position: absolute;
+
+		inset: 8%;
+
+		border-radius: 50%;
+
+		border:
+			1px solid rgba(88, 255, 138, 0.035);
+	}
+
+	.node {
+		position: absolute;
+
+		width: 7px;
+		height: 7px;
+
+		border-radius: 50%;
+
+		background: #58ff8a;
+
+		box-shadow:
+			0 0 7px #58ff8a,
+			0 0 18px rgba(88, 255, 138, 0.5);
+	}
+
+	.n1 {
+		top: -4px;
+		left: 50%;
+	}
+
+	.n2 {
+		top: 63%;
+		right: 4%;
+	}
+
+	.n3 {
+		bottom: 8%;
+		left: 19%;
+	}
+
+	.n4 {
+		top: 19%;
+		right: 8%;
+	}
+
+	.n5 {
+		bottom: 2%;
+		left: 50%;
+	}
+
+	.n6 {
+		top: 49%;
+		right: -4px;
+	}
+
+	.crypto-core {
+		position: absolute;
+
+		top: 50%;
+		left: 50%;
+
+		width: 170px;
+		height: 170px;
+
+		transform: translate(-50%, -50%);
+
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.core-ring {
+		position: absolute;
+
+		inset: 0;
+
+		border-radius: 50%;
+
+		border:
+			1px solid rgba(88, 255, 138, 0.14);
+
+		box-shadow:
+			inset 0 0 35px rgba(88, 255, 138, 0.03),
+			0 0 60px rgba(88, 255, 138, 0.03);
+
+		animation: pulse-core 4s ease-in-out infinite;
+	}
+
+	.core-ring::before,
+	.core-ring::after {
+		content: '';
+
+		position: absolute;
+
+		border-radius: 50%;
+
+		border:
+			1px solid rgba(88, 255, 138, 0.08);
+	}
+
+	.core-ring::before {
+		inset: 18px;
+	}
+
+	.core-ring::after {
+		inset: 42px;
+	}
+
+	.core-mark {
+		font-family:
+			Consolas,
+			'Courier New',
+			monospace;
+
+		font-size: 2rem;
+
+		color: rgba(88, 255, 138, 0.12);
+
+		text-shadow:
+			0 0 22px rgba(88, 255, 138, 0.12);
+	}
+
+	.scan-line {
+		position: absolute;
+
+		top: -20%;
+		left: 0;
+
+		width: 100%;
+		height: 160px;
+
+		background:
+			linear-gradient(
+				to bottom,
+				transparent,
+				rgba(88, 255, 138, 0.018),
+				rgba(88, 255, 138, 0.055),
+				transparent
+			);
+
+		animation: scan 12s linear infinite;
+	}
+
+	.fragment {
+		position: absolute;
+
+		font-family:
+			Consolas,
+			'Courier New',
+			monospace;
+
+		font-size: 0.66rem;
+
+		letter-spacing: 0.08em;
+
+		color: rgba(88, 255, 138, 0.11);
+
+		white-space: nowrap;
+
+		animation: fragment-float 8s ease-in-out infinite alternate;
+	}
+
+	.f1 {
+		top: 14%;
+		right: 8%;
+	}
+
+	.f2 {
+		top: 31%;
+		right: 17%;
+
+		font-size: 0.9rem;
+
+		animation-delay: -2s;
+	}
+
+	.f3 {
+		bottom: 16%;
+		right: 11%;
+
+		animation-delay: -5s;
+	}
+
+	.f4 {
+		bottom: 9%;
+		left: 16%;
+
+		animation-delay: -3s;
+	}
+
+	.f5 {
+		top: 18%;
+		left: 6%;
+	}
+
+	.f6 {
+		top: 45%;
+		left: 5%;
+
+		font-size: 1rem;
+
+		animation-delay: -4s;
+	}
+
+	.f7 {
+		top: 68%;
+		left: 9%;
+	}
+
+	.f8 {
+		top: 58%;
+		right: 4%;
+
+		animation-delay: -6s;
+	}
+
+	.vertical-code {
+		position: absolute;
+
+		display: flex;
+		flex-direction: column;
+
+		gap: 0.55rem;
+
+		font-family:
+			Consolas,
+			'Courier New',
+			monospace;
+
+		font-size: 0.58rem;
+
+		color: rgba(88, 255, 138, 0.06);
+	}
+
+	.code-one {
+		top: 26%;
+		left: 2.4%;
+	}
+
+	.code-two {
+		right: 2.6%;
+		bottom: 24%;
+	}
+
+	@keyframes rotate-clockwise {
+		from {
+			transform:
+				translate(-50%, -50%)
+				rotate(0deg);
+		}
+
+		to {
+			transform:
+				translate(-50%, -50%)
+				rotate(360deg);
+		}
+	}
+
+	@keyframes rotate-counter {
+		from {
+			transform:
+				translate(-50%, -50%)
+				rotate(360deg);
+		}
+
+		to {
+			transform:
+				translate(-50%, -50%)
+				rotate(0deg);
+		}
+	}
+
+	@keyframes pulse-core {
+		0%,
+		100% {
+			opacity: 0.55;
+
+			transform: scale(0.98);
+		}
+
+		50% {
+			opacity: 1;
+
+			transform: scale(1.04);
+		}
+	}
+
+	@keyframes scan {
+		from {
+			transform: translateY(-20vh);
+		}
+
+		to {
+			transform: translateY(130vh);
+		}
+	}
+
+	@keyframes fragment-float {
+		from {
+			transform: translateY(-4px);
+
+			opacity: 0.45;
+		}
+
+		to {
+			transform: translateY(6px);
+
+			opacity: 1;
+		}
+	}
+
+	@media (max-width: 800px) {
+		.fragment,
+		.vertical-code {
+			display: none;
+		}
+
+		.orbit-outer {
+			width: 850px;
+		}
+
+		.orbit-middle {
+			width: 650px;
+		}
+
+		.orbit-inner {
+			width: 430px;
+		}
+
+		.crypto-core {
+			opacity: 0.7;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.crypto-orbit,
+		.core-ring,
+		.scan-line,
+		.fragment {
+			animation: none;
+		}
+	}
+</style>

@@ -2,64 +2,23 @@
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import CryptoBackdrop from '../components/CryptoBackdrop.astro';
+
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+
 import { getCollection } from 'astro:content';
 
-const slugify = (value: string): string =>
-	value
-		.toLowerCase()
-		.trim()
-		.replace(/&/g, 'and')
-		.replace(/[^a-z0-9]+/g, '-')
-		.replace(/^-+|-+$/g, '');
+import { TOPICS, getTopicByName } from '../data/topics';
+import { slugify } from '../utils/slugify';
 
 const posts = (await getCollection('blog'))
 	.filter((post) => !post.data.draft)
-	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+	.sort(
+		(a, b) =>
+			b.data.pubDate.valueOf() -
+			a.data.pubDate.valueOf(),
+	)
 	.slice(0, 3);
-
-const topics = [
-	{
-		name: 'Mathematical Foundations',
-		slug: 'mathematical-foundations',
-	},
-	{
-		name: 'Number Theory',
-		slug: 'number-theory',
-	},
-	{
-		name: 'Symmetric Cryptography',
-		slug: 'symmetric-cryptography',
-	},
-	{
-		name: 'Public-Key Cryptography',
-		slug: 'public-key-cryptography',
-	},
-	{
-		name: 'Zero-Knowledge Proofs',
-		slug: 'zero-knowledge-proofs',
-	},
-	{
-		name: 'MPC',
-		slug: 'mpc',
-	},
-	{
-		name: 'Threshold Cryptography',
-		slug: 'threshold-cryptography',
-	},
-	{
-		name: 'Post-Quantum Cryptography',
-		slug: 'post-quantum-cryptography',
-	},
-	{
-		name: 'Formal Verification',
-		slug: 'formal-verification',
-	},
-	{
-		name: 'Implementations',
-		slug: 'implementations',
-	},
-];
 ---
 
 <!doctype html>
@@ -74,143 +33,254 @@ const topics = [
 	<body>
 		<Header />
 
-		<main>
+		<main class="home">
 
 			<section class="hero">
+
+				<CryptoBackdrop />
+
 				<div class="hero-inner">
 
+					<div class="terminal-line">
+						<span class="terminal-prompt">&gt;</span>
+
+						<span>
+							initializing cryptographic research environment
+						</span>
+
+						<span class="cursor"></span>
+					</div>
+
 					<p class="eyebrow">
-						CRYPTOGRAPHY · THEORY · IMPLEMENTATION
+						CRYPTOCAVE / RESEARCH NODE
 					</p>
 
 					<h1>
-						Exploring Cryptography
-						<span>
-							from Foundations to Modern Protocols.
+						Enter the
+						<span class="accent">
+							CryptoCave.
 						</span>
 					</h1>
 
+					<p class="hero-statement">
+						Exploring cryptography from
+						<span>mathematical structure</span>
+						to
+						<span>real protocols.</span>
+					</p>
+
 					<p class="intro">
-						CryptoCave is a technical notebook and research-oriented
-						blog dedicated to understanding cryptography from the
-						mathematics behind it to real implementations and modern
-						protocols.
+						A growing technical archive of notes, research,
+						implementations, experiments, and deeper questions
+						across modern cryptography.
 					</p>
 
 					<div class="actions">
+
 						<a
 							class="primary"
 							href="/blog/"
 						>
-							Explore Articles
+							<span>
+								Explore the Cave
+							</span>
+
+							<span class="button-arrow">
+								→
+							</span>
 						</a>
 
 						<a
 							class="secondary"
-							href="https://github.com/"
-							target="_blank"
-							rel="noopener noreferrer"
+							href="/topics/"
 						>
-							View GitHub
+							Browse Research Map
 						</a>
+
+					</div>
+
+					<div class="hero-meta">
+
+						<div>
+							<span class="meta-label">
+								MODE
+							</span>
+
+							<span class="meta-value">
+								RESEARCH
+							</span>
+						</div>
+
+						<div>
+							<span class="meta-label">
+								FOCUS
+							</span>
+
+							<span class="meta-value">
+								CRYPTOGRAPHY
+							</span>
+						</div>
+
+						<div>
+							<span class="meta-label">
+								STATUS
+							</span>
+
+							<span class="meta-value online">
+								<span class="status-dot"></span>
+								ONLINE
+							</span>
+						</div>
+
 					</div>
 
 				</div>
+
 			</section>
 
 
-			<section class="section">
+			<section class="manifesto">
+
+				<div class="manifesto-inner">
+
+					<p class="section-code">
+						01 / PRINCIPLE
+					</p>
+
+					<p class="manifesto-text">
+						Do not stop at
+						<span>how</span>
+						a cryptographic construction works.
+						Ask
+						<span>why</span>
+						it works, what structure enables it,
+						and what breaks when the assumptions change.
+					</p>
+
+				</div>
+
+			</section>
+
+
+			<section class="section latest-section">
 
 				<div class="section-heading">
-					<p>RECENT WRITING</p>
-					<h2>Latest Notes & Articles</h2>
+
+					<div>
+						<p class="section-code">
+							02 / LATEST TRANSMISSIONS
+						</p>
+
+						<h2>
+							Recent Research Notes
+						</h2>
+					</div>
+
+					<a
+						class="section-link"
+						href="/blog/"
+					>
+						ALL ARTICLES →
+					</a>
+
 				</div>
+
 
 				<div class="articles">
+
 					{
-						posts.map((post, index) => (
-							<article class="article">
+						posts.map((post, index) => {
+							const topic = getTopicByName(
+								post.data.category,
+							);
 
-								<div class="number">
-									{String(index + 1).padStart(2, '0')}
-								</div>
+							return (
 
-								<div class="article-content">
+								<article class="article">
 
-									<div class="article-top">
-
-										<a
-											class="category"
-											href={`/topics/${slugify(post.data.category)}/`}
-										>
-											{post.data.category}
-										</a>
-
-										<span class="separator">
-											·
-										</span>
-
-										<span class="difficulty">
-											{post.data.difficulty}
-										</span>
-
+									<div class="article-index">
+										{String(index + 1).padStart(2, '0')}
 									</div>
 
-									<h3>
-										<a
-											class="article-title"
-											href={`/blog/${post.id}/`}
-										>
-											{post.data.title}
-										</a>
-									</h3>
+									<div class="article-main">
 
-									<p class="description">
-										{post.data.description}
-									</p>
+										<div class="article-meta">
 
-									<div class="article-bottom">
+											<a
+												class="category"
+												href={`/topics/${topic?.slug ?? slugify(post.data.category)}/`}
+											>
+												{post.data.category}
+											</a>
 
-										<div class="tags">
-											{
-												post.data.tags
-													.slice(0, 4)
-													.map((tag) => (
-														<span class="tag">
-															#{tag}
-														</span>
-													))
-											}
+											<span>/</span>
+
+											<span>
+												{post.data.difficulty}
+											</span>
+
 										</div>
 
-										<time
-											datetime={post.data.pubDate.toISOString()}
-										>
-											{
-												post.data.pubDate.toLocaleDateString(
-													'en-US',
-													{
-														year: 'numeric',
-														month: 'short',
-														day: 'numeric',
-													},
-												)
-											}
-										</time>
+										<h3>
+											<a href={`/blog/${post.id}/`}>
+												{post.data.title}
+											</a>
+										</h3>
+
+										<p class="article-description">
+											{post.data.description}
+										</p>
+
+										<div class="article-footer">
+
+											<div class="tags">
+
+												{
+													post.data.tags
+														.slice(0, 4)
+														.map((tag) => (
+
+															<a href={`/tags/${slugify(tag)}/`}>
+																#{tag}
+															</a>
+
+														))
+												}
+
+											</div>
+
+											<time
+												datetime={post.data.pubDate.toISOString()}
+											>
+												{
+													post.data.pubDate.toLocaleDateString(
+														'en-US',
+														{
+															year: 'numeric',
+															month: 'short',
+															day: 'numeric',
+														},
+													)
+												}
+											</time>
+
+										</div>
 
 									</div>
 
-								</div>
+									<a
+										class="article-arrow"
+										href={`/blog/${post.id}/`}
+									>
+										↗
+									</a>
 
-							</article>
-						))
+								</article>
+
+							);
+						})
 					}
-				</div>
 
-				<div class="view-all">
-					<a href="/blog/">
-						View all articles →
-					</a>
 				</div>
 
 			</section>
@@ -219,40 +289,109 @@ const topics = [
 			<section class="section topics-section">
 
 				<div class="section-heading">
-					<p>EXPLORE</p>
-					<h2>Cryptography by Topic</h2>
+
+					<div>
+
+						<p class="section-code">
+							03 / KNOWLEDGE MAP
+						</p>
+
+						<h2>
+							Explore the Cave
+						</h2>
+
+					</div>
+
+					<a
+						class="section-link"
+						href="/topics/"
+					>
+						ALL TOPICS →
+					</a>
+
 				</div>
 
 				<div class="topics">
+
 					{
-						topics.map((topic) => (
-							<a href={`/topics/${topic.slug}/`}>
-								<span>
-									{topic.name}
-								</span>
+						TOPICS.map((topic, index) => (
+
+							<a
+								class="topic"
+								href={`/topics/${topic.slug}/`}
+							>
+
+								<div class="topic-number">
+									{String(index + 1).padStart(2, '0')}
+								</div>
+
+								<div class="topic-content">
+
+									<h3>
+										{topic.name}
+									</h3>
+
+									<p>
+										{topic.description}
+									</p>
+
+								</div>
 
 								<span class="topic-arrow">
 									→
 								</span>
+
 							</a>
+
 						))
 					}
-				</div>
 
-				<div class="view-all">
-					<a href="/topics/">
-						Explore all topics →
-					</a>
 				</div>
 
 			</section>
 
 
-			<section class="closing">
-				<p>
-					The goal is not only to use cryptography,
-					but to understand why it works.
-				</p>
+			<section class="signal">
+
+				<div class="signal-inner">
+
+					<div class="signal-code">
+						<span></span>
+						ACTIVE RESEARCH SIGNAL
+					</div>
+
+					<h2>
+						From algebra to
+						<span>zero knowledge.</span><br />
+
+						From theory to
+						<span>implementation.</span>
+					</h2>
+
+					<p>
+						CryptoCave is built as a living research notebook:
+						concepts connect, questions evolve, implementations
+						are tested, and ideas are refined over time.
+					</p>
+
+					<div class="signal-links">
+
+						<a href="/blog/">
+							Read Articles →
+						</a>
+
+						<a href="/topics/">
+							Explore Topics →
+						</a>
+
+						<a href="/tags/">
+							Browse Concepts →
+						</a>
+
+					</div>
+
+				</div>
+
 			</section>
 
 		</main>
@@ -262,70 +401,160 @@ const topics = [
 </html>
 
 <style>
-	main {
-		width: 100%;
-	}
+	.home {
+		--bg: #060807;
+		--green: #58ff8a;
+		--green-bright: #8affaa;
+		--green-dim: #239b4b;
+		--text: #f2f5f3;
+		--muted: #8d9891;
+		--line: rgba(88, 255, 138, 0.13);
 
-	.hero-inner,
-	.section,
-	.closing {
-		width: min(1100px, calc(100% - 3rem));
-		margin: 0 auto;
+		width: 100%;
+
+		background:
+			radial-gradient(
+				circle at 50% -10%,
+				rgba(39, 143, 74, 0.14),
+				transparent 42%
+			),
+			var(--bg);
+
+		color: var(--text);
 	}
 
 	.hero {
-		min-height: 70vh;
+		position: relative;
+
+		min-height: calc(100vh - 78px);
 
 		display: flex;
 		align-items: center;
 
-		border-bottom: 1px solid #e5e7eb;
+		overflow: hidden;
+
+		border-bottom:
+			1px solid var(--line);
 	}
 
 	.hero-inner {
-		padding: 7rem 0;
+		position: relative;
+
+		z-index: 5;
+
+		width: min(1180px, calc(100% - 3rem));
+
+		margin: 0 auto;
+
+		padding: 7rem 0 6rem;
+	}
+
+	.terminal-line {
+		display: flex;
+		align-items: center;
+
+		gap: 0.65rem;
+
+		margin-bottom: 3rem;
+
+		font-family: monospace;
+		font-size: 0.72rem;
+
+		letter-spacing: 0.08em;
+
+		color: #5e7365;
+	}
+
+	.terminal-prompt {
+		color: var(--green);
+	}
+
+	.cursor {
+		width: 6px;
+		height: 13px;
+
+		background: var(--green);
+
+		animation: blink 1.1s infinite;
+	}
+
+	@keyframes blink {
+		0%,
+		45% {
+			opacity: 1;
+		}
+
+		46%,
+		100% {
+			opacity: 0;
+		}
 	}
 
 	.eyebrow,
-	.section-heading > p {
+	.section-code {
 		margin: 0;
 
-		font-size: 0.75rem;
+		font-family: monospace;
+		font-size: 0.7rem;
 		font-weight: 700;
 
 		letter-spacing: 0.15em;
-		text-transform: uppercase;
 
-		color: #4f46e5;
+		color: var(--green);
 	}
 
-	h1 {
-		max-width: 900px;
+	.hero h1 {
+		max-width: 950px;
 
-		margin: 1rem 0 1.5rem;
+		margin: 1rem 0 0;
 
-		font-size: clamp(3rem, 7vw, 6.5rem);
-		line-height: 0.98;
+		font-size: clamp(4rem, 10vw, 9rem);
 
-		letter-spacing: -0.055em;
+		line-height: 0.88;
 
-		color: #111827;
+		letter-spacing: -0.075em;
+
+		color: #f5f7f6;
+
+		text-shadow:
+			0 4px 40px rgba(0, 0, 0, 0.45);
 	}
 
-	h1 span {
+	.hero h1 .accent {
 		display: block;
-		color: #6b7280;
+
+		color: var(--green);
+
+		text-shadow:
+			0 0 35px rgba(88, 255, 138, 0.19);
+	}
+
+	.hero-statement {
+		max-width: 850px;
+
+		margin: 2.4rem 0 0;
+
+		font-size: clamp(1.4rem, 3vw, 2.2rem);
+
+		line-height: 1.35;
+
+		letter-spacing: -0.025em;
+
+		color: #929b95;
+	}
+
+	.hero-statement span {
+		color: #e8ece9;
 	}
 
 	.intro {
-		max-width: 720px;
+		max-width: 690px;
 
-		margin: 0;
+		margin: 1.8rem 0 0;
 
-		font-size: 1.15rem;
-		line-height: 1.8;
+		line-height: 1.85;
 
-		color: #4b5563;
+		color: #68736c;
 	}
 
 	.actions {
@@ -333,156 +562,266 @@ const topics = [
 
 		gap: 1rem;
 
-		margin-top: 2.5rem;
+		margin-top: 3rem;
 	}
 
 	.actions a {
-		padding: 0.85rem 1.3rem;
+		display: inline-flex;
+		align-items: center;
 
-		border-radius: 6px;
+		gap: 1.5rem;
 
-		font-weight: 600;
+		padding: 0.95rem 1.25rem;
+
+		font-family: monospace;
+		font-size: 0.78rem;
+		font-weight: 700;
 
 		text-decoration: none;
 	}
 
 	.primary {
-		background: #111827;
-		color: #ffffff;
+		background: var(--green);
+
+		color: #041008;
 	}
 
 	.primary:hover {
-		background: #4f46e5;
+		background: var(--green-bright);
 	}
 
 	.secondary {
-		border: 1px solid #d1d5db;
+		border:
+			1px solid rgba(88, 255, 138, 0.18);
 
-		color: #111827;
+		color: #b2bbb5;
+
+		background:
+			rgba(255, 255, 255, 0.015);
 	}
 
 	.secondary:hover {
-		border-color: #111827;
+		border-color:
+			rgba(88, 255, 138, 0.5);
+
+		color: var(--green);
+	}
+
+	.hero-meta {
+		display: flex;
+		flex-wrap: wrap;
+
+		gap: 3.5rem;
+
+		margin-top: 4rem;
+
+		padding-top: 2rem;
+
+		border-top: 1px solid var(--line);
+	}
+
+	.hero-meta > div {
+		display: flex;
+		flex-direction: column;
+
+		gap: 0.4rem;
+	}
+
+	.meta-label {
+		font-family: monospace;
+		font-size: 0.62rem;
+
+		letter-spacing: 0.14em;
+
+		color: #4b5550;
+	}
+
+	.meta-value {
+		font-family: monospace;
+		font-size: 0.75rem;
+
+		color: #9da6a0;
+	}
+
+	.online {
+		display: flex;
+		align-items: center;
+
+		gap: 0.5rem;
+
+		color: var(--green);
+	}
+
+	.status-dot {
+		width: 6px;
+		height: 6px;
+
+		border-radius: 50%;
+
+		background: var(--green);
+
+		box-shadow:
+			0 0 10px var(--green);
+	}
+
+	.manifesto {
+		border-bottom:
+			1px solid var(--line);
+	}
+
+	.manifesto-inner,
+	.section,
+	.signal-inner {
+		width: min(1180px, calc(100% - 3rem));
+
+		margin: 0 auto;
+	}
+
+	.manifesto-inner {
+		padding: 7rem 0;
+	}
+
+	.manifesto-text {
+		max-width: 1000px;
+
+		margin: 2rem 0 0;
+
+		font-size: clamp(2rem, 5vw, 4.5rem);
+
+		line-height: 1.08;
+
+		letter-spacing: -0.045em;
+
+		color: #4e5852;
+	}
+
+	.manifesto-text span {
+		color: #f1f4f2;
 	}
 
 	.section {
-		padding: 6rem 0;
+		padding: 7rem 0;
 	}
 
 	.section-heading {
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+
+		gap: 3rem;
+
 		margin-bottom: 3rem;
 	}
 
 	.section-heading h2 {
-		margin: 0.5rem 0 0;
+		margin: 0.7rem 0 0;
 
-		font-size: clamp(2rem, 4vw, 3.4rem);
+		font-size: clamp(2.5rem, 5vw, 4.5rem);
 
-		letter-spacing: -0.035em;
+		line-height: 1;
 
-		color: #111827;
+		letter-spacing: -0.05em;
+
+		color: #f1f4f2;
+	}
+
+	.section-link {
+		font-family: monospace;
+		font-size: 0.68rem;
+		font-weight: 700;
+
+		color: #657068;
+
+		text-decoration: none;
+	}
+
+	.section-link:hover {
+		color: var(--green);
+	}
+
+	.latest-section,
+	.topics-section {
+		border-bottom:
+			1px solid var(--line);
 	}
 
 	.articles {
-		border-top: 1px solid #d1d5db;
+		border-top:
+			1px solid var(--line);
 	}
 
 	.article {
 		display: grid;
-		grid-template-columns: 80px 1fr;
+		grid-template-columns: 70px 1fr 50px;
 
 		gap: 2rem;
 
-		padding: 2.5rem 0;
+		padding: 2.8rem 0;
 
-		border-bottom: 1px solid #d1d5db;
+		border-bottom:
+			1px solid var(--line);
 	}
 
-	.number {
-		padding-top: 0.2rem;
-
+	.article-index {
 		font-family: monospace;
-		font-size: 0.85rem;
 
-		color: #9ca3af;
+		color: #39443d;
 	}
 
-	.article-content {
-		width: 100%;
-	}
-
-	.article-top {
+	.article-meta {
 		display: flex;
-		align-items: center;
 		flex-wrap: wrap;
 
-		gap: 0.5rem;
+		gap: 0.6rem;
 
-		margin-bottom: 0.5rem;
+		font-family: monospace;
+		font-size: 0.68rem;
 
-		font-size: 0.72rem;
-		font-weight: 700;
-
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
+		color: #526057;
 	}
 
 	.category {
-		color: #4f46e5;
+		color: var(--green);
+
 		text-decoration: none;
-	}
-
-	.category:hover {
-		text-decoration: underline;
-	}
-
-	.separator {
-		color: #d1d5db;
-	}
-
-	.difficulty {
-		color: #9ca3af;
 	}
 
 	.article h3 {
-		margin: 0.3rem 0 0.8rem;
-
-		font-size: 1.65rem;
-		line-height: 1.25;
-
-		letter-spacing: -0.02em;
+		margin: 0.7rem 0 1rem;
 	}
 
-	.article-title {
-		color: #111827;
+	.article h3 a {
+		font-size: clamp(1.5rem, 3vw, 2.4rem);
+
+		letter-spacing: -0.03em;
+
+		color: #e7ebe8;
 
 		text-decoration: none;
-
-		transition: color 0.2s ease;
 	}
 
-	.article-title:hover {
-		color: #4f46e5;
+	.article:hover h3 a {
+		color: var(--green);
 	}
 
-	.description {
+	.article-description {
 		max-width: 720px;
 
 		margin: 0;
 
 		line-height: 1.7;
 
-		color: #6b7280;
+		color: #68746c;
 	}
 
-	.article-bottom {
+	.article-footer {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 
-		gap: 1.5rem;
+		gap: 2rem;
 
-		margin-top: 1.4rem;
+		margin-top: 1.5rem;
 	}
 
 	.tags {
@@ -492,125 +831,220 @@ const topics = [
 		gap: 0.5rem;
 	}
 
-	.tag {
+	.tags a {
 		padding: 0.25rem 0.5rem;
 
-		border: 1px solid #e5e7eb;
-		border-radius: 4px;
+		border:
+			1px solid var(--line);
 
 		font-family: monospace;
-		font-size: 0.72rem;
+		font-size: 0.68rem;
 
-		color: #6b7280;
-	}
-
-	time {
-		flex-shrink: 0;
-
-		font-family: monospace;
-		font-size: 0.75rem;
-
-		color: #9ca3af;
-	}
-
-	.view-all {
-		margin-top: 2rem;
-	}
-
-	.view-all a {
-		font-size: 0.9rem;
-		font-weight: 700;
-
-		color: #111827;
+		color: #647068;
 
 		text-decoration: none;
 	}
 
-	.view-all a:hover {
-		color: #4f46e5;
+	.tags a:hover {
+		border-color: var(--green-dim);
+
+		color: var(--green);
 	}
 
-	.topics-section {
-		border-top: 1px solid #e5e7eb;
+	time {
+		font-family: monospace;
+		font-size: 0.7rem;
+
+		color: #4b5650;
+	}
+
+	.article-arrow {
+		align-self: center;
+
+		font-size: 1.4rem;
+
+		color: #354039;
+
+		text-decoration: none;
+	}
+
+	.article:hover .article-arrow {
+		color: var(--green);
 	}
 
 	.topics {
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
 
-		border-top: 1px solid #d1d5db;
+		border-top:
+			1px solid var(--line);
 	}
 
-	.topics a {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
+	.topic {
+		display: grid;
+		grid-template-columns:
+			45px
+			1fr
+			30px;
 
-		gap: 1rem;
+		gap: 1.4rem;
 
-		padding: 1.5rem 0;
+		padding: 2rem;
 
-		border-bottom: 1px solid #d1d5db;
+		border-bottom:
+			1px solid var(--line);
 
-		color: #111827;
-
-		font-size: 1.05rem;
-		font-weight: 600;
+		color: inherit;
 
 		text-decoration: none;
-
-		transition: color 0.2s ease;
 	}
 
-	.topics a:nth-child(odd) {
-		padding-right: 2rem;
+	.topic:nth-child(odd) {
+		border-right:
+			1px solid var(--line);
 	}
 
-	.topics a:nth-child(even) {
-		padding-left: 2rem;
+	.topic-number {
+		font-family: monospace;
+		font-size: 0.7rem;
+
+		color: #354039;
 	}
 
-	.topics a:hover {
-		color: #4f46e5;
+	.topic h3 {
+		margin: 0;
+
+		font-size: 1.15rem;
+
+		color: #cfd5d1;
+	}
+
+	.topic p {
+		max-width: 430px;
+
+		margin: 0.7rem 0 0;
+
+		font-size: 0.84rem;
+
+		line-height: 1.6;
+
+		color: #58645c;
 	}
 
 	.topic-arrow {
+		color: #39443d;
+	}
+
+	.topic:hover {
+		background:
+			rgba(88, 255, 138, 0.018);
+	}
+
+	.topic:hover h3,
+	.topic:hover .topic-arrow {
+		color: var(--green);
+	}
+
+	.signal {
+		position: relative;
+
+		overflow: hidden;
+	}
+
+	.signal-inner {
+		padding: 9rem 0;
+	}
+
+	.signal-code {
+		display: flex;
+		align-items: center;
+
+		gap: 0.7rem;
+
 		font-family: monospace;
+		font-size: 0.68rem;
 
-		color: #9ca3af;
-
-		transition:
-			transform 0.2s ease,
-			color 0.2s ease;
+		color: #58645c;
 	}
 
-	.topics a:hover .topic-arrow {
-		transform: translateX(4px);
-		color: #4f46e5;
+	.signal-code span {
+		width: 7px;
+		height: 7px;
+
+		border-radius: 50%;
+
+		background: var(--green);
+
+		box-shadow:
+			0 0 12px var(--green);
 	}
 
-	.closing {
-		padding: 4rem 0 7rem;
+	.signal h2 {
+		max-width: 1000px;
+
+		margin: 2rem 0 0;
+
+		font-size: clamp(3rem, 7vw, 6.5rem);
+
+		line-height: 0.95;
+
+		letter-spacing: -0.06em;
+
+		color: #e9edea;
 	}
 
-	.closing p {
-		max-width: 800px;
+	.signal h2 span {
+		color: var(--green);
+	}
 
-		margin: 0;
+	.signal p {
+		max-width: 700px;
 
-		font-size: clamp(2rem, 5vw, 4rem);
+		margin: 2.5rem 0 0;
+
+		line-height: 1.8;
+
+		color: #69756d;
+	}
+
+	.signal-links {
+		display: flex;
+		flex-wrap: wrap;
+
+		gap: 2rem;
+
+		margin-top: 3rem;
+	}
+
+	.signal-links a {
+		font-family: monospace;
+		font-size: 0.75rem;
 		font-weight: 700;
 
-		line-height: 1.1;
+		color: #98a29b;
 
-		letter-spacing: -0.04em;
-
-		color: #111827;
+		text-decoration: none;
 	}
 
-	@media (max-width: 700px) {
+	.signal-links a:hover {
+		color: var(--green);
+	}
+
+	@media (max-width: 800px) {
+		.hero {
+			min-height: auto;
+		}
+
 		.hero-inner {
+			width: min(100% - 2rem, 1180px);
+
 			padding: 5rem 0;
+		}
+
+		.manifesto-inner,
+		.section,
+		.signal-inner {
+			width: min(100% - 2rem, 1180px);
 		}
 
 		.actions {
@@ -618,17 +1052,21 @@ const topics = [
 			align-items: flex-start;
 		}
 
-		.article {
-			grid-template-columns: 1fr;
-
-			gap: 0.8rem;
+		.section-heading {
+			flex-direction: column;
+			align-items: flex-start;
 		}
 
-		.number {
+		.article {
+			grid-template-columns: 1fr;
+		}
+
+		.article-index,
+		.article-arrow {
 			display: none;
 		}
 
-		.article-bottom {
+		.article-footer {
 			flex-direction: column;
 			align-items: flex-start;
 		}
@@ -637,10 +1075,8 @@ const topics = [
 			grid-template-columns: 1fr;
 		}
 
-		.topics a:nth-child(odd),
-		.topics a:nth-child(even) {
-			padding-left: 0;
-			padding-right: 0;
+		.topic:nth-child(odd) {
+			border-right: none;
 		}
 	}
 </style>
