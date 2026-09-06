@@ -2,6 +2,8 @@ import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
+import { TOPIC_NAMES } from './data/topics';
+
 const blog = defineCollection({
 	loader: glob({
 		base: './src/content/blog',
@@ -10,25 +12,16 @@ const blog = defineCollection({
 
 	schema: z.object({
 		title: z.string(),
+
 		description: z.string(),
 
 		pubDate: z.coerce.date(),
+
 		updatedDate: z.coerce.date().optional(),
 
 		heroImage: z.any().optional(),
 
-		category: z.enum([
-			'Mathematical Foundations',
-			'Number Theory',
-			'Symmetric Cryptography',
-			'Public-Key Cryptography',
-			'Zero-Knowledge Proofs',
-			'MPC',
-			'Threshold Cryptography',
-			'Post-Quantum Cryptography',
-			'Formal Verification',
-			'Implementations',
-		]),
+		category: z.enum(TOPIC_NAMES),
 
 		tags: z.array(z.string()).default([]),
 
@@ -46,4 +39,6 @@ const blog = defineCollection({
 	}),
 });
 
-export const collections = { blog };
+export const collections = {
+	blog,
+};
