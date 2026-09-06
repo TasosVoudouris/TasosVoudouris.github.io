@@ -1,0 +1,301 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+import { SITE_TITLE } from '../../consts';
+
+import { getCollection } from 'astro:content';
+
+import { TOPICS } from '../../data/topics';
+
+const posts = (await getCollection('blog'))
+	.filter((post) => !post.data.draft);
+
+const topicData = TOPICS.map((topic) => ({
+	...topic,
+
+	count: posts.filter(
+		(post) => post.data.category === topic.name,
+	).length,
+}));
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead
+			title={`Topics | ${SITE_TITLE}`}
+			description="Explore CryptoCave articles by cryptographic topic."
+		/>
+	</head>
+
+	<body>
+		<Header />
+
+		<main>
+
+			<section class="page-header">
+
+				<p class="eyebrow">
+					EXPLORE CRYPTOGRAPHY
+				</p>
+
+				<h1>Topics</h1>
+
+				<p class="intro">
+					A structured map of CryptoCave, from mathematical foundations
+					to modern protocols, proof systems, post-quantum cryptography,
+					formal verification, and implementation.
+				</p>
+
+			</section>
+
+
+			<section class="topics-section">
+
+				<div class="section-top">
+
+					<p>KNOWLEDGE MAP</p>
+
+					<span>
+						{posts.length}
+						{posts.length === 1
+							? ' published article'
+							: ' published articles'}
+					</span>
+
+				</div>
+
+
+				<div class="topics">
+
+					{
+						topicData.map((topic, index) => (
+
+							<a
+								class="topic"
+								href={`/topics/${topic.slug}/`}
+							>
+
+								<div class="number">
+									{String(index + 1).padStart(2, '0')}
+								</div>
+
+								<div class="topic-content">
+
+									<h2>
+										{topic.name}
+									</h2>
+
+									<p class="description">
+										{topic.description}
+									</p>
+
+									<p class="count">
+										{
+											topic.count === 0
+												? 'No articles published yet'
+												: `${topic.count} ${
+														topic.count === 1
+															? 'article'
+															: 'articles'
+													}`
+										}
+									</p>
+
+								</div>
+
+								<span class="arrow">
+									→
+								</span>
+
+							</a>
+
+						))
+					}
+
+				</div>
+
+			</section>
+
+		</main>
+
+		<Footer />
+	</body>
+</html>
+
+<style>
+	main {
+		width: 100%;
+	}
+
+	.page-header,
+	.topics-section {
+		width: min(1100px, calc(100% - 3rem));
+
+		margin: 0 auto;
+	}
+
+	.page-header {
+		padding: 7rem 0 5rem;
+
+		border-bottom: 1px solid #e5e7eb;
+	}
+
+	.eyebrow,
+	.section-top > p {
+		margin: 0;
+
+		font-size: 0.72rem;
+		font-weight: 700;
+
+		letter-spacing: 0.13em;
+		text-transform: uppercase;
+
+		color: #4f46e5;
+	}
+
+	h1 {
+		margin: 0.7rem 0 1.2rem;
+
+		font-size: clamp(3.5rem, 8vw, 7rem);
+		line-height: 0.95;
+
+		letter-spacing: -0.055em;
+
+		color: #111827;
+	}
+
+	.intro {
+		max-width: 760px;
+
+		margin: 0;
+
+		font-size: 1.1rem;
+		line-height: 1.8;
+
+		color: #6b7280;
+	}
+
+	.topics-section {
+		padding: 4rem 0 7rem;
+	}
+
+	.section-top {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+
+		gap: 2rem;
+
+		margin-bottom: 1.5rem;
+	}
+
+	.section-top span {
+		font-family: monospace;
+		font-size: 0.78rem;
+
+		color: #9ca3af;
+	}
+
+	.topics {
+		border-top: 1px solid #d1d5db;
+	}
+
+	.topic {
+		display: grid;
+		grid-template-columns: 80px 1fr auto;
+
+		align-items: center;
+
+		gap: 2rem;
+
+		padding: 2.3rem 0;
+
+		border-bottom: 1px solid #d1d5db;
+
+		color: inherit;
+
+		text-decoration: none;
+	}
+
+	.number {
+		font-family: monospace;
+		font-size: 0.82rem;
+
+		color: #9ca3af;
+	}
+
+	.topic-content h2 {
+		margin: 0;
+
+		font-size: clamp(1.4rem, 3vw, 2rem);
+
+		letter-spacing: -0.025em;
+
+		color: #111827;
+	}
+
+	.topic:hover h2 {
+		color: #4f46e5;
+	}
+
+	.description {
+		max-width: 720px;
+
+		margin: 0.6rem 0 0;
+
+		font-size: 0.92rem;
+		line-height: 1.6;
+
+		color: #6b7280;
+	}
+
+	.count {
+		margin: 0.8rem 0 0;
+
+		font-family: monospace;
+		font-size: 0.75rem;
+
+		color: #9ca3af;
+	}
+
+	.arrow {
+		font-family: monospace;
+		font-size: 1.4rem;
+
+		color: #9ca3af;
+
+		transition:
+			transform 0.2s ease,
+			color 0.2s ease;
+	}
+
+	.topic:hover .arrow {
+		transform: translateX(5px);
+
+		color: #4f46e5;
+	}
+
+	@media (max-width: 700px) {
+		.page-header {
+			padding: 5rem 0 3.5rem;
+		}
+
+		.section-top {
+			flex-direction: column;
+			align-items: flex-start;
+
+			gap: 0.5rem;
+		}
+
+		.topic {
+			grid-template-columns: 1fr auto;
+		}
+
+		.number {
+			display: none;
+		}
+	}
+</style>

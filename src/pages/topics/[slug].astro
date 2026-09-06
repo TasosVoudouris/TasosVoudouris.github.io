@@ -1,0 +1,431 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
+
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+import { SITE_TITLE } from '../../consts';
+
+import { TOPICS } from '../../data/topics';
+
+export async function getStaticPaths() {
+	const allPosts = (await getCollection('blog'))
+		.filter((post) => !post.data.draft);
+
+	return TOPICS.map((topic) => ({
+		params: {
+			slug: topic.slug,
+		},
+
+		props: {
+			topic,
+
+			posts: allPosts
+				.filter(
+					(post) =>
+						post.data.category === topic.name,
+				)
+				.sort(
+					(a, b) =>
+						b.data.pubDate.valueOf() -
+						a.data.pubDate.valueOf(),
+				),
+		},
+	}));
+}
+
+type Topic = (typeof TOPICS)[number];
+
+type Props = {
+	topic: Topic;
+	posts: CollectionEntry<'blog'>[];
+};
+
+const { topic, posts } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead
+			title={`${topic.name} | ${SITE_TITLE}`}
+			description={topic.description}
+		/>
+	</head>
+
+	<body>
+		<Header />
+
+		<main>
+
+			<section class="page-header">
+
+				<a
+					class="back"
+					href="/topics/"
+				>
+					← All Topics
+				</a>
+
+				<p class="eyebrow">
+					TOPIC
+				</p>
+
+				<h1>
+					{topic.name}
+				</h1>
+
+				<p class="intro">
+					{topic.description}
+				</p>
+
+				<p class="count">
+					{posts.length}
+					{posts.length === 1
+						? ' published article'
+						: ' published articles'}
+				</p>
+
+			</section>
+
+
+			<section class="articles-section">
+
+				{
+					posts.length > 0 ? (
+
+						<div class="articles">
+
+							{
+								posts.map((post, index) => (
+
+									<article class="article">
+
+										<div class="number">
+											{String(index + 1).padStart(2, '0')}
+										</div>
+
+										<div class="content">
+
+											<div class="meta">
+
+												<span>
+													{post.data.difficulty}
+												</span>
+
+												<span>·</span>
+
+												<time
+													datetime={post.data.pubDate.toISOString()}
+												>
+													{
+														post.data.pubDate.toLocaleDateString(
+															'en-US',
+															{
+																year: 'numeric',
+																month: 'short',
+																day: 'numeric',
+															},
+														)
+													}
+												</time>
+
+											</div>
+
+											<h2>
+												<a href={`/blog/${post.id}/`}>
+													{post.data.title}
+												</a>
+											</h2>
+
+											<p class="description">
+												{post.data.description}
+											</p>
+
+											<div class="tags">
+
+												{
+													post.data.tags.map((tag) => (
+														<span>
+															#{tag}
+														</span>
+													))
+												}
+
+											</div>
+
+										</div>
+
+									</article>
+
+								))
+							}
+
+						</div>
+
+					) : (
+
+						<div class="empty-state">
+
+							<p class="empty-label">
+								COMING SOON
+							</p>
+
+							<h2>
+								This section is being built.
+							</h2>
+
+							<p>
+								No articles have been published in
+								<strong> {topic.name}</strong> yet.
+								The topic is already part of the CryptoCave
+								knowledge structure and will grow as new
+								material is added.
+							</p>
+
+							<a href="/topics/">
+								Explore other topics →
+							</a>
+
+						</div>
+
+					)
+				}
+
+			</section>
+
+		</main>
+
+		<Footer />
+	</body>
+</html>
+
+<style>
+	main {
+		width: 100%;
+	}
+
+	.page-header,
+	.articles-section {
+		width: min(1100px, calc(100% - 3rem));
+
+		margin: 0 auto;
+	}
+
+	.page-header {
+		padding: 6rem 0 4rem;
+
+		border-bottom: 1px solid #e5e7eb;
+	}
+
+	.back {
+		display: inline-block;
+
+		margin-bottom: 3rem;
+
+		font-size: 0.85rem;
+		font-weight: 600;
+
+		color: #6b7280;
+
+		text-decoration: none;
+	}
+
+	.back:hover {
+		color: #4f46e5;
+	}
+
+	.eyebrow {
+		margin: 0;
+
+		font-size: 0.72rem;
+		font-weight: 700;
+
+		letter-spacing: 0.13em;
+
+		color: #4f46e5;
+	}
+
+	h1 {
+		max-width: 950px;
+
+		margin: 0.7rem 0 1.2rem;
+
+		font-size: clamp(3rem, 7vw, 6rem);
+		line-height: 0.98;
+
+		letter-spacing: -0.05em;
+
+		color: #111827;
+	}
+
+	.intro {
+		max-width: 760px;
+
+		margin: 0;
+
+		font-size: 1.05rem;
+		line-height: 1.7;
+
+		color: #6b7280;
+	}
+
+	.count {
+		margin: 1.5rem 0 0;
+
+		font-family: monospace;
+		font-size: 0.78rem;
+
+		color: #9ca3af;
+	}
+
+	.articles-section {
+		padding: 4rem 0 7rem;
+	}
+
+	.articles {
+		border-top: 1px solid #d1d5db;
+	}
+
+	.article {
+		display: grid;
+		grid-template-columns: 80px 1fr;
+
+		gap: 2rem;
+
+		padding: 2.5rem 0;
+
+		border-bottom: 1px solid #d1d5db;
+	}
+
+	.number {
+		font-family: monospace;
+
+		color: #9ca3af;
+	}
+
+	.meta {
+		display: flex;
+		flex-wrap: wrap;
+
+		gap: 0.5rem;
+
+		font-size: 0.72rem;
+		font-weight: 700;
+
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+
+		color: #9ca3af;
+	}
+
+	.article h2 {
+		margin: 0.7rem 0;
+	}
+
+	.article h2 a {
+		font-size: clamp(1.5rem, 3vw, 2rem);
+
+		letter-spacing: -0.025em;
+
+		color: #111827;
+
+		text-decoration: none;
+	}
+
+	.article h2 a:hover {
+		color: #4f46e5;
+	}
+
+	.description {
+		max-width: 760px;
+
+		margin: 0;
+
+		line-height: 1.7;
+
+		color: #6b7280;
+	}
+
+	.tags {
+		display: flex;
+		flex-wrap: wrap;
+
+		gap: 0.5rem;
+
+		margin-top: 1.3rem;
+	}
+
+	.tags span {
+		padding: 0.25rem 0.5rem;
+
+		border: 1px solid #e5e7eb;
+		border-radius: 4px;
+
+		font-family: monospace;
+		font-size: 0.72rem;
+
+		color: #6b7280;
+	}
+
+	.empty-state {
+		max-width: 720px;
+
+		padding: 3rem 0;
+	}
+
+	.empty-label {
+		margin: 0 0 0.8rem;
+
+		font-size: 0.72rem;
+		font-weight: 700;
+
+		letter-spacing: 0.13em;
+
+		color: #4f46e5;
+	}
+
+	.empty-state h2 {
+		margin: 0 0 1rem;
+
+		font-size: clamp(2rem, 4vw, 3rem);
+
+		letter-spacing: -0.035em;
+
+		color: #111827;
+	}
+
+	.empty-state > p:not(.empty-label) {
+		line-height: 1.8;
+
+		color: #6b7280;
+	}
+
+	.empty-state a {
+		display: inline-block;
+
+		margin-top: 1rem;
+
+		font-weight: 700;
+
+		color: #111827;
+
+		text-decoration: none;
+	}
+
+	.empty-state a:hover {
+		color: #4f46e5;
+	}
+
+	@media (max-width: 700px) {
+		.article {
+			grid-template-columns: 1fr;
+		}
+
+		.number {
+			display: none;
+		}
+	}
+</style>

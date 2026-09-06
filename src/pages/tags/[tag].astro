@@ -1,0 +1,356 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
+
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+import { SITE_TITLE } from '../../consts';
+
+import { slugify } from '../../utils/slugify';
+
+export async function getStaticPaths() {
+	const allPosts = (await getCollection('blog'))
+		.filter((post) => !post.data.draft);
+
+	const tags = [
+		...new Set(
+			allPosts.flatMap(
+				(post) => post.data.tags,
+			),
+		),
+	];
+
+	return tags.map((tag) => ({
+		params: {
+			tag: slugify(tag),
+		},
+
+		props: {
+			tag,
+
+			posts: allPosts
+				.filter(
+					(post) =>
+						post.data.tags.includes(tag),
+				)
+				.sort(
+					(a, b) =>
+						b.data.pubDate.valueOf() -
+						a.data.pubDate.valueOf(),
+				),
+		},
+	}));
+}
+
+type Props = {
+	tag: string;
+	posts: CollectionEntry<'blog'>[];
+};
+
+const { tag, posts } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead
+			title={`#${tag} | ${SITE_TITLE}`}
+			description={`CryptoCave articles tagged with ${tag}.`}
+		/>
+	</head>
+
+	<body>
+		<Header />
+
+		<main>
+
+			<section class="page-header">
+
+				<a
+					class="back"
+					href="/tags/"
+				>
+					← All Tags
+				</a>
+
+				<p class="eyebrow">
+					TAG
+				</p>
+
+				<h1>
+					#{tag}
+				</h1>
+
+				<p class="intro">
+					{posts.length}
+					{posts.length === 1
+						? ' published article'
+						: ' published articles'}
+					connected to this concept.
+				</p>
+
+			</section>
+
+
+			<section class="articles-section">
+
+				<div class="articles">
+
+					{
+						posts.map((post, index) => (
+
+							<article class="article">
+
+								<div class="number">
+									{String(index + 1).padStart(2, '0')}
+								</div>
+
+								<div class="content">
+
+									<div class="meta">
+
+										<span>
+											{post.data.category}
+										</span>
+
+										<span>·</span>
+
+										<span>
+											{post.data.difficulty}
+										</span>
+
+										<span>·</span>
+
+										<time
+											datetime={post.data.pubDate.toISOString()}
+										>
+											{
+												post.data.pubDate.toLocaleDateString(
+													'en-US',
+													{
+														year: 'numeric',
+														month: 'short',
+														day: 'numeric',
+													},
+												)
+											}
+										</time>
+
+									</div>
+
+
+									<h2>
+										<a href={`/blog/${post.id}/`}>
+											{post.data.title}
+										</a>
+									</h2>
+
+
+									<p class="description">
+										{post.data.description}
+									</p>
+
+
+									<div class="tags">
+
+										{
+											post.data.tags.map((item) => (
+												<a
+													href={`/tags/${slugify(item)}/`}
+												>
+													#{item}
+												</a>
+											))
+										}
+
+									</div>
+
+								</div>
+
+							</article>
+
+						))
+					}
+
+				</div>
+
+			</section>
+
+		</main>
+
+		<Footer />
+	</body>
+</html>
+
+<style>
+	main {
+		width: 100%;
+	}
+
+	.page-header,
+	.articles-section {
+		width: min(1100px, calc(100% - 3rem));
+
+		margin: 0 auto;
+	}
+
+	.page-header {
+		padding: 6rem 0 4rem;
+
+		border-bottom: 1px solid #e5e7eb;
+	}
+
+	.back {
+		display: inline-block;
+
+		margin-bottom: 3rem;
+
+		font-size: 0.85rem;
+		font-weight: 600;
+
+		color: #6b7280;
+
+		text-decoration: none;
+	}
+
+	.back:hover {
+		color: #4f46e5;
+	}
+
+	.eyebrow {
+		margin: 0;
+
+		font-size: 0.72rem;
+		font-weight: 700;
+
+		letter-spacing: 0.13em;
+
+		color: #4f46e5;
+	}
+
+	h1 {
+		margin: 0.7rem 0 1.2rem;
+
+		font-size: clamp(3rem, 7vw, 6rem);
+		line-height: 0.98;
+
+		letter-spacing: -0.05em;
+
+		color: #111827;
+	}
+
+	.intro {
+		margin: 0;
+
+		color: #6b7280;
+	}
+
+	.articles-section {
+		padding: 4rem 0 7rem;
+	}
+
+	.articles {
+		border-top: 1px solid #d1d5db;
+	}
+
+	.article {
+		display: grid;
+		grid-template-columns: 80px 1fr;
+
+		gap: 2rem;
+
+		padding: 2.5rem 0;
+
+		border-bottom: 1px solid #d1d5db;
+	}
+
+	.number {
+		font-family: monospace;
+
+		color: #9ca3af;
+	}
+
+	.meta {
+		display: flex;
+		flex-wrap: wrap;
+
+		gap: 0.5rem;
+
+		font-size: 0.72rem;
+		font-weight: 700;
+
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+
+		color: #9ca3af;
+	}
+
+	h2 {
+		margin: 0.7rem 0;
+	}
+
+	h2 a {
+		font-size: clamp(1.5rem, 3vw, 2rem);
+
+		letter-spacing: -0.025em;
+
+		color: #111827;
+
+		text-decoration: none;
+	}
+
+	h2 a:hover {
+		color: #4f46e5;
+	}
+
+	.description {
+		max-width: 760px;
+
+		margin: 0;
+
+		line-height: 1.7;
+
+		color: #6b7280;
+	}
+
+	.tags {
+		display: flex;
+		flex-wrap: wrap;
+
+		gap: 0.5rem;
+
+		margin-top: 1.3rem;
+	}
+
+	.tags a {
+		padding: 0.25rem 0.5rem;
+
+		border: 1px solid #e5e7eb;
+		border-radius: 4px;
+
+		font-family: monospace;
+		font-size: 0.72rem;
+
+		color: #6b7280;
+
+		text-decoration: none;
+	}
+
+	.tags a:hover {
+		border-color: #4f46e5;
+
+		color: #4f46e5;
+	}
+
+	@media (max-width: 700px) {
+		.article {
+			grid-template-columns: 1fr;
+		}
+
+		.number {
+			display: none;
+		}
+	}
+</style>

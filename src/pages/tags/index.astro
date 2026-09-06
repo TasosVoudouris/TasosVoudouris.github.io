@@ -1,0 +1,276 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+import { SITE_TITLE } from '../../consts';
+
+import { getCollection } from 'astro:content';
+
+import { slugify } from '../../utils/slugify';
+
+const posts = (await getCollection('blog'))
+	.filter((post) => !post.data.draft);
+
+const tagMap = new Map<string, number>();
+
+for (const post of posts) {
+	for (const tag of post.data.tags) {
+		tagMap.set(
+			tag,
+			(tagMap.get(tag) ?? 0) + 1,
+		);
+	}
+}
+
+const tags = [...tagMap.entries()]
+	.map(([name, count]) => ({
+		name,
+		slug: slugify(name),
+		count,
+	}))
+	.sort((a, b) => {
+		if (b.count !== a.count) {
+			return b.count - a.count;
+		}
+
+		return a.name.localeCompare(b.name);
+	});
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead
+			title={`Tags | ${SITE_TITLE}`}
+			description="Browse CryptoCave articles by concept, primitive, protocol, and cryptographic keyword."
+		/>
+	</head>
+
+	<body>
+		<Header />
+
+		<main>
+
+			<section class="page-header">
+
+				<p class="eyebrow">
+					CONCEPT INDEX
+				</p>
+
+				<h1>Tags</h1>
+
+				<p class="intro">
+					Explore specific concepts appearing throughout CryptoCave.
+					Topics describe broad areas of cryptography, while tags
+					connect individual structures, primitives, techniques,
+					protocols, and recurring ideas across different articles.
+				</p>
+
+			</section>
+
+
+			<section class="tags-section">
+
+				<div class="section-top">
+
+					<p>ALL TAGS</p>
+
+					<span>
+						{tags.length}
+						{tags.length === 1
+							? ' tag'
+							: ' tags'}
+					</span>
+
+				</div>
+
+
+				<div class="tag-grid">
+
+					{
+						tags.map((tag) => (
+
+							<a
+								class="tag-card"
+								href={`/tags/${tag.slug}/`}
+							>
+
+								<div class="tag-main">
+
+									<span class="tag-name">
+										#{tag.name}
+									</span>
+
+									<span class="tag-count">
+										{tag.count}
+										{tag.count === 1
+											? ' article'
+											: ' articles'}
+									</span>
+
+								</div>
+
+								<span class="arrow">
+									→
+								</span>
+
+							</a>
+
+						))
+					}
+
+				</div>
+
+			</section>
+
+		</main>
+
+		<Footer />
+	</body>
+</html>
+
+<style>
+	main {
+		width: 100%;
+	}
+
+	.page-header,
+	.tags-section {
+		width: min(1100px, calc(100% - 3rem));
+
+		margin: 0 auto;
+	}
+
+	.page-header {
+		padding: 7rem 0 5rem;
+
+		border-bottom: 1px solid #e5e7eb;
+	}
+
+	.eyebrow,
+	.section-top > p {
+		margin: 0;
+
+		font-size: 0.72rem;
+		font-weight: 700;
+
+		letter-spacing: 0.13em;
+		text-transform: uppercase;
+
+		color: #4f46e5;
+	}
+
+	h1 {
+		margin: 0.7rem 0 1.2rem;
+
+		font-size: clamp(3.5rem, 8vw, 7rem);
+		line-height: 0.95;
+
+		letter-spacing: -0.055em;
+
+		color: #111827;
+	}
+
+	.intro {
+		max-width: 760px;
+
+		margin: 0;
+
+		font-size: 1.1rem;
+		line-height: 1.8;
+
+		color: #6b7280;
+	}
+
+	.tags-section {
+		padding: 4rem 0 7rem;
+	}
+
+	.section-top {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+
+		margin-bottom: 1.5rem;
+	}
+
+	.section-top span {
+		font-family: monospace;
+		font-size: 0.78rem;
+
+		color: #9ca3af;
+	}
+
+	.tag-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+
+		border-top: 1px solid #d1d5db;
+	}
+
+	.tag-card {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+
+		gap: 2rem;
+
+		min-height: 120px;
+
+		padding: 1.8rem 2rem;
+
+		border-bottom: 1px solid #d1d5db;
+
+		color: inherit;
+
+		text-decoration: none;
+	}
+
+	.tag-card:nth-child(odd) {
+		border-right: 1px solid #d1d5db;
+	}
+
+	.tag-main {
+		display: flex;
+		flex-direction: column;
+
+		gap: 0.5rem;
+	}
+
+	.tag-name {
+		font-family: monospace;
+
+		font-size: 1.05rem;
+		font-weight: 700;
+
+		color: #111827;
+	}
+
+	.tag-count {
+		font-size: 0.78rem;
+
+		color: #9ca3af;
+	}
+
+	.arrow {
+		font-family: monospace;
+
+		color: #9ca3af;
+	}
+
+	.tag-card:hover .tag-name,
+	.tag-card:hover .arrow {
+		color: #4f46e5;
+	}
+
+	@media (max-width: 700px) {
+		.tag-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.tag-card:nth-child(odd) {
+			border-right: none;
+		}
+	}
+</style>

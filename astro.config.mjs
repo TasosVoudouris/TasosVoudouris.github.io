@@ -1,13 +1,30 @@
 // @ts-check
 
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
+
+import { unified } from '@astrojs/markdown-remark';
 import { defineConfig, fontProviders } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
+	markdown: {
+		processor: unified({
+			remarkPlugins: [remarkMath],
+			rehypePlugins: [rehypeKatex],
+		}),
+	},
+
 	site: 'https://example.com',
-	integrations: [mdx(), sitemap()],
+
+	integrations: [
+		mdx(),
+		sitemap(),
+	],
+
 	fonts: [
 		{
 			provider: fontProviders.local(),
