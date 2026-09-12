@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="600" viewBox="0 0 1200 600" role="img" aria-labelledby="title desc">
+<title id="title">Fermat versus Miller-Rabin on 561</title>
+<desc id="desc">The Carmichael number 561 passes a base-2 Fermat test because 2 to the 560th power equals 1 modulo 561. Miller-Rabin decomposes 560 as 2 to the fourth times 35 and follows the chain 263, 166, 67, 1, which reaches 1 without hitting minus 1 and therefore exposes compositeness.</desc>
+
+<defs>
+  <linearGradient id="bg" x1="0" x2="1">
+    <stop offset="0%" stop-color="#07110d"/>
+    <stop offset="100%" stop-color="#0b1519"/>
+  </linearGradient>
+  <marker id="arrowG" viewBox="0 0 10 10" refX="8.7" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0 0 L10 5 L0 10 z" fill="#58f7a6"/>
+  </marker>
+  <marker id="arrowR" viewBox="0 0 10 10" refX="8.7" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0 0 L10 5 L0 10 z" fill="#ff7b72"/>
+  </marker>
+</defs>
+
+<rect width="1200" height="600" rx="28" fill="url(#bg)"/>
+
+<text x="600" y="52" text-anchor="middle"
+      fill="#eafff3" font-family="Inter,Segoe UI,Arial,sans-serif"
+      font-size="30" font-weight="700">
+  561 looks prime to Fermat — Miller-Rabin looks deeper
+</text>
+
+<!-- Fermat panel -->
+<rect x="65" y="100" width="455" height="390" rx="24"
+      fill="#171714" stroke="#f2b84b" stroke-width="2"/>
+
+<text x="292" y="145" text-anchor="middle"
+      fill="#fff8e8" font-family="Inter,Segoe UI,Arial,sans-serif"
+      font-size="26" font-weight="700">
+  Fermat test · base 2
+</text>
+
+<text x="292" y="190" text-anchor="middle"
+      fill="#bdb39a" font-family="Inter,Segoe UI,Arial,sans-serif"
+      font-size="18">
+  561 = 3 · 11 · 17
+</text>
+
+<rect x="125" y="235" width="335" height="82" rx="18"
+      fill="#10251c" stroke="#58f7a6" stroke-width="2"/>
+<text x="292" y="270" text-anchor="middle"
+      fill="#eafff3" font-family="Inter,Segoe UI,Arial,sans-serif"
+      font-size="22" font-weight="700">
+  2⁵⁶⁰ mod 561 = 1
+</text>
+<text x="292" y="300" text-anchor="middle"
+      fill="#58f7a6" font-family="Inter,Segoe UI,Arial,sans-serif"
+      font-size="17">
+  Fermat condition passes
+</text>
+
+<text x="292" y="365" text-anchor="middle"
+      fill="#f2b84b" font-family="Inter,Segoe UI,Arial,sans-serif"
+      font-size="24" font-weight="700">
+  "probably prime?"
+</text>
+
+<text x="292" y="415" text-anchor="middle"
+      fill="#ff7b72" font-family="Inter,Segoe UI,Arial,sans-serif"
+      font-size="19" font-weight="700">
+  fooled by a Carmichael number
+</text>
+
+<!-- MR panel -->
+<rect x="580" y="100" width="555" height="390" rx="24"
+      fill="#0e1c17" stroke="#58f7a6" stroke-width="2"/>
+
+<text x="857" y="145" text-anchor="middle"
+      fill="#eafff3" font-family="Inter,Segoe UI,Arial,sans-serif"
+      font-size="26" font-weight="700">
+  Miller-Rabin · base 2
+</text>
+
+<text x="857" y="188" text-anchor="middle"
+      fill="#9bb9aa" font-family="Inter,Segoe UI,Arial,sans-serif"
+      font-size="19">
+  560 = 2⁴ · 35
+</text>
+
+<!-- chain -->
+<g font-family="Inter,Segoe UI,Arial,sans-serif" text-anchor="middle">
+  <circle cx="675" cy="290" r="45" fill="#153428" stroke="#58f7a6" stroke-width="2"/>
+  <text x="675" y="298" fill="#eafff3" font-size="21">263</text>
+
+  <circle cx="795" cy="290" r="45" fill="#153428" stroke="#58f7a6" stroke-width="2"/>
+  <text x="795" y="298" fill="#eafff3" font-size="21">166</text>
+
+  <circle cx="915" cy="290" r="45" fill="#153428" stroke="#58f7a6" stroke-width="2"/>
+  <text x="915" y="298" fill="#eafff3" font-size="21">67</text>
+
+  <circle cx="1035" cy="290" r="45" fill="#231517" stroke="#ff7b72" stroke-width="2"/>
+  <text x="1035" y="298" fill="#fff0ef" font-size="21">1</text>
+</g>
+
+<line x1="720" y1="290" x2="744" y2="290" stroke="#58f7a6" stroke-width="3" marker-end="url(#arrowG)"/>
+<line x1="840" y1="290" x2="864" y2="290" stroke="#58f7a6" stroke-width="3" marker-end="url(#arrowG)"/>
+<line x1="960" y1="290" x2="984" y2="290" stroke="#ff7b72" stroke-width="3" marker-end="url(#arrowR)"/>
+
+<text x="857" y="365" text-anchor="middle"
+      fill="#ff7b72" font-family="Inter,Segoe UI,Arial,sans-serif"
+      font-size="20" font-weight="700">
+  reaches 1 without ever reaching −1 ≡ 560
+</text>
+
+<rect x="700" y="400" width="315" height="58" rx="16"
+      fill="#231517" stroke="#ff7b72" stroke-width="2"/>
+<text x="857" y="437" text-anchor="middle"
+      fill="#fff0ef" font-family="Inter,Segoe UI,Arial,sans-serif"
+      font-size="23" font-weight="700">
+  COMPOSITE
+</text>
+
+<!-- bottom -->
+<text x="600" y="540" text-anchor="middle"
+      fill="#819c8d" font-family="Inter,Segoe UI,Arial,sans-serif"
+      font-size="17">
+  Miller-Rabin tests more of the algebraic structure than the final Fermat congruence alone.
+</text>
+</svg>

@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+<title id="title">CRT-RSA fault attack</title>
+<desc id="desc">An RSA private operation splits into computations modulo p and q. A fault corrupts only the p branch while the q branch remains correct. CRT recombination produces a faulty signature whose difference from the correct signature reveals q through a greatest common divisor.</desc>
+
+<defs>
+  <linearGradient id="bg" x1="0" x2="1">
+    <stop offset="0%" stop-color="#07110d"/>
+    <stop offset="100%" stop-color="#0b1519"/>
+  </linearGradient>
+  <marker id="arrowG" viewBox="0 0 10 10" refX="8.7" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0 0 L10 5 L0 10 z" fill="#58f7a6"/>
+  </marker>
+  <marker id="arrowR" viewBox="0 0 10 10" refX="8.7" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0 0 L10 5 L0 10 z" fill="#ff7b72"/>
+  </marker>
+</defs>
+
+<rect width="1200" height="620" rx="28" fill="url(#bg)"/>
+
+<text x="600" y="52" text-anchor="middle"
+      fill="#eafff3" font-family="Inter,Segoe UI,Arial,sans-serif"
+      font-size="30" font-weight="700">
+  One faulty CRT branch can turn a wrong RSA result into a factorization oracle
+</text>
+
+<!-- input -->
+<rect x="475" y="88" width="250" height="72" rx="18"
+      fill="#0e1c17" stroke="#58f7a6" stroke-width="2"/>
+<text x="600" y="118" text-anchor="middle" fill="#eafff3"
+      font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700">
+  message M = 42
+</text>
+<text x="600" y="145" text-anchor="middle" fill="#9bb9aa"
+      font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16">
+  RSA modulus N = 11 · 13
+</text>
+
+<!-- branches -->
+<rect x="95" y="235" width="360" height="130" rx="20"
+      fill="#231517" stroke="#ff7b72" stroke-width="2"/>
+<text x="275" y="270" text-anchor="middle" fill="#fff0ef"
+      font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21" font-weight="700">
+  mod p branch
+</text>
+<text x="275" y="305" text-anchor="middle" fill="#c8a4a1"
+      font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17">
+  correct Sₚ = 3
+</text>
+<text x="275" y="337" text-anchor="middle" fill="#ff7b72"
+      font-family="Inter,Segoe UI,Arial,sans-serif" font-size="19" font-weight="700">
+  fault → S̃ₚ = 4
+</text>
+
+<rect x="745" y="235" width="360" height="130" rx="20"
+      fill="#10251c" stroke="#58f7a6" stroke-width="2"/>
+<text x="925" y="270" text-anchor="middle" fill="#eafff3"
+      font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21" font-weight="700">
+  mod q branch
+</text>
+<text x="925" y="307" text-anchor="middle" fill="#58f7a6"
+      font-family="Inter,Segoe UI,Arial,sans-serif" font-size="19" font-weight="700">
+  S̃q = S_q = 3
+</text>
+<text x="925" y="337" text-anchor="middle" fill="#9bb9aa"
+      font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16">
+  branch remains correct
+</text>
+
+<path d="M555 160 C470 188,390 208,325 230"
+      fill="none" stroke="#ff7b72" stroke-width="3" marker-end="url(#arrowR)"/>
+<path d="M645 160 C730 188,810 208,875 230"
+      fill="none" stroke="#58f7a6" stroke-width="3" marker-end="url(#arrowG)"/>
+
+<!-- CRT -->
+<rect x="430" y="405" width="340" height="82" rx="19"
+      fill="#171714" stroke="#f2b84b" stroke-width="2"/>
+<text x="600" y="438" text-anchor="middle" fill="#fff8e8"
+      font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21" font-weight="700">
+  CRT recombination
+</text>
+<text x="600" y="468" text-anchor="middle" fill="#f2b84b"
+      font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18">
+  faulty signature S̃ = 81
+</text>
+
+<path d="M375 365 C430 392,480 402,515 405"
+      fill="none" stroke="#ff7b72" stroke-width="3" marker-end="url(#arrowR)"/>
+<path d="M825 365 C770 392,720 402,685 405"
+      fill="none" stroke="#58f7a6" stroke-width="3" marker-end="url(#arrowG)"/>
+
+<!-- gcd -->
+<rect x="330" y="525" width="540" height="68" rx="18"
+      fill="#10251c" stroke="#58f7a6" stroke-width="2"/>
+<text x="600" y="552" text-anchor="middle" fill="#eafff3"
+      font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700">
+  gcd(S − S̃, N) = gcd(3 − 81, 143)
+</text>
+<text x="600" y="579" text-anchor="middle" fill="#58f7a6"
+      font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21" font-weight="700">
+  = 13 = q
+</text>
+
+<line x1="600" y1="487" x2="600" y2="515"
+      stroke="#58f7a6" stroke-width="3" marker-end="url(#arrowG)"/>
+</svg>

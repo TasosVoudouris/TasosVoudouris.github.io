@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+<title id="title">Orders and generators modulo 7</title>
+<desc id="desc">Two cycles in the multiplicative group modulo 7. Powers of 2 generate the subgroup {1,2,4}, while powers of 3 generate every nonzero residue.</desc>
+
+<defs>
+  <linearGradient id="bg" x1="0" x2="1">
+    <stop offset="0%" stop-color="#07110d"/>
+    <stop offset="100%" stop-color="#0b1519"/>
+  </linearGradient>
+  <marker id="arrowGreen" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0,0 L10,5 L0,10 z" fill="#58f7a6"/>
+  </marker>
+  <marker id="arrowGold" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0,0 L10,5 L0,10 z" fill="#f2b84b"/>
+  </marker>
+</defs>
+
+<rect width="1200" height="520" rx="28" fill="url(#bg)"/>
+
+<text x="600" y="58" text-anchor="middle"
+      fill="#eafff3" font-family="Inter,Segoe UI,Arial,sans-serif"
+      font-size="31" font-weight="700">
+  Same group. Different elements. Different reach.
+</text>
+
+<!-- left -->
+<rect x="55" y="95" width="510" height="360" rx="24"
+      fill="#0e1c17" stroke="#58f7a6" stroke-width="2"/>
+
+<text x="310" y="138" text-anchor="middle"
+      fill="#eafff3" font-family="Inter,Segoe UI,Arial,sans-serif"
+      font-size="27" font-weight="700">g = 2 mod 7</text>
+
+<text x="310" y="170" text-anchor="middle"
+      fill="#9bb9aa" font-family="Inter,Segoe UI,Arial,sans-serif"
+      font-size="18">order = 3 · proper subgroup</text>
+
+<g font-family="Inter,Segoe UI,Arial,sans-serif" text-anchor="middle">
+  <circle cx="310" cy="235" r="39" fill="#153428" stroke="#58f7a6" stroke-width="2"/>
+  <text x="310" y="244" fill="#eafff3" font-size="25">1</text>
+
+  <circle cx="205" cy="345" r="39" fill="#153428" stroke="#58f7a6" stroke-width="2"/>
+  <text x="205" y="354" fill="#eafff3" font-size="25">2</text>
+
+  <circle cx="415" cy="345" r="39" fill="#153428" stroke="#58f7a6" stroke-width="2"/>
+  <text x="415" y="354" fill="#eafff3" font-size="25">4</text>
+</g>
+
+<g stroke="#58f7a6" stroke-width="3" fill="none" marker-end="url(#arrowGreen)">
+  <path d="M283 263 C250 286,230 305,221 313"/>
+  <path d="M245 345 C300 385,360 385,375 352"/>
+  <path d="M402 309 C389 283,355 253,338 247"/>
+</g>
+
+<text x="310" y="425" text-anchor="middle"
+      fill="#58f7a6" font-family="Inter,Segoe UI,Arial,sans-serif"
+      font-size="20" font-weight="700">
+  ⟨2⟩ = {1, 2, 4}
+</text>
+
+<!-- right -->
+<rect x="635" y="95" width="510" height="360" rx="24"
+      fill="#171714" stroke="#f2b84b" stroke-width="2"/>
+
+<text x="890" y="138" text-anchor="middle"
+      fill="#fff8e8" font-family="Inter,Segoe UI,Arial,sans-serif"
+      font-size="27" font-weight="700">g = 3 mod 7</text>
+
+<text x="890" y="170" text-anchor="middle"
+      fill="#bdb39a" font-family="Inter,Segoe UI,Arial,sans-serif"
+      font-size="18">order = 6 · generator</text>
+
+<g font-family="Inter,Segoe UI,Arial,sans-serif" text-anchor="middle">
+  <circle cx="890" cy="220" r="32" fill="#352715" stroke="#f2b84b" stroke-width="2"/>
+  <text x="890" y="228" fill="#fff8e8" font-size="22">1</text>
+
+  <circle cx="990" cy="265" r="32" fill="#352715" stroke="#f2b84b" stroke-width="2"/>
+  <text x="990" y="273" fill="#fff8e8" font-size="22">3</text>
+
+  <circle cx="1015" cy="365" r="32" fill="#352715" stroke="#f2b84b" stroke-width="2"/>
+  <text x="1015" y="373" fill="#fff8e8" font-size="22">2</text>
+
+  <circle cx="890" cy="415" r="32" fill="#352715" stroke="#f2b84b" stroke-width="2"/>
+  <text x="890" y="423" fill="#fff8e8" font-size="22">6</text>
+
+  <circle cx="765" cy="365" r="32" fill="#352715" stroke="#f2b84b" stroke-width="2"/>
+  <text x="765" y="373" fill="#fff8e8" font-size="22">4</text>
+
+  <circle cx="790" cy="265" r="32" fill="#352715" stroke="#f2b84b" stroke-width="2"/>
+  <text x="790" y="273" fill="#fff8e8" font-size="22">5</text>
+</g>
+
+<g stroke="#f2b84b" stroke-width="3" fill="none" marker-end="url(#arrowGold)">
+  <path d="M920 230 C948 240,963 247,968 250"/>
+  <path d="M1002 296 C1011 314,1015 327,1016 332"/>
+  <path d="M988 383 C953 401,928 409,920 411"/>
+  <path d="M860 411 C822 400,795 385,790 380"/>
+  <path d="M757 334 C756 313,764 290,772 284"/>
+  <path d="M812 239 C840 225,857 220,860 220"/>
+</g>
+
+<text x="890" y="475" text-anchor="middle"
+      fill="#f2b84b" font-family="Inter,Segoe UI,Arial,sans-serif"
+      font-size="20" font-weight="700">
+  ⟨3⟩ = F₇×
+</text>
+</svg>

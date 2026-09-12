@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
+<title id="title">From division to cryptography</title>
+<desc id="desc">A dependency flow from integer division through remainders, Euclid, GCD and modular inverses to cryptographic applications.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" x2="1">
+    <stop offset="0%" stop-color="#07110d"/>
+    <stop offset="100%" stop-color="#0b1519"/>
+  </linearGradient>
+  <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+    <feGaussianBlur stdDeviation="4" result="blur"/>
+    <feMerge>
+      <feMergeNode in="blur"/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#58f7a6"/>
+  </marker>
+</defs>
+
+<rect width="1200" height="360" rx="24" fill="url(#bg)"/>
+<text x="60" y="65" fill="#e7fff2" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="30" font-weight="700">
+  One small arithmetic chain, many later consequences
+</text>
+<text x="60" y="100" fill="#9bb9aa" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18">
+  Cryptography From Zero
+</text>
+
+<g font-family="Inter,Segoe UI,Arial,sans-serif" text-anchor="middle">
+  <g>
+    <rect x="55" y="155" width="170" height="82" rx="16" fill="#101e19" stroke="#58f7a6" stroke-width="2"/>
+    <text x="140" y="187" fill="#e7fff2" font-size="21" font-weight="700">Division</text>
+    <text x="140" y="216" fill="#9bb9aa" font-size="16">a = bq + r</text>
+  </g>
+
+  <g>
+    <rect x="270" y="155" width="170" height="82" rx="16" fill="#101e19" stroke="#58f7a6" stroke-width="2"/>
+    <text x="355" y="187" fill="#e7fff2" font-size="21" font-weight="700">Remainder</text>
+    <text x="355" y="216" fill="#9bb9aa" font-size="16">a mod b</text>
+  </g>
+
+  <g>
+    <rect x="485" y="155" width="170" height="82" rx="16" fill="#101e19" stroke="#58f7a6" stroke-width="2"/>
+    <text x="570" y="187" fill="#e7fff2" font-size="21" font-weight="700">Euclid</text>
+    <text x="570" y="216" fill="#9bb9aa" font-size="16">gcd(a,b)=gcd(b,r)</text>
+  </g>
+
+  <g>
+    <rect x="700" y="155" width="170" height="82" rx="16" fill="#101e19" stroke="#58f7a6" stroke-width="2"/>
+    <text x="785" y="187" fill="#e7fff2" font-size="21" font-weight="700">GCD</text>
+    <text x="785" y="216" fill="#9bb9aa" font-size="16">coprimality</text>
+  </g>
+
+  <g>
+    <rect x="915" y="140" width="225" height="112" rx="16" fill="#10251c" stroke="#58f7a6" stroke-width="2" filter="url(#glow)"/>
+    <text x="1027" y="177" fill="#e7fff2" font-size="21" font-weight="700">What comes later?</text>
+    <text x="1027" y="207" fill="#9bb9aa" font-size="16">modular inverses</text>
+    <text x="1027" y="230" fill="#9bb9aa" font-size="16">RSA · ECC · NTT</text>
+  </g>
+</g>
+
+<g stroke="#58f7a6" stroke-width="3" fill="none" marker-end="url(#arrow)">
+  <path d="M225 196 H260"/>
+  <path d="M440 196 H475"/>
+  <path d="M655 196 H690"/>
+  <path d="M870 196 H905"/>
+</g>
+
+<text x="60" y="315" fill="#7b998b" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16">
+  Learn the small object first. Then keep following where it reappears.
+</text>
+</svg>

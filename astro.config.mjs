@@ -11,6 +11,11 @@ import { defineConfig, fontProviders } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
+	// This is a user/organization GitHub Pages repository
+	// (TasosVoudouris.github.io), so it is deployed at the domain root
+	// and does not need a `base` path.
+	site: 'https://tasosvoudouris.github.io',
+
 	markdown: {
 		processor: unified({
 			remarkPlugins: [remarkMath],
@@ -18,12 +23,7 @@ export default defineConfig({
 		}),
 	},
 
-	site: 'https://example.com',
-
-	integrations: [
-		mdx(),
-		sitemap(),
-	],
+	integrations: [mdx(), sitemap()],
 
 	fonts: [
 		{

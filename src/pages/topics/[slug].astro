@@ -29,8 +29,8 @@ export async function getStaticPaths() {
 				)
 				.sort(
 					(a, b) =>
-						b.data.pubDate.valueOf() -
-						a.data.pubDate.valueOf(),
+						b.data.pubDate.valueOf() - a.data.pubDate.valueOf() ||
+						b.id.localeCompare(a.id),
 				),
 		},
 	}));

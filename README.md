@@ -1,63 +1,82 @@
-# Astro Starter Kit: Blog
+# CryptoCave
 
-```sh
-npm create astro@latest -- --template blog
+CryptoCave is a static Astro site for cryptography notes, articles, implementations, experiments, and research-oriented material.
+
+Production site: `https://tasosvoudouris.github.io`
+
+Source repository: `https://github.com/TasosVoudouris/TasosVoudouris.github.io`
+
+## Requirements
+
+- Node.js 24 is recommended for local development and matches the GitHub Pages workflow.
+- Node.js 22.12+ is also accepted by the project dependencies.
+- npm is used through `package-lock.json`.
+
+## Clean local setup
+
+From the project root:
+
+```bash
+npm ci
+npm run dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-Features:
-
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and Open Graph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
+Astro will normally start the local site at:
 
 ```text
-├── public/
-├── src/
-│   ├── assets/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
-├── astro.config.mjs
-├── README.md
-├── package.json
-└── tsconfig.json
+http://localhost:4321
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Production validation
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+Before pushing changes, run:
 
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
+```bash
+npm run build
+npm run preview
+```
 
-Any static assets, like images, can be placed in the `public/` directory.
+The production build is written to `dist/`.
 
-## 🧞 Commands
+## GitHub Pages
 
-All commands are run from the root of the project, from a terminal:
+Deployment is handled by `.github/workflows/deploy.yml` whenever `main` is pushed.
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+This repository is the special GitHub Pages user repository `TasosVoudouris.github.io`, so the site is deployed at the domain root. `astro.config.mjs` therefore sets:
 
-## 👀 Want to learn more?
+```js
+site: 'https://tasosvoudouris.github.io'
+```
 
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+and intentionally does **not** set an Astro `base` path.
 
-## Credit
+In GitHub repository settings, Pages should use **GitHub Actions** as its source.
 
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+## Content
+
+Articles live in:
+
+```text
+src/content/blog/
+```
+
+The schema is defined in `src/content.config.ts`. Published indexes, topic pages, tag pages, RSS, and article routes exclude posts with:
+
+```yaml
+draft: true
+```
+
+Article diagrams referenced as `/images/blog/...` live in:
+
+```text
+public/images/blog/
+```
+
+## Useful commands
+
+```bash
+npm run dev      # local development server
+npm run build    # production build
+npm run preview  # preview the production build locally
+npm run astro -- --help
+```

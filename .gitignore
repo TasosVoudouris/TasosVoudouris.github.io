@@ -22,3 +22,8 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# local source/research bundles (not part of the deployed site)
+/*.zip
+/src/content/blog/*.zip
+/src/content/blog/CryptoCave_Blogs_00-03_Math_Fixed/
