@@ -78,14 +78,38 @@ const isActive = (href: string) => {
 
 
 			<a
+				href="/library/"
+				class:list={[
+					'nav-link',
+					{ active: isActive('/library/') },
+				]}
+			>
+				<span class="nav-index">01</span>
+				Library
+			</a>
+
+
+			<a
 				href="/blog/"
 				class:list={[
 					'nav-link',
 					{ active: isActive('/blog/') },
 				]}
 			>
-				<span class="nav-index">01</span>
+				<span class="nav-index">02</span>
 				Articles
+			</a>
+
+
+			<a
+				href="/series/"
+				class:list={[
+					'nav-link',
+					{ active: isActive('/series/') },
+				]}
+			>
+				<span class="nav-index">03</span>
+				Series
 			</a>
 
 
@@ -96,7 +120,7 @@ const isActive = (href: string) => {
 					{ active: isActive('/topics/') },
 				]}
 			>
-				<span class="nav-index">02</span>
+				<span class="nav-index">04</span>
 				Topics
 			</a>
 
@@ -108,7 +132,7 @@ const isActive = (href: string) => {
 					{ active: isActive('/tags/') },
 				]}
 			>
-				<span class="nav-index">03</span>
+				<span class="nav-index">05</span>
 				Tags
 			</a>
 
@@ -120,7 +144,7 @@ const isActive = (href: string) => {
 					{ active: isActive('/about/') },
 				]}
 			>
-				<span class="nav-index">04</span>
+				<span class="nav-index">06</span>
 				About
 			</a>
 

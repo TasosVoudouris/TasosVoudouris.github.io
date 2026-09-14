@@ -4,19 +4,18 @@ import Footer from '../../components/Footer.astro';
 import Header from '../../components/Header.astro';
 
 import { SITE_TITLE } from '../../consts';
-
 import { getCollection } from 'astro:content';
 
+import { SERIES, getSeriesByName } from '../../data/series';
 import { getTopicByName } from '../../data/topics';
+import { sortNewest } from '../../utils/content';
 import { slugify } from '../../utils/slugify';
 
-const posts = (await getCollection('blog'))
-	.filter((post) => !post.data.draft)
-	.sort(
-		(a, b) =>
-			b.data.pubDate.valueOf() - a.data.pubDate.valueOf() ||
-			b.id.localeCompare(a.id),
-	);
+const posts = sortNewest((await getCollection('blog')).filter((post) => !post.data.draft));
+const seriesData = SERIES.map((series) => ({
+	...series,
+	count: posts.filter((post) => post.data.series === series.name).length,
+}));
 ---
 
 <!doctype html>
@@ -24,363 +23,103 @@ const posts = (await getCollection('blog'))
 	<head>
 		<BaseHead
 			title={`Articles | ${SITE_TITLE}`}
-			description="Technical notes, research, explanations, and implementations across modern cryptography."
+			description="Technical notes, research, cryptanalysis, explanations, and implementations across modern cryptography."
 		/>
 	</head>
-
 	<body>
 		<Header />
-
 		<main>
-
 			<section class="page-header">
-
-				<p class="eyebrow">
-					CRYPTOCAVE WRITING
-				</p>
-
+				<p class="eyebrow">CRYPTOCAVE WRITING</p>
 				<h1>Articles</h1>
-
 				<p class="intro">
-					Technical notes, explanations, research ideas,
-					and implementation-oriented explorations across
-					modern cryptography.
+					All published writing, newest first. For a deliberate reading order use the
+					<a href="/series/">Series</a> paths; for subject-based browsing use <a href="/topics/">Topics</a>.
 				</p>
-
 			</section>
 
+			<section class="series-strip">
+				{seriesData.map((series) => (
+					<a href={`/series/${series.slug}/`}>
+						<span class="series-label">ORDERED SERIES</span>
+						<strong>{series.name}</strong>
+						<span>{series.count} articles · {series.startLabel} →</span>
+					</a>
+				))}
+			</section>
 
 			<section class="articles-section">
-
 				<div class="section-top">
-
 					<p>ALL WRITING</p>
-
-					<span>
-						{posts.length}
-						{posts.length === 1
-							? ' article'
-							: ' articles'}
-					</span>
-
+					<span>{posts.length} {posts.length === 1 ? 'article' : 'articles'}</span>
 				</div>
-
 
 				<div class="articles">
-
-					{
-						posts.map((post, index) => {
-							const topic = getTopicByName(post.data.category);
-
-							return (
-								<article class="article">
-
-									<div class="number">
-										{String(index + 1).padStart(2, '0')}
+					{posts.map((post, index) => {
+						const primaryTopic = getTopicByName(post.data.topics[0]);
+						const series = post.data.series ? getSeriesByName(post.data.series) : undefined;
+						return (
+							<article class="article">
+								<div class="number">{String(index + 1).padStart(2, '0')}</div>
+								<div class="article-content">
+									<div class="article-top">
+										<a class="topic" href={`/topics/${primaryTopic?.slug ?? slugify(post.data.topics[0])}/`}>
+											{post.data.topics[0]}
+										</a>
+										<span class="separator">·</span><span>{post.data.difficulty}</span>
+										{series && <span class="separator">·</span>}
+											{series && <a class="series" href={`/series/${series.slug}/`}>{series.name}</a>}
 									</div>
-
-									<div class="article-content">
-
-										<div class="article-top">
-
-											<a
-												class="category"
-												href={`/topics/${topic?.slug ?? slugify(post.data.category)}/`}
-											>
-												{post.data.category}
-											</a>
-
-											<span class="separator">
-												·
-											</span>
-
-											<span class="difficulty">
-												{post.data.difficulty}
-											</span>
-
+									<h2><a class="article-title" href={`/blog/${post.id}/`}>{post.data.title}</a></h2>
+									<p class="description">{post.data.description}</p>
+									<div class="article-bottom">
+										<div class="tags">
+											{post.data.tags.slice(0, 6).map((tag) => <a class="tag" href={`/tags/${slugify(tag)}/`}>#{tag}</a>)}
 										</div>
-
-
-										<h2>
-											<a
-												class="article-title"
-												href={`/blog/${post.id}/`}
-											>
-												{post.data.title}
-											</a>
-										</h2>
-
-
-										<p class="description">
-											{post.data.description}
-										</p>
-
-
-										<div class="article-bottom">
-
-											<div class="tags">
-
-												{
-													post.data.tags.map((tag) => (
-														<a
-															class="tag"
-															href={`/tags/${slugify(tag)}/`}
-														>
-															#{tag}
-														</a>
-													))
-												}
-
-											</div>
-
-
-											<time
-												datetime={post.data.pubDate.toISOString()}
-											>
-												{
-													post.data.pubDate.toLocaleDateString(
-														'en-US',
-														{
-															year: 'numeric',
-															month: 'short',
-															day: 'numeric',
-														},
-													)
-												}
-											</time>
-
-										</div>
-
+										<time datetime={post.data.pubDate.toISOString()}>{post.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</time>
 									</div>
-
-								</article>
-							);
-						})
-					}
-
+								</div>
+							</article>
+						);
+					})}
 				</div>
-
 			</section>
-
 		</main>
-
 		<Footer />
 	</body>
 </html>
 
 <style>
-	main {
-		width: 100%;
-	}
-
-	.page-header,
-	.articles-section {
-		width: min(1100px, calc(100% - 3rem));
-
-		margin: 0 auto;
-	}
-
-	.page-header {
-		padding: 7rem 0 5rem;
-
-		border-bottom: 1px solid #e5e7eb;
-	}
-
-	.eyebrow,
-	.section-top > p {
-		margin: 0;
-
-		font-size: 0.72rem;
-		font-weight: 700;
-
-		letter-spacing: 0.13em;
-		text-transform: uppercase;
-
-		color: #4f46e5;
-	}
-
-	h1 {
-		margin: 0.7rem 0 1.2rem;
-
-		font-size: clamp(3.5rem, 8vw, 7rem);
-		line-height: 0.95;
-
-		letter-spacing: -0.055em;
-
-		color: #111827;
-	}
-
-	.intro {
-		max-width: 720px;
-
-		margin: 0;
-
-		font-size: 1.1rem;
-		line-height: 1.8;
-
-		color: #6b7280;
-	}
-
-	.articles-section {
-		padding: 4rem 0 7rem;
-	}
-
-	.section-top {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-
-		margin-bottom: 1.5rem;
-	}
-
-	.section-top span {
-		font-family: monospace;
-		font-size: 0.78rem;
-
-		color: #9ca3af;
-	}
-
-	.articles {
-		border-top: 1px solid #d1d5db;
-	}
-
-	.article {
-		display: grid;
-		grid-template-columns: 80px 1fr;
-
-		gap: 2rem;
-
-		padding: 2.7rem 0;
-
-		border-bottom: 1px solid #d1d5db;
-	}
-
-	.number {
-		font-family: monospace;
-
-		color: #9ca3af;
-	}
-
-	.article-top {
-		display: flex;
-		align-items: center;
-		flex-wrap: wrap;
-
-		gap: 0.5rem;
-
-		margin-bottom: 0.7rem;
-
-		font-size: 0.72rem;
-		font-weight: 700;
-
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
-	}
-
-	.category {
-		color: #4f46e5;
-
-		text-decoration: none;
-	}
-
-	.category:hover {
-		text-decoration: underline;
-	}
-
-	.separator {
-		color: #d1d5db;
-	}
-
-	.difficulty {
-		color: #9ca3af;
-	}
-
-	.article h2 {
-		margin: 0;
-	}
-
-	.article-title {
-		font-size: clamp(1.5rem, 3vw, 2rem);
-
-		letter-spacing: -0.025em;
-
-		color: #111827;
-
-		text-decoration: none;
-	}
-
-	.article-title:hover {
-		color: #4f46e5;
-	}
-
-	.description {
-		max-width: 760px;
-
-		margin: 0.8rem 0 0;
-
-		line-height: 1.7;
-
-		color: #6b7280;
-	}
-
-	.article-bottom {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-
-		gap: 2rem;
-
-		margin-top: 1.5rem;
-	}
-
-	.tags {
-		display: flex;
-		flex-wrap: wrap;
-
-		gap: 0.5rem;
-	}
-
-	.tag {
-		padding: 0.28rem 0.55rem;
-
-		border: 1px solid #e5e7eb;
-		border-radius: 4px;
-
-		font-family: monospace;
-		font-size: 0.72rem;
-
-		color: #6b7280;
-
-		text-decoration: none;
-	}
-
-	.tag:hover {
-		border-color: #4f46e5;
-
-		color: #4f46e5;
-	}
-
-	time {
-		flex-shrink: 0;
-
-		font-family: monospace;
-		font-size: 0.75rem;
-
-		color: #9ca3af;
-	}
-
-	@media (max-width: 700px) {
-		.article {
-			grid-template-columns: 1fr;
-		}
-
-		.number {
-			display: none;
-		}
-
-		.article-bottom {
-			flex-direction: column;
-			align-items: flex-start;
-		}
-	}
+	main { width: 100%; }
+	.page-header, .series-strip, .articles-section { width: min(1100px, calc(100% - 3rem)); margin: 0 auto; }
+	.page-header { padding: 7rem 0 5rem; border-bottom: 1px solid #e5e7eb; }
+	.eyebrow, .section-top > p, .series-label { margin: 0; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.13em; text-transform: uppercase; color: #4f46e5; }
+	h1 { margin: 0.7rem 0 1.2rem; font-size: clamp(3.5rem, 8vw, 7rem); line-height: 0.95; letter-spacing: -0.055em; color: #111827; }
+	.intro { max-width: 760px; margin: 0; font-size: 1.1rem; line-height: 1.8; color: #6b7280; }
+	.intro a { color: #4f46e5; font-weight: 700; text-decoration: none; }
+	.series-strip { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; padding: 2rem 0 0; }
+	.series-strip > a { display: flex; flex-direction: column; gap: 0.55rem; padding: 1.4rem; border: 1px solid #e5e7eb; color: #111827; text-decoration: none; }
+	.series-strip strong { font-size: 1.15rem; }
+	.series-strip > a > span:last-child { font-family: monospace; font-size: 0.72rem; color: #9ca3af; }
+	.series-strip > a:hover { border-color: #4f46e5; }
+	.articles-section { padding: 4rem 0 7rem; }
+	.section-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+	.section-top span { font-family: monospace; font-size: 0.78rem; color: #9ca3af; }
+	.articles { border-top: 1px solid #d1d5db; }
+	.article { display: grid; grid-template-columns: 80px 1fr; gap: 2rem; padding: 2.7rem 0; border-bottom: 1px solid #d1d5db; }
+	.number { font-family: monospace; font-size: 0.8rem; color: #9ca3af; padding-top: 0.2rem; }
+	.article-top { display: flex; flex-wrap: wrap; gap: 0.5rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #9ca3af; }
+	.article-top a { text-decoration: none; }
+	.topic, .series { color: #4f46e5; }
+	.separator { color: #d1d5db; }
+	h2 { margin: 0.75rem 0 0.8rem; font-size: clamp(1.55rem, 3vw, 2.25rem); line-height: 1.15; letter-spacing: -0.025em; }
+	.article-title { color: #111827; text-decoration: none; }
+	.article-title:hover { color: #4f46e5; }
+	.description { max-width: 830px; margin: 0; line-height: 1.7; color: #6b7280; }
+	.article-bottom { display: flex; justify-content: space-between; gap: 1rem; margin-top: 1.35rem; }
+	.tags { display: flex; flex-wrap: wrap; gap: 0.55rem; }
+	.tag { font-family: monospace; font-size: 0.7rem; color: #6b7280; text-decoration: none; }
+	.tag:hover { color: #4f46e5; }
+	time { flex-shrink: 0; font-family: monospace; font-size: 0.7rem; color: #9ca3af; }
+	@media (max-width: 720px) { .series-strip { grid-template-columns: 1fr; } .article { grid-template-columns: 1fr; gap: 0.5rem; } .number { display: none; } .article-bottom { flex-direction: column; } }
 </style>

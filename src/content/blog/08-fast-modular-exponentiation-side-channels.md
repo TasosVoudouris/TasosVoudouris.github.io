@@ -1,20 +1,23 @@
 ---
-title: "Fast Modular Exponentiation: From Square-and-Multiply to the First Side-Channel Leak"
-description: "Binary exponentiation makes huge cryptographic powers practical—but a secret-dependent execution trace can also reveal information. We build the algorithm, inspect the trace, and harden the mental model."
-pubDate: "2026-09-08"
-category: "Implementations"
+title: 'Fast Modular Exponentiation: From Square-and-Multiply to the First Side-Channel Leak'
+description: Binary exponentiation makes huge cryptographic powers practical—but a secret-dependent execution trace can also reveal information. We build the algorithm, inspect the trace, and harden the mental model.
+pubDate: '2026-09-08'
+topics:
+- Cryptographic Engineering
+- Implementation Security
+- Public-Key Cryptography
 tags:
-  - modular-exponentiation
-  - square-and-multiply
-  - side-channels
-  - timing-attacks
-  - rsa
-  - cryptography-from-zero
-difficulty: "Intermediate"
-series: "Cryptography From Zero"
+- modular-exponentiation
+- square-and-multiply
+- side-channels
+- timing-attacks
+- rsa
+- cryptography-from-zero
+difficulty: Intermediate
+series: Cryptography From Zero
+seriesOrder: 9
 draft: false
 ---
-
 There is a line of Python we have already used many times:
 
 ```python

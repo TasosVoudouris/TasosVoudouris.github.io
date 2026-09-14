@@ -1,20 +1,23 @@
 ---
-title: "Multiplicative Groups, Orders, and Generators: The Structure Behind Diffie-Hellman"
-description: "From invertible residues to cyclic groups: why element order and generators matter, and how repeated modular multiplication becomes the algebraic engine behind Diffie-Hellman."
-pubDate: "2026-09-08"
-category: "Mathematical Foundations"
+title: 'Multiplicative Groups, Orders, and Generators: The Structure Behind Diffie-Hellman'
+description: 'From invertible residues to cyclic groups: why element order and generators matter, and how repeated modular multiplication becomes the algebraic engine behind Diffie-Hellman.'
+pubDate: '2026-09-08'
+topics:
+- Mathematical Foundations
+- Discrete Logarithms
+- Public-Key Cryptography
 tags:
-  - groups
-  - cyclic-groups
-  - generators
-  - element-order
-  - diffie-hellman
-  - cryptography-from-zero
-difficulty: "Introductory"
-series: "Cryptography From Zero"
+- groups
+- cyclic-groups
+- generators
+- element-order
+- diffie-hellman
+- cryptography-from-zero
+difficulty: Introductory
+series: Cryptography From Zero
+seriesOrder: 5
 draft: false
 ---
-
 In the previous post, we separated the residues modulo $n$ into two very different kinds:
 
 - those that have multiplicative inverses,

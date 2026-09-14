@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760">
+  <rect width="1400" height="760" fill="#0a0f14"/>
+  <style>
+    .title{font:700 30px system-ui,sans-serif;fill:#e8f0f7}.sub{font:500 18px system-ui,sans-serif;fill:#9fb0c0}.box{fill:#111a22;stroke:#4e6578;stroke-width:2;rx:18}.accent{fill:#14251f;stroke:#4fa37a;stroke-width:2;rx:18}.warn{fill:#2a2115;stroke:#d59b47;stroke-width:2;rx:18}.txt{font:600 19px system-ui,sans-serif;fill:#e8f0f7}.small{font:500 15px system-ui,sans-serif;fill:#b8c5d0}.eq{font:500 17px ui-monospace,monospace;fill:#d6e9df}.arrow{stroke:#7f96a8;stroke-width:3;fill:none;marker-end:url(#a)}
+  </style>
+  <defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#7f96a8"/></marker></defs>
+  <text x="60" y="58" class="title">Collaborator FROST PoC — what the program actually does</text>
+  <text x="60" y="90" class="sub">Multi-dealer VSS/DKG → nonce preprocessing → two-round FROST signing → share verification → aggregation</text>
+
+  <rect x="55" y="145" width="270" height="180" class="box"/>
+  <text x="82" y="182" class="txt">1. DKG Round 1</text>
+  <text x="82" y="218" class="small">Each party samples a degree t−1</text>
+  <text x="82" y="244" class="small">polynomial and publishes Cₖ=aₖG</text>
+  <text x="82" y="280" class="eq">PoK: μ = k + a₀·c</text>
+  <text x="82" y="307" class="small">Peers verify knowledge of a₀</text>
+
+  <rect x="385" y="145" width="270" height="180" class="box"/>
+  <text x="412" y="182" class="txt">2. DKG Round 2</text>
+  <text x="412" y="218" class="small">Dealer j sends fⱼ(i) to Party i</text>
+  <text x="412" y="255" class="eq">fⱼ(i)G = Σ Cⱼ,ₖ iᵏ</text>
+  <text x="412" y="291" class="small">Each party aggregates</text>
+  <text x="412" y="316" class="eq">sᵢ = Σⱼ fⱼ(i)</text>
+
+  <rect x="715" y="145" width="270" height="180" class="accent"/>
+  <text x="742" y="182" class="txt">3. Preprocessing</text>
+  <text x="742" y="218" class="small">One-time nonce pair per future</text>
+  <text x="742" y="244" class="small">signature:</text>
+  <text x="742" y="278" class="eq">(dᵢ,Dᵢ=dᵢG)</text>
+  <text x="742" y="307" class="eq">(eᵢ,Eᵢ=eᵢG)</text>
+
+  <rect x="1045" y="145" width="300" height="180" class="accent"/>
+  <text x="1072" y="182" class="txt">4. Signing Round 1</text>
+  <text x="1072" y="218" class="small">Coordinator selects signers and</text>
+  <text x="1072" y="244" class="small">forms commitment list B.</text>
+  <text x="1072" y="278" class="eq">ρᵢ = H₁(i,m,B)</text>
+  <text x="1072" y="307" class="eq">R = Σ(Dᵢ + ρᵢEᵢ)</text>
+
+  <path d="M325 235 H380" class="arrow"/><path d="M655 235 H710" class="arrow"/><path d="M985 235 H1040" class="arrow"/>
+
+  <rect x="180" y="430" width="320" height="190" class="accent"/>
+  <text x="208" y="469" class="txt">5. Signing Round 2</text>
+  <text x="208" y="505" class="eq">λᵢ = Lagrange coefficient</text>
+  <text x="208" y="540" class="eq">c = H₂(R,Y,m)</text>
+  <text x="208" y="577" class="eq">zᵢ=dᵢ+ρᵢeᵢ+λᵢsᵢc</text>
+
+  <rect x="585" y="430" width="320" height="190" class="accent"/>
+  <text x="613" y="469" class="txt">6. Share verification</text>
+  <text x="613" y="510" class="eq">zᵢG ?= Dᵢ + ρᵢEᵢ</text>
+  <text x="613" y="545" class="eq">        + λᵢcYᵢ</text>
+  <text x="613" y="584" class="small">This part of the PoC is correct.</text>
+
+  <rect x="990" y="430" width="320" height="190" class="warn"/>
+  <text x="1018" y="469" class="txt">7. Aggregation</text>
+  <text x="1018" y="508" class="eq">z = Σ zᵢ</text>
+  <text x="1018" y="545" class="eq">signature = (R,z)</text>
+  <text x="1018" y="582" class="small">Original PoC stops here.</text>
+  <text x="1018" y="607" class="small">Audit adds final verification.</text>
+
+  <path d="M1195 325 C1195 380 380 370 350 425" class="arrow"/>
+  <path d="M500 525 H580" class="arrow"/><path d="M905 525 H985" class="arrow"/>
+
+  <text x="60" y="700" class="sub">Core mathematics: sound for honest parties. Main gaps: RFC transcript hashing, scalar canonicalization, abort policy, threshold-subset demo, and final signature verification.</text>
+</svg>

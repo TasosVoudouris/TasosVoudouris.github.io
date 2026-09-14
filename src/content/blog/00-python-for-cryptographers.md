@@ -1,18 +1,20 @@
 ---
-title: "Python for Cryptographers: The Minimum Python You Need to Start"
-description: "A beginner-first introduction to the small subset of Python needed to turn cryptographic mathematics into executable code."
-pubDate: "2026-09-08"
-category: "Implementations"
+title: 'Python for Cryptographers: The Minimum Python You Need to Start'
+description: A beginner-first introduction to the small subset of Python needed to turn cryptographic mathematics into executable code.
+pubDate: '2026-09-08'
+topics:
+- Cryptography Fundamentals
+- Cryptographic Engineering
 tags:
-  - python
-  - cryptography
-  - beginners
-  - cryptography-from-zero
-difficulty: "Introductory"
-series: "Cryptography From Zero"
+- python
+- cryptography
+- beginners
+- cryptography-from-zero
+difficulty: Introductory
+series: Cryptography From Zero
+seriesOrder: 1
 draft: false
 ---
-
 Cryptography can look intimidating for two completely different reasons.
 
 The first reason is **mathematics**. You will eventually meet modular arithmetic, groups, finite fields, elliptic curves, polynomials, lattices, and probability.

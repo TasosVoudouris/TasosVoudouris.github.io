@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 520" role="img" aria-labelledby="t d">
+<title id="t">Audit flow for recovered classical SageMath exercises</title>
+<desc id="d">Recovered worksheet, mathematical model, implementation audit, corrected code, and security lesson.</desc>
+<style>text{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;fill:#eef2f7}.b{fill:#111827;stroke:#64748b;stroke-width:2}.h{fill:#1f2937;stroke:#f59e0b;stroke-width:3}.a{stroke:#cbd5e1;stroke-width:3;fill:none;marker-end:url(#m)}.title{font-size:27px;font-weight:700}.body{font-size:19px}.small{font-size:16px;fill:#aab4c3}</style><defs><marker id="m" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#cbd5e1"/></marker></defs>
+<rect width="1100" height="520" rx="26" fill="#080d16"/><text x="55" y="60" class="title">Old Sage worksheet → canonical cryptography lab</text>
+<rect x="55" y="135" width="185" height="155" rx="18" class="b"/><text x="83" y="180" class="body">Recovered</text><text x="85" y="212" class="body">worksheet</text><text x="77" y="252" class="small">Python 2 / Sage</text>
+<path d="M245 212 L315 212" class="a"/><rect x="315" y="135" width="195" height="155" rx="18" class="b"/><text x="352" y="180" class="body">Mathematical</text><text x="375" y="212" class="body">model</text><text x="342" y="252" class="small">what should hold?</text>
+<path d="M515 212 L585 212" class="a"/><rect x="585" y="115" width="205" height="195" rx="18" class="h"/><text x="630" y="165" class="body">Audit</text><text x="615" y="207" class="small">naming errors</text><text x="615" y="237" class="small">algebra errors</text><text x="615" y="267" class="small">security claims</text>
+<path d="M795 212 L865 212" class="a"/><rect x="865" y="135" width="180" height="155" rx="18" class="b"/><text x="902" y="180" class="body">Corrected</text><text x="925" y="212" class="body">code</text><text x="888" y="252" class="small">self-tests</text>
+<text x="55" y="380" class="body">Examples:</text><text x="180" y="380" class="small">substitution ≠ transposition · double affine collapses to one affine map · Hill keys require det(K) ∈ Z₂₆*</text>
+<text x="55" y="430" class="body">Result:</text><text x="165" y="430" class="small">preserve the useful exercise, discard the accidental bug, and state the actual security lesson.</text>
+</svg>

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="640" viewBox="0 0 1400 640">
+  <rect width="1400" height="640" fill="#0a0f14"/>
+  <style>
+    .t{font:700 30px system-ui,sans-serif;fill:#e8f0f7}.h{font:700 21px system-ui,sans-serif;fill:#e8f0f7}.s{font:500 16px system-ui,sans-serif;fill:#aebdca}.e{font:500 20px ui-monospace,monospace;fill:#dcefe5}.box{fill:#111a22;stroke:#4e6578;stroke-width:2;rx:18}.good{fill:#14251f;stroke:#4fa37a;stroke-width:2;rx:18}.arrow{stroke:#8ca0b0;stroke-width:3;fill:none;marker-end:url(#m)}
+  </style>
+  <defs><marker id="m" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#8ca0b0"/></marker></defs>
+  <text x="60" y="58" class="t">Why the FROST share equation aggregates correctly</text>
+
+  <rect x="65" y="120" width="360" height="180" class="box"/>
+  <text x="92" y="158" class="h">Signer i</text>
+  <text x="92" y="202" class="e">Rᵢ = Dᵢ + ρᵢEᵢ</text>
+  <text x="92" y="244" class="e">zᵢ = dᵢ + ρᵢeᵢ + λᵢsᵢc</text>
+  <text x="92" y="278" class="s">All arithmetic is in the scalar field.</text>
+
+  <rect x="520" y="120" width="360" height="180" class="good"/>
+  <text x="547" y="158" class="h">Public share check</text>
+  <text x="547" y="205" class="e">zᵢG = Rᵢ + λᵢcYᵢ</text>
+  <text x="547" y="246" class="s">because Yᵢ=sᵢG</text>
+  <text x="547" y="277" class="s">and Dᵢ=dᵢG, Eᵢ=eᵢG.</text>
+
+  <rect x="975" y="120" width="360" height="180" class="good"/>
+  <text x="1002" y="158" class="h">Aggregate</text>
+  <text x="1002" y="204" class="e">R = ΣRᵢ</text>
+  <text x="1002" y="246" class="e">z = Σzᵢ</text>
+  <text x="1002" y="278" class="s">Coordinator sums valid shares.</text>
+
+  <path d="M425 210 H515" class="arrow"/><path d="M880 210 H970" class="arrow"/>
+
+  <rect x="265" y="390" width="870" height="155" class="good"/>
+  <text x="300" y="430" class="h">Threshold interpolation closes the equation</text>
+  <text x="300" y="476" class="e">Σ λᵢ sᵢ = s    ⇒    zG = R + cY</text>
+  <text x="300" y="516" class="s">For any selected signer set of size at least t, Lagrange interpolation recovers the group secret at x=0 without reconstructing it at one party.</text>
+
+  <path d="M1155 305 C1155 350 980 365 930 387" class="arrow"/>
+</svg>

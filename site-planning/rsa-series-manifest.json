@@ -1,0 +1,139 @@
+{
+  "series": "RSA / Cryptography From Zero",
+  "status": "content branch closed for primitive, encryption, classical cryptanalysis and implementation security",
+  "synthesis_slug": "/blog/25-rsa-synthesis-attack-map/",
+  "groups": [
+    {
+      "id": "foundations",
+      "title": "Foundations used by RSA",
+      "posts": [
+        {
+          "slug": "/blog/01-integers-division-and-gcd/",
+          "short": "GCD and Euclid"
+        },
+        {
+          "slug": "/blog/02-extended-euclid-bezout-modular-inverse/",
+          "short": "Bézout and inverses"
+        },
+        {
+          "slug": "/blog/03-modular-arithmetic-units-zero-divisors/",
+          "short": "Modular arithmetic"
+        },
+        {
+          "slug": "/blog/04-multiplicative-groups-orders-generators/",
+          "short": "Groups and orders"
+        },
+        {
+          "slug": "/blog/08-fast-modular-exponentiation-side-channels/",
+          "short": "Modular exponentiation"
+        },
+        {
+          "slug": "/blog/09-rsa-crt-fault-attacks/",
+          "short": "CRT-RSA fault structure"
+        },
+        {
+          "slug": "/blog/10-chinese-remainder-theorem/",
+          "short": "CRT"
+        },
+        {
+          "slug": "/blog/11-primes-miller-rabin/",
+          "short": "Primes and primality"
+        },
+        {
+          "slug": "/blog/12-rsa-key-generation/",
+          "short": "RSA key generation"
+        }
+      ]
+    },
+    {
+      "id": "algebraic",
+      "title": "Textbook algebra and parameter structure",
+      "posts": [
+        {
+          "slug": "/blog/13-rsa-deep-dive-textbook-rsa-fails/",
+          "short": "Textbook RSA"
+        },
+        {
+          "slug": "/blog/14-rsa-common-modulus-attack/",
+          "short": "Common modulus"
+        },
+        {
+          "slug": "/blog/15-rsa-hastad-broadcast-attack/",
+          "short": "Håstad broadcast"
+        },
+        {
+          "slug": "/blog/16-rsa-wiener-attack/",
+          "short": "Wiener"
+        }
+      ]
+    },
+    {
+      "id": "small-roots",
+      "title": "Small roots, lattices and related structure",
+      "posts": [
+        {
+          "slug": "/blog/17-rsa-coppersmith-from-zero/",
+          "short": "Coppersmith"
+        },
+        {
+          "slug": "/blog/18-rsa-boneh-durfee/",
+          "short": "Boneh–Durfee"
+        },
+        {
+          "slug": "/blog/19-rsa-partial-key-exposure/",
+          "short": "Partial key exposure"
+        },
+        {
+          "slug": "/blog/20-rsa-franklin-reiter/",
+          "short": "Franklin–Reiter"
+        },
+        {
+          "slug": "/blog/21-rsa-short-pad/",
+          "short": "Short-pad RSA"
+        }
+      ]
+    },
+    {
+      "id": "oracles",
+      "title": "Validity-oracle cryptanalysis",
+      "posts": [
+        {
+          "slug": "/blog/22-rsa-bleichenbacher/",
+          "short": "Bleichenbacher"
+        },
+        {
+          "slug": "/blog/23-rsa-manger/",
+          "short": "Manger"
+        }
+      ]
+    },
+    {
+      "id": "keygen",
+      "title": "Key-generation structure",
+      "posts": [
+        {
+          "slug": "/blog/24-rsa-roca/",
+          "short": "ROCA"
+        }
+      ]
+    }
+  ],
+  "deferred_to_later_series": [
+    {
+      "topic": "RSASSA-PSS and RSA signatures",
+      "home": "Digital Signatures"
+    },
+    {
+      "topic": "RSA-KEM and KEM-DEM",
+      "home": "Hybrid Encryption and KEMs"
+    },
+    {
+      "topic": "RSA certificates and key binding",
+      "home": "PKI and Certificates"
+    },
+    {
+      "topic": "Full Shor derivation",
+      "home": "Quantum Algorithms / Cryptanalysis"
+    }
+  ]
+}

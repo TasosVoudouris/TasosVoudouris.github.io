@@ -1,0 +1,2 @@
+# The Python labs use only the standard library and require Python 3.10+.
+# The optional Griffin lab requires a separate SageMath installation.

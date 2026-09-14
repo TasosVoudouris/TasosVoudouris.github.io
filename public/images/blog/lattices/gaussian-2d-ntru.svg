@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 560" role="img" aria-labelledby="t d">
+<title id="t">From a public 2D lattice to a short NTRU-like secret vector</title>
+<desc id="d">A flow from the public basis vectors (1,h) and (0,q), through Gaussian reduction, to the short vector plus or minus (f,g).</desc>
+<style>text{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;fill:#e8edf4}.box{fill:#111827;stroke:#9ca3af;stroke-width:2}.accent{fill:#1f2937;stroke:#f59e0b;stroke-width:3}.arrow{stroke:#d1d5db;stroke-width:3;fill:none;marker-end:url(#a)}.muted{fill:#9ca3af}.title{font-size:28px;font-weight:700}.body{font-size:21px}.small{font-size:18px}</style>
+<defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#d1d5db"/></marker></defs>
+<rect width="1100" height="560" rx="26" fill="#080d16"/>
+<text x="55" y="62" class="title">2D lattice cryptanalysis: the NTRU idea before polynomials</text>
+<rect x="55" y="120" width="275" height="230" rx="20" class="box"/>
+<text x="88" y="165" class="body">Public information</text>
+<text x="88" y="215" class="body">b₁ = (1, h)</text>
+<text x="88" y="255" class="body">b₂ = (0, q)</text>
+<text x="88" y="305" class="small muted">L = ⟨b₁,b₂⟩</text>
+<path d="M335 235 L455 235" class="arrow"/>
+<rect x="455" y="145" width="245" height="180" rx="20" class="accent"/>
+<text x="495" y="195" class="body">Gaussian</text>
+<text x="495" y="232" class="body">reduction</text>
+<text x="485" y="280" class="small muted">exact in dimension 2</text>
+<path d="M705 235 L825 235" class="arrow"/>
+<rect x="825" y="120" width="220" height="230" rx="20" class="box"/>
+<text x="855" y="165" class="body">Short vector</text>
+<text x="855" y="215" class="body">±(f,g)</text>
+<text x="855" y="260" class="small muted">because</text>
+<text x="855" y="295" class="small">f·h ≡ g (mod q)</text>
+<text x="55" y="425" class="body">Toy parameters:</text>
+<text x="255" y="425" class="small muted">q = 122430513841,  f = 231231,  g = 195698</text>
+<text x="55" y="472" class="body">Core lesson:</text>
+<text x="235" y="472" class="small muted">a cryptographic secret can be hidden as an unusually short vector inside a public lattice.</text>
+<text x="55" y="515" class="small muted">Polynomial NTRU generalizes the same geometric phenomenon to a structured 2N-dimensional lattice.</text>
+</svg>

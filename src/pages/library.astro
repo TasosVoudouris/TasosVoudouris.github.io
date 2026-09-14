@@ -1,0 +1,22 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_TITLE } from '../consts';
+import { SERIES, SERIES_GROUPS } from '../data/series';
+import { TOPICS, TOPIC_GROUPS } from '../data/topics';
+const posts=(await getCollection('blog')).filter((p)=>!p.data.draft);
+const seriesRows=SERIES.map((s)=>({...s,count:posts.filter((p)=>p.data.series===s.name).length}));
+const standalone=posts.filter((p)=>!p.data.series).sort((a,b)=>a.data.title.localeCompare(b.data.title));
+---
+<!doctype html><html lang="en"><head><BaseHead title={`Library | ${SITE_TITLE}`} description="The canonical CryptoCave index: ordered series, topics, standalone references, code, audits, and local research-source policy." /></head><body><Header /><main>
+<section class="hero"><p class="eyebrow">CANONICAL INDEX</p><h1>CryptoCave Library</h1><p class="lead">One master map for the site. <strong>Series</strong> define reading order, <strong>Topics</strong> cross-link subjects, site articles are the canonical narrative, <code>experiments/</code> contains companion implementations, and <code>research-notes/</code> contains audits and provenance.</p><div class="stats"><span>{posts.length} published articles</span><span>{SERIES.length} ordered series</span><span>{TOPICS.length} topics</span></div></section>
+<section class="block"><p class="eyebrow">01 / ORDERED PATHS</p>{SERIES_GROUPS.map((g)=><div class="group"><h2>{g}</h2>{seriesRows.filter((s)=>s.group===g).map((s)=><a class="row" href={`/series/${s.slug}/`}><div><strong>{s.name}</strong><p>{s.shortDescription}</p></div><span>{s.count} →</span></a>)}</div>)}</section>
+<section class="block"><p class="eyebrow">02 / TOPIC MAP</p>{TOPIC_GROUPS.map((g)=><div class="group"><h2>{g}</h2><div class="chips">{TOPICS.filter((t)=>t.group===g).map((t)=><a href={`/topics/${t.slug}/`}>{t.name}</a>)}</div></div>)}</section>
+<section class="block"><p class="eyebrow">03 / STANDALONE REFERENCES</p><div class="standalone">{standalone.map((p)=><a class="row" href={`/blog/${p.id}/`}><div><strong>{p.data.title}</strong><p>{p.data.description}</p></div><span>↗</span></a>)}</div></section>
+<section class="block policy"><p class="eyebrow">04 / SOURCE POLICY</p><h2>One folder, four layers</h2><p><code>src/content/blog/</code> is the publishable knowledge base. <code>experiments/</code> is executable companion material. <code>research-notes/</code> stores audits, historical notes, and review records. <code>.local-reference-library/</code> contains large/private third-party papers kept locally and ignored by Git.</p><p>The complete migration decision ledger is <code>site-planning/master-source-ledger.csv</code>.</p><p><strong>Review labels:</strong> <code>Validated</code> means the companion checks were executed; <code>Reviewed</code> means reviewed material with an external/runtime boundary; <code>Research Note</code> and <code>Experimental</code> explicitly mark material that should not be mistaken for production cryptography.</p></section>
+</main><Footer /></body></html>
+<style>
+main{width:min(1100px,calc(100% - 3rem));margin:auto}.hero{padding:7rem 0 4rem;border-bottom:1px solid #e5e7eb}.eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.13em;color:#4f46e5}.hero h1{font-size:clamp(3.2rem,8vw,6.7rem);letter-spacing:-.055em;line-height:.95;margin:.7rem 0 1.3rem}.lead{max-width:850px;font-size:1.08rem;line-height:1.8;color:#6b7280}.stats{display:flex;gap:1rem;flex-wrap:wrap;margin-top:2rem;font-family:monospace;font-size:.78rem}.stats span,.chips a{border:1px solid #e5e7eb;border-radius:999px;padding:.4rem .7rem}.block{padding:4rem 0;border-bottom:1px solid #e5e7eb}.group{margin-top:2rem}.group h2{font-size:.9rem;text-transform:uppercase;letter-spacing:.08em}.row{display:flex;justify-content:space-between;gap:2rem;padding:1.3rem 0;border-top:1px solid #e5e7eb;text-decoration:none;color:#111827}.row p{margin:.3rem 0 0;color:#6b7280;line-height:1.6}.row>span{color:#4f46e5;font-family:monospace}.chips{display:flex;gap:.6rem;flex-wrap:wrap}.chips a{text-decoration:none;color:#4f46e5;font-size:.78rem}.policy{margin-bottom:5rem}.policy p{max-width:850px;line-height:1.8;color:#6b7280}code{font-family:monospace}@media(max-width:650px){.row{flex-direction:column;gap:.5rem}}
+</style>

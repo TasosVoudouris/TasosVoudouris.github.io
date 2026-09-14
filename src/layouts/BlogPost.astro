@@ -6,31 +6,32 @@ import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 
 import { getTopicByName } from '../data/topics';
+import { getSeriesByName } from '../data/series';
 import { slugify } from '../utils/slugify';
 
 import 'katex/dist/katex.min.css';
 
+interface NavItem {
+	id: string;
+	title: string;
+}
+
 interface Props {
 	title: string;
 	description: string;
-
 	pubDate?: Date;
 	updatedDate?: Date;
-
 	heroImage?: ImageMetadata;
-
-	category?: string;
-
+	topics?: string[];
 	tags?: string[];
-
-	difficulty?:
-		| 'Introductory'
-		| 'Intermediate'
-		| 'Advanced';
-
+	difficulty?: 'Introductory' | 'Intermediate' | 'Advanced';
+	status?: 'Reviewed' | 'Validated' | 'Reference' | 'Research Note' | 'Experimental';
 	series?: string;
-
+	seriesOrder?: number;
 	draft?: boolean;
+	sourcePath?: string;
+	previous?: NavItem;
+	next?: NavItem;
 }
 
 const {
@@ -39,189 +40,112 @@ const {
 	pubDate,
 	updatedDate,
 	heroImage,
-	category,
+	topics = [],
 	tags = [],
 	difficulty,
+	status,
 	series,
+	seriesOrder,
+	sourcePath,
+	previous,
+	next,
 } = Astro.props;
 
-const topic = category
-	? getTopicByName(category)
+const seriesDefinition = series ? getSeriesByName(series) : undefined;
+const sourceUrl = sourcePath
+	? `https://github.com/TasosVoudouris/TasosVoudouris.github.io/tree/main/${sourcePath}`
 	: undefined;
-
-const categorySlug = category
-	? topic?.slug ?? slugify(category)
-	: undefined;
-
-const hasArticleMetadata =
-	Boolean(category) ||
-	Boolean(difficulty) ||
-	Boolean(series) ||
-	tags.length > 0;
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead
-			title={title}
-			description={description}
-			image={heroImage}
-		/>
+		<BaseHead title={title} description={description} image={heroImage} />
 	</head>
 
 	<body>
 		<Header />
 
 		<main>
-
 			<header class="article-header">
-
-				<a
-					class="back"
-					href={hasArticleMetadata ? '/blog/' : '/'}
-				>
-					{hasArticleMetadata ? '← All Articles' : '← Home'}
+				<a class="back" href={seriesDefinition ? `/series/${seriesDefinition.slug}/` : '/blog/'}>
+					{seriesDefinition ? `← ${seriesDefinition.name}` : '← All Articles'}
 				</a>
 
+				<div class="meta-top">
+					{difficulty && <span>{difficulty}</span>}
+					{status && <span class="separator">·</span>}
+					{status && <span>{status}</span>}
+					{(difficulty || status) && series && <span class="separator">·</span>}
+					{seriesDefinition && (
+						<a class="series-link" href={`/series/${seriesDefinition.slug}/`}>
+							{seriesDefinition.name}{seriesOrder !== undefined ? ` / Part ${String(seriesOrder).padStart(2, '0')}` : ''}
+						</a>
+					)}
+				</div>
 
-				{
-					hasArticleMetadata && (
-						<div class="meta-top">
+				<h1>{title}</h1>
+				<p class="description">{description}</p>
 
-							{
-								category && categorySlug && (
-									<a
-										class="category"
-										href={`/topics/${categorySlug}/`}
-									>
-										{category}
-									</a>
-								)
-							}
+				{topics.length > 0 && (
+					<div class="topic-links">
+						{topics.map((topicName) => {
+							const topic = getTopicByName(topicName);
+							return (
+								<a href={`/topics/${topic?.slug ?? slugify(topicName)}/`}>{topicName}</a>
+							);
+						})}
+					</div>
+				)}
 
+				{(pubDate || updatedDate) && (
+					<div class="publication">
+						{pubDate && (
+							<time datetime={pubDate.toISOString()}>
+								Published {pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+							</time>
+						)}
+						{updatedDate && (
+							<time datetime={updatedDate.toISOString()}>
+								Updated {updatedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+							</time>
+						)}
+					</div>
+				)}
 
-							{
-								category && difficulty && (
-									<span class="separator">
-										·
-									</span>
-								)
-							}
+				{tags.length > 0 && (
+					<div class="tags">
+						{tags.map((tag) => <a href={`/tags/${slugify(tag)}/`}>#{tag}</a>)}
+					</div>
+				)}
 
-
-							{
-								difficulty && (
-									<span>
-										{difficulty}
-									</span>
-								)
-							}
-
-
-							{
-								(category || difficulty) && series && (
-									<span class="separator">
-										·
-									</span>
-								)
-							}
-
-
-							{
-								series && (
-									<span>
-										{series}
-									</span>
-								)
-							}
-
-						</div>
-					)
-				}
-
-
-				<h1>
-					{title}
-				</h1>
-
-
-				<p class="description">
-					{description}
-				</p>
-
-
-				{
-					(pubDate || updatedDate) && (
-						<div class="publication">
-
-							{
-								pubDate && (
-									<time datetime={pubDate.toISOString()}>
-										Published {
-											pubDate.toLocaleDateString(
-												'en-US',
-												{
-													year: 'numeric',
-													month: 'long',
-													day: 'numeric',
-												},
-											)
-										}
-									</time>
-								)
-							}
-
-
-							{
-								updatedDate && (
-									<time datetime={updatedDate.toISOString()}>
-										Updated {
-											updatedDate.toLocaleDateString(
-												'en-US',
-												{
-													year: 'numeric',
-													month: 'long',
-													day: 'numeric',
-												},
-											)
-										}
-									</time>
-								)
-							}
-
-						</div>
-					)
-				}
-
-
-				{
-					tags.length > 0 && (
-						<div class="tags">
-
-							{
-								tags.map((tag) => (
-									<a href={`/tags/${slugify(tag)}/`}>
-										#{tag}
-									</a>
-								))
-							}
-
-						</div>
-					)
-				}
-
+				{sourceUrl && (
+					<a class="source-link" href={sourceUrl} target="_blank" rel="noreferrer">
+						Companion implementation / source code ↗
+					</a>
+				)}
 			</header>
 
-
 			<div class="article-shell">
-
-				<article class="prose">
-					<slot />
-				</article>
-
+				<article class="prose"><slot /></article>
 			</div>
 
+			{seriesDefinition && (previous || next) && (
+				<nav class="series-navigation" aria-label={`${seriesDefinition.name} article navigation`}>
+					{previous ? (
+						<a class="series-nav-item previous" href={`/blog/${previous.id}/`}>
+							<span>← PREVIOUS</span>
+							<strong>{previous.title}</strong>
+						</a>
+					) : <span />}
+					{next && (
+						<a class="series-nav-item next" href={`/blog/${next.id}/`}>
+							<span>NEXT →</span>
+							<strong>{next.title}</strong>
+						</a>
+					)}
+				</nav>
+			)}
 		</main>
 
 		<Footer />
@@ -344,6 +268,19 @@ const hasArticleMetadata =
 		color: #9ca3af;
 	}
 
+
+
+	.source-link {
+		display: inline-block;
+		margin-top: 1.4rem;
+		font-family: monospace;
+		font-size: 0.76rem;
+		font-weight: 700;
+		color: #4f46e5;
+		text-decoration: none;
+	}
+
+	.source-link:hover { text-decoration: underline; }
 
 	/* ----------------------------------------------- */
 	/* TAGS                                            */
@@ -562,4 +499,55 @@ const hasArticleMetadata =
 		}
 
 	}
+
+	.series-link { color: #4f46e5; text-decoration: none; }
+	.series-link:hover { text-decoration: underline; }
+
+	.topic-links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.55rem;
+		margin: 1.5rem 0 0;
+	}
+
+	.topic-links a {
+		padding: 0.42rem 0.7rem;
+		border: 1px solid #d1d5db;
+		border-radius: 999px;
+		font-size: 0.72rem;
+		font-weight: 700;
+		color: #374151;
+		text-decoration: none;
+	}
+
+	.topic-links a:hover { border-color: #4f46e5; color: #4f46e5; }
+
+	.series-navigation {
+		width: min(900px, calc(100% - 3rem));
+		margin: 0 auto 7rem;
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
+	}
+
+	.series-nav-item {
+		display: flex;
+		flex-direction: column;
+		gap: 0.65rem;
+		padding: 1.25rem;
+		border: 1px solid #e5e7eb;
+		text-decoration: none;
+		color: #111827;
+	}
+
+	.series-nav-item.next { text-align: right; }
+	.series-nav-item span { font-family: monospace; font-size: 0.68rem; color: #4f46e5; }
+	.series-nav-item strong { font-size: 0.9rem; line-height: 1.45; }
+	.series-nav-item:hover { border-color: #4f46e5; }
+
+	@media (max-width: 700px) {
+		.series-navigation { grid-template-columns: 1fr; }
+		.series-nav-item.next { text-align: left; }
+	}
+
 </style>

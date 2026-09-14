@@ -1,19 +1,22 @@
 ---
-title: "Diffie-Hellman From Scratch: Build It, Share a Secret, Then Break the Toy Version"
-description: "A complete toy Diffie-Hellman exchange from the group algebra to the shared secret, followed immediately by a brute-force discrete-log attack that shows why parameters matter."
-pubDate: "2026-09-08"
-category: "Public-Key Cryptography"
+title: 'Diffie-Hellman From Scratch: Build It, Share a Secret, Then Break the Toy Version'
+description: A complete toy Diffie-Hellman exchange from the group algebra to the shared secret, followed immediately by a brute-force discrete-log attack that shows why parameters matter.
+pubDate: '2026-09-08'
+topics:
+- Public-Key Cryptography
+- Key Exchange
+- Discrete Logarithms
 tags:
-  - diffie-hellman
-  - key-exchange
-  - discrete-logarithm
-  - groups
-  - cryptography-from-zero
-difficulty: "Introductory"
-series: "Cryptography From Zero"
+- diffie-hellman
+- key-exchange
+- discrete-logarithm
+- groups
+- cryptography-from-zero
+difficulty: Introductory
+series: Cryptography From Zero
+seriesOrder: 6
 draft: false
 ---
-
 This is the first post in the series where I feel we can finally say:
 
 > We are building a cryptographic protocol.

@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1120" viewBox="0 0 1600 1120">
+<rect width="1600" height="1120" fill="#05080d"/>
+<defs>
+  <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+    <path d="M32 0H0V32" fill="none" stroke="#0c2a22" stroke-width="1" opacity=".42"/>
+  </pattern>
+  <marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto">
+    <path d="M0 0L11 5.5L0 11Z" fill="#48e0a4"/>
+  </marker>
+</defs>
+<rect width="1600" height="1120" fill="url(#grid)"/>
+
+<text x="70" y="72" font-family="monospace" font-size="34" font-weight="700" fill="#c8ffe4">RSA — SCIENTIFIC SYNTHESIS &amp; FAILURE-MODE MAP</text>
+<text x="72" y="110" font-family="monospace" font-size="17" fill="#72bda1">one primitive · many layers · different cryptanalytic questions</text>
+
+<!-- central RSA -->
+<rect x="610" y="160" width="380" height="115" rx="20" fill="#0a1712" stroke="#55f0b5" stroke-width="3"/>
+<text x="800" y="204" text-anchor="middle" font-family="monospace" font-size="25" font-weight="700" fill="#b9ffe1">RSA CORE</text>
+<text x="800" y="242" text-anchor="middle" font-family="monospace" font-size="20" fill="#eafff5">N = pq · ed ≡ 1 mod λ(N)</text>
+
+<!-- layer boxes -->
+<g font-family="monospace">
+  <rect x="70" y="355" width="330" height="185" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="95" y="392" fill="#88ffd0" font-size="19" font-weight="700">TEXTBOOK / REUSE</text>
+  <text x="95" y="431" fill="#e4fff3" font-size="16">determinism · malleability</text>
+  <text x="95" y="462" fill="#e4fff3" font-size="16">common modulus</text>
+  <text x="95" y="493" fill="#e4fff3" font-size="16">Håstad broadcast</text>
+  <text x="95" y="521" fill="#7bbba3" font-size="14">mod arithmetic · Bézout · CRT</text>
+
+  <rect x="445" y="355" width="330" height="185" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="470" y="392" fill="#88ffd0" font-size="19" font-weight="700">SMALL PARAMETERS</text>
+  <text x="470" y="431" fill="#e4fff3" font-size="16">Wiener</text>
+  <text x="470" y="462" fill="#e4fff3" font-size="16">Boneh–Durfee</text>
+  <text x="470" y="493" fill="#e4fff3" font-size="16">partial key exposure</text>
+  <text x="470" y="521" fill="#7bbba3" font-size="14">continued fractions · lattices</text>
+
+  <rect x="825" y="355" width="330" height="185" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="850" y="392" fill="#88ffd0" font-size="19" font-weight="700">POLYNOMIAL STRUCTURE</text>
+  <text x="850" y="431" fill="#e4fff3" font-size="16">Coppersmith</text>
+  <text x="850" y="462" fill="#e4fff3" font-size="16">Franklin–Reiter</text>
+  <text x="850" y="493" fill="#e4fff3" font-size="16">short-pad RSA</text>
+  <text x="850" y="521" fill="#7bbba3" font-size="14">LLL · resultants · poly GCD</text>
+
+  <rect x="1200" y="355" width="330" height="185" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="1225" y="392" fill="#88ffd0" font-size="19" font-weight="700">VALIDITY ORACLES</text>
+  <text x="1225" y="431" fill="#e4fff3" font-size="16">Bleichenbacher</text>
+  <text x="1225" y="462" fill="#e4fff3" font-size="16">Manger</text>
+  <text x="1225" y="493" fill="#e4fff3" font-size="16">decoder distinctions</text>
+  <text x="1225" y="521" fill="#7bbba3" font-size="14">adaptive interval arithmetic</text>
+
+  <rect x="255" y="650" width="330" height="180" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="280" y="687" fill="#88ffd0" font-size="19" font-weight="700">IMPLEMENTATION</text>
+  <text x="280" y="726" fill="#e4fff3" font-size="16">timing / side channels</text>
+  <text x="280" y="757" fill="#e4fff3" font-size="16">CRT fault structure</text>
+  <text x="280" y="798" fill="#7bbba3" font-size="14">correct math · leaky execution</text>
+
+  <rect x="635" y="650" width="330" height="180" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="660" y="687" fill="#88ffd0" font-size="19" font-weight="700">KEY GENERATION</text>
+  <text x="660" y="726" fill="#e4fff3" font-size="16">prime distribution</text>
+  <text x="660" y="757" fill="#e4fff3" font-size="16">ROCA fingerprint</text>
+  <text x="660" y="798" fill="#7bbba3" font-size="14">large prime ≠ good distribution</text>
+
+  <rect x="1015" y="650" width="330" height="180" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="1040" y="687" fill="#88ffd0" font-size="19" font-weight="700">SYSTEM BOUNDARY</text>
+  <text x="1040" y="726" fill="#e4fff3" font-size="16">encoding · KDF · AEAD</text>
+  <text x="1040" y="757" fill="#e4fff3" font-size="16">PKI · signatures · KEMs</text>
+  <text x="1040" y="798" fill="#7bbba3" font-size="14">complete scheme / protocol</text>
+</g>
+
+<!-- connections -->
+<g stroke="#48e0a4" stroke-width="3.5" fill="none" marker-end="url(#arrow)" opacity=".82">
+  <path d="M690 275 C560 315 360 315 240 345"/>
+  <path d="M750 275 C700 315 650 325 610 345"/>
+  <path d="M850 275 C900 315 940 325 990 345"/>
+  <path d="M920 275 C1060 315 1250 315 1365 345"/>
+  <path d="M680 275 C555 470 470 560 420 640"/>
+  <path d="M800 275 V640"/>
+  <path d="M925 275 C1060 470 1140 560 1180 640"/>
+</g>
+
+<!-- bottom synthesis -->
+<rect x="170" y="920" width="1260" height="125" rx="20" fill="#0b1018" stroke="#4c8cff" stroke-width="2"/>
+<text x="210" y="962" font-family="monospace" font-size="20" font-weight="700" fill="#9cc5ff">THE SCIENTIFIC QUESTION IS NEVER JUST “IS RSA BROKEN?”</text>
+<text x="210" y="1000" font-family="monospace" font-size="18" fill="#eef5ff">name the layer · assumption · parameter regime · information leak · encoding · implementation behavior</text>
+<text x="210" y="1031" font-family="monospace" font-size="16" fill="#94a8c6">security belongs to the complete construction, not one modular exponentiation</text>
+</svg>

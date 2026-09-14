@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 555" role="img" aria-labelledby="t d">
+<title id="t">Public-key SageMath lab audit map</title><desc id="d">RSA and CRT, common modulus, Diffie-Hellman, ElGamal, ECDH, and textbook RSA signatures with corrected boundaries.</desc>
+<style>text{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;fill:#eef2f7}.b{fill:#111827;stroke:#64748b;stroke-width:2}.h{fill:#1f2937;stroke:#f59e0b;stroke-width:3}.title{font-size:27px;font-weight:700}.body{font-size:19px}.small{font-size:16px;fill:#aab4c3}</style>
+<rect width="1120" height="555" rx="26" fill="#080d16"/><text x="55" y="60" class="title">Auditing a public-key SageMath workbook</text>
+<rect x="55" y="115" width="240" height="150" rx="18" class="b"/><text x="90" y="160" class="body">RSA + CRT</text><text x="82" y="202" class="small">correct algebra</text><text x="82" y="232" class="small">textbook security only</text>
+<rect x="330" y="115" width="240" height="150" rx="18" class="b"/><text x="365" y="160" class="body">Common modulus</text><text x="358" y="202" class="small">Bézout exponents</text><text x="358" y="232" class="small">negative powers need inverses</text>
+<rect x="605" y="115" width="240" height="150" rx="18" class="h"/><text x="652" y="160" class="body">DH / ElGamal</text><text x="632" y="202" class="small">old bits parameter ignored</text><text x="632" y="232" class="small">DH masking ≠ ElGamal pair</text>
+<rect x="880" y="115" width="185" height="150" rx="18" class="b"/><text x="925" y="160" class="body">ECDH</text><text x="903" y="202" class="small">group checks</text><text x="903" y="232" class="small">secure randomness</text>
+<rect x="190" y="340" width="300" height="130" rx="18" class="b"/><text x="245" y="385" class="body">Textbook RSA signatures</text><text x="232" y="425" class="small">choose s first ⇒ m = sᵉ mod n</text>
+<rect x="625" y="340" width="300" height="130" rx="18" class="b"/><text x="696" y="385" class="body">Canonical lesson</text><text x="663" y="425" class="small">correct arithmetic ≠ secure protocol</text>
+<text x="55" y="520" class="small">The cleaned lab keeps the algebraic demonstrations while separating them from OAEP/PSS, subgroup validation, KEMs, and modern protocol requirements.</text>
+</svg>

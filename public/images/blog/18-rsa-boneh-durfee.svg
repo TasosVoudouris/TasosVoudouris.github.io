@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820">
+<rect width="1400" height="820" fill="#05080d"/>
+<defs>
+  <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+    <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#0e2b22" stroke-width="1" opacity="0.45"/>
+  </pattern>
+</defs>
+<rect width="1400" height="820" fill="url(#grid)"/>
+
+<text x="70" y="75" fill="#c8ffe4" font-family="monospace" font-size="34" font-weight="700">BONEH–DURFEE: FROM RSA EQUATION TO SMALL ROOT</text>
+<text x="72" y="112" fill="#6abf9f" font-family="monospace" font-size="18">scientific modelling pipeline · not a black-box LLL call</text>
+
+<!-- connectors -->
+<g stroke="#48e0a4" stroke-width="4" fill="none" opacity="0.8" marker-end="url(#arrow)">
+  <path d="M330 245 H470"/>
+  <path d="M760 245 H900"/>
+  <path d="M1180 245 V360"/>
+  <path d="M1040 500 H855"/>
+  <path d="M565 500 H390"/>
+  <path d="M250 585 V660"/>
+</g>
+<defs>
+  <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+    <path d="M0,0 L12,6 L0,12 z" fill="#48e0a4"/>
+  </marker>
+</defs>
+
+<!-- boxes row 1 -->
+<g font-family="monospace">
+  <rect x="70" y="170" width="260" height="150" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="95" y="205" fill="#88ffd0" font-size="19" font-weight="700">RSA KEY EQUATION</text>
+  <text x="95" y="246" fill="#e4fff3" font-size="23">ed = 1 + k φ(N)</text>
+  <text x="95" y="280" fill="#7bbba3" font-size="16">φ(N)=N+1-(p+q)</text>
+
+  <rect x="470" y="170" width="290" height="150" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="495" y="205" fill="#88ffd0" font-size="19" font-weight="700">BIVARIATE MODEL</text>
+  <text x="495" y="244" fill="#e4fff3" font-size="21">f(x,y)=1+x(A+y)</text>
+  <text x="495" y="277" fill="#7bbba3" font-size="16">f(x₀,y₀) ≡ 0 mod e</text>
+
+  <rect x="900" y="170" width="280" height="150" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="925" y="205" fill="#88ffd0" font-size="19" font-weight="700">SMALL ROOT SCALE</text>
+  <text x="925" y="244" fill="#e4fff3" font-size="20">|x₀| ≲ e^δ</text>
+  <text x="925" y="278" fill="#e4fff3" font-size="20">|y₀| ≲ e^(1/2)</text>
+
+  <!-- center right -->
+  <rect x="900" y="360" width="280" height="140" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="925" y="395" fill="#88ffd0" font-size="19" font-weight="700">SHIFT LATTICE</text>
+  <text x="925" y="432" fill="#e4fff3" font-size="18">gᵢⱼ = xⁱ fʲ e^(m-j)</text>
+  <text x="925" y="463" fill="#7bbba3" font-size="16">scale X,Y · encode coefficients</text>
+
+  <rect x="565" y="430" width="290" height="140" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="590" y="465" fill="#88ffd0" font-size="19" font-weight="700">LLL SHORT RELATIONS</text>
+  <text x="590" y="505" fill="#e4fff3" font-size="18">h₁(x₀,y₀)=0</text>
+  <text x="590" y="535" fill="#e4fff3" font-size="18">h₂(x₀,y₀)=0</text>
+
+  <rect x="100" y="430" width="290" height="155" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="125" y="465" fill="#88ffd0" font-size="19" font-weight="700">ALGEBRAIC ELIMINATION</text>
+  <text x="125" y="505" fill="#e4fff3" font-size="18">resultant / Gröbner</text>
+  <text x="125" y="538" fill="#7bbba3" font-size="16">needs independent relations</text>
+
+  <rect x="100" y="660" width="520" height="105" rx="18" fill="#0a1712" stroke="#55f0b5" stroke-width="2"/>
+  <text x="125" y="695" fill="#88ffd0" font-size="19" font-weight="700">EXACT VALIDATION</text>
+  <text x="125" y="730" fill="#e4fff3" font-size="18">(x₀,y₀) → p+q → Δ → p,q → d</text>
+
+  <rect x="760" y="635" width="540" height="130" rx="18" fill="#0b1018" stroke="#4c8cff" stroke-width="2"/>
+  <text x="790" y="675" fill="#9cc5ff" font-size="19" font-weight="700">ASYMPTOTIC BOUND</text>
+  <text x="790" y="715" fill="#eef5ff" font-size="24">δ &lt; 1 − 1/√2 ≈ 0.292893</text>
+  <text x="790" y="746" fill="#94a8c6" font-size="15">not a universal finite-size success cliff</text>
+</g>
+</svg>

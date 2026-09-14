@@ -1,0 +1,17 @@
+{
+  "name": "cryptocave-schnorr-js-debug",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "demo": "node fixed-noble-v2.mjs",
+    "test": "node test-noble.mjs",
+    "test:reference": "node reference-model.mjs"
+  },
+  "dependencies": {
+    "@noble/curves": "2.4.0",
+    "@noble/hashes": "2.4.0"
+  }
+}

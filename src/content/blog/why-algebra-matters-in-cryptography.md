@@ -1,27 +1,18 @@
 ---
-title: "Why Algebra Matters in Cryptography"
-
-description: "A short introduction to why algebraic structure appears everywhere in modern cryptography."
-
-pubDate: "2026-09-06"
-
-category: "Mathematical Foundations"
-
+title: Why Algebra Matters in Cryptography
+description: A short introduction to why algebraic structure appears everywhere in modern cryptography.
+pubDate: '2026-09-06'
+topics:
+- Mathematical Foundations
 tags:
-  - algebra
-  - groups
-  - rings
-  - fields
-  - cryptography
-
-difficulty: "Introductory"
-
-series: "Mathematical Foundations"
-
+- algebra
+- groups
+- rings
+- fields
+- cryptography
+difficulty: Introductory
 draft: false
 ---
-
-
 ## Math test
 
 Inline test: $x^2 + y^2 = z^2$

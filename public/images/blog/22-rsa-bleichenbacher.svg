@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820">
+<rect width="1400" height="820" fill="#05080d"/>
+<defs>
+  <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+    <path d="M32 0H0V32" fill="none" stroke="#0c2a22" stroke-width="1" opacity=".45"/>
+  </pattern>
+  <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+    <path d="M0 0L12 6L0 12Z" fill="#48e0a4"/>
+  </marker>
+</defs>
+<rect width="1400" height="820" fill="url(#grid)"/>
+<text x="70" y="74" font-family="monospace" font-size="32" font-weight="700" fill="#c8ffe4">BLEICHENBACHER: ONE PREDICATE → NARROWER INTERVALS</text>
+<text x="72" y="108" font-family="monospace" font-size="17" fill="#71bfa2">RSA multiplicativity · modular wraps · adaptive interval constraints</text>
+
+<g font-family="monospace">
+  <rect x="65" y="165" width="330" height="145" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="90" y="202" fill="#88ffd0" font-size="19" font-weight="700">VALIDITY REGION</text>
+  <text x="90" y="244" fill="#e4fff3" font-size="22">2B ≤ m &lt; 3B</text>
+  <text x="90" y="278" fill="#7bbba3" font-size="16">00 02 ... prefix interval</text>
+
+  <rect x="535" y="165" width="330" height="145" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="560" y="202" fill="#88ffd0" font-size="19" font-weight="700">CONTROLLED MULTIPLIER</text>
+  <text x="560" y="244" fill="#e4fff3" font-size="20">c' = c · sᵉ mod N</text>
+  <text x="560" y="278" fill="#7bbba3" font-size="16">decrypts to m·s mod N</text>
+
+  <rect x="1005" y="165" width="330" height="145" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="1030" y="202" fill="#88ffd0" font-size="19" font-weight="700">POSITIVE PREDICATE</text>
+  <text x="1030" y="244" fill="#e4fff3" font-size="18">2B ≤ ms−rN &lt; 3B</text>
+  <text x="1030" y="278" fill="#7bbba3" font-size="16">some integer wrap r</text>
+
+  <path d="M395 238H525" stroke="#48e0a4" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M865 238H995" stroke="#48e0a4" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <rect x="1005" y="405" width="330" height="145" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="1030" y="442" fill="#88ffd0" font-size="19" font-weight="700">NEW BOUND</text>
+  <text x="1030" y="482" fill="#e4fff3" font-size="16">ceil((2B+rN)/s)</text>
+  <text x="1030" y="512" fill="#e4fff3" font-size="16">≤ m ≤ floor((3B−1+rN)/s)</text>
+
+  <rect x="535" y="405" width="330" height="145" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="560" y="442" fill="#88ffd0" font-size="19" font-weight="700">INTERSECTION</text>
+  <text x="560" y="482" fill="#e4fff3" font-size="21">Mᵢ₊₁ = Mᵢ ∩ bound</text>
+  <text x="560" y="516" fill="#7bbba3" font-size="16">candidate set shrinks</text>
+
+  <rect x="65" y="405" width="330" height="145" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="90" y="442" fill="#88ffd0" font-size="19" font-weight="700">ADAPT</text>
+  <text x="90" y="482" fill="#e4fff3" font-size="21">choose next s</text>
+  <text x="90" y="516" fill="#7bbba3" font-size="16">using current candidate set</text>
+
+  <path d="M1170 310V395" stroke="#48e0a4" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M1005 477H875" stroke="#48e0a4" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M535 477H405" stroke="#48e0a4" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <rect x="180" y="650" width="1040" height="100" rx="18" fill="#0b1018" stroke="#4c8cff" stroke-width="2"/>
+  <text x="215" y="687" fill="#9cc5ff" font-size="19" font-weight="700">CORE LESSON</text>
+  <text x="215" y="724" fill="#eef5ff" font-size="20">one bit becomes powerful when the query itself is chosen and previous answers constrain the next one</text>
+</g>
+</svg>

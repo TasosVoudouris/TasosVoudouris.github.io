@@ -1,20 +1,22 @@
 ---
-title: "Extended Euclid, Bézout, and the First Modular Inverse"
-description: "How the Euclidean algorithm turns from a GCD calculator into a machine for constructing modular inverses—and why this tiny step appears directly inside RSA."
-pubDate: "2026-09-08"
-category: "Number Theory"
+title: Extended Euclid, Bézout, and the First Modular Inverse
+description: How the Euclidean algorithm turns from a GCD calculator into a machine for constructing modular inverses—and why this tiny step appears directly inside RSA.
+pubDate: '2026-09-08'
+topics:
+- Number Theory
+- Mathematical Foundations
 tags:
-  - number-theory
-  - extended-euclid
-  - bezout
-  - modular-inverse
-  - rsa
-  - cryptography-from-zero
-difficulty: "Introductory"
-series: "Cryptography From Zero"
+- number-theory
+- extended-euclid
+- bezout
+- modular-inverse
+- rsa
+- cryptography-from-zero
+difficulty: Introductory
+series: Cryptography From Zero
+seriesOrder: 3
 draft: false
 ---
-
 In the previous post, Euclid gave us something very useful:
 
 $$

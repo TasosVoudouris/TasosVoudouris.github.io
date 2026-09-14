@@ -1,0 +1,7 @@
+*.pyc
+__pycache__/
+.sage/
+*.sage.py
+.idea/
+.vscode/
+

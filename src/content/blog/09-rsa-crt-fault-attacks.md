@@ -1,20 +1,23 @@
 ---
-title: "Fault Attacks From Zero: How One Wrong RSA Computation Can Reveal a Prime Factor"
-description: "CRT makes RSA private operations faster—but if a fault corrupts only one branch, a single incorrect result can expose a factor of the modulus through a GCD."
-pubDate: "2026-09-08"
-category: "Public-Key Cryptography"
+title: 'Fault Attacks From Zero: How One Wrong RSA Computation Can Reveal a Prime Factor'
+description: CRT makes RSA private operations faster—but if a fault corrupts only one branch, a single incorrect result can expose a factor of the modulus through a GCD.
+pubDate: '2026-09-08'
+topics:
+- Public-Key Cryptography
+- Cryptanalysis
+- Implementation Security
 tags:
-  - rsa
-  - crt
-  - fault-attacks
-  - bellcore
-  - implementation-security
-  - cryptography-from-zero
-difficulty: "Intermediate"
-series: "Cryptography From Zero"
+- rsa
+- crt
+- fault-attacks
+- bellcore
+- implementation-security
+- cryptography-from-zero
+difficulty: Intermediate
+series: Cryptography From Zero
+seriesOrder: 10
 draft: false
 ---
-
 In the previous post, the implementation leaked information because its execution pattern depended on secret bits.
 
 This time the implementation does something different.

@@ -1,20 +1,22 @@
 ---
-title: "Modular Arithmetic From Zero: When Numbers Wrap Around—and When Multiplication Gets Weird"
-description: "Congruence, residue classes, units, and the first zero divisor: the point where modular arithmetic stops being just '%' and starts becoming algebra for cryptography."
-pubDate: "2026-09-08"
-category: "Number Theory"
+title: 'Modular Arithmetic From Zero: When Numbers Wrap Around—and When Multiplication Gets Weird'
+description: 'Congruence, residue classes, units, and the first zero divisor: the point where modular arithmetic stops being just ''%'' and starts becoming algebra for cryptography.'
+pubDate: '2026-09-08'
+topics:
+- Number Theory
+- Mathematical Foundations
 tags:
-  - modular-arithmetic
-  - congruence
-  - units
-  - zero-divisors
-  - finite-fields
-  - cryptography-from-zero
-difficulty: "Introductory"
-series: "Cryptography From Zero"
+- modular-arithmetic
+- congruence
+- units
+- zero-divisors
+- finite-fields
+- cryptography-from-zero
+difficulty: Introductory
+series: Cryptography From Zero
+seriesOrder: 4
 draft: false
 ---
-
 For a long time, modular arithmetic looked to me like this:
 
 ```python

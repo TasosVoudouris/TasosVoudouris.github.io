@@ -9,6 +9,7 @@ import Footer from '../../components/Footer.astro';
 import { SITE_TITLE } from '../../consts';
 
 import { slugify } from '../../utils/slugify';
+import { getTopicByName } from '../../data/topics';
 
 export async function getStaticPaths() {
 	const allPosts = (await getCollection('blog'))
@@ -99,7 +100,9 @@ const { tag, posts } = Astro.props;
 				<div class="articles">
 
 					{
-						posts.map((post, index) => (
+						posts.map((post, index) => {
+							const primaryTopic = getTopicByName(post.data.topics[0]);
+							return (
 
 							<article class="article">
 
@@ -112,7 +115,7 @@ const { tag, posts } = Astro.props;
 									<div class="meta">
 
 										<span>
-											{post.data.category}
+											{primaryTopic?.name ?? post.data.topics[0]}
 										</span>
 
 										<span>·</span>
@@ -171,7 +174,8 @@ const { tag, posts } = Astro.props;
 
 							</article>
 
-						))
+							);
+						})
 					}
 
 				</div>

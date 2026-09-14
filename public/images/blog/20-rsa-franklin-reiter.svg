@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820">
+<rect width="1400" height="820" fill="#05080d"/>
+<defs>
+  <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+    <path d="M32 0H0V32" fill="none" stroke="#0c2a22" stroke-width="1" opacity=".45"/>
+  </pattern>
+  <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+    <path d="M0 0L12 6L0 12Z" fill="#48e0a4"/>
+  </marker>
+</defs>
+<rect width="1400" height="820" fill="url(#grid)"/>
+
+<text x="70" y="74" font-family="monospace" font-size="33" font-weight="700" fill="#c8ffe4">FRANKLIN–REITER: RELATED MESSAGES → COMMON ROOT</text>
+<text x="72" y="108" font-family="monospace" font-size="17" fill="#71bfa2">same RSA key · known affine relation · polynomial Euclid</text>
+
+<g font-family="monospace">
+  <rect x="70" y="165" width="330" height="150" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="96" y="202" fill="#88ffd0" font-size="19" font-weight="700">RELATED PLAINTEXTS</text>
+  <text x="96" y="247" fill="#e4fff3" font-size="23">m₂ = a m₁ + b</text>
+  <text x="96" y="282" fill="#7bbba3" font-size="16">known affine relation</text>
+
+  <rect x="535" y="165" width="330" height="150" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="561" y="202" fill="#88ffd0" font-size="19" font-weight="700">TEXTBOOK RSA</text>
+  <text x="561" y="242" fill="#e4fff3" font-size="20">c₁ = m₁ᵉ mod N</text>
+  <text x="561" y="278" fill="#e4fff3" font-size="20">c₂ = m₂ᵉ mod N</text>
+
+  <rect x="1000" y="165" width="330" height="150" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="1026" y="202" fill="#88ffd0" font-size="19" font-weight="700">TWO POLYNOMIALS</text>
+  <text x="1026" y="241" fill="#e4fff3" font-size="17">g₁(X)=Xᵉ−c₁</text>
+  <text x="1026" y="277" fill="#e4fff3" font-size="17">g₂(X)=(aX+b)ᵉ−c₂</text>
+
+  <path d="M400 240H525" stroke="#48e0a4" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M865 240H990" stroke="#48e0a4" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <rect x="1000" y="405" width="330" height="145" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="1026" y="442" fill="#88ffd0" font-size="19" font-weight="700">SHARED ROOT</text>
+  <text x="1026" y="482" fill="#e4fff3" font-size="20">g₁(m₁)=g₂(m₁)=0</text>
+  <text x="1026" y="516" fill="#7bbba3" font-size="16">so X−m₁ is common</text>
+
+  <rect x="535" y="405" width="330" height="145" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="561" y="442" fill="#88ffd0" font-size="19" font-weight="700">POLYNOMIAL GCD</text>
+  <text x="561" y="482" fill="#e4fff3" font-size="22">Euclid in Z_N[X]</text>
+  <text x="561" y="516" fill="#7bbba3" font-size="16">check leading coefficients are units</text>
+
+  <rect x="70" y="405" width="330" height="145" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="96" y="442" fill="#88ffd0" font-size="19" font-weight="700">LINEAR FACTOR</text>
+  <text x="96" y="482" fill="#e4fff3" font-size="22">gcd = X − m₁</text>
+  <text x="96" y="516" fill="#7bbba3" font-size="16">root becomes explicit</text>
+
+  <path d="M1165 315V395" stroke="#48e0a4" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M1000 477H875" stroke="#48e0a4" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M535 477H410" stroke="#48e0a4" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <rect x="170" y="650" width="1060" height="100" rx="18" fill="#0b1018" stroke="#4c8cff" stroke-width="2"/>
+  <text x="205" y="687" fill="#9cc5ff" font-size="19" font-weight="700">KEY DISTINCTION</text>
+  <text x="205" y="724" fill="#eef5ff" font-size="20">Franklin–Reiter uses a shared algebraic root; classical affine recovery needs no lattice or small-root bound.</text>
+</g>
+</svg>

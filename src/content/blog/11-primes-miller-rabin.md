@@ -1,20 +1,22 @@
 ---
-title: "Prime Numbers for Cryptographers: From Trial Division to Miller-Rabin"
-description: "Why cryptography needs large primes, why trial division stops scaling, how Fermat pseudoprimes fool naive tests, and how Miller-Rabin turns modular structure into a practical probable-prime test."
-pubDate: "2026-09-08"
-category: "Number Theory"
+title: 'Prime Numbers for Cryptographers: From Trial Division to Miller-Rabin'
+description: Why cryptography needs large primes, why trial division stops scaling, how Fermat pseudoprimes fool naive tests, and how Miller-Rabin turns modular structure into a practical probable-prime test.
+pubDate: '2026-09-08'
+topics:
+- Number Theory
+- Public-Key Cryptography
 tags:
-  - primes
-  - primality-testing
-  - fermat
-  - miller-rabin
-  - rsa
-  - cryptography-from-zero
-difficulty: "Introductory"
-series: "Cryptography From Zero"
+- primes
+- primality-testing
+- fermat
+- miller-rabin
+- rsa
+- cryptography-from-zero
+difficulty: Introductory
+series: Cryptography From Zero
+seriesOrder: 12
 draft: false
 ---
-
 We have been using prime numbers almost from the beginning of this series.
 
 Modulo a prime, every non-zero residue has an inverse.

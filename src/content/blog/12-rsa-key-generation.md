@@ -1,20 +1,22 @@
 ---
-title: "RSA Key Generation From Zero: Choosing p, q, e, and Building the Private Exponent"
-description: "We finally assemble primes, GCDs, modular inverses, Carmichael's function, and CRT into a complete toy RSA key pair—and see why key generation itself is part of RSA security."
-pubDate: "2026-09-08"
-category: "Public-Key Cryptography"
+title: 'RSA Key Generation From Zero: Choosing p, q, e, and Building the Private Exponent'
+description: We finally assemble primes, GCDs, modular inverses, Carmichael's function, and CRT into a complete toy RSA key pair—and see why key generation itself is part of RSA security.
+pubDate: '2026-09-08'
+topics:
+- Public-Key Cryptography
+- Cryptographic Engineering
 tags:
-  - rsa
-  - key-generation
-  - carmichael-function
-  - modular-inverse
-  - primes
-  - cryptography-from-zero
-difficulty: "Introductory"
-series: "Cryptography From Zero"
+- rsa
+- key-generation
+- carmichael-function
+- modular-inverse
+- primes
+- cryptography-from-zero
+difficulty: Introductory
+series: Cryptography From Zero
+seriesOrder: 13
 draft: false
 ---
-
 We have reached a point where almost every ingredient needed for RSA is already on the table.
 
 We know how to:

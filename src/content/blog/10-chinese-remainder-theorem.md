@@ -1,20 +1,22 @@
 ---
-title: "The Chinese Remainder Theorem: Reconstructing One Number From Several Modular Worlds"
-description: "How several modular views can determine one integer uniquely—and why the same theorem appears in RSA acceleration, subgroup attacks, and cryptographic reconstruction."
-pubDate: "2026-09-08"
-category: "Number Theory"
+title: 'The Chinese Remainder Theorem: Reconstructing One Number From Several Modular Worlds'
+description: How several modular views can determine one integer uniquely—and why the same theorem appears in RSA acceleration, subgroup attacks, and cryptographic reconstruction.
+pubDate: '2026-09-08'
+topics:
+- Number Theory
+- Public-Key Cryptography
 tags:
-  - chinese-remainder-theorem
-  - crt
-  - modular-arithmetic
-  - rsa
-  - number-theory
-  - cryptography-from-zero
-difficulty: "Introductory"
-series: "Cryptography From Zero"
+- chinese-remainder-theorem
+- crt
+- modular-arithmetic
+- rsa
+- number-theory
+- cryptography-from-zero
+difficulty: Introductory
+series: Cryptography From Zero
+seriesOrder: 11
 draft: false
 ---
-
 We have already used the Chinese Remainder Theorem twice in this series.
 
 That bothered me a little.

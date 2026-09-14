@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820">
+<rect width="1400" height="820" fill="#05080d"/>
+<defs>
+  <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+    <path d="M32 0H0V32" fill="none" stroke="#0c2a22" stroke-width="1" opacity=".45"/>
+  </pattern>
+  <filter id="glow">
+    <feGaussianBlur stdDeviation="2.4" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+    <path d="M0 0L12 6L0 12Z" fill="#48e0a4"/>
+  </marker>
+</defs>
+<rect width="1400" height="820" fill="url(#grid)"/>
+
+<text x="70" y="74" font-family="monospace" font-size="33" font-weight="700" fill="#c8ffe4">PARTIAL RSA EXPOSURE → SMALL ROOT</text>
+<text x="72" y="108" font-family="monospace" font-size="17" fill="#71bfa2">known factor prefix · bounded suffix · divisor-root structure</text>
+
+<g font-family="monospace">
+  <rect x="70" y="165" width="360" height="150" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="96" y="202" fill="#88ffd0" font-size="19" font-weight="700">PARTIALLY KNOWN FACTOR</text>
+  <text x="96" y="245" fill="#e4fff3" font-size="23">p = [prefix | ???????]</text>
+  <text x="96" y="282" fill="#7bbba3" font-size="17">p = p₀ + x₀</text>
+
+  <rect x="520" y="165" width="360" height="150" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="546" y="202" fill="#88ffd0" font-size="19" font-weight="700">BOUND THE UNKNOWN</text>
+  <text x="546" y="245" fill="#e4fff3" font-size="23">0 ≤ x₀ &lt; 2ᵗ</text>
+  <text x="546" y="282" fill="#7bbba3" font-size="17">bit leakage becomes a size bound</text>
+
+  <rect x="970" y="165" width="360" height="150" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="996" y="202" fill="#88ffd0" font-size="19" font-weight="700">POLYNOMIAL MODEL</text>
+  <text x="996" y="245" fill="#e4fff3" font-size="23">f(x) = p₀ + x</text>
+  <text x="996" y="282" fill="#7bbba3" font-size="17">f(x₀) ≡ 0 mod p</text>
+
+  <path d="M430 240H510" stroke="#48e0a4" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M880 240H960" stroke="#48e0a4" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <rect x="970" y="395" width="360" height="150" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="996" y="432" fill="#88ffd0" font-size="19" font-weight="700">UNKNOWN DIVISOR</text>
+  <text x="996" y="473" fill="#e4fff3" font-size="22">p | N,  p ≈ N^(1/2)</text>
+  <text x="996" y="509" fill="#7bbba3" font-size="17">large hidden modulus of the root</text>
+
+  <rect x="520" y="395" width="360" height="150" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="546" y="432" fill="#88ffd0" font-size="19" font-weight="700">COPPERSMITH SCALE</text>
+  <text x="546" y="473" fill="#e4fff3" font-size="23">|x₀| ≲ N^(1/4)</text>
+  <text x="546" y="509" fill="#7bbba3" font-size="17">balanced RSA · degree-one root</text>
+
+  <rect x="70" y="395" width="360" height="150" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="96" y="432" fill="#88ffd0" font-size="19" font-weight="700">RECONSTRUCTION</text>
+  <text x="96" y="473" fill="#e4fff3" font-size="22">x₀ → p = p₀+x₀</text>
+  <text x="96" y="509" fill="#7bbba3" font-size="17">q = N / p</text>
+
+  <path d="M1150 315V385" stroke="#48e0a4" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M970 470H890" stroke="#48e0a4" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M520 470H440" stroke="#48e0a4" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <rect x="180" y="640" width="1040" height="105" rx="18" fill="#0b1018" stroke="#4c8cff" stroke-width="2"/>
+  <text x="215" y="680" fill="#9cc5ff" font-size="20" font-weight="700">THE SCIENTIFIC PATTERN</text>
+  <text x="215" y="719" fill="#eef5ff" font-size="21">partial information + algebraic relation + smallness → efficient reconstruction</text>
+</g>
+</svg>

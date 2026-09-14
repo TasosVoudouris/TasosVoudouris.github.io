@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="660" viewBox="0 0 1200 660" role="img" aria-labelledby="title desc">
+<title id="title">Håstad broadcast attack using CRT</title>
+<desc id="desc">The same message 100 is cubed and reduced modulo three pairwise-coprime RSA moduli. CRT reconstructs the exact integer cube one million, whose exact cube root reveals the message.</desc>
+
+<defs>
+  <linearGradient id="bg" x1="0" x2="1">
+    <stop offset="0%" stop-color="#07110d"/>
+    <stop offset="100%" stop-color="#0b1519"/>
+  </linearGradient>
+  <marker id="arrowG" viewBox="0 0 10 10" refX="8.7" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0 0 L10 5 L0 10 z" fill="#58f7a6"/>
+  </marker>
+  <marker id="arrowGold" viewBox="0 0 10 10" refX="8.7" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0 0 L10 5 L0 10 z" fill="#f2b84b"/>
+  </marker>
+</defs>
+
+<rect width="1200" height="660" rx="28" fill="url(#bg)"/>
+
+<text x="600" y="48" text-anchor="middle"
+      fill="#eafff3" font-family="Inter,Segoe UI,Arial,sans-serif"
+      font-size="30" font-weight="700">
+  Håstad broadcast: CRT removes the modular ambiguity
+</text>
+
+<!-- message -->
+<rect x="460" y="82" width="280" height="78" rx="18"
+      fill="#10251c" stroke="#58f7a6" stroke-width="2"/>
+<text x="600" y="113" text-anchor="middle"
+      fill="#eafff3" font-family="Inter,Segoe UI,Arial,sans-serif"
+      font-size="20" font-weight="700">same raw message</text>
+<text x="600" y="143" text-anchor="middle"
+      fill="#58f7a6" font-family="Inter,Segoe UI,Arial,sans-serif"
+      font-size="23">m = 100 · e = 3</text>
+
+<!-- recipients -->
+<g font-family="Inter,Segoe UI,Arial,sans-serif" text-anchor="middle">
+  <rect x="55" y="220" width="315" height="135" rx="20"
+        fill="#0e1c17" stroke="#58f7a6" stroke-width="2"/>
+  <text x="212" y="254" fill="#eafff3" font-size="20" font-weight="700">recipient 1</text>
+  <text x="212" y="287" fill="#9bb9aa" font-size="17">N₁ = 187</text>
+  <text x="212" y="322" fill="#58f7a6" font-size="21" font-weight="700">c₁ = 111</text>
+
+  <rect x="442" y="220" width="315" height="135" rx="20"
+        fill="#0e1c17" stroke="#58f7a6" stroke-width="2"/>
+  <text x="599" y="254" fill="#eafff3" font-size="20" font-weight="700">recipient 2</text>
+  <text x="599" y="287" fill="#9bb9aa" font-size="17">N₂ = 667</text>
+  <text x="599" y="322" fill="#58f7a6" font-size="21" font-weight="700">c₂ = 167</text>
+
+  <rect x="830" y="220" width="315" height="135" rx="20"
+        fill="#0e1c17" stroke="#58f7a6" stroke-width="2"/>
+  <text x="987" y="254" fill="#eafff3" font-size="20" font-weight="700">recipient 3</text>
+  <text x="987" y="287" fill="#9bb9aa" font-size="17">N₃ = 1927</text>
+  <text x="987" y="322" fill="#58f7a6" font-size="21" font-weight="700">c₃ = 1814</text>
+</g>
+
+<path d="M545 160 C455 180,330 195,250 215"
+      fill="none" stroke="#58f7a6" stroke-width="3" marker-end="url(#arrowG)"/>
+<path d="M600 160 L600 210"
+      fill="none" stroke="#58f7a6" stroke-width="3" marker-end="url(#arrowG)"/>
+<path d="M655 160 C745 180,870 195,950 215"
+      fill="none" stroke="#58f7a6" stroke-width="3" marker-end="url(#arrowG)"/>
+
+<!-- CRT -->
+<rect x="385" y="405" width="430" height="90" rx="20"
+      fill="#171714" stroke="#f2b84b" stroke-width="2"/>
+<text x="600" y="438" text-anchor="middle"
+      fill="#fff8e8" font-family="Inter,Segoe UI,Arial,sans-serif"
+      font-size="22" font-weight="700">Chinese Remainder Theorem</text>
+<text x="600" y="471" text-anchor="middle"
+      fill="#f2b84b" font-family="Inter,Segoe UI,Arial,sans-serif"
+      font-size="18">P = 240,352,783 &gt; m³</text>
+
+<path d="M212 355 C300 390,400 400,470 405"
+      fill="none" stroke="#f2b84b" stroke-width="3" marker-end="url(#arrowGold)"/>
+<path d="M599 355 L599 395"
+      fill="none" stroke="#f2b84b" stroke-width="3" marker-end="url(#arrowGold)"/>
+<path d="M987 355 C900 390,800 400,730 405"
+      fill="none" stroke="#f2b84b" stroke-width="3" marker-end="url(#arrowGold)"/>
+
+<!-- exact cube -->
+<rect x="360" y="535" width="480" height="75" rx="19"
+      fill="#10251c" stroke="#58f7a6" stroke-width="2"/>
+<text x="600" y="565" text-anchor="middle"
+      fill="#eafff3" font-family="Inter,Segoe UI,Arial,sans-serif"
+      font-size="21" font-weight="700">CRT result C = 1,000,000 = m³</text>
+<text x="600" y="593" text-anchor="middle"
+      fill="#58f7a6" font-family="Inter,Segoe UI,Arial,sans-serif"
+      font-size="20">exact cube root → m = 100</text>
+
+<line x1="600" y1="495" x2="600" y2="525"
+      stroke="#58f7a6" stroke-width="3" marker-end="url(#arrowG)"/>
+
+<text x="600" y="642" text-anchor="middle"
+      fill="#819c8d" font-family="Inter,Segoe UI,Arial,sans-serif"
+      font-size="16">
+  None of N₁, N₂, N₃ is factored; the repeated low-degree message structure is the vulnerability.
+</text>
+</svg>

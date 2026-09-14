@@ -1,19 +1,20 @@
 ---
-title: "Integers, Division, and GCD: Where Cryptography Quietly Starts"
-description: "Why divisibility, remainders, and Euclid's algorithm are much more than elementary arithmetic—and how a tiny GCD can already expose a broken RSA key."
-pubDate: "2026-09-08"
-category: "Number Theory"
+title: 'Integers, Division, and GCD: Where Cryptography Quietly Starts'
+description: Why divisibility, remainders, and Euclid's algorithm are much more than elementary arithmetic—and how a tiny GCD can already expose a broken RSA key.
+pubDate: '2026-09-08'
+topics:
+- Number Theory
 tags:
-  - number-theory
-  - gcd
-  - euclidean-algorithm
-  - rsa
-  - cryptography-from-zero
-difficulty: "Introductory"
-series: "Cryptography From Zero"
+- number-theory
+- gcd
+- euclidean-algorithm
+- rsa
+- cryptography-from-zero
+difficulty: Introductory
+series: Cryptography From Zero
+seriesOrder: 2
 draft: false
 ---
-
 One thing I keep noticing, both when I try to **teach cryptography** and when I try to learn a new part of it myself, is that the places where I get stuck are often not the "advanced" ones.
 
 They are the lines that look too simple to question.

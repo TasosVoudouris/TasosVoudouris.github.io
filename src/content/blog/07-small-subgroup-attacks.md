@@ -1,19 +1,24 @@
 ---
-title: "Small-Subgroup Attacks: When a Large Group Still Leaks a Small Secret"
-description: "A large Diffie-Hellman modulus is not enough if attacker-controlled public values can force secret exponentiation into tiny subgroups. We build the leakage step by step."
-pubDate: "2026-09-08"
-category: "Public-Key Cryptography"
+title: 'Small-Subgroup Attacks: When a Large Group Still Leaks a Small Secret'
+description: A large Diffie-Hellman modulus is not enough if attacker-controlled public values can force secret exponentiation into tiny subgroups. We build the leakage step by step.
+pubDate: '2026-09-08'
+topics:
+- Public-Key Cryptography
+- Key Exchange
+- Discrete Logarithms
+- Cryptanalysis
+- Implementation Security
 tags:
-  - diffie-hellman
-  - small-subgroup
-  - subgroup-validation
-  - key-recovery
-  - cryptography-from-zero
-difficulty: "Intermediate"
-series: "Cryptography From Zero"
+- diffie-hellman
+- small-subgroup
+- subgroup-validation
+- key-recovery
+- cryptography-from-zero
+difficulty: Intermediate
+series: Cryptography From Zero
+seriesOrder: 8
 draft: false
 ---
-
 This is one of those attacks where a word that sounded abstract suddenly became very concrete for me.
 
 In the previous posts we kept talking about:

@@ -1,19 +1,23 @@
 ---
-title: "Breaking Diffie-Hellman Without Solving the Discrete Log: The Man-in-the-Middle Attack"
-description: "Bare Diffie-Hellman can be mathematically correct and still connect you to the wrong person. A step-by-step man-in-the-middle attack shows why key agreement needs authentication."
-pubDate: "2026-09-08"
-category: "Public-Key Cryptography"
+title: 'Breaking Diffie-Hellman Without Solving the Discrete Log: The Man-in-the-Middle Attack'
+description: Bare Diffie-Hellman can be mathematically correct and still connect you to the wrong person. A step-by-step man-in-the-middle attack shows why key agreement needs authentication.
+pubDate: '2026-09-08'
+topics:
+- Public-Key Cryptography
+- Key Exchange
+- Discrete Logarithms
+- Cryptanalysis
 tags:
-  - diffie-hellman
-  - man-in-the-middle
-  - authenticated-key-exchange
-  - protocol-security
-  - cryptography-from-zero
-difficulty: "Introductory"
-series: "Cryptography From Zero"
+- diffie-hellman
+- man-in-the-middle
+- authenticated-key-exchange
+- protocol-security
+- cryptography-from-zero
+difficulty: Introductory
+series: Cryptography From Zero
+seriesOrder: 7
 draft: false
 ---
-
 In the previous post, Eve broke our toy Diffie-Hellman exchange by brute-forcing the secret exponent.
 
 That was useful because it showed something basic:

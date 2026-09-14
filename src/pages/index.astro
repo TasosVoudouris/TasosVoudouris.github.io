@@ -92,9 +92,9 @@ const posts = (await getCollection('blog'))
 
 						<a
 							class="secondary"
-							href="/topics/"
+							href="/library/"
 						>
-							Browse Research Map
+							Open the Library
 						</a>
 
 					</div>
@@ -190,9 +190,8 @@ const posts = (await getCollection('blog'))
 
 					{
 						posts.map((post, index) => {
-							const topic = getTopicByName(
-								post.data.category,
-							);
+							const primaryTopicName = post.data.topics[0];
+							const topic = getTopicByName(primaryTopicName);
 
 							return (
 
@@ -208,9 +207,9 @@ const posts = (await getCollection('blog'))
 
 											<a
 												class="category"
-												href={`/topics/${topic?.slug ?? slugify(post.data.category)}/`}
+												href={`/topics/${topic?.slug ?? slugify(primaryTopicName)}/`}
 											>
-												{post.data.category}
+												{primaryTopicName}
 											</a>
 
 											<span>/</span>

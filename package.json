@@ -3,10 +3,13 @@
   "type": "module",
   "version": "0.0.1",
   "engines": {
-    "node": ">=22.12.0"
+    "node": ">=22.19.0"
   },
   "scripts": {
+    "check:content": "node scripts/check-content.mjs",
+    "predev": "npm run check:content",
     "dev": "astro dev",
+    "prebuild": "npm run check:content",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"

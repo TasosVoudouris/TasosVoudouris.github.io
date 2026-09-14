@@ -7,425 +7,142 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 
 import { SITE_TITLE } from '../../consts';
-
 import { TOPICS } from '../../data/topics';
+import { SERIES, getSeriesByName } from '../../data/series';
+import { sortNewest, sortSeries } from '../../utils/content';
 
 export async function getStaticPaths() {
-	const allPosts = (await getCollection('blog'))
-		.filter((post) => !post.data.draft);
-
+	const allPosts = (await getCollection('blog')).filter((post) => !post.data.draft);
 	return TOPICS.map((topic) => ({
-		params: {
-			slug: topic.slug,
-		},
-
+		params: { slug: topic.slug },
 		props: {
 			topic,
-
-			posts: allPosts
-				.filter(
-					(post) =>
-						post.data.category === topic.name,
-				)
-				.sort(
-					(a, b) =>
-						b.data.pubDate.valueOf() - a.data.pubDate.valueOf() ||
-						b.id.localeCompare(a.id),
-				),
+			posts: allPosts.filter((post) => post.data.topics.includes(topic.name)),
 		},
 	}));
 }
 
-type Topic = (typeof TOPICS)[number];
-
 type Props = {
-	topic: Topic;
+	topic: (typeof TOPICS)[number];
 	posts: CollectionEntry<'blog'>[];
 };
 
 const { topic, posts } = Astro.props;
+const grouped = SERIES.map((series) => ({
+	series,
+	posts: sortSeries(posts.filter((post) => post.data.series === series.name)),
+})).filter((group) => group.posts.length > 0);
+const independent = sortNewest(posts.filter((post) => !post.data.series));
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead
-			title={`${topic.name} | ${SITE_TITLE}`}
-			description={topic.description}
-		/>
+		<BaseHead title={`${topic.name} | ${SITE_TITLE}`} description={topic.description} />
 	</head>
-
 	<body>
 		<Header />
-
 		<main>
-
 			<section class="page-header">
-
-				<a
-					class="back"
-					href="/topics/"
-				>
-					← All Topics
-				</a>
-
-				<p class="eyebrow">
-					TOPIC
-				</p>
-
-				<h1>
-					{topic.name}
-				</h1>
-
-				<p class="intro">
-					{topic.description}
-				</p>
-
-				<p class="count">
-					{posts.length}
-					{posts.length === 1
-						? ' published article'
-						: ' published articles'}
-				</p>
-
+				<a class="back" href="/topics/">← All Topics</a>
+				<p class="eyebrow">TOPIC / {topic.group.toUpperCase()}</p>
+				<h1>{topic.name}</h1>
+				<p class="intro">{topic.description}</p>
+				<p class="count">{posts.length} {posts.length === 1 ? 'published article' : 'published articles'}</p>
 			</section>
-
 
 			<section class="articles-section">
+				{posts.length === 0 ? (
+					<div class="empty-state">
+						<p class="empty-label">PLANNED AREA</p>
+						<h2>This section is ready for future material.</h2>
+						<p>No articles are published here yet.</p>
+					</div>
+				) : (
+					<div class="topic-groups">
+						{grouped.map(({ series, posts: seriesPosts }) => (
+							<section class="article-group">
+								<div class="group-heading">
+									<div>
+										<p>SERIES</p>
+										<h2><a href={`/series/${series.slug}/`}>{series.name}</a></h2>
+									</div>
+									<span>{seriesPosts.length} articles</span>
+								</div>
+								<div class="articles">
+									{seriesPosts.map((post) => {
+										const itemSeries = post.data.series ? getSeriesByName(post.data.series) : undefined;
+										return (
+											<article class="article">
+												<div class="number">{String(post.data.seriesOrder ?? 0).padStart(2, '0')}</div>
+												<div class="content">
+													<div class="meta">
+														<span>{post.data.difficulty}</span>
+														{itemSeries && <span>·</span>}
+														{itemSeries && <a href={`/series/${itemSeries.slug}/`}>{itemSeries.name}</a>}
+													</div>
+													<h3><a href={`/blog/${post.id}/`}>{post.data.title}</a></h3>
+													<p>{post.data.description}</p>
+												</div>
+											</article>
+										);
+									})}
+								</div>
+							</section>
+						))}
 
-				{
-					posts.length > 0 ? (
-
-						<div class="articles">
-
-							{
-								posts.map((post, index) => (
-
-									<article class="article">
-
-										<div class="number">
-											{String(index + 1).padStart(2, '0')}
-										</div>
-
-										<div class="content">
-
-											<div class="meta">
-
-												<span>
-													{post.data.difficulty}
-												</span>
-
-												<span>·</span>
-
-												<time
-													datetime={post.data.pubDate.toISOString()}
-												>
-													{
-														post.data.pubDate.toLocaleDateString(
-															'en-US',
-															{
-																year: 'numeric',
-																month: 'short',
-																day: 'numeric',
-															},
-														)
-													}
-												</time>
-
+						{independent.length > 0 && (
+							<section class="article-group">
+								<div class="group-heading"><div><p>INDEPENDENT NOTES</p><h2>Other writing</h2></div><span>{independent.length} articles</span></div>
+								<div class="articles">
+									{independent.map((post) => (
+										<article class="article">
+											<div class="number">—</div>
+											<div class="content">
+												<div class="meta"><span>{post.data.difficulty}</span></div>
+												<h3><a href={`/blog/${post.id}/`}>{post.data.title}</a></h3>
+												<p>{post.data.description}</p>
 											</div>
-
-											<h2>
-												<a href={`/blog/${post.id}/`}>
-													{post.data.title}
-												</a>
-											</h2>
-
-											<p class="description">
-												{post.data.description}
-											</p>
-
-											<div class="tags">
-
-												{
-													post.data.tags.map((tag) => (
-														<span>
-															#{tag}
-														</span>
-													))
-												}
-
-											</div>
-
-										</div>
-
-									</article>
-
-								))
-							}
-
-						</div>
-
-					) : (
-
-						<div class="empty-state">
-
-							<p class="empty-label">
-								COMING SOON
-							</p>
-
-							<h2>
-								This section is being built.
-							</h2>
-
-							<p>
-								No articles have been published in
-								<strong> {topic.name}</strong> yet.
-								The topic is already part of the CryptoCave
-								knowledge structure and will grow as new
-								material is added.
-							</p>
-
-							<a href="/topics/">
-								Explore other topics →
-							</a>
-
-						</div>
-
-					)
-				}
-
+										</article>
+									))}
+								</div>
+							</section>
+						)}
+					</div>
+				)}
 			</section>
-
 		</main>
-
 		<Footer />
 	</body>
 </html>
 
 <style>
-	main {
-		width: 100%;
-	}
-
-	.page-header,
-	.articles-section {
-		width: min(1100px, calc(100% - 3rem));
-
-		margin: 0 auto;
-	}
-
-	.page-header {
-		padding: 6rem 0 4rem;
-
-		border-bottom: 1px solid #e5e7eb;
-	}
-
-	.back {
-		display: inline-block;
-
-		margin-bottom: 3rem;
-
-		font-size: 0.85rem;
-		font-weight: 600;
-
-		color: #6b7280;
-
-		text-decoration: none;
-	}
-
-	.back:hover {
-		color: #4f46e5;
-	}
-
-	.eyebrow {
-		margin: 0;
-
-		font-size: 0.72rem;
-		font-weight: 700;
-
-		letter-spacing: 0.13em;
-
-		color: #4f46e5;
-	}
-
-	h1 {
-		max-width: 950px;
-
-		margin: 0.7rem 0 1.2rem;
-
-		font-size: clamp(3rem, 7vw, 6rem);
-		line-height: 0.98;
-
-		letter-spacing: -0.05em;
-
-		color: #111827;
-	}
-
-	.intro {
-		max-width: 760px;
-
-		margin: 0;
-
-		font-size: 1.05rem;
-		line-height: 1.7;
-
-		color: #6b7280;
-	}
-
-	.count {
-		margin: 1.5rem 0 0;
-
-		font-family: monospace;
-		font-size: 0.78rem;
-
-		color: #9ca3af;
-	}
-
-	.articles-section {
-		padding: 4rem 0 7rem;
-	}
-
-	.articles {
-		border-top: 1px solid #d1d5db;
-	}
-
-	.article {
-		display: grid;
-		grid-template-columns: 80px 1fr;
-
-		gap: 2rem;
-
-		padding: 2.5rem 0;
-
-		border-bottom: 1px solid #d1d5db;
-	}
-
-	.number {
-		font-family: monospace;
-
-		color: #9ca3af;
-	}
-
-	.meta {
-		display: flex;
-		flex-wrap: wrap;
-
-		gap: 0.5rem;
-
-		font-size: 0.72rem;
-		font-weight: 700;
-
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-
-		color: #9ca3af;
-	}
-
-	.article h2 {
-		margin: 0.7rem 0;
-	}
-
-	.article h2 a {
-		font-size: clamp(1.5rem, 3vw, 2rem);
-
-		letter-spacing: -0.025em;
-
-		color: #111827;
-
-		text-decoration: none;
-	}
-
-	.article h2 a:hover {
-		color: #4f46e5;
-	}
-
-	.description {
-		max-width: 760px;
-
-		margin: 0;
-
-		line-height: 1.7;
-
-		color: #6b7280;
-	}
-
-	.tags {
-		display: flex;
-		flex-wrap: wrap;
-
-		gap: 0.5rem;
-
-		margin-top: 1.3rem;
-	}
-
-	.tags span {
-		padding: 0.25rem 0.5rem;
-
-		border: 1px solid #e5e7eb;
-		border-radius: 4px;
-
-		font-family: monospace;
-		font-size: 0.72rem;
-
-		color: #6b7280;
-	}
-
-	.empty-state {
-		max-width: 720px;
-
-		padding: 3rem 0;
-	}
-
-	.empty-label {
-		margin: 0 0 0.8rem;
-
-		font-size: 0.72rem;
-		font-weight: 700;
-
-		letter-spacing: 0.13em;
-
-		color: #4f46e5;
-	}
-
-	.empty-state h2 {
-		margin: 0 0 1rem;
-
-		font-size: clamp(2rem, 4vw, 3rem);
-
-		letter-spacing: -0.035em;
-
-		color: #111827;
-	}
-
-	.empty-state > p:not(.empty-label) {
-		line-height: 1.8;
-
-		color: #6b7280;
-	}
-
-	.empty-state a {
-		display: inline-block;
-
-		margin-top: 1rem;
-
-		font-weight: 700;
-
-		color: #111827;
-
-		text-decoration: none;
-	}
-
-	.empty-state a:hover {
-		color: #4f46e5;
-	}
-
-	@media (max-width: 700px) {
-		.article {
-			grid-template-columns: 1fr;
-		}
-
-		.number {
-			display: none;
-		}
-	}
+	main { width: 100%; }
+	.page-header, .articles-section { width: min(1100px, calc(100% - 3rem)); margin: 0 auto; }
+	.page-header { padding: 6rem 0 4rem; border-bottom: 1px solid #e5e7eb; }
+	.back { display: inline-block; margin-bottom: 3rem; font-size: 0.85rem; font-weight: 600; color: #6b7280; text-decoration: none; }
+	.back:hover { color: #4f46e5; }
+	.eyebrow, .group-heading p, .empty-label { margin: 0; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.13em; color: #4f46e5; }
+	h1 { max-width: 950px; margin: 0.7rem 0 1.2rem; font-size: clamp(3rem, 7vw, 6rem); line-height: 0.98; letter-spacing: -0.05em; color: #111827; }
+	.intro { max-width: 760px; margin: 0; font-size: 1.05rem; line-height: 1.7; color: #6b7280; }
+	.count { margin: 1.5rem 0 0; font-family: monospace; font-size: 0.78rem; color: #9ca3af; }
+	.articles-section { padding: 4rem 0 7rem; }
+	.article-group + .article-group { margin-top: 4.5rem; }
+	.group-heading { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 1.2rem; }
+	.group-heading h2 { margin: 0.35rem 0 0; font-size: 1.55rem; }
+	.group-heading h2 a { color: #111827; text-decoration: none; }
+	.group-heading h2 a:hover { color: #4f46e5; }
+	.group-heading > span { font-family: monospace; font-size: 0.72rem; color: #9ca3af; }
+	.articles { border-top: 1px solid #d1d5db; }
+	.article { display: grid; grid-template-columns: 70px 1fr; gap: 1.5rem; padding: 2rem 0; border-bottom: 1px solid #d1d5db; }
+	.number { font-family: monospace; font-size: 0.76rem; color: #9ca3af; padding-top: 0.2rem; }
+	.meta { display: flex; flex-wrap: wrap; gap: 0.45rem; font-family: monospace; font-size: 0.68rem; color: #9ca3af; text-transform: uppercase; }
+	.meta a { color: #4f46e5; text-decoration: none; }
+	h3 { margin: 0.65rem 0 0.7rem; font-size: 1.45rem; line-height: 1.2; }
+	h3 a { color: #111827; text-decoration: none; }
+	h3 a:hover { color: #4f46e5; }
+	.article .content > p { max-width: 800px; margin: 0; line-height: 1.65; color: #6b7280; }
+	.empty-state { padding: 4rem 0; }
+	.empty-state h2 { margin: 0.6rem 0; }
+	@media (max-width: 650px) { .article { grid-template-columns: 1fr; gap: 0.5rem; } .number { display: none; } .group-heading { align-items: flex-start; flex-direction: column; } }
 </style>

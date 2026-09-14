@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820">
+<rect width="1400" height="820" fill="#05080d"/>
+<defs>
+  <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+    <path d="M32 0H0V32" fill="none" stroke="#0c2a22" stroke-width="1" opacity=".45"/>
+  </pattern>
+  <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+    <path d="M0 0L12 6L0 12Z" fill="#48e0a4"/>
+  </marker>
+</defs>
+<rect width="1400" height="820" fill="url(#grid)"/>
+
+<text x="70" y="74" font-family="monospace" font-size="32" font-weight="700" fill="#c8ffe4">MANGER: MOVE THE INTERVAL ACROSS ONE KNOWN BOUNDARY</text>
+<text x="72" y="108" font-family="monospace" font-size="17" fill="#71bfa2">OAEP leading-zero boundary · RSA multiplicativity · adaptive narrowing</text>
+
+<g font-family="monospace">
+  <rect x="65" y="165" width="330" height="145" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="90" y="202" fill="#88ffd0" font-size="19" font-weight="700">OAEP NECESSARY BOUND</text>
+  <text x="90" y="244" fill="#e4fff3" font-size="22">0 ≤ m &lt; B</text>
+  <text x="90" y="278" fill="#7bbba3" font-size="16">B = 2^(8(k−1))</text>
+
+  <rect x="535" y="165" width="330" height="145" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="560" y="202" fill="#88ffd0" font-size="19" font-weight="700">MULTIPLY</text>
+  <text x="560" y="244" fill="#e4fff3" font-size="20">c_f = c · fᵉ mod N</text>
+  <text x="560" y="278" fill="#7bbba3" font-size="16">plaintext becomes mf mod N</text>
+
+  <rect x="1005" y="165" width="330" height="145" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="1030" y="202" fill="#88ffd0" font-size="19" font-weight="700">ORACLE BIT</text>
+  <text x="1030" y="244" fill="#e4fff3" font-size="22">mf mod N &lt; B ?</text>
+  <text x="1030" y="278" fill="#7bbba3" font-size="16">which side of boundary?</text>
+
+  <path d="M395 238H525" stroke="#48e0a4" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M865 238H995" stroke="#48e0a4" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <rect x="1005" y="405" width="330" height="145" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="1030" y="442" fill="#88ffd0" font-size="19" font-weight="700">PHASE 1</text>
+  <text x="1030" y="482" fill="#e4fff3" font-size="20">2, 4, 8, ...</text>
+  <text x="1030" y="516" fill="#7bbba3" font-size="16">locate scale of m</text>
+
+  <rect x="535" y="405" width="330" height="145" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="560" y="442" fill="#88ffd0" font-size="19" font-weight="700">PHASE 2</text>
+  <text x="560" y="482" fill="#e4fff3" font-size="18">N ≤ f₂m &lt; N+B</text>
+  <text x="560" y="516" fill="#7bbba3" font-size="16">establish narrow interval</text>
+
+  <rect x="65" y="405" width="330" height="145" rx="18" fill="#08130f" stroke="#2bd894" stroke-width="2"/>
+  <text x="90" y="442" fill="#88ffd0" font-size="19" font-weight="700">PHASE 3</text>
+  <text x="90" y="482" fill="#e4fff3" font-size="19">cross iN+B</text>
+  <text x="90" y="516" fill="#7bbba3" font-size="16">oracle selects one side</text>
+
+  <path d="M1170 310V395" stroke="#48e0a4" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M1005 477H875" stroke="#48e0a4" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M535 477H405" stroke="#48e0a4" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <rect x="180" y="650" width="1040" height="100" rx="18" fill="#0b1018" stroke="#4c8cff" stroke-width="2"/>
+  <text x="215" y="687" fill="#9cc5ff" font-size="19" font-weight="700">SCIENTIFIC CORE</text>
+  <text x="215" y="724" fill="#eef5ff" font-size="20">rescale hidden m → place one known boundary inside the image interval → one bit keeps one side</text>
+</g>
+</svg>
