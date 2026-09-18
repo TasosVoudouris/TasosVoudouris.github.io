@@ -1,477 +1,2571 @@
 ---
 title: "Groups and Modular Group Structures"
-description: "A detailed recap of groups, subgroups, normal subgroups, additive and multiplicative modular groups, Euler’s theorem, and Fermat’s little theorem."
+description: "A reference on groups, subgroups, modular additive and multiplicative groups, cyclic groups, generators, roots, quadratic residues, Legendre and Jacobi symbols, and the Carmichael function."
 pubDate: "2025-05-05"
-updatedDate: '2026-09-12'
+updatedDate: "2026-09-16"
 topics:
-- "Mathematical Foundations"
-- "Number Theory"
+  - "Mathematical Foundations"
+  - "Number Theory"
 tags:
-- "groups"
-- "subgroups"
-- "zn"
-- "units"
-- "euler-theorem"
-- "fermat-little-theorem"
+  - "groups"
+  - "subgroups"
+  - "zn"
+  - "units"
+  - "cyclic-groups"
+  - "quadratic-residues"
+  - "euler-theorem"
+  - "fermat-little-theorem"
 difficulty: "Intermediate"
 series: "Elementary Number Theory Reference"
 seriesOrder: 4
 sourcePath: "experiments/ready-material/groups"
 draft: false
 ---
-We briefly revisit foundational algebraic structures and number-theoretic results that underlie much of modern cryptography and primality testing.
 
-Let $ G $ be a non-empty set equipped with a binary operation $ \cdot $. The pair $ (G, \cdot) $ is called a **group** if it satisfies the following axioms:
+The previous references developed modular arithmetic primarily as arithmetic on residue classes.
 
-1. **Closure**: For all $ a, b \in G $, the product $ ab \in G $.
-2. **Associativity**: For all $ a, b, c \in G $, we have $ (ab)c = a(bc) $.
-3. **Identity Element**: There exists an element $ e \in G $ such that $ ae = ea = a $ for all $ a \in G $.
-4. **Inverses**: For every $ a \in G $, there exists $ a' \in G $ such that $ aa' = a'a = e $.
+We now change perspective.
 
-If the group operation is also **commutative** (i.e., $ ab = ba $ for all $ a, b \in G $), then the group is called **abelian**.
+Instead of asking only how to compute
 
-## Subgroups and Normal Subgroups
+\[
+a+b\pmod n
+\]
 
-Once we have a group $(G, \cdot)$, a natural question arises: can a smaller set inside $G$ also form a group under the same operation?
+or
 
-A **subgroup** $H \subseteq G$ is a subset of $G$ that forms a group under the same operation. Formally, $H$ is a subgroup of $G$ if:
+\[
+ab\pmod n,
+\]
 
-* $e \in H$ (the identity of $G$ is in $H$),
-* $a, b \in H \Rightarrow ab \in H$ (closure),
-* $a \in H \Rightarrow a^{-1} \in H$ (inverses exist).
+we ask:
 
-We denote this as $H \leq G$. Every group trivially has at least two subgroups: the **trivial subgroup** $\{e\}$, and the group itself.
+> What algebraic structure do these operations create?
 
+That question leads directly to **groups**.
 
-A subgroup $N \leq G$ is called **normal**, written $N \trianglelefteq G$, if it is invariant under conjugation by elements of $G$, i.e., for all $g \in G$ and $n \in N$:
+Groups give us a language for discussing:
 
-$$
-gng^{-1} \in N
-$$
+- invertible elements,
+- repeated operations,
+- element orders,
+- cyclic behavior,
+- generators,
+- exponent reduction,
+- roots,
+- quadratic residues,
+- and many of the finite structures used in cryptography.
 
-Normal subgroups are central to constructing **quotient groups** $G / N$, which are key in understanding the internal structure of a group. In cryptography, the concept of normality appears in group homomorphisms, cosets, and the study of group actions, especially in elliptic curve groups and protocol design.
+The same language will later describe Diffie-Hellman groups, elliptic-curve groups, finite fields, subgroup attacks, and discrete-logarithm assumptions.
 
-We will revisit these concepts in greater depth when we examine group isomorphisms, cosets, and applications to algebraic number theory and cryptographic constructions.
+This article is therefore a bridge:
 
-## Additive Group $ \mathbb{Z}_n $
+\[
+\boxed{
+\text{modular arithmetic}
+\rightarrow
+\text{group structure}
+\rightarrow
+\text{cryptographic algebra}.
+}
+\]
 
-The set $ \mathbb{Z}_n = \{0, 1, 2, \ldots, n - 1\} $, together with addition modulo $ n $, forms an abelian group $ (\mathbb{Z}_n, +) $. This group satisfies:
+---
 
-- **Closure**: $ a + b \bmod n \in \mathbb{Z}_n $,
-- **Associativity**: $ (a + b) + c \equiv a + (b + c) \mod n $,
-- **Identity**: $ 0 $ is the additive identity,
-- **Inverses**: For every $ a \in \mathbb{Z}_n $, there exists $ b \in \mathbb{Z}_n $ such that $ a + b \equiv 0 \mod n $.
+## Table of Contents
 
+- [Groups](#groups)
+- [Subgroups and normal subgroups](#subgroups-and-normal-subgroups)
+- [The additive group (\mathbb Z_n)](#the-additive-group-mathbb-z_n)
+- [The multiplicative group of units](#the-multiplicative-group-of-units)
+- [Euler’s theorem and Fermat’s little theorem](#eulers-theorem-and-fermats-little-theorem)
+- [Fermat’s little theorem](#fermats-little-theorem)
+- [Cyclic groups and generators](#cyclic-groups-and-generators)
+- [Element order and subgroup structure](#element-order-and-subgroup-structure)
+- [When is (\mathbb Z_n^\times) cyclic?](#when-is-mathbb-z_ntimes-cyclic)
+- [Testing whether an element is a generator](#testing-whether-an-element-is-a-generator)
+- [Roots in prime fields](#roots-in-prime-fields)
+- [Square roots when (p\equiv3\pmod4)](#square-roots-when-pequiv3pmod4)
+- [The general odd-prime case](#the-general-odd-prime-case)
+- [Quadratic residues](#quadratic-residues)
+- [Quadratic residues form a subgroup](#quadratic-residues-form-a-subgroup)
+- [Composite moduli](#composite-moduli)
+- [Legendre and Jacobi symbols](#legendre-and-jacobi-symbols)
+- [Quadratic reciprocity](#quadratic-reciprocity)
+- [Jacobi symbol](#jacobi-symbol)
+- [Carmichael numbers](#carmichael-numbers)
+- [Korselt’s criterion](#korselts-criterion)
+- [The Carmichael function](#the-carmichael-function)
+- [Computing (\lambda(n))](#computing-lambdan)
+- [Carmichael numbers through (\lambda(n))](#carmichael-numbers-through-lambdan)
+- [Computational examples](#computational-examples)
+- [Why this matters in cryptography](#why-this-matters-in-cryptography)
+- [Practice and checkpoint](#practice-and-checkpoint)
+- [References and further reading](#references-and-further-reading)
+- [Next](#next)
 
-## Multiplicative Group $ \mathbb{Z}_n^* $
+---
 
-The **multiplicative group modulo $ \mathbb{Z}_n^* $** is defined as:
+## Groups
 
-$$
-\mathbb{Z}_n^* = \{ a \in \mathbb{Z}_n \mid \gcd(a, n) = 1 \}
-$$
+Let \(G\) be a nonempty set equipped with a binary operation
 
-- This set forms a group under multiplication modulo $ n $.
-- If $ n $ is prime, then $ \mathbb{Z}_n^* = \{1, 2, \ldots, n-1\} $.
+\[
+\cdot:G\times G\rightarrow G.
+\]
 
-**Order**: The number of elements in $ \mathbb{Z}_n^* $ is given by Euler’s totient function:
+The pair
 
-$$
-|\mathbb{Z}_n^*| = \varphi(n)
-$$
+\[
+(G,\cdot)
+\]
 
+is a **group** if the following properties hold.
 
-## Euler’s Theorem
+### Associativity
 
-Let $ n \geq 2 $. If $ a \in \mathbb{Z}_n^* $, then:
+For all
 
-$$
-a^{\varphi(n)} \equiv 1 \mod n
-$$
+\[
+a,b,c\in G,
+\]
 
-Additionally, if $ r \equiv s \mod \varphi(n) $, then:
+we require
 
-$$
-a^r \equiv a^s \mod n \quad \text{for all } a \in \mathbb{Z}
-$$
+\[
+(ab)c=a(bc).
+\]
 
-**Interpretation**: Exponents modulo $ \varphi(n) $ are sufficient when working modulo $ n $ in the multiplicative group $ \mathbb{Z}_n^* $.
+### Identity
 
+There exists an element
 
-## Fermat’s Little Theorem
+\[
+e\in G
+\]
 
-Let $ p $ be a prime number. Then for any integer $ a $ such that $ \gcd(a, p) = 1 $:
+such that
 
-$$
-a^{p-1} \equiv 1 \mod p
-$$
+\[
+ae=ea=a
+\]
 
-Moreover, if $ r \equiv s \mod (p - 1) $, then:
+for every \(a\in G\).
 
-$$
-a^r \equiv a^s \mod p \quad \text{for all } a \in \mathbb{Z}
-$$
+### Inverses
 
-A useful special case:
+For every
 
-$$
-a^p \equiv a \mod p \quad \text{for all } a \in \mathbb{Z}
-$$
+\[
+a\in G,
+\]
 
+there exists an element
 
-```python
-from Crypto.Util.number import getPrime
-from math import gcd
+\[
+a^{-1}\in G
+\]
 
-p = getPrime(512)
-a = 1234
+such that
 
-# Fermat's Little Theorem: a^(p-1) ≡ 1 mod p
-print(pow(a, p-1, p))
+\[
+aa^{-1}
+=
+a^{-1}a
+=
+e.
+\]
 
-# Check exponent reduction modulo (p-1)
-r = pow(2, 16) + 1
-s = 20 * (p - 1) + r
-print(s % (p - 1) == r % (p - 1))
-print(pow(a, s, p) == pow(a, r, p))
+Because the operation is defined as
+
+\[
+G\times G\rightarrow G,
+\]
+
+closure is already built into the statement that it is a binary operation on \(G\).
+
+It is nevertheless common in introductory definitions to list closure explicitly:
+
+\[
+a,b\in G
+\Longrightarrow
+ab\in G.
+\]
+
+### Abelian groups
+
+If in addition
+
+\[
+ab=ba
+\]
+
+for every
+
+\[
+a,b\in G,
+\]
+
+then \(G\) is called an **abelian group**.
+
+Many modular groups used in elementary number theory are abelian.
+
+Not every group encountered in mathematics or cryptography is.
+
+---
+
+## Subgroups and normal subgroups
+
+Let \(G\) be a group.
+
+A subset
+
+\[
+H\subseteq G
+\]
+
+is a **subgroup**, written
+
+\[
+H\le G,
+\]
+
+if \(H\) itself forms a group under the same operation.
+
+A useful subgroup criterion is:
+
+\[
+\boxed{
+H\neq\varnothing
+\quad\text{and}\quad
+ab^{-1}\in H
+\text{ for all }a,b\in H.
+}
+\]
+
+Equivalently, we can check:
+
+- the identity belongs to \(H\),
+- \(H\) is closed under the group operation,
+- every element of \(H\) has its inverse in \(H\).
+
+Every group contains at least:
+
+\[
+\{e\}
+\]
+
+and
+
+\[
+G
+\]
+
+itself as subgroups.
+
+### Normal subgroups
+
+A subgroup
+
+\[
+N\le G
+\]
+
+is **normal**, written
+
+\[
+N\trianglelefteq G,
+\]
+
+when:
+
+\[
+gNg^{-1}=N
+\]
+
+for every
+
+\[
+g\in G.
+\]
+
+Equivalently,
+
+\[
+gng^{-1}\in N
+\]
+
+for every \(g\in G\) and \(n\in N\).
+
+Normal subgroups allow us to construct quotient groups
+
+\[
+G/N.
+\]
+
+For the modular groups studied in this article, there is an important simplification:
+
+> Every subgroup of an abelian group is normal.
+
+Indeed, if the operation is commutative,
+
+\[
+gng^{-1}
+=
+ngg^{-1}
+=
+n.
+\]
+
+So normality becomes automatic.
+
+We retain the definition because it becomes important later when group structure becomes more general.
+
+---
+
+## The additive group \(\mathbb Z_n\)
+
+Consider the residue classes modulo \(n\):
+
+\[
+\mathbb Z_n
+=
+\{
+[0]_n,[1]_n,\ldots,[n-1]_n
+\}.
+\]
+
+Under addition modulo \(n\),
+
+\[
+(\mathbb Z_n,+)
+\]
+
+forms an abelian group.
+
+The identity is
+
+\[
+[0]_n.
+\]
+
+The inverse of
+
+\[
+[a]_n
+\]
+
+is
+
+\[
+[-a]_n.
+\]
+
+For example, modulo \(7\):
+
+\[
+[3]_7+[4]_7=[0]_7.
+\]
+
+So:
+
+\[
+-[3]_7=[4]_7.
+\]
+
+### \(\mathbb Z_n\) is cyclic under addition
+
+Every element can be generated by repeatedly adding
+
+\[
+[1]_n.
+\]
+
+Indeed,
+
+\[
+[0]_n,
+[1]_n,
+[2]_n,
+\ldots,
+[n-1]_n
+\]
+
+are exactly the successive multiples of \([1]_n\).
+
+Therefore:
+
+\[
+\boxed{
+(\mathbb Z_n,+)
+=
+\langle[1]_n\rangle.
+}
+\]
+
+So the additive group modulo \(n\) is always cyclic.
+
+Its order is:
+
+\[
+|\mathbb Z_n|=n.
+\]
+
+---
+
+## The multiplicative group of units
+
+Multiplication behaves differently.
+
+The full set
+
+\[
+\mathbb Z_n
+\]
+
+is generally **not** a group under multiplication because not every element has a multiplicative inverse.
+
+The invertible elements form:
+
+\[
+\boxed{
+\mathbb Z_n^\times
+=
+\{
+[a]_n:
+\gcd(a,n)=1
+\}.
+}
+\]
+
+This is the **group of units modulo \(n\)**.
+
+Its operation is multiplication modulo \(n\).
+
+The identity is:
+
+\[
+[1]_n.
+\]
+
+Every element has a modular inverse by construction.
+
+The number of elements is Euler's totient:
+
+\[
+\boxed{
+|\mathbb Z_n^\times|
+=
+\varphi(n).
+}
+\]
+
+We will study \(\varphi(n)\) in detail in the next reference article.
+
+### Example: modulo \(10\)
+
+The elements coprime to \(10\) are:
+
+\[
+1,3,7,9.
+\]
+
+Therefore:
+
+\[
+\mathbb Z_{10}^{\times}
+=
+\{
+[1],[3],[7],[9]
+\}.
+\]
+
+And:
+
+\[
+|\mathbb Z_{10}^{\times}|
+=
+4.
+\]
+
+Indeed:
+
+\[
+\varphi(10)=4.
+\]
+
+### Prime modulus
+
+If \(p\) is prime, then every nonzero residue is coprime to \(p\).
+
+Therefore:
+
+\[
+\boxed{
+\mathbb Z_p^\times
+=
+\{
+[1],[2],\ldots,[p-1]
+\}.
+}
+\]
+
+Its order is:
+
+\[
+|\mathbb Z_p^\times|
+=
+p-1.
+\]
+
+Since \(\mathbb Z_p\) is a field when \(p\) is prime, this multiplicative group is also commonly written:
+
+\[
+\mathbb F_p^\times.
+\]
+
+---
+
+## Euler's theorem and Fermat's little theorem
+
+The finite-group viewpoint makes classical number-theoretic exponentiation results much easier to understand.
+
+### Euler's theorem
+
+If
+
+\[
+\gcd(a,n)=1,
+\]
+
+then \(a\) belongs to:
+
+\[
+\mathbb Z_n^\times.
+\]
+
+Since:
+
+\[
+|\mathbb Z_n^\times|
+=
+\varphi(n),
+\]
+
+Lagrange's theorem implies:
+
+\[
+\boxed{
+a^{\varphi(n)}
+\equiv1\pmod n.
+}
+\]
+
+This is **Euler's theorem**.
+
+The coprimality assumption is essential.
+
+The theorem is a statement about the units modulo \(n\), not arbitrary elements of \(\mathbb Z_n\).
+
+### Exponent reduction
+
+Suppose:
+
+\[
+a\in\mathbb Z_n^\times
+\]
+
+and:
+
+\[
+r\equiv s\pmod{\varphi(n)}.
+\]
+
+Then:
+
+\[
+r-s=k\varphi(n)
+\]
+
+for some integer \(k\).
+
+Using Euler's theorem:
+
+\[
+a^{r-s}
+=
+a^{k\varphi(n)}
+\equiv1\pmod n,
+\]
+
+and therefore, with the usual care about nonnegative exponents,
+
+\[
+a^r\equiv a^s\pmod n.
+\]
+
+So exponent reduction modulo \(\varphi(n)\) is justified **for units**.
+
+It is not a universal rule for arbitrary bases modulo a composite \(n\).
+
+Even more precisely, exponent reduction can often be performed modulo the element order:
+
+\[
+\operatorname{ord}_n(a),
+\]
+
+which may be much smaller than \(\varphi(n)\).
+
+---
+
+## Fermat's little theorem
+
+Let \(p\) be prime.
+
+Then:
+
+\[
+\varphi(p)=p-1.
+\]
+
+Euler's theorem therefore becomes:
+
+\[
+\boxed{
+a^{p-1}
+\equiv1\pmod p
+}
+\]
+
+for every:
+
+\[
+a\not\equiv0\pmod p.
+\]
+
+This is **Fermat's little theorem**.
+
+Multiplying by \(a\) gives the equivalent form:
+
+\[
+\boxed{
+a^p\equiv a\pmod p
+}
+\]
+
+for every integer \(a\).
+
+This second form also includes:
+
+\[
+a\equiv0\pmod p.
+\]
+
+So we should distinguish the two statements carefully:
+
+\[
+a^{p-1}\equiv1\pmod p
+\]
+
+requires:
+
+\[
+p\nmid a,
+\]
+
+whereas:
+
+\[
+a^p\equiv a\pmod p
+\]
+
+holds for all integers \(a\).
+
+---
+
+## Cyclic groups and generators
+
+A group \(G\) is **cyclic** if there exists some element
+
+\[
+g\in G
+\]
+
+such that every element of \(G\) is a power of \(g\).
+
+We write:
+
+\[
+\boxed{
+G=\langle g\rangle.
+}
+\]
+
+The element \(g\) is called a **generator**.
+
+If:
+
+\[
+|G|=m,
+\]
+
+then a generator produces:
+
+\[
+G
+=
+\{
+e,g,g^2,\ldots,g^{m-1}
+\}.
+\]
+
+and:
+
+\[
+g^m=e.
+\]
+
+### Example: \(\mathbb Z_{7}^{\times}\)
+
+Because \(7\) is prime,
+
+\[
+|\mathbb Z_7^\times|
+=
+6.
+\]
+
+Take:
+
+\[
+g=3.
+\]
+
+Its powers are:
+
+\[
+3^1\equiv3\pmod7,
+\]
+
+\[
+3^2\equiv2\pmod7,
+\]
+
+\[
+3^3\equiv6\pmod7,
+\]
+
+\[
+3^4\equiv4\pmod7,
+\]
+
+\[
+3^5\equiv5\pmod7,
+\]
+
+\[
+3^6\equiv1\pmod7.
+\]
+
+We encountered every nonzero residue:
+
+\[
+1,2,3,4,5,6.
+\]
+
+Therefore:
+
+\[
+\boxed{
+\mathbb Z_7^\times
+=
+\langle3\rangle.
+}
+\]
+
+So \(3\) is a generator.
+
+---
+
+## Element order and subgroup structure
+
+For:
+
+\[
+a\in G,
+\]
+
+the **order of \(a\)** is the smallest positive integer \(t\) satisfying:
+
+\[
+a^t=e.
+\]
+
+For multiplication modulo \(n\):
+
+\[
+\boxed{
+\operatorname{ord}_n(a)
+=
+\min
+\{
+t>0:
+a^t\equiv1\pmod n
+\}.
+}
+\]
+
+The powers of \(a\) generate a cyclic subgroup:
+
+\[
+\langle a\rangle.
+\]
+
+Its size is exactly:
+
+\[
+|\langle a\rangle|
+=
+\operatorname{ord}_n(a).
+\]
+
+By Lagrange's theorem:
+
+\[
+\boxed{
+\operatorname{ord}_n(a)
+\mid
+|\mathbb Z_n^\times|
+=
+\varphi(n).
+}
+\]
+
+This is one of the most important distinctions in finite-group cryptography:
+
+\[
+\boxed{
+\text{order of the ambient group}
+\neq
+\text{order of a particular element}.
+}
+\]
+
+If:
+
+\[
+\operatorname{ord}_n(g)
+=
+\varphi(n),
+\]
+
+then \(g\) generates the entire multiplicative group.
+
+---
+
+## When is \(\mathbb Z_n^\times\) cyclic?
+
+Unlike the additive group \(\mathbb Z_n\), the multiplicative group of units is not always cyclic.
+
+For \(n>1\),
+
+\[
+\mathbb Z_n^\times
+\]
+
+is cyclic precisely when:
+
+\[
+\boxed{
+n\in
+\{
+2,\,
+4,\,
+p^k,\,
+2p^k
+\},
+}
+\]
+
+where \(p\) is an odd prime and \(k\ge1\).
+
+In particular, when \(p\) is prime:
+
+\[
+\boxed{
+\mathbb Z_p^\times
+\text{ is cyclic}.
+}
+\]
+
+A generator of
+
+\[
+\mathbb Z_p^\times
+\]
+
+is traditionally called a **primitive root modulo \(p\)**.
+
+### Number of generators
+
+Suppose a cyclic group \(G\) has order \(m\) and:
+
+\[
+G=\langle g\rangle.
+\]
+
+Then:
+
+\[
+g^i
+\]
+
+is also a generator exactly when:
+
+\[
+\gcd(i,m)=1.
+\]
+
+Therefore a cyclic group of order \(m\) has:
+
+\[
+\boxed{
+\varphi(m)
+}
+\]
+
+generators.
+
+For:
+
+\[
+\mathbb Z_p^\times,
+\]
+
+where the group order is \(p-1\), the number of primitive roots is:
+
+\[
+\varphi(p-1).
+\]
+
+---
+
+## Testing whether an element is a generator
+
+Suppose \(G\) is cyclic with known order:
+
+\[
+|G|=m.
+\]
+
+Let the distinct prime divisors of \(m\) be:
+
+\[
+q_1,\ldots,q_r.
+\]
+
+Then \(g\) has order \(m\) if and only if:
+
+\[
+\boxed{
+g^{m/q_i}\neq e
+}
+\]
+
+for every prime divisor \(q_i\mid m\).
+
+For:
+
+\[
+\mathbb Z_p^\times,
+\]
+
+we know:
+
+\[
+m=p-1.
+\]
+
+So \(g\) is a primitive root modulo \(p\) exactly when:
+
+\[
+g^{(p-1)/q}
+\not\equiv1\pmod p
+\]
+
+for every prime divisor:
+
+\[
+q\mid(p-1).
+\]
+
+This gives a practical generator test once the factorization of \(p-1\) is known.
+
+---
+
+## Roots in prime fields
+
+Now consider:
+
+\[
+\mathbb F_p^\times
+\]
+
+for prime \(p\).
+
+Suppose we want to solve:
+
+\[
+x^e=a.
+\]
+
+Equivalently:
+
+\[
+x^e\equiv a\pmod p.
+\]
+
+The exponentiation map:
+
+\[
+x\longmapsto x^e
+\]
+
+behaves especially cleanly when:
+
+\[
+\gcd(e,p-1)=1.
+\]
+
+In that case \(e\) has an inverse modulo \(p-1\).
+
+Let:
+
+\[
+d
+\equiv
+e^{-1}
+\pmod{p-1}.
+\]
+
+Then:
+
+\[
+ed
+=
+1+k(p-1)
+\]
+
+for some integer \(k\).
+
+For nonzero \(a\),
+
+\[
+\left(a^d\right)^e
+=
+a^{de}
+=
+a^{1+k(p-1)}.
+\]
+
+Using Fermat's little theorem:
+
+\[
+a^{p-1}\equiv1\pmod p,
+\]
+
+we obtain:
+
+\[
+a^{de}
+\equiv
+a
+\pmod p.
+\]
+
+Therefore:
+
+\[
+\boxed{
+x=a^d
+}
+\]
+
+is the unique \(e\)-th root of \(a\) in \(\mathbb F_p^\times\).
+
+So exponent inversion is really group-order arithmetic.
+
+---
+
+## Square roots when \(p\equiv3\pmod4\)
+
+Suppose \(p\) is an odd prime satisfying:
+
+\[
+p\equiv3\pmod4.
+\]
+
+Let \(a\) be a **quadratic residue modulo \(p\)**.
+
+Then a square root is:
+
+\[
+\boxed{
+x
+\equiv
+a^{(p+1)/4}
+\pmod p.
+}
+\]
+
+Why?
+
+Since \(a\) is a quadratic residue, Euler's criterion gives:
+
+\[
+a^{(p-1)/2}
+\equiv1\pmod p.
+\]
+
+Therefore:
+
+\[
+\begin{aligned}
+x^2
+&=
+a^{(p+1)/2}\\
+&=
+a^{(p-1)/2}a\\
+&\equiv
+a
+\pmod p.
+\end{aligned}
+\]
+
+The quadratic-residue assumption is essential.
+
+The formula is not a universal square-root formula for arbitrary \(a\).
+
+### Example
+
+Take:
+
+\[
+p=11,
+\qquad
+a=9.
+\]
+
+Since:
+
+\[
+11\equiv3\pmod4,
+\]
+
+compute:
+
+\[
+x
+=
+9^{(11+1)/4}
+=
+9^3
+\pmod{11}.
+\]
+
+This gives:
+
+\[
+x=3.
+\]
+
+Indeed:
+
+\[
+3^2\equiv9\pmod{11}.
+\]
+
+The second root is:
+
+\[
+-3\equiv8\pmod{11}.
+\]
+
+And:
+
+\[
+8^2\equiv9\pmod{11}.
+\]
+
+---
+
+## The general odd-prime case
+
+When:
+
+\[
+p\equiv1\pmod4,
+\]
+
+the previous shortcut does not apply directly.
+
+A standard general algorithm for extracting square roots modulo odd primes is **Tonelli-Shanks**.
+
+Given an odd prime \(p\) and a known quadratic residue \(a\), Tonelli-Shanks computes:
+
+\[
+x^2\equiv a\pmod p.
+\]
+
+We do not need its full derivation in this reference article.
+
+The important structural lesson is that square-root extraction depends on the multiplicative structure of:
+
+\[
+\mathbb F_p^\times.
+\]
+
+---
+
+## Quadratic residues
+
+Let \(n>1\).
+
+Among the units modulo \(n\), define the set of quadratic residues:
+
+\[
+Q_n
+=
+\{
+x^2\bmod n:
+x\in\mathbb Z_n^\times
+\}.
+\]
+
+An element:
+
+\[
+a\in\mathbb Z_n^\times
+\]
+
+is a **quadratic residue modulo \(n\)** if:
+
+\[
+x^2\equiv a\pmod n
+\]
+
+has a solution.
+
+Otherwise, \(a\) is a **quadratic non-residue among the units**.
+
+### Odd prime modulus
+
+Let \(p\) be an odd prime.
+
+Then:
+
+\[
+|\mathbb Z_p^\times|
+=
+p-1.
+\]
+
+Exactly half of the nonzero elements are quadratic residues:
+
+\[
+\boxed{
+|Q_p|
+=
+\frac{p-1}{2}.
+}
+\]
+
+The other half are non-residues.
+
+Every nonzero quadratic residue has exactly two square roots:
+
+\[
+x
+\]
+
+and:
+
+\[
+-x.
+\]
+
+They are distinct because \(p\) is odd.
+
+### Example modulo \(11\)
+
+The nonzero squares are:
+
+\[
+1^2\equiv1,
+\]
+
+\[
+2^2\equiv4,
+\]
+
+\[
+3^2\equiv9,
+\]
+
+\[
+4^2\equiv5,
+\]
+
+\[
+5^2\equiv3
+\pmod{11}.
+\]
+
+The remaining squares repeat these values.
+
+Thus:
+
+\[
+\boxed{
+Q_{11}
+=
+\{
+1,3,4,5,9
+\}.
+}
+\]
+
+There are:
+
+\[
+\frac{11-1}{2}=5
+\]
+
+of them.
+
+---
+
+## Quadratic residues form a subgroup
+
+For odd prime \(p\),
+
+\[
+Q_p
+\]
+
+forms a subgroup of:
+
+\[
+\mathbb F_p^\times.
+\]
+
+Its index is \(2\).
+
+That means:
+
+\[
+[\mathbb F_p^\times:Q_p]=2.
+\]
+
+The familiar multiplication rules follow:
+
+```text
+QR × QR = QR
+
+QR × NR = NR
+
+NR × NR = QR
 ```
 
-## Cyclic Groups
+These are not arbitrary mnemonic rules.
 
-A **cyclic group** is a group in which all elements can be generated by repeated application of the group operation to a single element, called a **generator** $ g $. Formally, a group $ G $ is cyclic if:
+They arise because a subgroup of index \(2\) divides the group into exactly two cosets.
 
-$$
-G = \{ g^0, g^1, \dots, g^{m-1} \}
-$$
-
-where $ m = |G| $ is the **order** of the group.
-
-### Generators and the Order of Elements
-
-Let $ a \in \mathbb{Z}_n^* $. The **order** of $ a $, denoted $ \operatorname{ord}(a) $, is the smallest positive integer $ t $ such that:
-
-$$
-a^t \equiv 1 \mod n
-$$
-
-If $ \operatorname{ord}(a) = \varphi(n) $, then $ a $ is a **generator** of the group $ \mathbb{Z}_n^* $.
-
-
-### Properties of Generators
-
-- The group $ \mathbb{Z}_n^* $ is cyclic **if and only if** $ n \in \{2, 4, p^k, 2p^k\} $, where $ p $ is an odd prime and $ k \geq 1 $.
-- If $ p $ is a prime, then $ \mathbb{Z}_p^* $ is always cyclic.
-- If $ g $ is a generator of $ \mathbb{Z}_n^* $, then:
-
-$$
-\mathbb{Z}_n^* = \{ g^i \bmod n \mid 0 \leq i \leq \varphi(n) - 1 \}
-$$
-
-- Let $ g $ be a generator of $ \mathbb{Z}_n^* $. Then $ b = g^i \bmod n $ is also a generator **if and only if** $ \gcd(i, \varphi(n)) = 1 $. Hence, if $ \mathbb{Z}_n^* $ is cyclic, it has exactly $ \varphi(\varphi(n)) $ generators.
-- A necessary and sufficient condition for $ g \in \mathbb{Z}_n^* $ to be a generator of $ \mathbb{Z}_n^* $ is:
-
-$$
-g^{\varphi(n)/p} \not\equiv 1 \mod n \quad \text{for every prime divisor } p \mid \varphi(n)
-$$
-
-
-But how do we actually find generators? We provide a SageMath implementation in `src/generators.sage`. This code explores whether a given number is a *generator* of the multiplicative group $\mathbb{Z}_p^*$, which consists of all integers from 1 to $p - 1$ that are invertible modulo a prime $p$. In the first part, the function `checkgen(g, p)` determines whether a number $g$ is a generator modulo $p$ by checking whether any of the values $g^{(p-1)/q} \mod p$ equal 1, where $q$ runs over the prime factors of $p - 1$. If any of these values equals 1, then $g$ cannot generate all elements of $\mathbb{Z}_p^*$, and the function returns `False`.
-
-The second part of the code examines the behavior of elements in the multiplicative group $\mathbb{Z}_p^*$ for a small prime $p = 17$, providing a concrete illustration of what it means for an element to be a *generator* of a cyclic group. It constructs the group $\mathbb{Z}_p^*$, implemented via SageMath's `GF(p)` (the finite field $\mathbb{F}_p$), and computes successive powers of each element to reveal their cyclic structure. Using the `primitive_root` function, it identifies a generator $g$, and then displays the full sequence $g^1, g^2, \dots, g^{p-1} \mod p$, showing how a generator can reproduce every nonzero element of $\mathbb{Z}_p$.
-
-Although the code uses finite fields—which we haven't yet explored formally—it's helpful to imagine them as algebraic structures with two operations (addition and multiplication), where the multiplicative part forms a group. In this setting, *primitive roots* correspond to *generators* of that group. While this may seem abstract for now, the connection between primitive roots, generators, and the structure of finite fields will become clearer as we build further algebraic foundations in the next sections.
+This becomes especially clear once we introduce the Legendre symbol.
 
 ---
 
+## Composite moduli
 
+Now let:
 
-## Roots in $\mathbb{Z}_p$
-Continuing from our exploration of cyclic groups and generators, we now turn to the concept of **roots in modular arithmetic**, particularly in $\mathbb{Z}_p$, where $p$ is a prime. Understanding roots—especially square roots—is essential not only in number theory but also in cryptographic applications (e.g., quadratic residuosity, discrete logarithms).
+\[
+n=pq
+\]
 
-Let $p$ be a prime and $a \in \mathbb{Z}_p$. If $\gcd(e, p - 1) = 1$, then there exists a modular inverse $d \equiv e^{-1} \mod (p - 1)$, and we can write:
+for two distinct odd primes.
 
-$$
-a^{e^{-1}} \equiv a^d \mod p
-$$
+By CRT:
 
-**Justification**:
-If $de \equiv 1 \mod (p - 1)$, then for some $k \in \mathbb{Z}$ we have $de = k(p - 1) + 1$. Hence:
+\[
+\mathbb Z_n^\times
+\cong
+\mathbb Z_p^\times
+\times
+\mathbb Z_q^\times.
+\]
 
-$$
-a^{de} \equiv a^{k(p-1)+1} \equiv (a^{p - 1})^k \cdot a \equiv 1 \cdot a \equiv a \mod p
-$$
+Therefore:
 
-This shows that under the right conditions, modular exponentiation can be used to compute roots in $\mathbb{Z}_p$.
+\[
+\varphi(n)
+=
+(p-1)(q-1).
+\]
 
-### Computing Square Roots in $\mathbb{Z}_p$
+For a unit to be a quadratic residue modulo \(n\), it must be a quadratic residue modulo both \(p\) and \(q\).
 
-When it comes to finding square roots modulo a prime $p$, the method depends crucially on the value of $p \mod 4$.
+Hence:
 
-### Case 1: $p \equiv 3 \mod 4$
+\[
+\boxed{
+|Q_n|
+=
+\frac{(p-1)(q-1)}{4}.
+}
+\]
 
-In this favorable case, we can compute square roots using a very efficient formula:
+Every unit quadratic residue has four square roots modulo \(pq\):
 
-$$
-\sqrt{a} \equiv a^{\frac{p + 1}{4}} \mod p
-$$
+\[
+2\text{ choices modulo }p
+\times
+2\text{ choices modulo }q.
+\]
 
-**Why this works**:
-Since $p + 1 \equiv 0 \mod 4$, we get:
+CRT combines these into:
 
-$$
-\left(a^{\frac{p + 1}{4}}\right)^2 = a^{\frac{p + 1}{2}} = a^{\frac{p - 1}{2}} \cdot a \equiv 1 \cdot a = a \mod p
-$$
+\[
+2^2=4
+\]
 
-This identity allows us to recover a square root with a single modular exponentiation.
+distinct roots modulo \(n\).
 
-### Case 2: $p \equiv 1 \mod 4$
+More generally, if:
 
-Here, the situation is more complex. The square root cannot be computed directly with a short formula as above. Instead, we must use a more general procedure called the **Tonelli–Shanks algorithm**. This algorithm systematically finds square roots in $\mathbb{Z}_p$ and works for any odd prime $p$, but it is a bit more involved and computationally heavier.
+\[
+n
+=
+p_1^{e_1}\cdots p_k^{e_k}
+\]
 
-We only mention the Tonelli–Shanks method briefly for now; it will be explored more deeply in a future part of this series once we’ve built up more algebraic tools. For those interested in a preview, you can consult its [Wikipedia article](https://en.wikipedia.org/wiki/Tonelli%E2%80%93Shanks_algorithm).
+is a product of powers of distinct odd primes, then a unit quadratic residue has:
 
-In summary, the ability to extract roots in $\mathbb{Z}_p$ depends on both the exponent structure of the group and the congruence class of the modulus. These insights form the basis for more advanced number-theoretic and cryptographic techniques that we will continue to explore.
+\[
+\boxed{
+2^k
+}
+\]
 
+square roots modulo \(n\).
 
----
+This root multiplicity is a consequence of CRT decomposition.
 
-
-
-## Quadratic Residues
-Continuing our journey into modular arithmetic, we now turn to a deeper concept that plays a crucial role in number theory and cryptography: **quadratic residues**. This notion is directly connected to the problem of extracting square roots in $\mathbb{Z}_p$ and helps explain why some numbers have square roots modulo $p$, while others do not.
-
-Let $a \in \mathbb{Z}_n^*$, i.e., $a$ is invertible modulo $n$. Then:
-
-* We say that $a$ is a **quadratic residue modulo $n$** if there exists an integer $x \in \mathbb{Z}_n$ such that:
-
-  $$
-  x^2 \equiv a \mod n
-  $$
-* If no such $x$ exists, $a$ is called a **quadratic non-residue modulo $n$**.
-* The value $x$ in this case is called a **square root** of $a \mod n$.
-
-Let us define:
-
-* $Q_n$: the set of all quadratic residues modulo $n$
-* $\overline{Q}_n$: the set of quadratic non-residues modulo $n$
-
-Note that $0 \notin \mathbb{Z}_n^*$, and hence $0 \notin Q_n$ and $0 \notin \overline{Q}_n$.
-
-### Size of Residue Sets
-
-Let $p$ be an odd prime. Then:
-
-* The multiplicative group $\mathbb{Z}_p^*$ has $p - 1$ elements.
-* Exactly half of them are quadratic residues:
-
-  $$
-  |Q_p| = \frac{p - 1}{2}, \quad |\overline{Q}_p| = \frac{p - 1}{2}
-  $$
-
-If $n = pq$ is a product of two distinct odd primes, then:
-
-* The total number of invertible elements is $\phi(n) = (p - 1)(q - 1)$
-* The number of quadratic residues is:
-
-  $$
-  |Q_n| = \frac{(p - 1)(q - 1)}{4}, \quad |\overline{Q}_n| = \frac{3(p - 1)(q - 1)}{4}
-  $$
-
-This reflects the fact that as the modulus becomes more composite, distinguishing residues from non-residues becomes more complex—a challenge exploited in cryptographic constructions such as the Goldwasser–Micali cryptosystem.
-
-### Number of Roots
-
-* If $p$ is prime and $a \in Q_p$, then $a$ has **exactly two** square roots modulo $p$.
-* More generally, if $n = p_1^{e_1} p_2^{e_2} \cdots p_k^{e_k}$ is a product of distinct odd prime powers, then every quadratic residue $a \in Q_n$ has exactly $2^k$ distinct square roots modulo $n$.
-
-This exponential growth in the number of roots with respect to the number of prime factors underpins the difficulty of the **quadratic residuosity problem**, a foundational assumption in several cryptographic protocols.
-
-### Multiplicative Behavior
-
-Let $p$ be an odd prime. Then the following properties hold for the multiplication of residues and non-residues modulo $p$:
-
-* QR × QR = QR
-* QR × NR = NR
-* NR × NR = QR
-
-These identities confirm that $Q_p$ forms a *subgroup* of $\mathbb{Z}_p^*$ of index 2. This algebraic structure is central to defining the *Legendre symbol* and generalizing to the *Jacobi symbol* over composite moduli, tools we will explore soon.
-
-Here is a clean and well-structured markdown version of your section, with improved flow, terminology consistency, and academic tone:
+The cryptographic **quadratic residuosity problem**, however, is not difficult merely because several roots exist. Its hardness concerns deciding whether certain elements are quadratic residues modulo appropriately structured composite moduli when the factorization is hidden.
 
 ---
 
-## Legendre and Jacobi Symbols
+## Legendre and Jacobi symbols
 
-### Legendre Symbol
+Quadratic residuosity occurs so frequently that number theory provides compact symbols for reasoning about it.
 
-Let $p$ be an odd prime and $a \in \mathbb{Z}$. The **Legendre symbol** $\left( \frac{a}{p} \right)$ is a number-theoretic function that indicates whether $a$ is a **quadratic residue modulo** $p$:
+### Legendre symbol
 
-$$
-\left(\dfrac{a}{p}\right)=
+Let \(p\) be an odd prime.
+
+The **Legendre symbol**
+
+\[
+\left(\frac ap\right)
+\]
+
+is defined by:
+
+\[
+\boxed{
+\left(\frac ap\right)
+=
 \begin{cases}
-1 & \text{if } a \not\equiv 0 \mod p \text{ and } \exists x: x^2 \equiv a \mod p \\
--1 & \text{if } a \not\equiv 0 \mod p \text{ and no such } x \text{ exists} \\
-0 & \text{if } a \equiv 0 \mod p
+0,
+&
+p\mid a,\\[4pt]
+1,
+&
+a\not\equiv0\pmod p
+\text{ and }a\text{ is a quadratic residue},\\[4pt]
+-1,
+&
+a\text{ is a quadratic non-residue}.
 \end{cases}
-$$
+}
+\]
 
-#### Key Properties of the Legendre Symbol
+### Euler's criterion
 
-* **Euler's Criterion**:
-  For $a \not\equiv 0 \mod p$,
+For:
 
-  $$
-  a^{\frac{p - 1}{2}} \equiv \left( \frac{a}{p} \right) \mod p
-  $$
+\[
+p\nmid a,
+\]
 
-* **Congruence Invariance**:
-  If $a \equiv b \mod p$, then $\left( \frac{a}{p} \right) = \left( \frac{b}{p} \right)$
+Euler's criterion states:
 
-* **Multiplicativity**:
+\[
+\boxed{
+a^{(p-1)/2}
+\equiv
+\left(\frac ap\right)
+\pmod p.
+}
+\]
 
-  $$
-  \left( \frac{ab}{p} \right) = \left( \frac{a}{p} \right) \left( \frac{b}{p} \right)
-  $$
+The right-hand side is interpreted modulo \(p\), so:
 
-* **Special Values**:
+\[
+-1
+\]
 
-  $$
-  \left( \frac{-1}{p} \right) = (-1)^{\frac{p - 1}{2}} \quad \Rightarrow \quad
-  \left( \frac{-1}{p} \right) = 1 \iff p \equiv 1 \mod 4
-  $$
+corresponds to:
 
-  $$
-  \left( \frac{2}{p} \right) = (-1)^{\frac{p^2 - 1}{8}} \quad \Rightarrow \quad
-  \left( \frac{2}{p} \right) = 1 \iff p \equiv \pm 1 \mod 8
-  $$
+\[
+p-1.
+\]
 
-* **Quadratic Reciprocity Law** (for distinct odd primes $p$, $q$):
+Thus one modular exponentiation can distinguish a residue from a non-residue modulo a prime.
 
-  $$
-  \left( \frac{p}{q} \right) \left( \frac{q}{p} \right) = (-1)^{\frac{p - 1}{2} \cdot \frac{q - 1}{2}}
-  $$
+### Multiplicativity
 
+The Legendre symbol satisfies:
 
-### Jacobi Symbol
+\[
+\boxed{
+\left(\frac{ab}{p}\right)
+=
+\left(\frac ap\right)
+\left(\frac bp\right).
+}
+\]
 
-The **Jacobi symbol** $\left( \frac{a}{n} \right)$ is a generalization of the Legendre symbol to any odd positive integer $n$. Suppose $n = p_1^{e_1} p_2^{e_2} \cdots p_k^{e_k}$ is the prime factorization of $n$. Then:
+This exactly reflects the:
 
-$$
-\left( \frac{a}{n} \right) = \prod_{i=1}^k \left( \frac{a}{p_i} \right)^{e_i}
-$$
+```text
+QR × QR
+QR × NR
+NR × NR
+```
 
-> **Important:** The Jacobi symbol **does not** always determine whether $a$ is a quadratic residue modulo $n$.
-> It may return 1 even when $a$ is **not** a square mod $n$.
+multiplication pattern.
 
-#### Key Properties of the Jacobi Symbol
+### Special values
 
-Let $a, b \in \mathbb{Z}$, and let $m, n$ be odd positive integers:
+For odd prime \(p\):
 
-* **Congruence Invariance**:
+\[
+\boxed{
+\left(\frac{-1}{p}\right)
+=
+(-1)^{(p-1)/2}.
+}
+\]
 
-  $$
-  a \equiv b \mod n \quad \Rightarrow \quad \left( \frac{a}{n} \right) = \left( \frac{b}{n} \right)
-  $$
+Thus:
 
-* **Multiplicativity in Numerator and Denominator**:
+\[
+\left(\frac{-1}{p}\right)=1
+\iff
+p\equiv1\pmod4.
+\]
 
-  $$
-  \left( \frac{ab}{n} \right) = \left( \frac{a}{n} \right) \left( \frac{b}{n} \right), \qquad
-  \left( \frac{a}{mn} \right) = \left( \frac{a}{m} \right) \left( \frac{a}{n} \right)
-  $$
+Also:
 
-* **Special Values**:
+\[
+\boxed{
+\left(\frac2p\right)
+=
+(-1)^{(p^2-1)/8}.
+}
+\]
 
-  $$
-  \left( \frac{-1}{n} \right) = (-1)^{\frac{n - 1}{2}}, \qquad
-  \left( \frac{2}{n} \right) = (-1)^{\frac{n^2 - 1}{8}}
-  $$
+Therefore:
 
-* **Quadratic Reciprocity (Extended)**:
+\[
+\left(\frac2p\right)=1
+\]
 
-  $$
-  \left( \frac{m}{n} \right) \left( \frac{n}{m} \right) = (-1)^{\frac{m - 1}{2} \cdot \frac{n - 1}{2}}
-  \quad \text{for } \gcd(m, n) = 1
-  $$
+exactly when:
 
-We have a custom python implementation into `src/jacobisymbol.py`. 
-
-Here is a refined and well-formatted academic markdown version of your Carmichael number section, with improved clarity, flow, and consistency:
+\[
+p\equiv\pm1\pmod8.
+\]
 
 ---
 
-## Carmichael Numbers
+## Quadratic reciprocity
 
+For distinct odd primes \(p\) and \(q\):
 
-A *Carmichael number* is a composite integer $n$ such that:
+\[
+\boxed{
+\left(\frac pq\right)
+\left(\frac qp\right)
+=
+(-1)^{
+\frac{p-1}{2}
+\frac{q-1}{2}
+}.
+}
+\]
 
-$$
-a^{n - 1} \equiv 1 \pmod{n} \quad \text{for all } a \in \mathbb{Z} \text{ with } \gcd(a, n) = 1
-$$
+Equivalently, if at least one of \(p\) or \(q\) is congruent to \(1\pmod4\),
 
-In other words, Carmichael numbers satisfy FLTfor all bases coprime to $n$, despite being *composite*. This makes them *pseudoprimes to all bases*, and thus dangerous counterexamples in primality testing.
+\[
+\left(\frac pq\right)
+=
+\left(\frac qp\right).
+\]
 
-### Korselt’s Criterion (Necessary and Sufficient Condition)
+If both satisfy:
 
-A composite number $n$ is a Carmichael number **if and only if**:
+\[
+p\equiv q\equiv3\pmod4,
+\]
 
-1. $n$ is **square-free** (i.e., not divisible by any square $p^2$),
-2. For every prime $p \mid n$, we have:
+then:
 
-$$
-p - 1 \mid n - 1
-$$
+\[
+\left(\frac pq\right)
+=
+-
+\left(\frac qp\right).
+\]
 
-This characterization allows efficient construction and verification of Carmichael numbers.
+Quadratic reciprocity is one of the central theorems of elementary number theory.
 
-> Every Carmichael number must be the product of *at least three distinct primes*.
+Here we record it primarily because it leads naturally to efficient computation of residue symbols.
 
-### The Carmichael Function $\lambda(n)$
+---
 
+## Jacobi symbol
 
-The *Carmichael function* $\lambda(n)$ is defined as the smallest positive integer $k$ such that:
+Let \(n\) be an odd positive integer with prime factorization:
 
-$$
-a^k \equiv 1 \pmod{n} \quad \text{for all } a \in \mathbb{Z}_n^* = \{ a \in \mathbb{Z} \mid \gcd(a, n) = 1 \}
-$$
+\[
+n
+=
+\prod_{i=1}^{k}
+p_i^{e_i}.
+\]
 
-That is, $\lambda(n)$ is the **exponent** of the multiplicative group $\mathbb{Z}_n^*$.
+The **Jacobi symbol** is defined as:
 
+\[
+\boxed{
+\left(\frac an\right)
+=
+\prod_{i=1}^{k}
+\left(\frac{a}{p_i}\right)^{e_i}.
+}
+\]
 
-### Computation of $\lambda(n)$
+For prime denominator \(n=p\), the Jacobi symbol is simply the Legendre symbol.
 
-Let $n = p_1^{\alpha_1} p_2^{\alpha_2} \cdots p_k^{\alpha_k}$ be the prime factorization of $n$. Then:
+For composite \(n\), however, there is an important difference.
 
-$$
-\lambda(n) = \operatorname{lcm}\big( \lambda(p_1^{\alpha_1}), \ldots, \lambda(p_k^{\alpha_k}) \big)
-$$
+> A Jacobi symbol of \(1\) does **not** imply that \(a\) is a quadratic residue modulo \(n\).
 
-For individual prime powers:
+### Example
 
-$$
-\lambda(p^\alpha) =
-\begin{cases}
-\phi(p^\alpha) & \text{if } p \geq 3 \text{ or } \alpha \leq 2 \\
-\frac{1}{2} \phi(2^\alpha) & \text{if } p = 2 \text{ and } \alpha \geq 3
-\end{cases}
-$$
+Take:
 
-It has the following properties: 
+\[
+a=2,
+\qquad
+n=15.
+\]
 
-* If $a \mid b$, then $\lambda(a) \mid \lambda(b)$
-* $\lambda(\operatorname{lcm}(a, b)) = \operatorname{lcm}(\lambda(a), \lambda(b))$
+Since:
 
-The Carmichael function plays a central role in cryptographic protocols and pseudoprime constructions, especially in generating numbers that *appear* prime under exponentiation tests but are, in fact, composite. It is closely connected to the group structure of $\mathbb{Z}_n^*$ and provides a more refined exponent than Euler’s $\phi(n)$ in this context.
+\[
+15=3\cdot5,
+\]
 
+we have:
 
-## Wrap-Up
+\[
+\left(\frac2{15}\right)
+=
+\left(\frac23\right)
+\left(\frac25\right).
+\]
 
-We laid the foundational groundwork of *group theory* and *modular arithmetic*, key pillars in modern number theory and cryptography. We introduced the definition of a group and explored the structure of additive and multiplicative groups modulo $n$, particularly the rich behavior of $\mathbb{Z}_n^*$. Special attention was given to *cyclic groups*, *generators*, and *orders of elements*, which underlie important concepts such as *discrete logarithms*.
+Now:
 
-We also discussed more advanced notions such as *subgroups*, *normal subgroups*, and the *Carmichael function*, preparing us for future explorations into deeper group-theoretic constructs. 
+\[
+\left(\frac23\right)=-1
+\]
 
-This material serves as a primer—a high-level overview meant to “set the field.” In the upcoming parts of this series, we will build on these algebraic foundations to investigate more sophisticated topics, including *finite fields*, *quotient groups*, and *elliptic curve groups*, as well as *probabilistic* and *deterministic* primality tests like *AKS*, *APR-CL*, and *elliptic curve-based methods*.
+and:
 
-We have so far stated key results and properties with minimal proofs. As we move forward, we will return to these concepts with deeper theoretical tools and proofs, grounding our understanding both algebraically and computationally.
+\[
+\left(\frac25\right)=-1.
+\]
 
-Stay tuned and keep exploring!
+Therefore:
+
+\[
+\boxed{
+\left(\frac2{15}\right)=1.
+}
+\]
+
+Yet \(2\) is **not** a square modulo \(15\).
+
+So:
+
+\[
+\boxed{
+\text{Jacobi}=1
+\not\Rightarrow
+\text{quadratic residue}
+}
+\]
+
+when the modulus is composite.
+
+This distinction becomes important in quadratic-residuosity-based cryptography and primality testing.
+
+---
+
+## Carmichael numbers
+
+Fermat's little theorem tells us that if \(p\) is prime and:
+
+\[
+\gcd(a,p)=1,
+\]
+
+then:
+
+\[
+a^{p-1}\equiv1\pmod p.
+\]
+
+It is tempting to reverse this logic and use it as a primality test.
+
+Unfortunately, some composite integers imitate this behavior extremely well.
+
+A **Carmichael number** is a composite integer \(n\) satisfying:
+
+\[
+\boxed{
+a^{n-1}
+\equiv1
+\pmod n
+}
+\]
+
+for every:
+
+\[
+\gcd(a,n)=1.
+\]
+
+So Carmichael numbers are Fermat pseudoprimes to **every base coprime to the modulus**.
+
+The smallest example is:
+
+\[
+\boxed{
+561=3\cdot11\cdot17.
+}
+\]
+
+Despite being composite:
+
+\[
+a^{560}
+\equiv1
+\pmod{561}
+\]
+
+for every:
+
+\[
+\gcd(a,561)=1.
+\]
+
+---
+
+## Korselt's criterion
+
+A composite integer \(n\) is a Carmichael number if and only if:
+
+1. \(n\) is square-free;
+2. for every prime divisor \(p\mid n\),
+
+\[
+\boxed{
+p-1\mid n-1.
+}
+\]
+
+For:
+
+\[
+561=3\cdot11\cdot17,
+\]
+
+the number is square-free.
+
+Also:
+
+\[
+3-1=2\mid560,
+\]
+
+\[
+11-1=10\mid560,
+\]
+
+and:
+
+\[
+17-1=16\mid560.
+\]
+
+Therefore \(561\) satisfies Korselt's criterion.
+
+Every Carmichael number is the product of at least three distinct primes.
+
+This explains why naive Fermat primality testing is insufficient and motivates stronger tests such as Miller-Rabin.
+
+---
+
+## The Carmichael function
+
+Euler's theorem gives the universal exponent:
+
+\[
+\varphi(n)
+\]
+
+for the unit group:
+
+\[
+a^{\varphi(n)}
+\equiv1\pmod n.
+\]
+
+But \(\varphi(n)\) is not always the smallest positive exponent that works for **every** unit.
+
+The **Carmichael function**
+
+\[
+\lambda(n)
+\]
+
+is defined as the smallest positive integer such that:
+
+\[
+\boxed{
+a^{\lambda(n)}
+\equiv1\pmod n
+}
+\]
+
+for every:
+
+\[
+a\in\mathbb Z_n^\times.
+\]
+
+Equivalently:
+
+\[
+\lambda(n)
+\]
+
+is the **exponent** of the finite group:
+
+\[
+\mathbb Z_n^\times.
+\]
+
+Therefore:
+
+\[
+\boxed{
+\lambda(n)
+=
+\operatorname{lcm}
+\{
+\operatorname{ord}_n(a):
+a\in\mathbb Z_n^\times
+\}.
+}
+\]
+
+This gives the useful chain:
+
+\[
+\boxed{
+\operatorname{ord}_n(a)
+\mid
+\lambda(n)
+\mid
+\varphi(n).
+}
+\]
+
+---
+
+## Computing \(\lambda(n)\)
+
+If:
+
+\[
+n
+=
+\prod_i
+p_i^{\alpha_i},
+\]
+
+then:
+
+\[
+\boxed{
+\lambda(n)
+=
+\operatorname{lcm}
+\left(
+\lambda(p_1^{\alpha_1}),
+\ldots,
+\lambda(p_k^{\alpha_k})
+\right).
+}
+\]
+
+For odd prime powers:
+
+\[
+\lambda(p^\alpha)
+=
+\varphi(p^\alpha)
+=
+p^{\alpha-1}(p-1).
+\]
+
+For powers of two:
+
+\[
+\lambda(2)=1,
+\]
+
+\[
+\lambda(4)=2,
+\]
+
+and for:
+
+\[
+\alpha\ge3,
+\]
+
+\[
+\boxed{
+\lambda(2^\alpha)
+=
+2^{\alpha-2}
+=
+\frac12\varphi(2^\alpha).
+}
+\]
+
+### Example: \(n=15\)
+
+Since:
+
+\[
+15=3\cdot5,
+\]
+
+we get:
+
+\[
+\lambda(3)=2,
+\]
+
+and:
+
+\[
+\lambda(5)=4.
+\]
+
+Therefore:
+
+\[
+\lambda(15)
+=
+\operatorname{lcm}(2,4)
+=
+4.
+\]
+
+But:
+
+\[
+\varphi(15)=8.
+\]
+
+So:
+
+\[
+\boxed{
+\lambda(15)=4<8=\varphi(15).
+}
+\]
+
+Euler's theorem guarantees:
+
+\[
+a^8\equiv1\pmod{15},
+\]
+
+but in fact the stronger statement:
+
+\[
+a^4\equiv1\pmod{15}
+\]
+
+already holds for every unit.
+
+This is why \(\lambda(n)\) gives a more precise universal exponent.
+
+---
+
+## Carmichael numbers through \(\lambda(n)\)
+
+The Carmichael function also gives a clean view of Carmichael numbers.
+
+A composite \(n\) is Carmichael when:
+
+\[
+a^{n-1}
+\equiv1\pmod n
+\]
+
+for every unit.
+
+That means the exponent of the unit group must divide \(n-1\):
+
+\[
+\boxed{
+\lambda(n)\mid n-1.
+}
+\]
+
+For \(561\):
+
+\[
+\lambda(561)
+=
+\operatorname{lcm}
+(
+2,10,16
+)
+=
+80.
+\]
+
+And:
+
+\[
+80\mid560.
+\]
+
+Therefore every unit satisfies:
+
+\[
+a^{80}\equiv1\pmod{561},
+\]
+
+and hence:
+
+\[
+a^{560}
+=
+(a^{80})^7
+\equiv1\pmod{561}.
+\]
+
+This gives a group-theoretic explanation for the Fermat-like behavior of \(561\).
+
+---
+
+## Computational examples
+
+### Additive group
+
+In SageMath:
+
+```python
+R = Integers(10)
+
+for a in R:
+    print(a)
+```
+
+The additive structure contains all ten residue classes.
+
+The element:
+
+```python
+R(1)
+```
+
+generates the additive group.
+
+### Multiplicative order
+
+```python
+R = Integers(10)
+
+a = R(3)
+
+print(
+    a.multiplicative_order()
+)
+```
+
+Output:
+
+```text
+4
+```
+
+Indeed:
+
+```python
+[
+    a**i
+    for i in range(1, 5)
+]
+```
+
+cycles through the complete unit group.
+
+### Generator test modulo a prime
+
+For a prime \(p\), a simple SageMath generator test is:
+
+```python
+def is_generator_mod_prime(g, p):
+    if not is_prime(p):
+        raise ValueError(
+            "p must be prime"
+        )
+
+    order = p - 1
+
+    for q, _ in factor(order):
+        q = int(q)
+
+        if pow(
+            int(g),
+            order // q,
+            int(p),
+        ) == 1:
+            return False
+
+    return True
+```
+
+For:
+
+```python
+p = 17
+```
+
+we can test:
+
+```python
+for g in range(1, p):
+    if is_generator_mod_prime(g, p):
+        print(g)
+```
+
+Every returned value has order:
+
+\[
+16.
+\]
+
+### Primitive root
+
+SageMath can also compute one directly:
+
+```python
+p = 17
+
+g = primitive_root(p)
+
+print(g)
+```
+
+Then:
+
+```python
+[
+    pow(g, i, p)
+    for i in range(1, p)
+]
+```
+
+runs through every nonzero residue modulo \(17\).
+
+The library call is convenient.
+
+The generator criterion explains why it works.
+
+---
+
+## Why this matters in cryptography
+
+Groups provide the language behind a large fraction of public-key cryptography.
+
+### Diffie-Hellman
+
+A typical finite-group Diffie-Hellman setting chooses a cyclic group:
+
+\[
+G=\langle g\rangle
+\]
+
+of known large order \(q\).
+
+Secret exponents live modulo \(q\).
+
+Public values have the form:
+
+\[
+g^a.
+\]
+
+The security problem asks whether recovering \(a\) from:
+
+\[
+g^a
+\]
+
+is computationally difficult.
+
+### Element order matters
+
+It is not sufficient for the ambient structure to be large.
+
+The chosen element must also lie in the intended subgroup and have the intended order.
+
+If an attacker can force computations into a small subgroup generated by an element \(T\) of order \(s\), then:
+
+\[
+T^d
+=
+T^{d\bmod s}.
+\]
+
+That is the mathematical core of small-subgroup attacks.
+
+### RSA
+
+RSA uses the multiplicative structure of:
+
+\[
+\mathbb Z_N^\times.
+\]
+
+Euler's theorem explains one form of the exponent cycle.
+
+The Carmichael function gives the more precise universal exponent:
+
+\[
+\lambda(N).
+\]
+
+This is why modern RSA key relations are naturally expressed as:
+
+\[
+ed\equiv1\pmod{\lambda(N)}.
+\]
+
+### Quadratic residuosity
+
+Quadratic residues, Legendre symbols, Jacobi symbols, and square-root structure appear in:
+
+- primality testing,
+- residuosity assumptions,
+- probabilistic encryption constructions,
+- integer-factorization-related cryptography.
+
+The common theme is that cryptographic security frequently depends not merely on arithmetic modulo \(n\), but on the **structure of particular groups and subgroups inside that arithmetic**.
+
+---
+
+## Practice and checkpoint
+
+### Exercise 1 — Additive group
+
+Show that:
+
+\[
+(\mathbb Z_8,+)
+\]
+
+is cyclic.
+
+Which elements generate the full additive group?
+
+Hint: determine the additive order of each residue.
+
+### Exercise 2 — Units
+
+List:
+
+\[
+\mathbb Z_{15}^{\times}.
+\]
+
+Verify that every listed element is coprime to \(15\).
+
+How many elements are there?
+
+### Exercise 3 — Element orders
+
+Compute the order of each element of:
+
+\[
+\mathbb Z_{10}^{\times}
+=
+\{1,3,7,9\}.
+\]
+
+Which elements generate the whole group?
+
+### Exercise 4 — Noncyclic unit group
+
+Study:
+
+\[
+\mathbb Z_8^\times
+=
+\{1,3,5,7\}.
+\]
+
+Verify:
+
+\[
+3^2\equiv5^2\equiv7^2\equiv1\pmod8.
+\]
+
+Why can this group not be cyclic?
+
+### Exercise 5 — Primitive root
+
+Find the powers of \(3\) modulo \(7\).
+
+Verify:
+
+\[
+\operatorname{ord}_7(3)=6.
+\]
+
+Why does that prove that \(3\) is a generator?
+
+### Exercise 6 — Square roots
+
+Find both square roots of:
+
+\[
+9\pmod{11}.
+\]
+
+Verify them directly.
+
+### Exercise 7 — Quadratic residues
+
+List all nonzero quadratic residues modulo \(13\).
+
+Confirm that there are:
+
+\[
+\frac{13-1}{2}=6.
+\]
+
+### Exercise 8 — Legendre symbol
+
+Evaluate:
+
+\[
+\left(\frac{-1}{11}\right)
+\]
+
+without listing squares.
+
+Then verify the result by direct computation.
+
+### Exercise 9 — Jacobi warning
+
+Verify:
+
+\[
+\left(\frac2{15}\right)=1.
+\]
+
+Then enumerate the squares modulo \(15\) and confirm that \(2\) is not a quadratic residue.
+
+### Exercise 10 — Carmichael number
+
+Verify Korselt's criterion for:
+
+\[
+561=3\cdot11\cdot17.
+\]
+
+Then compute:
+
+\[
+\lambda(561).
+\]
+
+Explain why:
+
+\[
+\lambda(561)\mid560
+\]
+
+forces every unit to pass the Fermat exponent \(560\).
+
+### Reader checkpoint
+
+You should now be able to explain:
+
+1. The four group axioms.
+2. What a subgroup is.
+3. Why every subgroup of an abelian group is normal.
+4. Why
+   \[
+   (\mathbb Z_n,+)
+   \]
+   is always cyclic.
+5. Why the full
+   \[
+   \mathbb Z_n
+   \]
+   is generally not a multiplicative group.
+6. Why
+   \[
+   \mathbb Z_n^\times
+   \]
+   contains exactly the invertible residues.
+7. The difference between group order and element order.
+8. What it means for an element to generate a cyclic group.
+9. Why
+   \[
+   \operatorname{ord}_n(a)\mid\varphi(n).
+   \]
+10. Why exponent reduction modulo \(\varphi(n)\) requires a unit.
+11. How Fermat's little theorem arises from Euler's theorem.
+12. When the formula
+    \[
+    a^{(p+1)/4}
+    \]
+    gives a square root.
+13. Why exactly half of
+    \[
+    \mathbb F_p^\times
+    \]
+    are quadratic residues.
+14. Why Jacobi symbol \(1\) does not necessarily imply quadratic residuosity.
+15. What a Carmichael number is.
+16. What
+    \[
+    \lambda(n)
+    \]
+    measures.
+17. Why
+    \[
+    \operatorname{ord}_n(a)
+    \mid
+    \lambda(n)
+    \mid
+    \varphi(n).
+    \]
+
+If these distinctions are clear, then the modular arithmetic developed earlier has now become genuine finite-group theory.
+
+---
+
+## References and further reading
+
+**Joseph A. Gallian**,  
+*Contemporary Abstract Algebra.*
+
+A particularly accessible introduction to groups, cyclic groups, subgroups, orders, and generators.
+
+**David S. Dummit and Richard M. Foote**,  
+*Abstract Algebra.*
+
+A deeper reference for group structure, quotient groups, homomorphisms, and finite algebraic systems.
+
+**Kenneth H. Rosen**,  
+*Elementary Number Theory and Its Applications.*
+
+Useful for multiplicative groups, primitive roots, quadratic residues, and classical modular number theory.
+
+**Victor Shoup**,  
+*A Computational Introduction to Number Theory and Algebra.*
+
+Especially valuable for connecting finite groups and number-theoretic structure with efficient algorithms.
+
+**Alfred J. Menezes, Paul C. van Oorschot, and Scott A. Vanstone**,  
+*Handbook of Applied Cryptography.*
+
+Connects group structure, orders, finite fields, modular exponentiation, and quadratic residues directly to cryptographic constructions.
+
+---
+
+## Next
+
+We have repeatedly used one quantity without yet studying it systematically:
+
+\[
+\varphi(n).
+\]
+
+We know that:
+
+\[
+|\mathbb Z_n^\times|
+=
+\varphi(n),
+\]
+
+and that:
+
+\[
+\operatorname{ord}_n(a)
+\mid
+\varphi(n).
+\]
+
+We have also seen:
+
+\[
+a^{\varphi(n)}
+\equiv1\pmod n
+\]
+
+for units.
+
+The next reference article therefore studies exactly what this function measures, how to compute it from the factorization of \(n\), why it is multiplicative, and how group order and element order interact.
+
+**Next: Euler's Totient Function and Element Orders.**

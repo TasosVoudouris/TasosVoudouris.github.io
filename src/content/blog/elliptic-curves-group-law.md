@@ -1,210 +1,1676 @@
 ---
 title: "Elliptic Curve Mathematics II: Weierstrass Curves and the Group Law"
-description: "A detailed introduction to elliptic curves, Weierstrass form, geometric point addition, point doubling, inverses, and the group law."
+description: "A detailed introduction to the elliptic-curve group law: secants, tangents, inverses, point addition, doubling, exceptional cases, associativity, and computational formulas."
 pubDate: "2025-05-25"
-updatedDate: '2026-09-12'
+updatedDate: "2026-09-17"
+
 topics:
-- "Elliptic Curve Theory"
-- "Elliptic-Curve Cryptography"
-- "Mathematical Foundations"
-- "Public-Key Cryptography"
+  - "Elliptic Curve Theory"
+  - "Elliptic-Curve Cryptography"
+  - "Mathematical Foundations"
+  - "Public-Key Cryptography"
+
 tags:
-- "elliptic-curves"
-- "group-law"
-- "weierstrass"
-- "point-addition"
+  - "elliptic-curves"
+  - "group-law"
+  - "weierstrass"
+  - "point-addition"
+
 difficulty: "Intermediate"
+status: "Reviewed"
 series: "Elliptic Curve Mathematics"
 seriesOrder: 2
 sourcePath: "experiments/ready-material/elliptic-curves"
 draft: false
 ---
-Elliptic curves are central objects in number theory and modern cryptography. In this section, we introduce their algebraic definition, explore their geometry, and describe how a group structure emerges from their points.
 
-## General Form and Simplified Weierstrass Equation
-
-The general Weierstrass form of an elliptic curve over a field (typically of characteristic not equal to 2 or 3) is given by:
+The previous chapter established the geometric object:
 
 $$
-y^2 + a_1xy + a_3y = x^3 + a_2x^2 + a_4x + a_6
+E:
+y^2=x^3+ax+b,
 $$
 
-Through an appropriate change of variables, this can be simplified to the **short Weierstrass form**:
+together with its projective point at infinity
 
 $$
-y^2 = x^3 + ax + b
+\mathcal O=(0:1:0),
 $$
 
-This simplified form is widely used in both theory and applications. For the curve to be **non-singular**, it must satisfy the condition:
+under the nonsingularity condition
 
 $$
-\Delta = 16(4a^3 + 27b^2) \neq 0
+\Delta=-16(4a^3+27b^2)\neq0.
 $$
 
-which guarantees that the curve has no cusps or self-intersections.
+We now ask the question that makes elliptic curves exceptional:
 
-## Visualizing Elliptic Curves
+> How can points on a cubic curve be **added**?
 
-Elliptic curves defined over the real numbers $\mathbb{R}$ can be visualized by plotting the solution set of the equation $y^2 = x^3 + ax + b$ in the plane. For example, using Python:
+The answer begins with a remarkably simple geometric observation.
 
-```python
-import numpy as np
-import matplotlib.pyplot as plt
+A line intersects a smooth cubic in three points, counting multiplicity.
 
-a = -3
-b = 5
-y, x = np.ogrid[-5:5:100j, -5:5:100j]
-plt.contour(x.ravel(), y.ravel(), pow(y, 2) - pow(x, 3) - x * a - b, [0])
-plt.grid()
-plt.show()
-```
-
-This allows us to experiment with different values of $a$ and $b$ to observe how the shape of the curve changes.
-
-## Group Law on Elliptic Curves
-
-One of the most remarkable properties of elliptic curves is that their points form an abelian group under a geometric addition operation. Specifically, let:
-
-* $E: y^2 = x^3 + ax + b$ be an elliptic curve,
-* $P, Q \in E$ be points on the curve,
-* and $\mathcal{O}$ be the *point at infinity*, which acts as the group identity element.
-
-### Geometric Construction of Point Addition
-
-The group law is defined by the following geometric rules:
-
-* Given two points $P$ and $Q$, draw the line $L$ through them.
-* This line will intersect the curve at a third point $R$ (counting multiplicity).
-* Reflect $R$ over the x-axis to obtain $P + Q = -R$.
-
-In coordinates, if $P = (x_1, y_1)$, $Q = (x_2, y_2)$, then the point $R = (x_3, y_3) = P + Q$ is computed as follows:
-
-### Case 1: $P \neq Q$
+From that fact we obtain:
 
 $$
-\lambda = \frac{y_2 - y_1}{x_2 - x_1}, \quad
-x_3 = \lambda^2 - x_1 - x_2, \quad
-y_3 = \lambda(x_1 - x_3) - y_1
+\boxed{
+\text{secants}
+\rightarrow
+\text{point addition}
+}
 $$
 
-### Case 2: $P = Q$ (Point Doubling)
+and
 
 $$
-\lambda = \frac{3x_1^2 + a}{2y_1}, \quad
-x_3 = \lambda^2 - 2x_1, \quad
-y_3 = \lambda(x_1 - x_3) - y_1
+\boxed{
+\text{tangents}
+\rightarrow
+\text{point doubling}.
+}
 $$
 
-### Case 3: $P = -Q$
-
-If the line through $P$ and $Q$ is vertical, then $P + Q = \mathcal{O}$, the identity element.
-
-## The Point at Infinity and Identity Element
-
-The point $\mathcal{O}$ is a special idealized point that lies on every vertical line. It serves as the **neutral element** of the group, meaning:
-
-$$
-P + \mathcal{O} = \mathcal{O} + P = P \quad \text{for all } P \in E
-$$
-
-Each point $P = (x, y)$ has an inverse $-P = (x, -y)$, reflecting it across the x-axis.
-
-**Proprieties**:
-- $P + \mathcal{O} = \mathcal{O} + P + P $
-- $ P + (-P) = \mathcal{O}$
-- $P + Q = Q + P$
-- $(P + Q) + R = P + (Q + R)$
-
-Therefore points on E form an *abelian group*. Refresh the Group theory if you dont remember the definitions.
-
-
-```python
-def elliptic_sum(P1, P2):
-    """Let a point P = (x, y); let O = (0, np.inf)"""
-    x_1, y_1 = P1
-    x_2, y_2 = P2
-    if y_1 == np.inf:
-        return P2
-    elif y_2 == np.inf:
-        return P1
-    elif x_1 == x_2 and y_1 == -y_2:
-        return (0, np.inf)  # this is O
-    else:
-        lam = (y_2 - y_1) / (x_2 - x_1) if P1 != P2 else (3 * (x_1**2) + a) / (2 * y_1)  # the slope
-        x_3 = lam**2 - x_1 - x_2
-        y_3 = lam * (x_1 - x_3) - y_1
-        return (x_3, y_3)
-```
-
-In the `src/ecpy.py` we have some illustrative examples. 
+The resulting operation turns the points of an elliptic curve into an **abelian group**.
 
 ---
 
-## Visualizing Elliptic Curves in Projective Space
+## Table of Contents
 
-To deepen our geometric understanding of elliptic curves, it's helpful to move from the affine plane to *projective space*, which naturally handles the behavior of curves "at infinity" and provides a complete algebraic framework.
+- [1. Weierstrass form revisited](#1-weierstrass-form-revisited)
+- [2. Why a group law should exist](#2-why-a-group-law-should-exist)
+- [3. Negating a point](#3-negating-a-point)
+- [4. Geometric point addition](#4-geometric-point-addition)
+- [5. Deriving the addition formulas](#5-deriving-the-addition-formulas)
+- [Point doubling](#point-doubling)
+- [7. Deriving the doubling formulas](#7-deriving-the-doubling-formulas)
+- [8. Vertical lines and exceptional cases](#8-vertical-lines-and-exceptional-cases)
+- [9. The point at infinity](#9-the-point-at-infinity)
+- [10. Why the group is abelian](#10-why-the-group-is-abelian)
+- [11. Why associativity is difficult](#11-why-associativity-is-difficult)
+- [12. A complete numerical example](#12-a-complete-numerical-example)
+- [Projective interpretation](#projective-interpretation)
+- [14. A simple Python implementation](#14-a-simple-python-implementation)
+- [15. From addition to scalar multiplication](#15-from-addition-to-scalar-multiplication)
+- [16. The bigger picture](#16-the-bigger-picture)
+- [Further reading](#further-reading)
 
-### Projective Space: Motivation and Construction
+---
 
-Let us begin with the Euclidean plane $\mathbb{R}^2 = \{(x, y) \mid x, y \in \mathbb{R} \}$, which we now want to "embed" in a higher-dimensional setting. The projective plane $\mathbb{RP}^2$ is defined as:
+<a id="weierstrass-form"></a>
+
+## 1. Weierstrass form revisited
+
+The general Weierstrass equation over a field \(K\) is
 
 $$
-\mathbb{RP}^2 = \left\{ (x : y : z) \in \mathbb{R}^3 \setminus \{(0 : 0 : 0)\} \right\} \big/ \sim
+y^2+a_1xy+a_3y
+=
+x^3+a_2x^2+a_4x+a_6.
 $$
 
-where $(x : y : z) \sim (\lambda x : \lambda y : \lambda z)$ for any non-zero $\lambda \in \mathbb{R}$.
+When
 
-In other words, each point in projective space represents a line through the origin in $\mathbb{R}^3$. Any two points on the same line are considered equivalent under this relation. This gives us a consistent way to reason about directions and "points at infinity" in the plane.
+$$
+\operatorname{char}(K)\neq2,3,
+$$
+
+a suitable change of variables transforms this into short Weierstrass form:
+
+$$
+\boxed{
+E:
+y^2=x^3+ax+b.
+}
+$$
+
+The curve must satisfy
+
+$$
+\boxed{
+4a^3+27b^2\neq0
+}
+$$
+
+or equivalently
+
+$$
+\Delta\neq0.
+$$
+
+This guarantees that the cubic is nonsingular.
+
+For the rest of this chapter we assume short Weierstrass form and characteristic different from \(2\) and \(3\).
+
+---
+
+<a id="why-group-law"></a>
+
+## 2. Why a group law should exist
+
+Let
+
+$$
+P,Q\in E.
+$$
+
+Draw the line passing through \(P\) and \(Q\).
+
+Because a line has degree \(1\) and the elliptic curve has degree \(3\), Bézout's theorem tells us that the line and the cubic meet in three points over an algebraic closure, counting multiplicity.
+
+So if two intersections are known,
+
+$$
+P
+\quad\text{and}\quad
+Q,
+$$
+
+there is a third intersection
+
+$$
+R.
+$$
+
+This gives us a natural geometric operation.
+
+But we do not define
+
+$$
+P+Q=R.
+$$
+
+Instead, we reflect \(R\) across the \(x\)-axis.
+
+If
+
+$$
+R=(x_R,y_R),
+$$
+
+then
+
+$$
+-R=(x_R,-y_R).
+$$
+
+The elliptic-curve sum is
+
+$$
+\boxed{
+P+Q=-R.
+}
+$$
+
+Thus:
+
+1. draw the line through \(P\) and \(Q\);
+2. find its third intersection with \(E\);
+3. reflect that point across the \(x\)-axis.
+
+That reflected point is \(P+Q\).
+
+---
+
+<a id="point-negation"></a>
+
+## 3. Negating a point
+
+The short Weierstrass equation is
+
+$$
+y^2=x^3+ax+b.
+$$
+
+If
+
+$$
+P=(x,y)
+$$
+
+lies on the curve, then
+
+$$
+y^2=x^3+ax+b.
+$$
+
+But
+
+$$
+(-y)^2=y^2.
+$$
+
+Therefore,
+
+$$
+(x,-y)
+$$
+
+also lies on the curve.
+
+So the inverse of \(P\) is
+
+$$
+\boxed{
+-P=(x,-y).
+}
+$$
+
+Geometrically, negation is reflection across the \(x\)-axis.
+
+Therefore,
+
+$$
+P+(-P)=\mathcal O.
+$$
+
+This already explains one of the group axioms.
+
+---
+
+<a id="geometric-addition"></a>
+
+## 4. Geometric point addition
+
+Let
+
+$$
+P=(x_1,y_1)
+$$
+
+and
+
+$$
+Q=(x_2,y_2),
+$$
+
+with
+
+$$
+P\neq Q
+$$
+
+and
+
+$$
+x_1\neq x_2.
+$$
+
+The line through \(P\) and \(Q\) has slope
+
+$$
+\boxed{
+\lambda
+=
+\frac{y_2-y_1}{x_2-x_1}.
+}
+$$
+
+Its equation can be written as
+
+$$
+y
+=
+\lambda(x-x_1)+y_1.
+$$
+
+Equivalently,
+
+$$
+y=\lambda x+\nu,
+$$
+
+where
+
+$$
+\nu=y_1-\lambda x_1.
+$$
+
+This line intersects the elliptic curve in three points.
+
+Two are \(P\) and \(Q\).
+
+Let the third be
+
+$$
+R=(x_R,y_R).
+$$
+
+Then
+
+$$
+P+Q=-R.
+$$
+
+If we write
+
+$$
+P+Q=(x_3,y_3),
+$$
+
+then
+
+$$
+x_3=x_R
+$$
+
+and
+
+$$
+y_3=-y_R.
+$$
+
+---
+
+<a id="addition-formulas"></a>
+
+## 5. Deriving the addition formulas
+
+Substitute
+
+$$
+y=\lambda x+\nu
+$$
+
+into
+
+$$
+y^2=x^3+ax+b.
+$$
+
+We obtain
+
+$$
+(\lambda x+\nu)^2
+=
+x^3+ax+b.
+$$
+
+Expanding,
+
+$$
+\lambda^2x^2
++
+2\lambda\nu x
++
+\nu^2
+=
+x^3+ax+b.
+$$
+
+Move everything to one side:
+
+$$
+x^3
+-
+\lambda^2x^2
++
+(a-2\lambda\nu)x
++
+(b-\nu^2)
+=
+0.
+$$
+
+The roots of this cubic equation are exactly the three \(x\)-coordinates
+
+$$
+x_1,
+\qquad
+x_2,
+\qquad
+x_R.
+$$
+
+By Vieta's formula,
+
+$$
+x_1+x_2+x_R=\lambda^2.
+$$
+
+Therefore,
+
+$$
+x_R
+=
+\lambda^2-x_1-x_2.
+$$
+
+Since reflection does not change the \(x\)-coordinate,
+
+$$
+\boxed{
+x_3
+=
+\lambda^2-x_1-x_2.
+}
+$$
+
+Now the third intersection lies on the line, so
+
+$$
+y_R
+=
+\lambda(x_R-x_1)+y_1.
+$$
+
+Reflecting gives
+
+$$
+y_3=-y_R.
+$$
+
+Therefore,
+
+$$
+y_3
+=
+-\lambda(x_3-x_1)-y_1.
+$$
+
+Equivalently,
+
+$$
+\boxed{
+y_3
+=
+\lambda(x_1-x_3)-y_1.
+}
+$$
+
+So for distinct points,
+
+$$
+\boxed{
+\lambda
+=
+\frac{y_2-y_1}{x_2-x_1}
+}
+$$
+
+and
+
+$$
+\boxed{
+x_3=\lambda^2-x_1-x_2,
+}
+$$
+
+$$
+\boxed{
+y_3=\lambda(x_1-x_3)-y_1.
+}
+$$
+
+These formulas are not arbitrary algebra.
+
+They are simply the coordinate form of the secant construction.
+
+---
+
+<a id="point-doubling"></a>
+
+## Point doubling
+
+What happens if
+
+$$
+P=Q?
+$$
+
+There is no unique secant line through two distinct points anymore.
+
+Instead, we take the **tangent line** to the curve at \(P\).
+
+This corresponds to the line intersecting the cubic twice at \(P\), counting multiplicity, and once more at another point \(R\).
+
+Then
+
+$$
+\boxed{
+2P=P+P=-R.
+}
+$$
+
+The geometry therefore remains exactly the same.
+
+The only difference is how we compute the slope.
+
+---
+
+<a id="doubling-formulas"></a>
+
+## 7. Deriving the doubling formulas
+
+Start from
+
+$$
+y^2=x^3+ax+b.
+$$
+
+Differentiate implicitly with respect to \(x\):
+
+$$
+2y\frac{dy}{dx}
+=
+3x^2+a.
+$$
+
+Therefore,
+
+$$
+\frac{dy}{dx}
+=
+\frac{3x^2+a}{2y}.
+$$
+
+At
+
+$$
+P=(x_1,y_1),
+$$
+
+the tangent slope is
+
+$$
+\boxed{
+\lambda
+=
+\frac{3x_1^2+a}{2y_1}.
+}
+$$
+
+The remaining coordinate formulas are the same as before, except now
+
+$$
+x_1=x_2.
+$$
+
+Therefore,
+
+$$
+\boxed{
+x_3
+=
+\lambda^2-2x_1
+}
+$$
+
+and
+
+$$
+\boxed{
+y_3
+=
+\lambda(x_1-x_3)-y_1.
+}
+$$
+
+Hence the complete doubling formula is
+
+$$
+\boxed{
+\lambda
+=
+\frac{3x_1^2+a}{2y_1},
+\qquad
+x_3
+=
+\lambda^2-2x_1,
+\qquad
+y_3
+=
+\lambda(x_1-x_3)-y_1.
+}
+$$
+
+---
+
+<a id="exceptional-cases"></a>
+
+## 8. Vertical lines and exceptional cases
+
+The formulas contain divisions.
+
+Therefore we must understand when the denominators vanish.
+
+### Case 1: \(P=-Q\)
+
+Suppose
+
+$$
+P=(x,y)
+$$
+
+and
+
+$$
+Q=(x,-y).
+$$
+
+Then
+
+$$
+x_1=x_2
+$$
+
+but
+
+$$
+P\neq Q.
+$$
+
+The line through them is vertical.
+
+Projectively, the third intersection is
+
+$$
+\mathcal O.
+$$
+
+Therefore,
+
+$$
+\boxed{
+P+(-P)=\mathcal O.
+}
+$$
+
+---
+
+### Case 2: Doubling a point with \(y=0\)
+
+Suppose
+
+$$
+P=(x,0).
+$$
+
+Then
+
+$$
+P=-P.
+$$
+
+Therefore,
+
+$$
+P+P
+=
+P+(-P)
+=
+\mathcal O.
+$$
+
+So
+
+$$
+\boxed{
+2P=\mathcal O.
+}
+$$
+
+Such a point has order \(2\).
+
+Notice that the doubling slope formula also detects this special case because its denominator is
+
+$$
+2y=0.
+$$
+
+---
+
+### Case 3: Adding the identity
+
+By definition,
+
+$$
+\boxed{
+P+\mathcal O
+=
+\mathcal O+P
+=
+P.
+}
+$$
+
+And
+
+$$
+\boxed{
+\mathcal O+\mathcal O
+=
+\mathcal O.
+}
+$$
+
+These cases complete the operation globally.
+
+---
+
+<a id="point-at-infinity"></a>
+
+## 9. The point at infinity
+
+The previous chapter showed that the projective closure
+
+$$
+Y^2Z
+=
+X^3+aXZ^2+bZ^3
+$$
+
+contains the unique point
+
+$$
+\boxed{
+\mathcal O=(0:1:0).
+}
+$$
+
+It is tempting to think of \(\mathcal O\) as merely a convenient symbol.
+
+It is not.
+
+It is a genuine projective point on the curve.
+
+Every affine vertical line has projective equation
+
+$$
+X-x_0Z=0.
+$$
+
+Setting
+
+$$
+Z=0
+$$
+
+forces
+
+$$
+X=0.
+$$
+
+Therefore the vertical line passes through
+
+$$
+(0:1:0)=\mathcal O.
+$$
+
+So if
+
+$$
+P=(x,y)
+$$
+
+and
+
+$$
+-P=(x,-y),
+$$
+
+the vertical line contains precisely the three cubic intersections
+
+$$
+P,
+\qquad
+-P,
+\qquad
+\mathcal O,
+$$
+
+counting multiplicity.
+
+Thus
+
+$$
+P+(-P)=\mathcal O
+$$
+
+is not an arbitrary exception.
+
+It follows from exactly the same three-intersection geometry as ordinary point addition.
+
+---
+
+<a id="abelian-group"></a>
+
+## 10. Why the group is abelian
+
+The points of \(E\), together with \(\mathcal O\), form an abelian group.
+
+Let us examine the group axioms.
+
+### Closure
+
+For
+
+$$
+P,Q\in E,
+$$
+
+the geometric construction produces another point
+
+$$
+P+Q\in E.
+$$
+
+---
+
+### Identity
+
+$$
+\boxed{
+P+\mathcal O=P.
+}
+$$
+
+---
+
+### Inverses
+
+For
+
+$$
+P=(x,y),
+$$
+
+$$
+\boxed{
+-P=(x,-y)
+}
+$$
+
+and
+
+$$
+\boxed{
+P+(-P)=\mathcal O.
+}
+$$
+
+---
+
+### Commutativity
+
+The line through \(P\) and \(Q\) is the same line as the line through \(Q\) and \(P\).
+
+Therefore the third intersection is identical.
+
+Hence,
+
+$$
+\boxed{
+P+Q=Q+P.
+}
+$$
+
+Commutativity is therefore geometrically immediate.
+
+---
+
+### Associativity
+
+We also require
+
+$$
+\boxed{
+(P+Q)+R
+=
+P+(Q+R).
+}
+$$
+
+This property is much deeper.
+
+It is not visually obvious from the secant-and-tangent construction.
+
+---
+
+<a id="associativity"></a>
+
+## 11. Why associativity is difficult
+
+The geometric picture makes identity, inverses, and commutativity almost immediate.
+
+Associativity is different.
+
+Trying to prove directly that
+
+$$
+(P+Q)+R
+=
+P+(Q+R)
+$$
+
+using the coordinate formulas leads to a long rational-function calculation.
+
+Such a proof is possible, but it hides the real mathematics.
+
+A deeper explanation comes from divisor theory.
+
+For an elliptic curve \(E\), consider degree-zero divisor classes
+
+$$
+\operatorname{Pic}^0(E).
+$$
+
+This set already forms an abelian group.
+
+A point
+
+$$
+P\in E
+$$
+
+can be associated with the divisor class
+
+$$
+[P-\mathcal O].
+$$
+
+For an elliptic curve, the map
+
+$$
+\boxed{
+P
+\longmapsto
+[P-\mathcal O]
+}
+$$
+
+identifies \(E\) with its degree-zero Picard group.
+
+Now suppose a line intersects the cubic at
+
+$$
+P,
+\qquad
+Q,
+\qquad
+R.
+$$
+
+The geometry of divisors implies
+
+$$
+[P-\mathcal O]
++
+[Q-\mathcal O]
++
+[R-\mathcal O]
+=
+0.
+$$
+
+Therefore,
+
+$$
+[P-\mathcal O]
++
+[Q-\mathcal O]
+=
+-[R-\mathcal O].
+$$
+
+This is exactly the geometric rule
+
+$$
+P+Q=-R.
+$$
+
+Because divisor-class addition is associative, elliptic-curve addition is associative.
+
+So the real reason
+
+$$
+(P+Q)+R
+=
+P+(Q+R)
+$$
+
+is not simply a lucky property of the coordinate formulas.
+
+It comes from the deeper algebraic structure of the curve.
+
+For an introductory treatment, it is enough to remember:
+
+$$
+\boxed{
+\text{secant/tangent geometry defines the law;}
+}
+$$
+
+$$
+\boxed{
+\text{divisor theory explains why it is associative.}
+}
+$$
+
+---
+
+<a id="numerical-example"></a>
+
+## 12. A complete numerical example
+
+Consider
+
+$$
+E:
+y^2=x^3-2x+4
+$$
+
+over the real numbers.
+
+So
+
+$$
+a=-2,
+\qquad
+b=4.
+$$
+
+Take
+
+$$
+P=(0,2)
+$$
+
+and
+
+$$
+Q=(1,\sqrt3).
+$$
+
+Check \(P\):
+
+$$
+2^2=4
+$$
+
+and
+
+$$
+0^3-2(0)+4=4.
+$$
+
+So \(P\in E\).
+
+For \(Q\),
+
+$$
+(\sqrt3)^2=3
+$$
+
+and
+
+$$
+1^3-2(1)+4=3.
+$$
+
+Thus
+
+$$
+Q\in E.
+$$
+
+The slope is
+
+$$
+\lambda
+=
+\frac{\sqrt3-2}{1-0}
+=
+\sqrt3-2.
+$$
+
+Then
+
+$$
+x_3
+=
+(\sqrt3-2)^2-0-1.
+$$
+
+Since
+
+$$
+(\sqrt3-2)^2
+=
+7-4\sqrt3,
+$$
+
+we obtain
+
+$$
+x_3
+=
+6-4\sqrt3.
+$$
+
+Now
+
+$$
+y_3
+=
+\lambda(x_1-x_3)-y_1.
+$$
+
+Thus
+
+$$
+y_3
+=
+(\sqrt3-2)(-6+4\sqrt3)-2.
+$$
+
+After simplification,
+
+$$
+y_3
+=
+16\sqrt3-28.
+$$
+
+Therefore,
+
+$$
+\boxed{
+P+Q
+=
+(6-4\sqrt3,\;16\sqrt3-28).
+}
+$$
+
+The arithmetic may look messy over \(\mathbb R\), but the same algebra works over finite fields.
+
+There, division simply becomes multiplication by a modular inverse.
+
+---
+
+<a id="projective-interpretation"></a>
+
+## Projective interpretation
+
+Chapter I developed projective space in detail.
+
+Here we only need to recall why it matters for the group law.
+
+The affine curve
+
+$$
+y^2=x^3+ax+b
+$$
+
+becomes
+
+$$
+Y^2Z
+=
+X^3+aXZ^2+bZ^3.
+$$
+
+The unique point at infinity is
+
+$$
+\mathcal O=(0:1:0).
+$$
+
+The affine plane appears as the slice
+
+$$
+Z=1.
+$$
+
+The line
+
+$$
+Z=0
+$$
+
+is the line at infinity.
 
 <div style="text-align:center">
-  <img src="/images/ready/elliptic-curves-group-law/projection.PNG" width="500"/><br/>
-  <em>All points on the same line through the origin are equivalent in projective space.</em>
+
+<img src="/images/ready/elliptic-curves-group-law/projection.PNG" width="500"/><br/>
+
+<em>Projective points represent one-dimensional lines through the origin.</em>
+
 </div>
 
-### Affine Plane as a Slice
-
-We can recover the usual affine plane $\mathbb{R}^2$ by choosing the **affine slice** $z = 1$. Every equivalence class has a unique representative of the form $(x : y : 1)$, identifying affine coordinates with projective ones.
-
-On the other hand, the points with $z = 0$ correspond to **points at infinity**. These are not part of the affine plane but are captured naturally by projective geometry.
+The affine chart can be visualized as a slice of projective space:
 
 <div style="text-align:center">
-  <img src="/images/ready/elliptic-curves-group-law/affine.PNG" width="250"/><br/>
-  <em>The affine plane sits inside projective space as a slice z = 1, and the "line at infinity" lies at  z =0 .</em>
+
+<img src="/images/ready/elliptic-curves-group-law/affine.PNG" width="250"/><br/>
+
+<em>The affine plane is the chart \(Z=1\); points with \(Z=0\) form the line at infinity.</em>
+
 </div>
 
-
-### Homogenizing the Elliptic Curve Equation
-
-Elliptic curves are commonly given in the affine Weierstrass form:
+For the elliptic curve, only one point of that line belongs to the cubic:
 
 $$
-y^2 = x^3 + ax + b
+\boxed{
+\mathcal O=(0:1:0).
+}
 $$
-
-To move to projective space, we *homogenize* this equation so that all terms are of degree 3:
-
-$$
-y^2 z = x^3 + a x z^2 + b z^3
-$$
-
-This extended equation defines the curve in $\mathbb{P}^2$. Let's analyze what happens in special cases:
-
-* **Affine plane $z = 1$**: We recover the original affine equation.
-* **Points at infinity $z = 0$**: We get $x^3 = 0 \Rightarrow x = 0$, and $y$ can be any value. All such points are equivalent to the projective point $(0 : 1 : 0)$, which we interpret as the **point at infinity** $\mathcal{O}$ on the elliptic curve.
 
 <div style="text-align:center">
-  <img src="/images/ready/elliptic-curves-group-law/2Dplane.PNG" width="600"/><br/>
-  <em>The affine elliptic curve embedded into projective space, with O = (0 : 1 : 0) as the identity element of the group law.</em>
+
+<img src="/images/ready/elliptic-curves-group-law/2Dplane.PNG" width="600"/><br/>
+
+<em>The affine elliptic curve together with its projective identity point \(\mathcal O\).</em>
+
 </div>
 
+This projective completion is what makes the group law uniform.
 
-* Projective space allows us to compactify the affine plane and include "points at infinity."
-* Homogenization of equations ensures a well-defined curve in projective coordinates.
-* The point $\mathcal{O} = (0 : 1 : 0)$ plays the role of the **identity element** in the group structure of the elliptic curve.
-* These ideas set the stage for a deeper algebraic understanding of elliptic curves, especially when defining operations such as point addition, scalar multiplication, and group laws over finite fields or number fields.
+Without it, the statement
 
-<div style="text-align:center">
-  <img src="/images/ready/elliptic-curves-group-law/proplane.PNG" width="250"/><br/>
-</div>
+$$
+P+(-P)=\mathcal O
+$$
 
-A complete, class-based implementation of the elliptic curve group law in Python is available in the file [`src/fullec.py`](https://github.com/TasosVoudouris/TasosVoudouris.github.io/tree/main/experiments/ready-material/elliptic-curves/src/fullec.py), which includes methods for point addition, doubling, and identity handling over the affine plane.
+would appear to introduce an artificial exception.
+
+Projectively, it is simply another line-cubic intersection.
+
+---
+
+<a id="python-implementation"></a>
+
+## 14. A simple Python implementation
+
+The following implementation illustrates the group law over the real numbers.
+
+It is intentionally simple.
+
+```python
+import math
+
+O = None
+
+
+def elliptic_add(P, Q, a):
+    """
+    Add two points on the short Weierstrass curve
+
+        y^2 = x^3 + a*x + b
+
+    over the real numbers.
+
+    The parameter b is not needed by the addition formulas themselves.
+    The point at infinity is represented by None.
+    """
+
+    if P is O:
+        return Q
+
+    if Q is O:
+        return P
+
+    x1, y1 = P
+    x2, y2 = Q
+
+    # P + (-P) = O
+    if x1 == x2 and y1 == -y2:
+        return O
+
+    # Point doubling
+    if P == Q:
+        if y1 == 0:
+            return O
+
+        lam = (3 * x1**2 + a) / (2 * y1)
+
+    # Distinct-point addition
+    else:
+        lam = (y2 - y1) / (x2 - x1)
+
+    x3 = lam**2 - x1 - x2
+    y3 = lam * (x1 - x3) - y1
+
+    return (x3, y3)
+```
+
+This code represents
+
+$$
+\mathcal O
+$$
+
+with Python's
+
+```python
+None
+```
+
+rather than pretending that the point at infinity has affine coordinates such as
+
+```text
+(0, infinity).
+```
+
+That distinction is mathematically cleaner.
+
+The point
+
+$$
+\mathcal O
+$$
+
+does **not** have ordinary affine coordinates.
+
+---
+
+### Important: finite fields require different arithmetic
+
+The formulas remain the same over
+
+$$
+\mathbb F_p,
+$$
+
+but ordinary division must be replaced by multiplication by a modular inverse.
+
+For example,
+
+$$
+\frac{y_2-y_1}{x_2-x_1}
+$$
+
+means
+
+$$
+(y_2-y_1)(x_2-x_1)^{-1}
+\pmod p.
+$$
+
+So the mathematical group law is unchanged, but the arithmetic domain changes.
+
+This distinction becomes crucial when we move from curve visualization to actual elliptic-curve cryptography.
+
+---
+
+### Complete implementation
+
+A more complete class-based implementation is available at:
+
+[`src/fullec.py`](https://github.com/TasosVoudouris/TasosVoudouris.github.io/tree/main/experiments/ready-material/elliptic-curves/src/fullec.py)
+
+It includes:
+
+* point representation;
+* identity handling;
+* point addition;
+* point doubling;
+* curve-membership checks;
+* the basic infrastructure required for scalar multiplication.
+
+---
+
+<a id="scalar-multiplication"></a>
+
+## 15. From addition to scalar multiplication
+
+Once point addition exists, we can repeatedly add a point to itself.
+
+Define
+
+$$
+2P=P+P,
+$$
+
+$$
+3P=P+P+P,
+$$
+
+and generally
+
+$$
+\boxed{
+[n]P
+=
+\underbrace{
+P+\cdots+P
+}_{n\text{ times}}.
+}
+$$
+
+This operation is called **scalar multiplication**.
+
+It is the central computational operation in elliptic-curve cryptography.
+
+But computing
+
+$$
+[n]P
+$$
+
+by literally performing \(n-1\) additions would be extremely inefficient.
+
+Instead, we exploit the binary representation of \(n\).
+
+For example,
+
+$$
+13=8+4+1.
+$$
+
+Therefore,
+
+$$
+13P
+=
+8P+4P+P.
+$$
+
+The multiples
+
+$$
+2P,
+\qquad
+4P,
+\qquad
+8P
+$$
+
+can be obtained by repeated doubling.
+
+This leads to the **double-and-add algorithm**, the elliptic-curve analogue of square-and-multiply modular exponentiation.
+
+Its complexity is approximately
+
+$$
+O(\log n)
+$$
+
+group operations rather than
+
+$$
+O(n).
+$$
+
+This operation will become central once we move to finite fields.
+
+---
+
+<a id="bigger-picture"></a>
+
+## 16. The bigger picture
+
+We can now trace the complete construction.
+
+Start with a nonsingular cubic:
+
+$$
+\boxed{
+E:
+y^2=x^3+ax+b.
+}
+$$
+
+Its projective completion provides
+
+$$
+\boxed{
+\mathcal O=(0:1:0).
+}
+$$
+
+A line through two curve points meets the cubic a third time:
+
+$$
+\boxed{
+P,Q
+\rightarrow
+R.
+}
+$$
+
+Reflection gives
+
+$$
+\boxed{
+P+Q=-R.
+}
+$$
+
+When
+
+$$
+P=Q,
+$$
+
+replace the secant by the tangent:
+
+$$
+\boxed{
+P
+\rightarrow
+2P.
+}
+$$
+
+The inverse is
+
+$$
+\boxed{
+-(x,y)=(x,-y).
+}
+$$
+
+Vertical lines give
+
+$$
+\boxed{
+P+(-P)=\mathcal O.
+}
+$$
+
+The resulting structure satisfies
+
+$$
+\boxed{
+P+\mathcal O=P,
+}
+$$
+
+$$
+\boxed{
+P+(-P)=\mathcal O,
+}
+$$
+
+$$
+\boxed{
+P+Q=Q+P,
+}
+$$
+
+and
+
+$$
+\boxed{
+(P+Q)+R=P+(Q+R).
+}
+$$
+
+Therefore,
+
+$$
+\boxed{
+E(K)
+\text{ is an abelian group}.
+}
+$$
+
+This is the first major transition in elliptic-curve mathematics:
+
+$$
+\boxed{
+\text{geometry}
+\longrightarrow
+\text{algebra}.
+}
+$$
+
+A smooth cubic is no longer merely a collection of points.
+
+Its points can be calculated with.
+
+And repeated addition gives the operation
+
+$$
+[n]P
+$$
+
+that ultimately becomes the computational foundation of elliptic-curve cryptography.
+
+---
+
+## Further reading
+
+Useful references for this chapter include:
+
+* Joseph H. Silverman, **The Arithmetic of Elliptic Curves**.
+* Lawrence C. Washington, **Elliptic Curves: Number Theory and Cryptography**.
+* Darrel Hankerson, Alfred Menezes, and Scott Vanstone, **Guide to Elliptic Curve Cryptography**.
+* Ian Blake, Gadiel Seroussi, and Nigel Smart, **Elliptic Curves in Cryptography**.
+* Jeffrey Hoffstein, Jill Pipher, and Joseph H. Silverman, **An Introduction to Mathematical Cryptography**.
+
+---
+
+The next chapter moves from curves over the real numbers to the setting that matters directly for cryptography:
+
+$$
+\boxed{
+E(\mathbb F_p).
+}
+$$
+
+The geometric formulas remain almost unchanged.
+
+But the underlying world changes completely.
+
+There is no continuous curve to draw.
+
+There is only a finite set of points satisfying
+
+$$
+y^2\equiv x^3+ax+b\pmod p.
+$$
+
+We will study:
+
+* finite-field arithmetic;
+* modular inverses;
+* quadratic residues;
+* counting points;
+* the structure of \(E(\mathbb F_p)\);
+* Hasse's theorem;
+* point orders and subgroups.
+
+That is where elliptic curves begin to move from algebraic geometry toward cryptography.

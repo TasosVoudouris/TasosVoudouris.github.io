@@ -1,928 +1,2817 @@
 ---
 title: "Solving Polynomial Congruences I"
-description: "A detailed treatment of linear congruences, Diophantine equations, modular inverses, higher-degree congruences, and Hensel-style lifting."
+description: "A detailed reference on linear and polynomial congruences, Diophantine equations, modular inverses, prime-power decomposition, Hensel lifting, and CRT reconstruction."
 pubDate: "2025-04-27"
-updatedDate: '2026-09-12'
+updatedDate: "2026-09-16"
 topics:
-- "Mathematical Foundations"
-- "Number Theory"
-- "Cryptographic Engineering"
+  - "Mathematical Foundations"
+  - "Number Theory"
+  - "Cryptographic Engineering"
 tags:
-- "polynomial-congruences"
-- "extended-euclidean-algorithm"
-- "hensel-lifting"
-- "modular-inverses"
+  - "polynomial-congruences"
+  - "extended-euclidean-algorithm"
+  - "hensel-lifting"
+  - "modular-inverses"
 difficulty: "Advanced"
 series: "Elementary Number Theory Reference"
 seriesOrder: 8
 sourcePath: "experiments/ready-material/primes"
 draft: false
 ---
-- [Solving Polynomial Congruences (Part I)](#solving-polynomial-congruences-part-i)
-  - [Introduction and Linear Congruences](#introduction-and-linear-congruences)
-    - [Special Case: When ( a ) Is a Unit Modulo ( m )](#special-case-when--a--is-a-unit-modulo--m-)
-  - [Linear Diophantine Equations and Modular Inverses](#linear-diophantine-equations-and-modular-inverses)
-    - [The Extended Euclidean Algorithm](#the-extended-euclidean-algorithm)
-    - [Application to Modular Inverses](#application-to-modular-inverses)
-  - [Hop-and-Skip: Tracking the Linear Combination](#hop-and-skip-tracking-the-linear-combination)
-  - [Congruences of Higher Degree](#congruences-of-higher-degree)
-  - [Lifting Solutions Modulo ( p ) to ( p^\\alpha )](#lifting-solutions-modulo--p--to--palpha-)
-    - [Number of Solutions](#number-of-solutions)
-    - [Hensel's Lemma](#hensels-lemma)
-  - [Some Computational Validation](#some-computational-validation)
-  - [Wrap-up](#wrap-up)
 
+Up to this point, modular arithmetic has mostly been used to compare integers, compute inverses, reconstruct residues, and reason about finite groups.
 
+We now turn modular arithmetic into an equation-solving tool.
 
-Having laid the foundation of *modular arithmetic* and *congruences*, we are now ready to advance into one of the richest areas of number theory: *solving polynomial congruences*.
+Our central problem is:
 
-In this part, we will explore a wide range of topics that build upon modular thinking. We begin with the study of *linear congruences*, closely connected to *linear Diophantine equations* — equations that seek integer solutions to expressions like $ ax + by = c $. Understanding these will give us the necessary tools to solve basic modular equations.
+\[
+\boxed{
+f(x)\equiv0\pmod m,
+}
+\]
 
-As we move to polynomials of higher degree, we will encounter fascinating classical problems, such as:
+where
 
-- **Pythagorean triples** — the integer solutions to $ x^2 + y^2 = z^2 $, studied since the time of Pythagoras.
-- **Fermat's Last Theorem** — a far-reaching generalization, asserting that the equation $ x^n + y^n = z^n $ has no nontrivial integer solutions for $ n \geq 3 $, a statement that connects deeply with **modular forms** and **elliptic curves**.
-- **Pell’s equations** — another classical topic, centered on solving $ x^2 - dy^2 = 1 $ in integers, with deep applications to algebraic number theory and cryptographic constructions.
+\[
+f(x)\in\mathbb Z[x].
+\]
 
-Along the way, we will discover the profound connections among these topics, and how tools like modular arithmetic, Diophantine methods, and polynomial techniques interact to solve some of the most important problems in mathematics — many of which underpin modern cryptography.
+Even the simplest case,
 
-It becomes clear that *Diophantus*, the ancient mathematician after whom "Diophantine equations" are named, laid the groundwork for much of what we explore even today in advanced mathematics and cryptographic protocols.
+\[
+ax\equiv b\pmod m,
+\]
 
-> **In short:** this topic will be a rich journey from the classical worlds of Pythagoras and Fermat to the modern realms of cryptographic security — all starting with the humble task of solving congruences.
+already brings together several ideas developed earlier:
 
-So, buckle up — and let us begin!
+\[
+\gcd,
+\qquad
+\text{Bézout identities},
+\qquad
+\text{modular inverses},
+\qquad
+\text{Diophantine equations}.
+\]
 
----
+For higher-degree polynomials, the structure becomes richer.
 
-## Introduction and Linear Congruences
+We will see that a composite modulus can often be decomposed into prime powers:
 
-We are particularly interested in congruences of the form:
+\[
+m
+=
+\prod_i p_i^{\alpha_i},
+\]
 
-$$
-f(x) \equiv 0 \pmod{m},
-$$
+that polynomial roots can be studied separately modulo each prime power, and that the Chinese Remainder Theorem can then reconstruct the global solutions.
 
-where $ f(x) = a_nx^n + \dots + a_1x + a_0 $ is a polynomial with integer coefficients, and $ m > 0 $.
+The key new tool is **Hensel lifting**:
 
-Since modular congruence preserves polynomial evaluation — that is, $ a \equiv b \pmod{m} \implies f(a) \equiv f(b) \pmod{m} $ — solving such congruences amounts to finding appropriate residue classes in $ \mathbb{Z}/m\mathbb{Z} $.  
-Thus, the set of solutions is *finite*, corresponding to a subset of $ \mathbb{Z}_m $.
+\[
+\boxed{
+\text{root modulo }p
+\longrightarrow
+\text{root modulo }p^2
+\longrightarrow
+\text{root modulo }p^3
+\longrightarrow\cdots
+}
+\]
 
-
-We begin with the simplest case: solving *linear congruences* of the form:
-
-$$
-ax \equiv b \pmod{m}.
-$$
-
-A fundamental theorem governs their solvability:
-
-> **Theorem (Solvability of Linear Congruences):**  
-> Let $ a, b, m \in \mathbb{Z} $ with $ m > 0 $. Then:
-> - The congruence $ ax \equiv b \pmod{m} $ has a solution if and only if $ \gcd(a, m) \mid b $.
-> - If a solution exists, there are exactly $ \gcd(a, m) $ incongruent solutions modulo $ m $.
-
-In particular, when $ \gcd(a, m) = 1 $, there exists exactly **one** solution modulo $ m $.
-
-
-**Remark:** Solving linear congruences is closely related to solving *linear Diophantine equations* of the form:
-
-$$
-ax - my = b,
-$$
-
-for integers $ x $ and $ y $.  
-We will explore this connection in full detail later.
+This gives us one of the first clear examples of local modular information being refined systematically to higher precision.
 
 ---
 
-### Special Case: When $ a $ Is a Unit Modulo $ m $
+## Table of Contents
 
-If $ a \in \mathbb{Z}_m^* $ — that is, $ \gcd(a, m) = 1 $ — then $ a $ possesses a **multiplicative inverse** modulo $ m $, denoted $ a^{-1} $.
+- [Polynomial congruences](#polynomial-congruences)
+- [Linear congruences](#linear-congruences)
+- [Why the GCD condition appears](#why-the-gcd-condition-appears)
+- [Solving (ax\equiv b\pmod m)](#solving-axequiv-bpmod-m)
+- [The unit case](#the-unit-case)
+- [Connection with Diophantine equations](#connection-with-diophantine-equations)
+- [All solutions of a linear Diophantine equation](#all-solutions-of-a-linear-diophantine-equation)
+- [Extended Euclid and modular inverses](#extended-euclid-and-modular-inverses)
+- [23\cdot130](#23cdot130)
+- [A reusable linear-congruence solver](#a-reusable-linear-congruence-solver)
+- [Higher-degree polynomial congruences](#higher-degree-polynomial-congruences)
+- [Decomposition into prime powers](#decomposition-into-prime-powers)
+- [Lifting roots modulo prime powers](#lifting-roots-modulo-prime-powers)
+- [Hensel’s lemma](#hensels-lemma)
+- [The lifting tree](#the-lifting-tree)
+- [Example I: lifting a cubic modulo (27)](#example-i-lifting-a-cubic-modulo-27)
+- [\[
+3^3](#33)
+- [4(3^2)
++
+5(3)](#43253)
+- [Example II: Hensel lifting plus CRT](#example-ii-hensel-lifting-plus-crt)
+- [Counting the global roots](#counting-the-global-roots)
+- [CRT reconstruction](#crt-reconstruction)
+- [Python implementation](#python-implementation)
+- [Polynomial derivative](#polynomial-derivative)
+- [One Hensel lifting step](#one-hensel-lifting-step)
+- [Lifting all roots](#lifting-all-roots)
+- [Second example computationally](#second-example-computationally)
+- [Combining all roots with CRT](#combining-all-roots-with-crt)
+- [Simple roots versus singular roots](#simple-roots-versus-singular-roots)
+- [A small singular example](#a-small-singular-example)
+- [Why CRT and Hensel fit together](#why-crt-and-hensel-fit-together)
+- [Why this matters in cryptography](#why-this-matters-in-cryptography)
+- [An important conceptual distinction](#an-important-conceptual-distinction)
+- [Practice and checkpoint](#practice-and-checkpoint)
+- [References and further reading](#references-and-further-reading)
+- [Where this leads](#where-this-leads)
 
-In this case, the congruence:
+---
 
-$$
-ax \equiv b \pmod{m}
-$$
-has the unique solution:
+## Polynomial congruences
 
-$$
-x \equiv a^{-1}b \pmod{m}.
-$$
+Let
 
-Finding modular inverses is a fundamental task. According to **Euler’s theorem**:
+\[
+f(x)
+=
+a_dx^d+a_{d-1}x^{d-1}
++\cdots+a_1x+a_0
+\]
 
-$$
-x^{\varphi(m)} \equiv 1 \pmod{m},
-$$
-where $ \varphi(m) $ is Euler’s totient function, counting the units of $ \mathbb{Z}_m $.  
-Thus:
+be a polynomial with integer coefficients.
 
-$$
-x^{-1} \equiv x^{\varphi(m) - 1} \pmod{m}.
-$$
+We want to solve:
 
-*Example*: Consider the congruence:
+\[
+\boxed{
+f(x)\equiv0\pmod m.
+}
+\]
 
-$$
-34x \equiv 60 \pmod{98}.
-$$
+Because congruence is compatible with addition and multiplication,
 
-First, observe:
+\[
+a\equiv b\pmod m
+\]
 
-$$
-\gcd(34, 98) = 2,
-$$
-and since $ 2 \mid 60 $, solutions exist.
+implies:
 
-We divide through by 2:
+\[
+f(a)\equiv f(b)\pmod m.
+\]
 
-$$
-17x \equiv 30 \pmod{49}.
-$$
+Therefore the value of \(f(x)\bmod m\) depends only on the residue class of \(x\).
 
-To solve this, one approach is to find the modular inverse of 17 modulo 49 using the extended Euclidean algorithm (discussed later).  
-Alternatively, solving the associated linear Diophantine equation:
+So solving:
 
-$$
-17x - 49y = 30
-$$
+\[
+f(x)\equiv0\pmod m
+\]
+
+means finding the elements:
+
+\[
+[x]_m\in\mathbb Z_m
+\]
+
+for which \(f\) evaluates to zero.
+
+Since \(\mathbb Z_m\) contains only \(m\) residue classes, there are finitely many possible roots modulo \(m\).
+
+A direct brute-force solution is always theoretically possible:
+
+```python
+def roots_mod_bruteforce(f, modulus):
+    return [
+        x
+        for x in range(modulus)
+        if f(x) % modulus == 0
+    ]
+```
+
+But for large moduli, brute force is usually the wrong approach.
+
+We want to exploit arithmetic structure.
+
+---
+
+## Linear congruences
+
+The simplest polynomial congruence is:
+
+\[
+\boxed{
+ax\equiv b\pmod m.
+}
+\]
+
+This means:
+
+\[
+m\mid(ax-b).
+\]
+
+Equivalently, there exists:
+
+\[
+y\in\mathbb Z
+\]
+
+such that:
+
+\[
+ax-my=b.
+\]
+
+So solving a linear congruence is equivalent to solving a linear Diophantine equation.
+
+The fundamental solvability criterion is:
+
+\[
+\boxed{
+ax\equiv b\pmod m
+\text{ has a solution}
+\iff
+\gcd(a,m)\mid b.
+}
+\]
+
+If:
+
+\[
+g=\gcd(a,m)
+\]
+
+and:
+
+\[
+g\mid b,
+\]
+
+then there are exactly:
+
+\[
+\boxed{
+g
+}
+\]
+
+incongruent solutions modulo \(m\).
+
+---
+
+## Why the GCD condition appears
+
+Suppose:
+
+\[
+ax\equiv b\pmod m.
+\]
+
+Then:
+
+\[
+ax-my=b
+\]
+
+for some \(y\).
+
+Any common divisor of \(a\) and \(m\) divides both terms:
+
+\[
+ax
+\]
+
+and:
+
+\[
+my.
+\]
+
+Therefore it must divide their difference:
+
+\[
+b.
+\]
+
+So:
+
+\[
+\gcd(a,m)\mid b
+\]
+
+is necessary.
+
+Conversely, suppose:
+
+\[
+g=\gcd(a,m)
+\]
+
+and:
+
+\[
+g\mid b.
+\]
+
+Bézout's identity gives integers \(u,v\) satisfying:
+
+\[
+au+mv=g.
+\]
+
+Write:
+
+\[
+b=gc.
+\]
+
+Multiplying the Bézout identity by \(c\):
+
+\[
+a(uc)+m(vc)=b.
+\]
+
+Hence:
+
+\[
+a(uc)\equiv b\pmod m.
+\]
+
+So:
+
+\[
+x=uc
+\]
+
 provides a solution.
 
-Proceeding by standard techniques, we find a particular solution $ x \equiv -4 \pmod{49} $.
-
-Thus, the two solutions to the original congruence modulo 98 are:
-
-$$
-x \equiv -4 \pmod{49} \quad \text{and} \quad x \equiv 45 \pmod{98}.
-$$
+Thus the condition is also sufficient.
 
 ---
 
-## Linear Diophantine Equations and Modular Inverses
+## Solving \(ax\equiv b\pmod m\)
 
-Having observed the connection between linear congruences and Diophantine equations, we now formally develop the theory of the diophantine equations.
+Consider:
 
-A **linear Diophantine equation** is any equation of the form:
+\[
+34x\equiv60\pmod{98}.
+\]
 
-$$
-ax + by = c,
-$$
-where $ a, b, c \in \mathbb{Z} $, and the goal is to find integer solutions $ (x, y) $.
+Compute:
 
+\[
+\gcd(34,98)=2.
+\]
 
-The equation $ ax + by = c $ has integer solutions if and only if:
+Since:
 
-$$
-\gcd(a, b) \mid c.
-$$
+\[
+2\mid60,
+\]
 
-If $ g = \gcd(a, b) $, and $ g \mid c $, then multiplying a Bézout identity for $ (a, b) $ by $ \frac{c}{g} $ provides a particular solution.
+solutions exist.
 
-All solutions are given parametrically by:
+Divide the entire congruence by \(2\), including the modulus:
 
-$$
-x = x_0 + \frac{b}{g}n, \quad
-y = y_0 - \frac{a}{g}n, \quad n \in \mathbb{Z},
-$$
-where $ (x_0, y_0) $ is a particular solution.
+\[
+17x\equiv30\pmod{49}.
+\]
 
+Now:
 
-### The Extended Euclidean Algorithm
+\[
+\gcd(17,49)=1,
+\]
 
-The **Extended Euclidean Algorithm** provides an efficient method to compute not only the gcd of two integers, but also integers $ x, y $ satisfying:
+so \(17\) has an inverse modulo \(49\).
 
-$$
-ax + by = \gcd(a, b).
-$$
+In fact:
 
-This expression is known as a **Bézout identity**.
+\[
+17^{-1}
+\equiv26
+\pmod{49},
+\]
 
-### Application to Modular Inverses
+because:
 
-When $ \gcd(a, n) = 1 $, solving:
+\[
+17\cdot26
+=
+442
+\equiv1
+\pmod{49}.
+\]
 
-$$
-ax \equiv 1 \pmod{n}
-$$
-is equivalent to finding integers $ x, y $ such that:
+Therefore:
 
-$$
-ax + ny = 1.
-$$
+\[
+x
+\equiv
+30\cdot26
+\pmod{49}.
+\]
 
-Thus, $ x $ modulo $ n $ gives the modular inverse:
+Since:
 
-$$
-x \equiv a^{-1} \pmod{n}.
-$$
+\[
+780\bmod49=45,
+\]
 
+we obtain:
 
-Let us compute the inverse of $ 130 $ modulo $ 61 $.
+\[
+x\equiv45\pmod{49}.
+\]
 
-Applying the Euclidean algorithm:
+But remember: the original modulus was \(98\), and:
 
-$$
+\[
+g=\gcd(34,98)=2.
+\]
+
+Therefore there must be exactly two incongruent solutions modulo \(98\).
+
+They are:
+
+\[
+45
+\]
+
+and:
+
+\[
+45+49=94.
+\]
+
+Hence:
+
+\[
+\boxed{
+x\equiv45,\;94\pmod{98}.
+}
+\]
+
+Check:
+
+\[
+34\cdot45
+\equiv60\pmod{98},
+\]
+
+and:
+
+\[
+34\cdot94
+\equiv60\pmod{98}.
+\]
+
+---
+
+## The unit case
+
+If:
+
+\[
+\gcd(a,m)=1,
+\]
+
+then \(a\) belongs to:
+
+\[
+\mathbb Z_m^\times.
+\]
+
+So \(a\) has a unique multiplicative inverse:
+
+\[
+a^{-1}\pmod m.
+\]
+
+The equation:
+
+\[
+ax\equiv b\pmod m
+\]
+
+then has the unique solution:
+
+\[
+\boxed{
+x
+\equiv
+a^{-1}b
+\pmod m.
+}
+\]
+
+This is modular division.
+
+We are not literally dividing by \(a\).
+
+We are multiplying by its inverse.
+
+---
+
+## Connection with Diophantine equations
+
+A **linear Diophantine equation** has the form:
+
+\[
+ax+by=c
+\]
+
+with:
+
+\[
+a,b,c\in\mathbb Z,
+\]
+
+and seeks integer solutions:
+
+\[
+(x,y)\in\mathbb Z^2.
+\]
+
+The equation has integer solutions exactly when:
+
+\[
+\boxed{
+\gcd(a,b)\mid c.
+}
+\]
+
+This is the same criterion we just encountered for linear congruences.
+
+That is not a coincidence.
+
+The congruence:
+
+\[
+ax\equiv c\pmod b
+\]
+
+is equivalent to:
+
+\[
+ax-by=c.
+\]
+
+So linear congruence solving and linear Diophantine solving are two views of the same arithmetic problem.
+
+---
+
+## All solutions of a linear Diophantine equation
+
+Suppose:
+
+\[
+ax+by=c
+\]
+
+has one solution:
+
+\[
+(x_0,y_0).
+\]
+
+Let:
+
+\[
+g=\gcd(a,b).
+\]
+
+Then every integer solution is:
+
+\[
+\boxed{
+x
+=
+x_0+\frac bg t,
+}
+\]
+
+\[
+\boxed{
+y
+=
+y_0-\frac ag t,
+}
+\]
+
+where:
+
+\[
+t\in\mathbb Z.
+\]
+
+For example, consider:
+
+\[
+1337x+137y=1.
+\]
+
+From the Extended Euclidean Algorithm:
+
+\[
+1
+=
+1337(-54)
++
+137(527).
+\]
+
+So one solution is:
+
+\[
+x_0=-54,
+\qquad
+y_0=527.
+\]
+
+Because:
+
+\[
+\gcd(1337,137)=1,
+\]
+
+the full family is:
+
+\[
+\boxed{
+x=-54+137t,
+}
+\]
+
+\[
+\boxed{
+y=527-1337t,
+}
+\]
+
+for:
+
+\[
+t\in\mathbb Z.
+\]
+
+---
+
+## Extended Euclid and modular inverses
+
+We already developed the Extended Euclidean Algorithm earlier in the series.
+
+Its importance here can be summarized by:
+
+\[
+\boxed{
+\operatorname{xgcd}(a,b)
+\longrightarrow
+(g,x,y)
+}
+\]
+
+such that:
+
+\[
+g=ax+by
+=
+\gcd(a,b).
+\]
+
+If:
+
+\[
+g=1,
+\]
+
+then:
+
+\[
+ax+by=1.
+\]
+
+Reducing modulo \(b\):
+
+\[
+ax\equiv1\pmod b.
+\]
+
+Therefore:
+
+\[
+\boxed{
+a^{-1}\equiv x\pmod b.
+}
+\]
+
+### Example: inverse of \(130\) modulo \(61\)
+
+The Euclidean algorithm gives:
+
+\[
 \begin{aligned}
-130 &= 2 \times 61 + 8, \\
-61 &= 7 \times 8 + 5, \\
-8 &= 1 \times 5 + 3, \\
-5 &= 1 \times 3 + 2, \\
-3 &= 1 \times 2 + 1, \\
-2 &= 2 \times 1 + 0.
+130 &=2\cdot61+8,\\
+61 &=7\cdot8+5,\\
+8 &=1\cdot5+3,\\
+5 &=1\cdot3+2,\\
+3 &=1\cdot2+1.
 \end{aligned}
-$$
+\]
 
-Working backwards:
+Back-substitution yields:
 
-$$
-1 = 3 - 1 \times 2,
-\quad 2 = 5 - 1 \times 3,
-\quad 3 = 8 - 1 \times 5,
-\quad 5 = 61 - 7 \times 8,
-\quad 8 = 130 - 2 \times 61,
-$$
+\[
+1
+=
+23\cdot130
+-
+49\cdot61.
+\]
 
-substituting step by step yields:
+Reducing modulo \(61\):
 
-$$
-1 = 23 \times 130 - 49 \times 61.
-$$
+\[
+23\cdot130
+\equiv1\pmod{61}.
+\]
+
+Hence:
+
+\[
+\boxed{
+130^{-1}
+\equiv23
+\pmod{61}.
+}
+\]
+
+---
+
+## A reusable linear-congruence solver
+
+We can implement the theorem directly.
+
+```python
+from math import gcd
+
+
+def solve_linear_congruence(a, b, m):
+    """
+    Solve a*x ≡ b (mod m).
+
+    Returns all incongruent solutions
+    modulo m.
+    """
+    if m <= 0:
+        raise ValueError(
+            "modulus must be positive"
+        )
+
+    g = gcd(a, m)
+
+    if b % g != 0:
+        return []
+
+    a_reduced = a // g
+    b_reduced = b // g
+    m_reduced = m // g
+
+    inverse = pow(
+        a_reduced,
+        -1,
+        m_reduced,
+    )
+
+    x0 = (
+        inverse * b_reduced
+    ) % m_reduced
+
+    return [
+        (x0 + k * m_reduced) % m
+        for k in range(g)
+    ]
+```
+
+For our example:
+
+```python
+solutions = solve_linear_congruence(
+    34,
+    60,
+    98,
+)
+
+print(solutions)
+```
+
+we obtain:
+
+```text
+[45, 94]
+```
+
+We can verify:
+
+```python
+for x in solutions:
+    assert (34 * x - 60) % 98 == 0
+```
+
+The implementation mirrors the theorem exactly.
+
+---
+
+## Higher-degree polynomial congruences
+
+We now return to:
+
+\[
+f(x)\equiv0\pmod m.
+\]
+
+For degree greater than one, there is no single universal inverse operation analogous to:
+
+\[
+x\equiv a^{-1}b.
+\]
+
+The structure depends strongly on:
+
+- the polynomial,
+- the modulus,
+- its prime factorization,
+- whether roots are simple or repeated modulo the relevant primes.
+
+The first major simplification comes from factoring the modulus.
+
+Suppose:
+
+\[
+m
+=
+p_1^{\alpha_1}
+p_2^{\alpha_2}
+\cdots
+p_r^{\alpha_r},
+\]
+
+where the \(p_i\) are distinct primes.
+
+The prime powers:
+
+\[
+p_i^{\alpha_i}
+\]
+
+are pairwise coprime.
+
+Therefore CRT applies.
+
+---
+
+## Decomposition into prime powers
+
+Solving:
+
+\[
+f(x)\equiv0\pmod m
+\]
+
+is equivalent to simultaneously solving:
+
+\[
+f(x)\equiv0
+\pmod{p_1^{\alpha_1}},
+\]
+
+\[
+f(x)\equiv0
+\pmod{p_2^{\alpha_2}},
+\]
+
+\[
+\vdots
+\]
+
+\[
+f(x)\equiv0
+\pmod{p_r^{\alpha_r}}.
+\]
+
+Once one root has been selected modulo each prime power:
+
+\[
+x
+\equiv
+c_i
+\pmod{p_i^{\alpha_i}},
+\]
+
+CRT reconstructs exactly one residue class modulo:
+
+\[
+m.
+\]
+
+If the number of roots modulo each prime power is:
+
+\[
+N_1,N_2,\ldots,N_r,
+\]
+
+then the total number of roots modulo \(m\) is:
+
+\[
+\boxed{
+N_1N_2\cdots N_r.
+}
+\]
+
+Why?
+
+Each independent choice of one local root from every prime-power component determines exactly one global CRT solution.
+
+So we obtain the general strategy:
+
+```text
+factor the modulus
+        ↓
+solve modulo each prime power
+        ↓
+choose combinations of local roots
+        ↓
+CRT
+        ↓
+all global roots
+```
+
+The difficult step has therefore been reduced to:
+
+\[
+\boxed{
+\text{solve modulo }p^\alpha.
+}
+\]
+
+This is where Hensel lifting enters.
+
+---
+
+## Lifting roots modulo prime powers
+
+Suppose:
+
+\[
+f(a)\equiv0\pmod{p^k}.
+\]
+
+So \(a\) is already a root modulo \(p^k\).
+
+We want to find roots modulo:
+
+\[
+p^{k+1}
+\]
+
+that reduce to \(a\) modulo \(p^k\).
+
+Every such candidate has the form:
+
+\[
+\boxed{
+x
+=
+a+t p^k,
+}
+\]
+
+where:
+
+\[
+t\in\{0,1,\ldots,p-1\}.
+\]
+
+Expand \(f\) around \(a\):
+
+\[
+f(a+t p^k).
+\]
+
+For a polynomial with integer coefficients:
+
+\[
+f(a+t p^k)
+\equiv
+f(a)
++
+t p^k f'(a)
+\pmod{p^{k+1}}.
+\]
+
+Why do higher-order terms disappear?
+
+They contain at least:
+
+\[
+p^{2k}.
+\]
+
+Since:
+
+\[
+k\ge1,
+\]
+
+we have:
+
+\[
+2k\ge k+1.
+\]
+
+Therefore those terms vanish modulo:
+
+\[
+p^{k+1}.
+\]
+
+Now write:
+
+\[
+f(a)=p^k c.
+\]
+
+Then:
+
+\[
+f(a+t p^k)
+\equiv
+p^k
+\left(
+c+t f'(a)
+\right)
+\pmod{p^{k+1}}.
+\]
+
+For this expression to vanish modulo \(p^{k+1}\), we need:
+
+\[
+\boxed{
+c+t f'(a)
+\equiv0\pmod p.
+}
+\]
+
+Equivalently:
+
+\[
+\boxed{
+f'(a)t
+\equiv
+-\frac{f(a)}{p^k}
+\pmod p.
+}
+\]
+
+So one nonlinear lifting problem has become a **linear congruence modulo \(p\)**.
+
+That is the central mechanism.
+
+---
+
+## Hensel's lemma
+
+The previous calculation gives the standard one-step Hensel picture.
+
+Let:
+
+\[
+f(x)\in\mathbb Z[x]
+\]
+
+and suppose:
+
+\[
+f(a)\equiv0\pmod{p^k}.
+\]
+
+We seek:
+
+\[
+\widetilde a
+\equiv a
+\pmod{p^k}
+\]
+
+satisfying:
+
+\[
+f(\widetilde a)
+\equiv0
+\pmod{p^{k+1}}.
+\]
+
+Write:
+
+\[
+\widetilde a
+=
+a+t p^k.
+\]
+
+Then \(t\) must solve:
+
+\[
+f'(a)t
+\equiv
+-\frac{f(a)}{p^k}
+\pmod p.
+\]
+
+This creates three cases.
+
+### Case 1 — Simple root
+
+If:
+
+\[
+f'(a)\not\equiv0\pmod p,
+\]
+
+then \(f'(a)\) is invertible modulo \(p\).
+
+Therefore there is exactly one:
+
+\[
+t\pmod p.
+\]
+
+Hence \(a\) has a **unique lift** modulo \(p^{k+1}\).
+
+This is the most familiar form of Hensel's lemma.
+
+A simple root modulo \(p\) lifts uniquely to roots modulo:
+
+\[
+p^2,p^3,p^4,\ldots
+\]
+
+### Case 2 — Singular root that branches
+
+If:
+
+\[
+f'(a)\equiv0\pmod p
+\]
+
+and:
+
+\[
+\frac{f(a)}{p^k}
+\equiv0\pmod p,
+\]
+
+then the lifting equation becomes:
+
+\[
+0\cdot t\equiv0\pmod p.
+\]
+
+Every:
+
+\[
+t\in\mathbb Z_p
+\]
+
+works.
+
+So the root has:
+
+\[
+\boxed{
+p
+}
+\]
+
+different lifts modulo \(p^{k+1}\).
+
+### Case 3 — Singular root that dies
+
+If:
+
+\[
+f'(a)\equiv0\pmod p
+\]
+
+but:
+
+\[
+\frac{f(a)}{p^k}
+\not\equiv0\pmod p,
+\]
+
+then we would need:
+
+\[
+0\cdot t
+\equiv
+c
+\pmod p
+\]
+
+for some:
+
+\[
+c\neq0.
+\]
+
+That is impossible.
+
+So:
+
+\[
+\boxed{
+\text{no lift exists}.
+}
+\]
+
+---
+
+## The lifting tree
+
+This gives a useful mental model.
+
+A root modulo \(p^k\) may:
+
+```text
+have exactly one child
+```
+
+if the derivative is nonzero modulo \(p\),
+
+```text
+have p children
+```
+
+in the singular branching case,
+
+or:
+
+```text
+have no children
+```
+
+if the singular root cannot be lifted.
+
+So roots modulo successive prime powers form a branching tree:
+
+\[
+\text{roots mod }p
+\rightarrow
+\text{roots mod }p^2
+\rightarrow
+\text{roots mod }p^3
+\rightarrow\cdots
+\]
+
+For **simple roots**, the tree has exactly one path.
+
+For singular roots, it can branch or terminate.
+
+This distinction is one of the most important ideas in Hensel lifting.
+
+---
+
+## Example I: lifting a cubic modulo \(27\)
+
+Solve:
+
+\[
+f(x)
+=
+x^3-4x^2+5x-6
+\equiv0
+\pmod{27}.
+\]
+
+Since:
+
+\[
+27=3^3,
+\]
+
+we begin modulo \(3\).
+
+### Root modulo \(3\)
+
+Reduce:
+
+\[
+f(x)
+\equiv
+x^3+2x^2+2x
+\pmod3.
+\]
+
+Check:
+
+\[
+x=0,1,2.
+\]
+
+We obtain:
+
+\[
+f(0)\equiv0\pmod3,
+\]
+
+while:
+
+\[
+f(1)\not\equiv0\pmod3
+\]
+
+and:
+
+\[
+f(2)\not\equiv0\pmod3.
+\]
+
+Therefore the only root is:
+
+\[
+a_1=0.
+\]
+
+The derivative is:
+
+\[
+f'(x)
+=
+3x^2-8x+5.
+\]
+
+At \(a_1=0\):
+
+\[
+f'(0)=5\equiv2\pmod3.
+\]
+
+This is nonzero.
+
+Therefore the root is simple and must lift uniquely.
+
+---
+
+### Lift from modulo \(3\) to modulo \(9\)
+
+Write:
+
+\[
+x
+=
+0+3t.
+\]
+
+Since:
+
+\[
+f(0)=-6,
+\]
+
+we have:
+
+\[
+\frac{f(0)}3=-2.
+\]
+
+The lifting equation is:
+
+\[
+f'(0)t
+\equiv
+-\frac{f(0)}3
+\pmod3.
+\]
 
 Thus:
 
-$$
-130^{-1} \equiv 23 \pmod{61}.
-$$
+\[
+5t
+\equiv
+2
+\pmod3.
+\]
 
---- 
+Reducing:
 
-## Hop-and-Skip: Tracking the Linear Combination
+\[
+2t\equiv2\pmod3.
+\]
 
-The algorithm below mimics the steps of the Euclidean algorithm while *keeping track* of how each remainder is built from the original $ a $ and $ b $. It uses "hops" (multiples of $ a $) and "skips" (multiples of $ b $).
+Therefore:
+
+\[
+t\equiv1\pmod3.
+\]
+
+Hence:
+
+\[
+x
+=
+0+3(1)
+=
+3
+\pmod9.
+\]
+
+So:
+
+\[
+\boxed{
+x\equiv3\pmod9.
+}
+\]
+
+---
+
+### Lift from modulo \(9\) to modulo \(27\)
+
+Now:
+
+\[
+a_2=3.
+\]
+
+Compute:
+
+\[
+f(3)=0.
+\]
+
+So:
+
+\[
+\frac{f(3)}9=0.
+\]
+
+Also:
+
+\[
+f'(3)
+=
+27-24+5
+=
+8.
+\]
+
+The lifting equation becomes:
+
+\[
+8t
+\equiv0
+\pmod3.
+\]
+
+Since:
+
+\[
+8\equiv2\pmod3,
+\]
+
+the inverse exists, giving:
+
+\[
+t\equiv0\pmod3.
+\]
+
+Therefore:
+
+\[
+x
+=
+3+9(0)
+=
+3
+\pmod{27}.
+\]
+
+Hence the unique final solution is:
+
+\[
+\boxed{
+x\equiv3\pmod{27}.
+}
+\]
+
+Direct verification:
+
+\[
+3^3
+-
+4(3^2)
++
+5(3)
+-
+6
+=
+0.
+\]
+
+---
+
+## Example II: Hensel lifting plus CRT
+
+Now solve:
+
+\[
+\boxed{
+x^2+3x+17
+\equiv0
+\pmod{315}.
+}
+\]
+
+Factor the modulus:
+
+\[
+315
+=
+3^2\cdot5\cdot7.
+\]
+
+Therefore we solve independently modulo:
+
+\[
+9,
+\qquad
+5,
+\qquad
+7.
+\]
+
+Then CRT combines the local roots.
+
+Let:
+
+\[
+f(x)
+=
+x^2+3x+17.
+\]
+
+---
+
+### Roots modulo \(9\)
+
+First solve modulo \(3\):
+
+\[
+x^2+3x+17
+\equiv
+x^2+2
+\equiv0
+\pmod3.
+\]
+
+So:
+
+\[
+x^2\equiv1\pmod3.
+\]
+
+The roots are:
+
+\[
+x\equiv1,2\pmod3.
+\]
+
+Now lift each one to modulo \(9\).
+
+The derivative is:
+
+\[
+f'(x)=2x+3.
+\]
+
+At \(x=1\):
+
+\[
+f'(1)=5\equiv2\pmod3,
+\]
+
+so the root is simple and lifts uniquely.
+
+The resulting root modulo \(9\) is:
+
+\[
+x\equiv4\pmod9.
+\]
+
+At \(x=2\):
+
+\[
+f'(2)=7\equiv1\pmod3,
+\]
+
+so this root also lifts uniquely.
+
+The resulting root is:
+
+\[
+x\equiv2\pmod9.
+\]
+
+Thus:
+
+\[
+\boxed{
+x\equiv2,4\pmod9.
+}
+\]
+
+---
+
+### Roots modulo \(5\)
+
+Reduce:
+
+\[
+x^2+3x+17
+\equiv
+x^2+3x+2
+\pmod5.
+\]
+
+Factor:
+
+\[
+x^2+3x+2
+=
+(x+1)(x+2).
+\]
+
+Therefore:
+
+\[
+x\equiv-1,-2\pmod5.
+\]
+
+So:
+
+\[
+\boxed{
+x\equiv4,3\pmod5.
+}
+\]
+
+---
+
+### Roots modulo \(7\)
+
+Reduce:
+
+\[
+x^2+3x+17
+\equiv
+x^2+3x+3
+\pmod7.
+\]
+
+Direct evaluation gives:
+
+\[
+f(1)\equiv0\pmod7
+\]
+
+and:
+
+\[
+f(3)\equiv0\pmod7.
+\]
+
+Therefore:
+
+\[
+\boxed{
+x\equiv1,3\pmod7.
+}
+\]
+
+---
+
+## Counting the global roots
+
+We have:
+
+\[
+2
+\]
+
+roots modulo \(9\),
+
+\[
+2
+\]
+
+roots modulo \(5\),
+
+and:
+
+\[
+2
+\]
+
+roots modulo \(7\).
+
+Since:
+
+\[
+9,5,7
+\]
+
+are pairwise coprime, every combination determines one distinct root modulo \(315\).
+
+Therefore the total number of solutions is:
+
+\[
+\boxed{
+2\cdot2\cdot2=8.
+}
+\]
+
+This allows us to predict the answer count **before performing any CRT reconstruction**.
+
+---
+
+## CRT reconstruction
+
+The eight combinations are:
+
+| Mod \(9\) | Mod \(5\) | Mod \(7\) | Root mod \(315\) |
+| ---: | ---: | ---: | ---: |
+| \(2\) | \(3\) | \(1\) | \(218\) |
+| \(2\) | \(3\) | \(3\) | \(38\) |
+| \(2\) | \(4\) | \(1\) | \(29\) |
+| \(2\) | \(4\) | \(3\) | \(164\) |
+| \(4\) | \(3\) | \(1\) | \(148\) |
+| \(4\) | \(3\) | \(3\) | \(283\) |
+| \(4\) | \(4\) | \(1\) | \(274\) |
+| \(4\) | \(4\) | \(3\) | \(94\) |
+
+So the complete solution set modulo \(315\) is:
+
+\[
+\boxed{
+\{
+29,
+38,
+94,
+148,
+164,
+218,
+274,
+283
+\}.
+}
+\]
+
+Every value satisfies:
+
+\[
+x^2+3x+17
+\equiv0
+\pmod{315}.
+\]
+
+This example captures the complete strategy:
+
+\[
+\boxed{
+\text{factor}
+\rightarrow
+\text{solve locally}
+\rightarrow
+\text{lift}
+\rightarrow
+\text{combine with CRT}.
+}
+\]
+
+---
+
+## Python implementation
+
+We can make this process executable without hiding the mathematics.
+
+### Polynomial evaluation
+
+Using Horner's method:
 
 ```python
-def hop_and_skip(a, b):
+def poly_eval(coeffs, x):
     """
-    Computes the Bézout identity: gcd(a, b) = x * a + y * b
-    using a traceable version of the Euclidean algorithm.
+    coeffs are ordered from
+    highest degree to constant term.
     """
-    u, v = a, b
-    u_hops, u_skips = 1, 0
-    v_hops, v_skips = 0, 1
+    value = 0
 
-    while v != 0:
-        q = u // v
-        r = u % v
-        r_hops = u_hops - q * v_hops
-        r_skips = u_skips - q * v_skips
+    for coefficient in coeffs:
+        value = value * x + coefficient
 
-        u, v = v, r
-        u_hops, v_hops = v_hops, r_hops
-        u_skips, v_skips = v_skips, r_skips
-
-    print(f"{u} = {u_hops}*{a} + {u_skips}*{b}")
+    return value
 ```
 
-We now assemble a solver for the linear Diophantine equation $ ax + by = c $. This function determines whether solutions exist, and if so, prints all solutions in parametric form.
+For:
+
+\[
+f(x)
+=
+x^3-4x^2+5x-6,
+\]
+
+use:
 
 ```python
-def solve_LDE(a, b, c):
-    """
-    Solves the equation ax + by = c for integer x, y.
-    Returns one solution (x, y) if it exists, otherwise None.
-    """
-    u, v = a, b
-    u_hops, u_skips = 1, 0
-    v_hops, v_skips = 0, 1
+f = [1, -4, 5, -6]
 
-    while v != 0:
-        q = u // v
-        r = u % v
-        r_hops = u_hops - q * v_hops
-        r_skips = u_skips - q * v_skips
-
-        u, v = v, r
-        u_hops, v_hops = v_hops, r_hops
-        u_skips, v_skips = v_skips, r_skips
-
-    g = u  # gcd(a, b)
-
-    if c % g == 0:
-        d = c // g
-        x = d * u_hops
-        y = d * u_skips
-        print(f"{a}x + {b}y = {c} has solutions if and only if:")
-        print(f"x = {x} + {b // g}n, y = {y} - {a // g}n for n in ℤ.")
-        return x, y
-    else:
-        print(f"No solutions exist for {a}x + {b}y = {c} because gcd({a}, {b}) = {g} does not divide {c}.")
-    return None
-
+assert poly_eval(f, 3) == 0
 ```
-We want to solve the following equation: 
 
-$$
-1337x + 137y = 1
-$$
+---
+
+## Polynomial derivative
 
 ```python
-print(solve_LDE(1337, 137, 1))
+def poly_derivative(coeffs):
+    degree = len(coeffs) - 1
+
+    return [
+        coeffs[i] * (degree - i)
+        for i in range(degree)
+    ]
+```
+
+Example:
+
+```python
+f = [1, -4, 5, -6]
+
+df = poly_derivative(f)
+
+print(df)
+```
+
+gives:
+
+```text
+[3, -8, 5]
+```
+
+corresponding to:
+
+\[
+f'(x)
+=
+3x^2-8x+5.
+\]
+
+---
+
+## One Hensel lifting step
+
+An especially transparent implementation simply tests the \(p\) possible lifts.
+
+If \(a\) is a root modulo:
+
+\[
+p^k,
+\]
+
+then every possible lift has the form:
+
+\[
+a+t p^k
+\]
+
+for:
+
+\[
+t=0,\ldots,p-1.
+\]
+
+```python
+def hensel_lift_step(
+    coeffs,
+    root,
+    p,
+    k,
+):
+    modulus = p**k
+    next_modulus = p ** (k + 1)
+
+    if poly_eval(coeffs, root) % modulus != 0:
+        raise ValueError(
+            "root is not valid modulo p^k"
+        )
+
+    lifts = []
+
+    for t in range(p):
+        candidate = root + t * modulus
+        candidate %= next_modulus
+
+        if (
+            poly_eval(coeffs, candidate)
+            % next_modulus
+            == 0
+        ):
+            lifts.append(candidate)
+
+    return sorted(set(lifts))
+```
+
+This implementation handles all three cases automatically:
+
+```text
+0 lifts
+1 lift
+p lifts
+```
+
+and therefore also handles singular roots.
+
+---
+
+## Lifting all roots
+
+We can now solve modulo \(p^\alpha\):
+
+```python
+def roots_mod_prime_power(
+    coeffs,
+    p,
+    alpha,
+):
+    if alpha < 1:
+        raise ValueError(
+            "alpha must be positive"
+        )
+
+    roots = [
+        x
+        for x in range(p)
+        if poly_eval(coeffs, x) % p == 0
+    ]
+
+    for k in range(1, alpha):
+        new_roots = []
+
+        for root in roots:
+            new_roots.extend(
+                hensel_lift_step(
+                    coeffs,
+                    root,
+                    p,
+                    k,
+                )
+            )
+
+        roots = sorted(set(new_roots))
+
+    modulus = p**alpha
+
+    return roots, modulus
+```
+
+For the cubic example:
+
+```python
+f = [1, -4, 5, -6]
+
+roots, modulus = roots_mod_prime_power(
+    f,
+    p=3,
+    alpha=3,
+)
+
+print(roots)
+print(modulus)
+```
+
+we obtain:
+
+```text
+[3]
+27
+```
+
+So:
+
+\[
+x\equiv3\pmod{27}.
+\]
+
+---
+
+## Second example computationally
+
+For:
+
+\[
+f(x)
+=
+x^2+3x+17,
+\]
+
+use:
+
+```python
+f = [1, 3, 17]
+```
+
+Modulo \(9\):
+
+```python
+roots_9, _ = roots_mod_prime_power(
+    f,
+    p=3,
+    alpha=2,
+)
+
+print(roots_9)
+```
+
+returns:
+
+```text
+[2, 4]
+```
+
+Modulo \(5\):
+
+```python
+roots_5 = [
+    x
+    for x in range(5)
+    if poly_eval(f, x) % 5 == 0
+]
+
+print(roots_5)
+```
+
+returns:
+
+```text
+[3, 4]
+```
+
+Modulo \(7\):
+
+```python
+roots_7 = [
+    x
+    for x in range(7)
+    if poly_eval(f, x) % 7 == 0
+]
+
+print(roots_7)
+```
+
+returns:
+
+```text
+[1, 3]
+```
+
+Thus we already know:
+
+```python
+len(roots_9) * len(roots_5) * len(roots_7)
+```
+
+is:
+
+```text
+8
+```
+
+before doing CRT.
+
+---
+
+## Combining all roots with CRT
+
+Using a standard pairwise-coprime CRT routine:
+
+```python
+from itertools import product
+
+
+def crt(residues, moduli):
+    M = 1
+
+    for modulus in moduli:
+        M *= modulus
+
+    x = 0
+
+    for residue, modulus in zip(
+        residues,
+        moduli,
+    ):
+        M_i = M // modulus
+        inverse = pow(
+            M_i,
+            -1,
+            modulus,
+        )
+
+        x += residue * M_i * inverse
+
+    return x % M
+```
+
+we can reconstruct every combination:
+
+```python
+all_roots = []
+
+for local_roots in product(
+    roots_9,
+    roots_5,
+    roots_7,
+):
+    root = crt(
+        local_roots,
+        [9, 5, 7],
+    )
+
+    all_roots.append(root)
+
+all_roots = sorted(set(all_roots))
+
+print(all_roots)
 ```
 
 Output:
 
+```text
+[29, 38, 94, 148, 164, 218, 274, 283]
 ```
-1337x + 137y = 1 has solutions if and only if:
-x = -54 + 137n, y = 527 - 1337n for n in ℤ.
+
+Now verify the defining invariant:
+
+```python
+for root in all_roots:
+    assert (
+        poly_eval(f, root) % 315
+        == 0
+    )
 ```
 
----
-
-## Congruences of Higher Degree
-
-We now return on the general case that we pointed out in the beginning so we consider polynomial congruences of the form:
-$$
-f(x) = a_0x^n + a_1x^{n-1} + \cdots + a_n \equiv 0 \pmod{m},
-$$
-where not all coefficients $ a_i \in \mathbb{Z} $ are divisible by $ m $. This is a natural extension of our previous study on linear congruences.
-
-Let the modulus $ m $ have prime-power decomposition:
-$$
-m = \prod_{i=1}^r p_i^{\alpha_i}.
-$$
-Then, by the *Chinese Remainder Theorem*, solving $ f(x) \equiv 0 \pmod{m} $ is equivalent to solving the system of congruences:
-$$
-f(x) \equiv 0 \pmod{p_1^{\alpha_1}}, \quad \ldots, \quad f(x) \equiv 0 \pmod{p_r^{\alpha_r}}.
-$$
-
-If for each $ i $, the congruence $ f(x) \equiv 0 \pmod{p_i^{\alpha_i}} $ has a root $ c_i $, then the system:
-$$
-x \equiv c_1 \pmod{p_1^{\alpha_1}}, \quad \ldots, \quad x \equiv c_r \pmod{p_r^{\alpha_r}}
-$$
-has a unique solution modulo $ m $, and this solution is also a solution of the original congruence. Thus, the number of solutions modulo $ m $ is equal to the *product of the number of solutions modulo each $ p_i^{\alpha_i} $*.
-
-Hence, we are reduced to the study of congruences modulo powers of primes. And even more: using *lifting techniques*, we can reduce these to congruences modulo $ p $, where $ p $ is prime.
+This is exactly how the mathematical decomposition should be reflected in code.
 
 ---
 
-## Lifting Solutions Modulo $ p $ to $ p^\alpha $
+## Simple roots versus singular roots
 
-Suppose we are interested in solving the congruence:
+This distinction deserves emphasis.
 
-$$
-f(x) \equiv 0 \pmod{p^\alpha},
-$$
-where $ p $ is a prime number and $ \alpha \geq 1 $, and we already know a solution $ a $ modulo $ p^\beta $ for some $ \beta < \alpha $, that is:
+Suppose:
 
-$$
-f(a) \equiv 0 \pmod{p^\beta}.
-$$
+\[
+f(a)\equiv0\pmod p.
+\]
 
-We seek to *lift* this solution to a solution modulo $ p^{\beta+1} $.
+If:
 
-Let us set:
+\[
+f'(a)\not\equiv0\pmod p,
+\]
 
-$$
-x = a + tp^\beta,
-$$
-where $ t \in \mathbb{Z} $ is to be determined. Expanding $ f(x) $ around $ a $ using *Taylor's formula*, we obtain:
+then \(a\) is called a **simple root modulo \(p\)**.
 
-$$
-f(a + tp^\beta) = f(a) + tp^\beta f'(a) + \frac{(tp^\beta)^2}{2!} f''(a) + \cdots + \frac{(tp^\beta)^n}{n!} f^{(n)}(a).
-$$
+Such a root lifts uniquely through every power:
 
-Working modulo $ p^{\beta+1} $, observe that:
+\[
+p,
+p^2,
+p^3,\ldots
+\]
 
-- Each term involving $ (tp^\beta)^k $ for $ k \geq 2 $ is divisible by $ p^{2\beta} $,
-- Since $ 2\beta \geq \beta + 1 $ when $ \beta \geq 1 $, these higher-order terms vanish modulo $ p^{\beta+1} $.
+This is the clean Hensel case.
 
-Thus, modulo $ p^{\beta+1} $, the expansion simplifies to:
+If instead:
 
-$$
-f(a + tp^\beta) \equiv f(a) + tp^\beta f'(a) \pmod{p^{\beta+1}}.
-$$
+\[
+f'(a)\equiv0\pmod p,
+\]
 
-Since $ f(a) \equiv 0 \pmod{p^\beta} $, we can express:
+the root is **singular**.
 
-$$
-f(a) = p^\beta k
-$$
-for some $ k \in \mathbb{Z} $.
+Then the behavior can change dramatically.
 
-Substituting into the simplified expansion, the lifting condition becomes:
+The root may:
 
-$$
-f(a + tp^\beta) \equiv p^\beta (k + tf'(a)) \equiv 0 \pmod{p^{\beta+1}}.
-$$
+- disappear at the next power,
+- produce \(p\) descendants,
+- continue branching at later levels.
 
-Dividing both sides by $ p^\beta $ (which is allowed modulo $ p^{\beta+1} $) leads to the congruence:
+So the derivative is not a decorative calculus object.
 
-$$
-k + t f'(a) \equiv 0 \pmod{p},
-$$
-or equivalently:
-
-$$
-f'(a) t \equiv -\frac{f(a)}{p^\beta} \pmod{p}.
-$$
-
-Thus, *lifting the solution* reduces to solving a *linear congruence modulo $ p $*.
-
-
-### Number of Solutions
-
-The number of solutions to the congruence:
-
-$$
-f'(a) t \equiv -\frac{f(a)}{p^\beta} \pmod{p}
-$$
-depends on the divisibility properties of $ f'(a) $ and $ \frac{f(a)}{p^\beta} $ modulo $ p $:
-
-$$
-\# \text{Solutions} =
-\begin{cases}
-0, & \text{if } p \mid f'(a) \text{ and } p \nmid \frac{f(a)}{p^\beta}, \\[6pt]
-p, & \text{if } p \mid f'(a) \text{ and } p \mid \frac{f(a)}{p^\beta}, \\[6pt]
-1, & \text{if } p \nmid f'(a).
-\end{cases}
-$$
-
-
-### Hensel's Lemma
-
-This lifting principle leads to a fundamental result known as *Hensel’s lemma*:
-
->Let $ p $ be a prime number, $ k \geq 1 $, and let $ f(x) \in \mathbb{Z}[x] $ be a polynomial with integer coefficients.
->
->Suppose $ a \in \mathbb{Z} $ satisfies:
->
->\[
->f(a) \equiv 0 \pmod{p^k}.
->\]
->
->Then:
->
->- If $ f'(a) \not\equiv 0 \pmod{p} $, there exists a *unique* $ \tilde{a} \in \mathbb{Z} $ such that:
->
->\[
->\tilde{a} \equiv a \pmod{p^k}
->\quad \text{and} \quad
->f(\tilde{a}) \equiv 0 \pmod{p^{k+1}}.
->\]
->
->- If $ f'(a) \equiv 0 \pmod{p} $ and $ f(a) \equiv 0 \pmod{p^{k+1}} $, then there are *exactly $ p $* solutions modulo $ p^{k+1} $ lifting $ a $.
->- If $ f'(a) \equiv 0 \pmod{p} $ and $ f(a) \not\equiv 0 \pmod{p^{k+1}} $, then *no* lifting exists.
-
-Thus, Hensel’s lemma provides a powerful method to iteratively lift solutions from $ \pmod{p} $ to $ \pmod{p^k} $ for arbitrary $ k \geq 1 $.
-
-
-Below we provide two examples, the first one is a simple one and the latter is a harder one involving also CRT.
-
-*Example 1*: Solve $ f(x) = x^3 - 4x^2 + 5x - 6 \equiv 0 \pmod{27} $
-
-Let’s follow the lifting method step-by-step.
-
-- **Step 1: Solve modulo $ p = 3 $**
-
-We reduce:
-$$
-f(x) = x^3 - 4x^2 + 5x - 6 \equiv x^3 + 2x^2 + 2x \pmod{3}
-$$
-Check $ x = 0, 1, 2 $:
-- $ x = 0 \Rightarrow 0 $
-- $ x = 1 \Rightarrow 1 + 2 + 2 = 5 \not\equiv 0 $
-- $ x = 2 \Rightarrow 8 + 8 + 4 = 20 \not\equiv 0 $
-
-Only solution is $ x \equiv 0 \pmod{3} $.
-
-- **Step 2: Lift to modulo $ 9 $**
-
-Let $ x = 0 + 3t $, and we want:
-$$
-f(3t) \equiv 0 \pmod{9}
-$$
-Use:
-$$
-f(a + 3t) \equiv f(a) + 3t f'(a) \pmod{9}, \quad \text{where } a = 0
-$$
-$$
-f(0) = -6,\quad f'(x) = 3x^2 - 8x + 5,\quad f'(0) = 5
-$$
-
-So:
-$$
-3 \cdot 5 \cdot t \equiv 6 \pmod{9} \Rightarrow 15t \equiv 6 \pmod{9} \Rightarrow 5t \equiv 2 \pmod{3}
-\Rightarrow t \equiv 1 \pmod{3}.
-$$
-Let $ t = 1 + 3t_1 $, so $ x = 3 + 9t_1 $.
-
-- **Step 3: Lift to modulo $ 27 $**
-
-Now $ x = 3 + 9t_1 $. Compute:
-$$
-f(x) \equiv f(3) + 9t_1 f'(3) \pmod{27}
-$$
-$$
-f(3) = 27 - 36 + 15 - 6 = 0, \quad f'(3) = 3 \cdot 9 - 24 + 5 = 8
-$$
-$$
-f(x) \equiv 0 + 9t_1 \cdot 8 = 72t_1 \pmod{27} \Rightarrow t_1 \equiv 0 \pmod{3}
-$$
-Let $ t_1 = 3t_2 $, so $ x = 3 + 27t_2 \Rightarrow x \equiv 3 \pmod{27} $
-
-Our final solution:
-$$
-\boxed{x \equiv 3 \pmod{27}}
-$$
-
-
-So to summarize a bit of the idea behind the lifting method here are some tips: 
-
-1. Solve the congruence $ f(x) \equiv 0 \pmod{p} $.
-2. For each solution $ a_1 $, attempt to lift to a solution modulo $ p^2 $, $ p^3 $, ..., up to $ p^\alpha $.
-3. At each step, use:
-   $$
-   f'(a_k)t \equiv -\frac{f(a_k)}{p^k} \pmod{p}
-   $$
-4. Repeat recursively, exploring all solution branches.
-
-This recursive lifting technique lies at the heart of *Hensel’s Lemma* and will be indispensable in our upcoming study of elliptic curves and modular forms in cryptography.
+It controls the local arithmetic geometry of the root.
 
 ---
-We proceed now with an example that is a combination of Hensel’s Lemma and the CRT:
 
-*Example 2*: We wish to solve the congruence:
+## A small singular example
 
-$$
-x^2 + 3x + 17 \equiv 0 \pmod{315}.
-$$
+Consider:
 
+\[
+f(x)=x^2
+\]
 
-- **Step 1: Factor the Modulus**
+modulo \(2\).
 
-First, observe that:
+We have:
 
-$$
-315 = 3^2 \times 5 \times 7.
-$$
+\[
+f(0)\equiv0\pmod2.
+\]
 
-Thus, we can *decompose* the original problem into solving separately modulo $ 9 $, $ 5 $, and $ 7 $, and then combining solutions using the CRT.
+But:
 
-That is, solve the system:
+\[
+f'(x)=2x,
+\]
 
-$$
-\begin{aligned}
-x^2 + 3x + 17 &\equiv 0 \pmod{9}, \quad \text{(A)}\\
-x^2 + 3x + 17 &\equiv 0 \pmod{5}, \quad \text{(B)}\\
-x^2 + 3x + 17 &\equiv 0 \pmod{7}. \quad \text{(C)}
-\end{aligned}
-$$
+so:
 
-- **Step 2: Solve Modulo $ 9 $ — Using Hensel’s Lemma**
+\[
+f'(0)\equiv0\pmod2.
+\]
 
-We first tackle congruence (A).
+This is a singular root.
 
-Since $ 9 = 3^2 $, we first solve modulo $ 3 $, and then *lift* solutions modulo $ 9 $ using *Hensel’s lemma**.
+Now lift to modulo \(4\).
 
-First, solve for modulo 3:
+Candidates reducing to \(0\pmod2\) are:
 
-$$
-x^2 + 3x + 17 \equiv x^2 + 0x + 2 \equiv x^2 + 2 \equiv 0 \pmod{3}.
-$$
+\[
+0
+\]
 
-Thus:
+and:
 
-$$
-x^2 \equiv 1 \pmod{3}.
-$$
+\[
+2.
+\]
 
-Testing by trial:
+Both satisfy:
 
-- $ x \equiv 1 \pmod{3} $: $ 1^2 = 1 \equiv 1 \pmod{3} $ ✅
-- $ x \equiv 2 \pmod{3} $: $ 2^2 = 4 \equiv 1 \pmod{3} $ ✅
+\[
+x^2\equiv0\pmod4.
+\]
 
-Thus, $ x \equiv 1 $ and $ x \equiv 2 \mod 3 $ are solutions.
+Thus one root modulo \(2\) branches into two roots modulo \(4\).
 
-Now, apply *Hensel’s lemma* to lift each solution from modulo $ 3 $ to modulo $ 9 $.
+This behavior would be impossible in the simple-root case.
 
-Let’s first consider $ x \equiv 1 \mod 3 $.
+---
 
-Set $ x = 1 + 3t $ and plug into $ f(x) \mod 9 $:
+## Why CRT and Hensel fit together
 
-$$
-f(1 + 3t) \equiv 0 \pmod{9}.
-$$
+CRT and Hensel lifting solve different parts of the same problem.
 
-Expand:
+CRT decomposes across **different primes**:
 
-$$
-(1 + 3t)^2 + 3(1 + 3t) + 17 = (1 + 6t + 9t^2) + (3 + 9t) + 17,
-$$
-$$
-= 21 + 15t + 9t^2.
-$$
+\[
+m
+=
+p_1^{\alpha_1}
+\cdots
+p_r^{\alpha_r}.
+\]
 
-Modulo 9:
+Hensel lifting moves **vertically through powers of one prime**:
 
-$$
-21 + 15t + 9t^2 \equiv 3 + 6t \pmod{9}.
-$$
+\[
+p
+\rightarrow
+p^2
+\rightarrow
+p^3
+\rightarrow\cdots.
+\]
 
-Thus, the lifting condition is:
+So the complete structure looks like:
 
-$$
-3 + 6t \equiv 0 \pmod{9}.
-$$
-$$
-6t \equiv -3 \equiv 6 \pmod{9}.
-$$
-$$
-t \equiv 1 \pmod{3}.
-$$
+```text
+                modulus m
+                    |
+        +-----------+-----------+
+        |           |           |
+      p1^a1       p2^a2       pr^ar
+        |           |           |
+    Hensel       Hensel       Hensel
+        |           |           |
+   local roots  local roots  local roots
+        \           |           /
+         \          |          /
+          +---------+---------+
+                    |
+                   CRT
+                    |
+              global roots
+```
 
-Thus, $ t = 1 $ modulo 3, so:
+This is one of the most reusable patterns in computational number theory.
 
-$$
-x = 1 + 3 \times 1 = 4 \pmod{9}.
-$$
+---
 
-Similarly, for $ x \equiv 2 \pmod{3} $:
+## Why this matters in cryptography
 
-Set $ x = 2 + 3t $.
+Polynomial congruences occur in many places in cryptography, although the exact algebraic setting varies.
 
-Expand:
+### RSA and modular equations
 
-$$
-(2 + 3t)^2 + 3(2 + 3t) + 17 = (4 + 12t + 9t^2) + (6 + 9t) + 17,
-$$
-$$
-= 27 + 21t + 9t^2.
-$$
+RSA arithmetic takes place modulo:
 
-Modulo 9:
+\[
+N=pq.
+\]
 
-$$
-27 + 21t + 9t^2 \equiv 0 + 3t \pmod{9}.
-$$
+CRT decomposes computations into arithmetic modulo \(p\) and \(q\), then reconstructs modulo \(N\).
 
-Thus:
+Questions about roots modulo composite integers also connect closely to factorization-based cryptography.
 
-$$
-3t \equiv 0 \pmod{9}.
-$$
-$$
-t \equiv 0 \pmod{3}.
-$$
+### Square roots modulo composites
 
-Thus, $ t = 0 $, so:
+For:
 
-$$
-x = 2 + 3 \times 0 = 2 \pmod{9}.
-$$
+\[
+N=pq
+\]
 
-The solutions modulo $ 9 $ are:
+with distinct odd primes, a quadratic residue typically has roots determined independently modulo \(p\) and modulo \(q\).
 
-$$
-x \equiv 2 \pmod{9}, \quad x \equiv 4 \pmod{9}.
-$$
+CRT combines the choices.
 
-- **Step 3: Solve Modulo $ 5 $ and $ 7 $ — by Trial and Error**
+This is the arithmetic structure behind several factoring-related constructions and assumptions.
 
-We solve the congruences (B) and (C) by direct substitution.
+### Prime powers
 
-Solve first :
+Prime-power rings:
 
-$$
-x^2 + 3x + 17 \equiv 0 \pmod{5}.
-$$
-Simplify:
+\[
+\mathbb Z/p^k\mathbb Z
+\]
 
-$$
-x^2 + 3x + 2 \equiv 0 \pmod{5}.
-$$
+appear naturally in computational number theory and in more advanced algebraic constructions.
 
-Check each residue:
+Hensel lifting lets us transfer local solutions from:
 
-- $ x = 0 $: $ 0 + 0 + 2 = 2 \neq 0 $,
-- $ x = 1 $: $ 1 + 3 + 2 = 6 \equiv 1 $,
-- $ x = 2 $: $ 4 + 6 + 2 = 12 \equiv 2 $,
-- $ x = 3 $: $ 9 + 9 + 2 = 20 \equiv 0 $ ✅
-- $ x = 4 $: $ 16 + 12 + 2 = 30 \equiv 0 $ ✅
+\[
+\mathbb F_p
+\]
 
-Thus:
+to higher powers of \(p\).
 
-$$
-x \equiv 3, \quad x \equiv 4 \pmod{5}.
-$$
+### Polynomial rings
 
+Modern cryptography increasingly performs arithmetic not only with integers but with polynomial quotient rings such as:
 
-Now solve modulo 7:
+\[
+\mathbb Z_q[x]/(f(x)).
+\]
 
-$$
-x^2 + 3x + 17 \equiv 0 \pmod{7}.
-$$
-Simplify:
+The specific algorithms differ from the single-variable integer congruences studied here, but the general lessons remain valuable:
 
-$$
-x^2 + 3x + 3 \equiv 0 \pmod{7}.
-$$
+- reduce modulo algebraic constraints,
+- understand invertibility,
+- factor structures when possible,
+- reconstruct from local information,
+- treat roots and multiplicities carefully.
 
-Check:
+### Elliptic curves
 
-- $ x = 0 $: $ 0 + 0 + 3 = 3 $,
-- $ x = 1 $: $ 1 + 3 + 3 = 7 \equiv 0 $ ✅
-- $ x = 2 $: $ 4 + 6 + 3 = 13 \equiv 6 $,
-- $ x = 3 $: $ 9 + 9 + 3 = 21 \equiv 0 $ ✅
-- $ x = 4,5,6 $: nonzero.
-
-Thus:
-
-$$
-x \equiv 1, \quad x \equiv 3 \pmod{7}.
-$$
-
-
-- **Step 4: Combine Solutions via CRT**
-
-We now solve systems of the form:
-
-- Pick one solution modulo 9 (either $ x \equiv 2 $ or $ x \equiv 4 $),
-- Combine with one solution modulo 5 (either $ x \equiv 3 $ or $ x \equiv 4 $),
-- Combine with one solution modulo 7 (either $ x \equiv 1 $ or $ x \equiv 3 $).
-
-Each choice leads to one solution modulo $ 315 $.
+Elliptic curves require solving polynomial equations over finite fields.
 
 For example:
 
-- Solve:
+\[
+y^2
+=
+x^3+ax+b
+\pmod p.
+\]
 
-$$
-\begin{aligned}
-x &\equiv 2 \pmod{9},\\
-x &\equiv 3 \pmod{5},\\
-x &\equiv 1 \pmod{7}.
-\end{aligned}
-$$
-
-Solving by successive substitutions or applying the CRT, we find:
-
-$$
-x \equiv 218 \pmod{315}.
-$$
-
-Similarly, solving:
-
-$$
-\begin{aligned}
-x &\equiv 2 \pmod{9},\\
-x &\equiv 3 \pmod{5},\\
-x &\equiv 3 \pmod{7},
-\end{aligned}
-$$
-we find:
-
-$$
-x \equiv 29 \pmod{315}.
-$$
-
-And similarly for other combinations.
-
-
-- **Step 5: Final Solutions**
-
-The complete list of solutions modulo $ 315 $ is:
-
-$$
-\boxed{29, 38, 94, 148, 164, 218, 274, 283}.
-$$
-
-Each corresponds to a different combination of solutions modulo 9, 5, and 7.
-
---- 
-
-## Some Computational Validation
-
-In order to validate our results and to facilitate future computations, we have included in the folder `src` a Python file implementing *Hensel's lemma*, called `Hensel.py`.
-
-We can now use this tool to run some tests on our worked examples and confirm the correctness of our results.
-
-
-*Example 1*: Solving $ f(x) = x^3 - 4x^2 + 5x - 6 \equiv 0 \pmod{27} $
-
-Recall that in the first example, we solved:
-
-$$
-f(x) = x^3 - 4x^2 + 5x - 6 \equiv 0 \pmod{27},
-$$
-and found the solution:
-
-$$
-x \equiv 3 \pmod{27}.
-$$
-
-To test this using our Python script, we execute the following command in the terminal:
-
-```bash
-python Hensel.py 3 3 1 -4 5 -6
-```
-
-Here:
-- `3` is the prime modulus $ p $,
-- `3` is the degree of the polynomial,
-- `1 -4 5 -6` are the coefficients from highest to lowest degree.
-
-Upon execution, we obtain:
-
-```python
-Using Hensel's Lemma to find solutions for: 
-x^3 - 4x^2 + 5x - 6 mod 3^3 = 0
-Solutions: [3.0]
-```
-
-which confirms the correctness of our earlier manual computation.
-
-
-*Example 2*: Solving $ f(x) = x^2 + 3x + 17 \equiv 0 \pmod{9} $
-
-In the second example, we solved:
-
-$$
-x^2 + 3x + 17 \equiv 0 \pmod{9},
-$$
-and obtained solutions $ x \equiv 2 \pmod{9} $ and $ x \equiv 4 \pmod{9} $.
-
-We test this with the following command:
-
-```bash
-python Hensel.py 3 2 1 3 17
-```
-
-where:
-- `3` is the prime modulus,
-- `2` is the degree,
-- `1 3 17` are the coefficients.
-
-The output is:
-
-```python
-Using Hensel's Lemma to find solutions for: 
-x^2 + 3x + 17 mod 3^2 = 0
-Solutions: [4.0, 2.0]
-```
-
-as expected.
-
-Moreover, having already discussed the CRT, we can further validate our combined solution using SageMath.
-
-For example, solving the system:
-
-$$
-\begin{aligned}
-x &\equiv 2 \pmod{9},\\
-x &\equiv 3 \pmod{5},\\
-x &\equiv 1 \pmod{7},
-\end{aligned}
-$$
-we may run:
-
-```python
-crt([2, 3, 1], [9, 5, 7])
-```
-
-Since:
-
-```python
-9*5*7 == 315
-```
-we confirm that the system is correctly set up.
-
-The output is:
-
-```
-218
-```
-thus verifying that:
-
-$$
-x \equiv 218 \pmod{315}
-$$
-is indeed one of the solutions we previously computed manually.
+This is not a Hensel-lifting problem in ordinary ECC usage, but understanding roots and polynomial equations over modular systems is part of the mathematical preparation needed to reason about such curves.
 
 ---
 
-## Wrap-up
+## An important conceptual distinction
 
-In this first part, we developed the theory and practice of solving polynomial congruences, starting from linear congruences and progressing toward higher-degree cases using *Hensel’s Lemma* and the *CRT*.
+There are several different kinds of equations in number theory:
 
-We established:
+### Integer Diophantine equation
 
-- The fundamental criteria for solvability of linear congruences.
-- The deep connection between modular equations and *linear Diophantine equations*.
-- Techniques to solve polynomial congruences modulo prime powers via *Hensel’s lemma*.
-- Methods to combine solutions for different prime factors via the *Chinese Remainder Theorem*.
+\[
+f(x_1,\ldots,x_n)=0
+\]
 
-Finally, through Python and SageMath implementations, we validated our theoretical results computationally, ensuring correctness and building tools for more advanced studies.
- 
-This concludes the first part of our exploration of congruences.  
-In the next stages, we will extend these ideas toward non-linear congruences, modular arithmetic structures, and cryptographic applications.
+with solutions sought in:
+
+\[
+\mathbb Z.
+\]
+
+### Polynomial congruence
+
+\[
+f(x)
+\equiv0
+\pmod m.
+\]
+
+Solutions are residue classes modulo \(m\).
+
+### Polynomial equation over a finite field
+
+\[
+f(x)=0
+\]
+
+with:
+
+\[
+x\in\mathbb F_p.
+\]
+
+### \(p\)-adic lifting problem
+
+Start from a solution modulo \(p^k\) and refine it to increasing powers:
+
+\[
+p^k
+\rightarrow
+p^{k+1}.
+\]
+
+These problems interact, but they are not interchangeable.
+
+Keeping the ambient arithmetic structure explicit prevents many common mistakes.
+
+---
+
+## Practice and checkpoint
+
+### Exercise 1 — Linear congruence
+
+Solve:
+
+\[
+18x
+\equiv30
+\pmod{42}.
+\]
+
+First compute:
+
+\[
+\gcd(18,42).
+\]
+
+How many solutions should exist modulo \(42\)?
+
+Find all of them.
+
+### Exercise 2 — No solution
+
+Determine whether:
+
+\[
+12x
+\equiv5
+\pmod{18}
+\]
+
+has a solution.
+
+Explain your answer using the GCD criterion.
+
+### Exercise 3 — Diophantine connection
+
+Rewrite:
+
+\[
+17x
+\equiv30
+\pmod{49}
+\]
+
+as a linear Diophantine equation.
+
+Find one integer pair:
+
+\[
+(x,y)
+\]
+
+satisfying it.
+
+### Exercise 4 — Modular inverse
+
+Compute:
+
+\[
+37^{-1}
+\pmod{101}
+\]
+
+using the Extended Euclidean Algorithm.
+
+Verify the result with:
+
+```python
+pow(37, -1, 101)
+```
+
+### Exercise 5 — Polynomial roots
+
+Find every solution of:
+
+\[
+x^2
+\equiv1
+\pmod8.
+\]
+
+How many roots are there?
+
+Compare this with the prime-modulus case.
+
+### Exercise 6 — Simple Hensel lift
+
+Solve:
+
+\[
+x^2-2
+\equiv0
+\pmod7.
+\]
+
+For each root, compute:
+
+\[
+f'(x)=2x.
+\]
+
+Determine which roots are simple.
+
+Then lift them to solutions modulo:
+
+\[
+49.
+\]
+
+### Exercise 7 — Singular lifting
+
+Study:
+
+\[
+x^2
+\equiv0
+\pmod{2^k}
+\]
+
+for:
+
+\[
+k=1,2,3,4.
+\]
+
+Observe how the root structure changes.
+
+### Exercise 8 — CRT root counting
+
+Suppose a polynomial has:
+
+\[
+3
+\]
+
+roots modulo \(8\),
+
+\[
+2
+\]
+
+roots modulo \(5\),
+
+and:
+
+\[
+4
+\]
+
+roots modulo \(7\).
+
+Assuming the local root sets are correct, how many roots does it have modulo:
+
+\[
+8\cdot5\cdot7?
+\]
+
+Explain why.
+
+### Exercise 9 — Verify the \(315\) example
+
+For every:
+
+\[
+x
+\in
+\{
+29,
+38,
+94,
+148,
+164,
+218,
+274,
+283
+\},
+\]
+
+verify:
+
+\[
+x^2+3x+17
+\equiv0
+\pmod{315}.
+\]
+
+Then reduce every root separately modulo:
+
+\[
+9,
+5,
+7.
+\]
+
+Identify the local-root combination that generated it.
+
+### Reader checkpoint
+
+You should now be able to explain:
+
+1. What it means to solve
+   \[
+   f(x)\equiv0\pmod m.
+   \]
+
+2. Why
+   \[
+   ax\equiv b\pmod m
+   \]
+   is solvable exactly when
+   \[
+   \gcd(a,m)\mid b.
+   \]
+
+3. Why there are exactly
+   \[
+   \gcd(a,m)
+   \]
+   solutions when a linear congruence is solvable.
+
+4. How a linear congruence becomes a Diophantine equation.
+
+5. Why modular division requires an inverse.
+
+6. Why polynomial congruences modulo a composite modulus can be decomposed into prime-power problems.
+
+7. How CRT reconstructs the global roots.
+
+8. Why the number of global roots is the product of the numbers of local roots.
+
+9. Why a lift from \(p^k\) to \(p^{k+1}\) has the form
+   \[
+   a+t p^k.
+   \]
+
+10. How the Hensel lifting equation
+    \[
+    f'(a)t
+    \equiv
+    -\frac{f(a)}{p^k}
+    \pmod p
+    \]
+    arises.
+
+11. Why
+    \[
+    f'(a)\not\equiv0\pmod p
+    \]
+    implies a unique lift.
+
+12. Why singular roots can branch or disappear.
+
+13. How Hensel lifting and CRT complement each other.
+
+If these ideas are clear, then modular equations are no longer just isolated congruence exercises.
+
+They form a structured computational problem that can be decomposed, lifted, and reconstructed.
+
+---
+
+## References and further reading
+
+**Kenneth H. Rosen**,  
+*Elementary Number Theory and Its Applications.*
+
+A clear introduction to linear congruences, Diophantine equations, modular inverses, and the Chinese Remainder Theorem.
+
+**Ivan Niven, Herbert S. Zuckerman, and Hugh L. Montgomery**,  
+*An Introduction to the Theory of Numbers.*
+
+A classical reference for congruences and elementary number-theoretic equation solving.
+
+**Kenneth Ireland and Michael Rosen**,  
+*A Classical Introduction to Modern Number Theory.*
+
+Useful for the transition from elementary congruences to deeper local and algebraic number theory.
+
+**Victor Shoup**,  
+*A Computational Introduction to Number Theory and Algebra.*
+
+Particularly valuable for translating modular equation solving into efficient computational algorithms.
+
+**Fernando Q. Gouvêa**,  
+*p-adic Numbers: An Introduction.*
+
+A natural next reference for understanding why Hensel lifting is much more than an isolated modular trick.
+
+---
+
+## Where this leads
+
+We have now combined several tools developed throughout the entire reference series:
+
+\[
+\gcd
+\rightarrow
+\text{Bézout}
+\rightarrow
+\text{modular inverse}
+\rightarrow
+\text{linear congruence},
+\]
+
+then:
+
+\[
+\text{factorization of }m
+\rightarrow
+\text{prime powers},
+\]
+
+then:
+
+\[
+\text{roots mod }p
+\rightarrow
+\text{Hensel lifting}
+\rightarrow
+\text{roots mod }p^k,
+\]
+
+and finally:
+
+\[
+\text{local roots}
+\rightarrow
+\text{CRT}
+\rightarrow
+\text{global roots}.
+\]
+
+The broader lesson is one that will appear repeatedly later in algebra and cryptography:
+
+\[
+\boxed{
+\text{decompose}
+\rightarrow
+\text{solve locally}
+\rightarrow
+\text{lift}
+\rightarrow
+\text{reconstruct}.
+}
+\]
+
+From here, the natural direction is toward deeper nonlinear congruences, quadratic equations, residue symbols, finite fields, and the richer polynomial structures that appear throughout modern cryptography.

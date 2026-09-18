@@ -1,5 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { createMarkdownProcessor } from '@astrojs/markdown-remark';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 
 const root = process.cwd();
 const blogDir = path.join(root, 'src', 'content', 'blog');
@@ -45,9 +49,12 @@ function list(fm, key) {
   const start = lines.findIndex((line) => new RegExp(`^${key}:\\s*$`).test(line));
   if (start < 0) return [];
   const out = [];
+  let seenValue = false;
   for (let i = start + 1; i < lines.length; i += 1) {
+    if (!lines[i].trim() && !seenValue) continue;
     const m = lines[i].match(/^\s*-\s*(.+?)\s*$/);
     if (!m) break;
+    seenValue = true;
     out.push(m[1].trim().replace(/^['"]|['"]$/g, ''));
   }
   return out;
@@ -57,10 +64,28 @@ function withoutFencedCode(body) {
   return body.replace(/```[\s\S]*?```/g, '').replace(/~~~[\s\S]*?~~~/g, '');
 }
 
+function localImageTarget(asset) {
+  const clean = asset.split('#')[0].split('?')[0];
+  return {
+    asset: clean,
+    target: path.join(root, 'public', clean.replace(/^\//, '')),
+  };
+}
+
+
 const errors = [];
 const seriesOrders = new Map();
 const ordersBySeries = new Map();
 const files = walk(blogDir);
+const blogSlugs = new Set(
+  files.map((file) => path.relative(blogDir, file).replaceAll('\\', '/').replace(/\.(md|mdx)$/i, '')),
+);
+const titles = new Map();
+const markdownProcessor = await createMarkdownProcessor({
+  remarkPlugins: [remarkMath],
+  rehypePlugins: [rehypeKatex],
+  syntaxHighlight: false,
+});
 
 for (const file of files) {
   const rel = path.relative(root, file).replaceAll('\\', '/');
@@ -76,6 +101,20 @@ for (const file of files) {
     if (!scalar(fm, key)) errors.push(`${rel}: missing ${key}`);
   }
   if (!body) errors.push(`${rel}: empty article body`);
+
+  const pubDateRaw = scalar(fm, 'pubDate');
+  const updatedDateRaw = scalar(fm, 'updatedDate');
+  if (pubDateRaw && Number.isNaN(Date.parse(pubDateRaw))) errors.push(`${rel}: invalid pubDate "${pubDateRaw}"`);
+  if (updatedDateRaw && Number.isNaN(Date.parse(updatedDateRaw))) errors.push(`${rel}: invalid updatedDate "${updatedDateRaw}"`);
+  if (pubDateRaw && updatedDateRaw && !Number.isNaN(Date.parse(pubDateRaw)) && !Number.isNaN(Date.parse(updatedDateRaw)) && Date.parse(updatedDateRaw) < Date.parse(pubDateRaw)) {
+    errors.push(`${rel}: updatedDate precedes pubDate`);
+  }
+
+  const title = scalar(fm, 'title');
+  if (title) {
+    if (titles.has(title)) errors.push(`${rel}: duplicate title "${title}" (also ${titles.get(title)})`);
+    else titles.set(title, rel);
+  }
 
   const difficulty = scalar(fm, 'difficulty') ?? 'Introductory';
   if (!allowedDifficulty.has(difficulty)) errors.push(`${rel}: invalid difficulty "${difficulty}"`);
@@ -119,10 +158,36 @@ for (const file of files) {
   if (codeFenceCount % 2 !== 0) errors.push(`${rel}: unbalanced triple-backtick code fences`);
 
   const visibleBody = withoutFencedCode(body);
+
+  // Markdown local images.
   for (const match of visibleBody.matchAll(/!?\[[^\]]*\]\((\/images\/[^)\s]+)(?:\s+['"][^'"]*['"])?\)/g)) {
-    const asset = match[1].split('#')[0].split('?')[0];
-    const target = path.join(root, 'public', asset.replace(/^\//, ''));
+    const { asset, target } = localImageTarget(match[1]);
     if (!fs.existsSync(target)) errors.push(`${rel}: missing local image asset "${asset}"`);
+  }
+
+  // Raw HTML local images, which are common in older imported notes.
+  for (const match of visibleBody.matchAll(/<img\b[^>]*\bsrc\s*=\s*['"](\/images\/[^'"]+)['"][^>]*>/gi)) {
+    const { asset, target } = localImageTarget(match[1]);
+    if (!fs.existsSync(target)) errors.push(`${rel}: missing local HTML image asset "${asset}"`);
+  }
+
+  // Absolute article links must resolve to an existing content slug.
+  for (const match of visibleBody.matchAll(/\]\(\/blog\/([^/#?\s)]+)\/?(?:[?#][^)]*)?\)/g)) {
+    const slug = match[1];
+    if (!blogSlugs.has(slug)) errors.push(`${rel}: broken internal blog link "/blog/${slug}/"`);
+  }
+
+  // Render with the same math plugins as Astro and verify local anchor links against actual generated IDs.
+  try {
+    const rendered = await markdownProcessor.render(body, { fileURL: pathToFileURL(file) });
+    const ids = new Set([...rendered.code.matchAll(/\bid=["']([^"']+)["']/g)].map((m) => m[1]));
+    for (const match of rendered.code.matchAll(/\bhref=["']#([^"']+)["']/g)) {
+      let anchor = match[1];
+      try { anchor = decodeURIComponent(anchor); } catch { /* keep the raw anchor */ }
+      if (!ids.has(anchor)) errors.push(`${rel}: broken local anchor "#${anchor}"`);
+    }
+  } catch (error) {
+    errors.push(`${rel}: Markdown rendering failed during anchor validation: ${error?.message ?? error}`);
   }
 }
 

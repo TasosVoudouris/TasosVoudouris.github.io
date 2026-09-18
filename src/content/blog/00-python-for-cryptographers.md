@@ -1,61 +1,82 @@
 ---
-title: 'Python for Cryptographers: The Minimum Python You Need to Start'
-description: A beginner-first introduction to the small subset of Python needed to turn cryptographic mathematics into executable code.
-pubDate: '2026-09-08'
+title: "Python for Cryptographers: The Minimum Python You Need to Start"
+description: "A beginner-first introduction to the small subset of Python needed to turn cryptographic mathematics into executable code."
+pubDate: "2026-09-08"
+updatedDate: "2026-09-14"
 topics:
-- Cryptography Fundamentals
-- Cryptographic Engineering
+  - "Cryptography Fundamentals"
+  - "Cryptographic Engineering"
 tags:
-- python
-- cryptography
-- beginners
-- cryptography-from-zero
-difficulty: Introductory
-series: Cryptography From Zero
+  - "python"
+  - "cryptography"
+  - "beginners"
+  - "cryptography-from-zero"
+difficulty: "Introductory"
+series: "Cryptography From Zero"
 seriesOrder: 1
 draft: false
 ---
+
 Cryptography can look intimidating for two completely different reasons.
 
-The first reason is **mathematics**. You will eventually meet modular arithmetic, groups, finite fields, elliptic curves, polynomials, lattices, and probability.
+The first is **mathematics**. We eventually meet modular arithmetic, groups, finite fields, elliptic curves, polynomials, lattices, probability, and several other mathematical structures.
 
-The second reason is **implementation**. Even if you understand the mathematics on paper, you still need a way to turn it into code, test it, break it, and inspect what is happening internally.
+The second is **implementation**. Even when the mathematics is clear on paper, we still need a way to represent it, execute it, inspect intermediate values, test identities, deliberately break assumptions, and verify that the code actually implements the mathematics we intended.
 
 This article is about that second problem.
 
 It is **not a complete Python course**.
 
-You do not need to master Python before learning cryptography. You only need a small working vocabulary:
+You do not need to become an expert Python programmer before studying cryptography. For the first part of CryptoCave, we need only a relatively small vocabulary:
 
-- integers,
-- arithmetic,
-- functions,
-- conditions,
-- loops,
+- integers and arithmetic,
+- variables and functions,
+- conditions and loops,
 - lists and tuples,
-- bytes and hexadecimal,
+- text, bytes, hexadecimal, and Base64,
 - bitwise operations,
-- modular exponentiation,
+- modular arithmetic,
 - randomness,
-- assertions.
+- assertions and executable tests.
 
-That is enough to begin.
+That is already enough to begin turning cryptographic mathematics into code.
 
-Later, whenever cryptography requires something new, we will learn it exactly at the moment it becomes useful.
+Later, when a cryptographic construction requires a new programming concept, we will introduce it at the point where it becomes useful.
 
 ---
 
-## 1. The first mental model: mathematics becomes executable objects
+## Table of Contents
 
-Suppose a textbook gives you:
+- [1. Mathematics becomes executable objects](#1-mathematics-becomes-executable-objects)
+- [2. Numbers, variables, and arithmetic](#2-numbers-variables-and-arithmetic)
+- [3. Functions, conditions, and loops](#3-functions-conditions-and-loops)
+- [4. Representing mathematical objects](#4-representing-mathematical-objects)
+- [5. Text, bytes, and encodings](#5-text-bytes-and-encodings)
+- [6. Bits and bitwise operations](#6-bits-and-bitwise-operations)
+- [7. Modular arithmetic in Python](#7-modular-arithmetic-in-python)
+- [8. Randomness: random versus secrets](#8-randomness-random-versus-secrets)
+- [9. Assertions and executable invariants](#9-assertions-and-executable-invariants)
+- [10. Two small cryptographic experiments](#10-two-small-cryptographic-experiments)
+- [11. Common beginner mistakes](#11-common-beginner-mistakes)
+- [12. What you do not need to know yet](#12-what-you-do-not-need-to-know-yet)
+- [13. Practice lab and reader checkpoint](#13-practice-lab-and-reader-checkpoint)
+- [14. Where this is going](#14-where-this-is-going)
+- [Run the companion code](#run-the-companion-code)
+- [Next](#next)
 
-$$
-p = 17,\qquad g = 3,\qquad x = 7.
-$$
+---
+
+## 1. Mathematics becomes executable objects
+
+Suppose a textbook gives us
+
+\[
+p=17,\qquad g=3,\qquad x=7.
+\]
 
 On paper, these are mathematical objects.
 
-In Python, we can immediately create them:
+In Python, we can represent them immediately:
 
 ```python
 p = 17
@@ -65,11 +86,11 @@ x = 7
 
 Now they are values that a program can manipulate.
 
-That sounds trivial, but it is the central idea of this whole series:
+That sounds almost trivial, but it is the central idea behind the entire **Cryptography From Zero** series:
 
-> We will repeatedly take a mathematical object, decide how to represent it in Python, implement its operations, test those operations, and then use them inside cryptographic constructions.
+> We repeatedly take a mathematical object, choose a representation for it in code, implement its operations, test the relevant identities, and eventually place those operations inside cryptographic constructions.
 
-For example:
+The progression will gradually look something like this:
 
 ```text
 integer
@@ -82,20 +103,24 @@ elliptic-curve point
    ↓
 polynomial
    ↓
+finite-field element
+   ↓
 ring element
    ↓
 lattice vector
 ```
 
-We are not trying to hide the mathematics behind libraries.
+The objective is not to hide the mathematics behind a library.
 
-We are trying to make the mathematics visible in code.
+The objective is to make the mathematics visible in code.
+
+That distinction will matter throughout CryptoCave. Mature cryptographic libraries are indispensable in real systems, but when we are learning a construction, calling a single high-level function often hides exactly the mechanism we are trying to understand.
 
 ---
 
-# 2. Variables and values
+## 2. Numbers, variables, and arithmetic
 
-A variable gives a name to a value.
+A Python variable simply gives a name to a value:
 
 ```python
 prime = 17
@@ -103,7 +128,7 @@ generator = 3
 secret = 7
 ```
 
-You can inspect them:
+We can inspect those values:
 
 ```python
 print(prime)
@@ -111,7 +136,7 @@ print(generator)
 print(secret)
 ```
 
-Output:
+which produces:
 
 ```text
 17
@@ -119,7 +144,7 @@ Output:
 7
 ```
 
-Python also lets us inspect the type:
+Python also lets us inspect their type:
 
 ```python
 print(type(prime))
@@ -131,49 +156,54 @@ Output:
 <class 'int'>
 ```
 
-For now, the most important types are:
+For now, the types we will encounter most often are:
 
-```text
-int      integer
-bool     True or False
-str      text
-bytes    raw byte data
-list     mutable sequence
-tuple    fixed-style sequence
-```
+| Type | Meaning |
+| --- | --- |
+| `int` | Integer |
+| `bool` | `True` or `False` |
+| `str` | Unicode text |
+| `bytes` | Raw byte sequence |
+| `list` | Mutable ordered sequence |
+| `tuple` | Fixed-style ordered sequence |
 
-We will meet more types later.
+We will introduce more sophisticated objects only when the mathematics requires them.
 
----
+### Arbitrary-precision integers
 
-# 3. Python integers are unusually convenient for cryptography
+Python integers are especially convenient for cryptography because they support **arbitrary precision**.
 
-Python integers have **arbitrary precision**.
-
-That means Python does not restrict normal integers to 32 or 64 bits in the way low-level machine integer types often do.
-
-You can write:
+For example:
 
 ```python
 x = 2 ** 500
+
 print(x)
 ```
 
-and Python will keep the full integer.
+Python keeps the complete integer.
 
-This is extremely convenient because cryptography routinely works with very large numbers.
+We are not restricted to ordinary 32-bit or 64-bit machine integers.
 
-For example, later an RSA modulus may contain thousands of bits.
+That is extremely useful because cryptography routinely works with integers containing hundreds or thousands of bits.
 
-At the educational level, Python lets us focus on the mathematics first.
+RSA, for example, may use a modulus containing thousands of bits, while elliptic-curve and finite-field algorithms routinely operate on integers much larger than native processor words.
 
-That does **not** mean ordinary Python integer operations are automatically safe for production cryptography. Timing behavior, memory behavior, constant-time implementation, and hardened big-integer libraries are separate engineering questions.
+There is an important caveat:
 
-For now, Python integers are ideal for learning.
+> Python's arbitrary-precision arithmetic is excellent for education and experimentation, but ordinary Python operations should not automatically be considered suitable for production cryptography.
 
----
+Production implementations must additionally consider issues such as:
 
-# 4. Arithmetic operators
+- constant-time execution,
+- side channels,
+- memory handling,
+- validated parameter handling,
+- hardened arithmetic libraries.
+
+For now, however, Python integers let us concentrate on the mathematics.
+
+### Basic arithmetic
 
 Start with ordinary arithmetic:
 
@@ -187,35 +217,35 @@ print(a * b)
 print(a ** b)
 ```
 
-The operators mean:
+The important operators are:
 
 ```text
-+   addition
--   subtraction
-*   multiplication
-**  exponentiation
++    addition
+-    subtraction
+*    multiplication
+**   exponentiation
 ```
 
-So:
+Thus:
 
 ```python
 3 ** 4
 ```
 
-means:
+means
 
-$$
-3^4 = 81.
-$$
+\[
+3^4=81.
+\]
 
-Two other operators will appear everywhere in cryptography:
+Two additional operators appear constantly in number theory:
 
 ```text
 //   integer quotient
-%    remainder / modulo
+%    remainder
 ```
 
-Example:
+For example:
 
 ```python
 a = 17
@@ -228,99 +258,69 @@ print(q)
 print(r)
 ```
 
-Output:
+gives:
 
 ```text
 3
 2
 ```
 
-because:
+because
 
-$$
-17 = 3\cdot 5 + 2.
-$$
+\[
+17=3\cdot5+2.
+\]
 
-That identity is so important that we should test it:
+We can immediately turn that mathematical identity into an executable check:
 
 ```python
 assert 17 == 5 * (17 // 5) + (17 % 5)
 ```
 
-This is our first example of a mathematical statement becoming an executable test.
+This is one of the habits we will repeatedly develop:
+
+\[
+\boxed{
+\text{mathematical statement}
+\longrightarrow
+\text{executable invariant}
+}
+\]
 
 ---
 
-## Why `%` matters so much
+## 3. Functions, conditions, and loops
 
-Consider:
+Cryptographic algorithms are built from reusable operations.
 
-```python
-20 % 17
-```
+Python functions let us convert mathematical maps directly into executable objects.
 
-The result is:
+Suppose
 
-```text
-3
-```
-
-So:
-
-$$
-20 \equiv 3 \pmod{17}.
-$$
-
-Later we will perform almost every classical cryptographic operation inside modular arithmetic:
-
-$$
-a+b \pmod n,
-$$
-
-$$
-ab \pmod n,
-$$
-
-$$
-a^e \pmod n.
-$$
-
-The `%` operator is therefore not a small Python detail.
-
-It is one of the bridges from ordinary integer arithmetic to cryptography.
-
----
-
-# 5. Functions: turning formulas into reusable operations
-
-Mathematics uses functions and maps.
-
-For example:
-
-$$
+\[
 f(x)=x^2.
-$$
+\]
 
-Python gives us a direct computational analogue:
+We can write:
 
 ```python
 def square(x):
     return x * x
 ```
 
-Now:
+and evaluate:
 
 ```python
 print(square(5))
 ```
 
-returns:
+which returns:
 
 ```text
 25
 ```
 
-A cryptographic example:
+A slightly more relevant example is modular addition:
 
 ```python
 def mod_add(a, b, modulus):
@@ -339,36 +339,51 @@ returns:
 3
 ```
 
-because:
+because
 
-$$
+\[
 11+9=20\equiv3\pmod{17}.
-$$
+\]
 
----
+### Type hints
 
-## Type hints
-
-You may also see:
+You will often see functions written as:
 
 ```python
 def mod_add(a: int, b: int, modulus: int) -> int:
     return (a + b) % modulus
 ```
 
-The `: int` and `-> int` parts are **type hints**.
+The annotations
 
-They help humans and development tools understand what the function expects.
+```text
+: int
+-> int
+```
+
+are **type hints**.
+
+They help humans, editors, linters, and static-analysis tools understand what a function expects and returns.
 
 They do not change the mathematics.
 
-We will use them because cryptographic code becomes much easier to read when the intended data types are explicit.
+For cryptographic code they are useful because the distinction between
 
----
+```text
+integer
+bytes
+field element
+point
+scalar
+```
 
-# 6. Conditions: cryptographic code constantly asks questions
+can become security-relevant.
 
-Python uses `if` when a program must choose based on a condition.
+### Conditions
+
+A program often needs to ask mathematical questions.
+
+Python uses `if`:
 
 ```python
 x = 10
@@ -379,34 +394,39 @@ else:
     print("odd")
 ```
 
-The condition:
+The expression
 
 ```python
 x % 2 == 0
 ```
 
-asks whether the remainder after division by 2 is zero.
+asks whether the remainder after division by two is zero.
 
-Later our conditions become more cryptographic:
+Soon our questions become more cryptographic:
 
 ```text
 Is gcd(a, n) equal to 1?
+
 Is this number prime?
-Is this element invertible?
+
+Does this modular inverse exist?
+
+Is this element inside the required range?
+
 Is this point on the elliptic curve?
-Is this signature valid?
-Does this ciphertext pass validation?
+
+Does this signature verify?
+
+Is this ciphertext well formed?
 ```
 
-The syntax stays simple.
+The Python syntax remains simple.
 
-The mathematical meaning becomes deeper.
+The mathematics behind the condition becomes increasingly sophisticated.
 
----
+### Loops
 
-# 7. Loops: making the search space visible
-
-A `for` loop repeats an operation.
+A `for` loop repeats an operation:
 
 ```python
 for x in range(5):
@@ -423,26 +443,26 @@ Output:
 4
 ```
 
-Why are loops useful in a cryptography-from-zero course?
+Many of our earliest cryptographic experiments will intentionally use loops even when a much faster algorithm exists.
 
-Because many of our first algorithms will deliberately be inefficient.
-
-For example, suppose we want to search through possible secret values:
+Suppose we want to inspect a small search space:
 
 ```python
 for candidate in range(1, 17):
     print(candidate)
 ```
 
-This lets us literally see the search space.
+This is inefficient as cryptanalysis of a real key space.
 
-Later we will replace brute-force approaches with better mathematics.
+Pedagogically, however, it is excellent.
 
-But the slow version is often the best teaching version because it exposes what the algorithm is actually doing.
+We can literally see what exhaustive search means.
 
----
+Later we will replace brute force with mathematics.
 
-## Example: powers modulo 17
+### Powers modulo a prime
+
+Consider:
 
 ```python
 value = 1
@@ -452,15 +472,15 @@ for exponent in range(16):
     value = (value * 3) % 17
 ```
 
-This generates:
+This computes
 
-$$
+\[
 3^0,3^1,3^2,\ldots
-$$
+\]
 
-modulo 17.
+modulo \(17\).
 
-We will later use exactly this kind of experiment when studying:
+The same tiny experiment will later help us understand:
 
 - multiplicative groups,
 - element order,
@@ -468,11 +488,9 @@ We will later use exactly this kind of experiment when studying:
 - Diffie-Hellman,
 - discrete logarithms.
 
----
+### `while` loops
 
-# 8. `while` loops
-
-A `while` loop repeats while a condition remains true.
+A `while` loop repeats for as long as a condition remains true:
 
 ```python
 x = 20
@@ -482,35 +500,39 @@ while x > 0:
     x -= 5
 ```
 
-Later the Euclidean algorithm will naturally use this pattern:
+The Euclidean algorithm will soon have the same structure:
 
 ```text
 while remainder != 0:
     update values
 ```
 
-So even a basic loop will soon become number theory.
+A basic programming construct therefore becomes a number-theoretic algorithm.
 
 ---
 
-# 9. Lists: a simple first representation for mathematical objects
+## 4. Representing mathematical objects
 
-A list stores an ordered collection.
+Cryptography is full of structured objects.
+
+Before creating sophisticated classes, it is useful to see how ordinary Python containers can represent them.
+
+### Lists
+
+A list stores an ordered collection:
 
 ```python
 numbers = [3, 1, 4]
 ```
 
-You can access entries:
+Entries are accessed by index:
 
 ```python
 print(numbers[0])
 print(numbers[1])
 ```
 
-Python starts indexing at zero.
-
-So:
+Python indexing begins at zero:
 
 ```text
 numbers[0] → 3
@@ -518,23 +540,21 @@ numbers[1] → 1
 numbers[2] → 4
 ```
 
-Lists will be especially useful for polynomials.
+Lists are particularly useful for introducing polynomials.
 
-The polynomial:
+Consider
 
-$$
-3+x+4x^2
-$$
+\[
+f(x)=3+x+4x^2.
+\]
 
-can be represented as:
+We can represent it as:
 
 ```python
 coefficients = [3, 1, 4]
 ```
 
-where index `i` stores the coefficient of $x^i$.
-
-So:
+where position \(i\) stores the coefficient of \(x^i\):
 
 ```text
 index 0 → coefficient of x^0
@@ -542,33 +562,34 @@ index 1 → coefficient of x^1
 index 2 → coefficient of x^2
 ```
 
-Later we will replace this raw list with a proper `Polynomial` class.
+Later we may create a proper `Polynomial` abstraction.
 
-But the list representation makes the idea transparent.
+For now, the list makes the representation completely transparent.
 
----
+### Tuples
 
-# 10. Tuples: useful for fixed mathematical coordinates
-
-A tuple looks similar:
+A tuple is similar:
 
 ```python
 P = (5, 1)
 ```
 
-This can represent a point:
+This can represent the point
 
-$$
+\[
 P=(5,1).
-$$
+\]
 
-Later, when we study elliptic curves, we will create a proper point object.
+When we reach elliptic curves we will eventually need a more sophisticated point object, including:
 
-But starting with a tuple lets us focus on the coordinates first.
+- point addition,
+- scalar multiplication,
+- point-at-infinity representation,
+- coordinate validation.
 
----
+But starting from a tuple lets us see the coordinates before hiding them behind an abstraction.
 
-# 11. Dictionaries: useful, but not essential yet
+### Dictionaries
 
 A dictionary maps keys to values:
 
@@ -585,20 +606,24 @@ Access:
 print(person["name"])
 ```
 
-Dictionaries become useful for:
+Dictionaries later become useful for:
 
+- protocol messages,
+- transcripts,
 - configuration,
-- protocol transcripts,
 - benchmark results,
-- parameter sets.
+- parameter sets,
+- test vectors.
 
 You do not need to master them yet.
 
+The more important lesson is that choosing a data representation is part of implementing mathematics.
+
 ---
 
-# 12. Text is not bytes
+## 5. Text, bytes, and encodings
 
-This distinction is one of the most important practical ideas in cryptographic programming.
+One of the most important practical distinctions in cryptographic programming is the difference between **text** and **bytes**.
 
 Consider:
 
@@ -607,9 +632,9 @@ text = "hello"
 raw = b"hello"
 ```
 
-These look similar.
+They look almost identical.
 
-They are not the same type:
+They are not the same object:
 
 ```python
 print(type(text))
@@ -625,26 +650,26 @@ Output:
 
 A Python `str` represents Unicode text.
 
-A Python `bytes` object represents a sequence of byte values from 0 to 255.
+A Python `bytes` object represents a sequence of byte values between \(0\) and \(255\).
 
-Cryptographic algorithms eventually operate on:
+Cryptographic algorithms ultimately operate on representations such as:
 
 - bytes,
 - integers,
-- field elements,
 - bit strings,
-- structured encodings.
+- field elements,
+- elliptic-curve points,
+- structured protocol encodings.
 
-They do not directly operate on the abstract human concept of "text".
+They do not operate directly on the abstract human concept of "text".
 
-So we need explicit conversion.
+So conversion must be explicit.
 
----
-
-# 13. Encoding text into bytes
+### UTF-8 encoding
 
 ```python
 text = "hello"
+
 data = text.encode("utf-8")
 
 print(data)
@@ -660,26 +685,31 @@ Convert back:
 
 ```python
 recovered = data.decode("utf-8")
+
 print(recovered)
 ```
 
-The important point is that **encoding is a representation rule**.
+The important lesson is:
 
-UTF-8 tells us how Unicode text becomes bytes.
+\[
+\boxed{
+\text{encoding is a representation rule}
+}
+\]
+
+UTF-8 specifies how Unicode characters become bytes.
 
 It is not encryption.
 
----
+### `ord()` and `chr()`
 
-# 14. ASCII, Unicode, `ord()` and `chr()`
-
-You may encounter:
+Python also exposes Unicode code points:
 
 ```python
 print(ord("A"))
 ```
 
-which returns:
+returns:
 
 ```text
 65
@@ -691,25 +721,25 @@ and:
 print(chr(65))
 ```
 
-which returns:
+returns:
 
 ```text
 A
 ```
 
-A useful precision:
+A useful precision is that `ord()` and `chr()` operate on **Unicode code points**, not just ASCII.
 
-> `ord()` and `chr()` operate on Unicode code points, not only ASCII.
+ASCII occupies the familiar low portion of Unicode, which is why:
 
-ASCII occupies the familiar low range of Unicode, so examples such as `"A" -> 65` work exactly as expected.
+\[
+A=65=0x41
+\]
 
-For basic cryptographic byte examples, ASCII characters are convenient because their values are simple and familiar.
+works as expected.
 
----
+### Indexing strings and bytes
 
-# 15. Indexing `str` and `bytes` behaves differently
-
-This surprises many beginners.
+Consider:
 
 ```python
 text = "ABC"
@@ -734,22 +764,21 @@ Why?
 
 For ASCII:
 
-$$
-A = 65 = 0x41.
-$$
+\[
+A=65=0x41.
+\]
 
-This distinction becomes extremely useful when inspecting binary cryptographic data.
+This becomes very useful when inspecting cryptographic messages byte by byte.
 
----
+### Hexadecimal
 
-# 16. Hexadecimal: a human-friendly view of bytes
-
-Binary data quickly becomes unreadable.
+Binary values become difficult to inspect quickly.
 
 For example:
 
 ```python
 message = b"hello"
+
 print(message.hex())
 ```
 
@@ -759,30 +788,29 @@ Output:
 68656c6c6f
 ```
 
-Hexadecimal uses 16 symbols:
+Hexadecimal uses sixteen symbols:
 
 ```text
 0 1 2 3 4 5 6 7 8 9 a b c d e f
 ```
 
-One byte contains 8 bits.
+One byte contains \(8\) bits.
 
-One hexadecimal digit represents 4 bits.
+One hexadecimal digit represents \(4\) bits.
 
-Therefore:
+Therefore,
 
-$$
-1\text{ byte}=2\text{ hex digits}.
-$$
+\[
+1\text{ byte}=2\text{ hexadecimal digits}.
+\]
 
-This is why cryptographic keys, hashes, ciphertexts, and test vectors are so often shown in hex.
+This is why keys, hashes, signatures, ciphertexts, nonces, and test vectors are commonly displayed in hexadecimal.
 
----
-
-## Hex back to bytes
+Converting back is easy:
 
 ```python
 data = bytes.fromhex("414243")
+
 print(data)
 ```
 
@@ -800,15 +828,11 @@ because:
 0x43 = C
 ```
 
----
+### Integers and bytes
 
-# 17. Integers and bytes
+Cryptographic code constantly moves between integer and byte-string representations.
 
-Cryptography constantly moves between integers and byte strings.
-
-Python already provides the tools we need.
-
-## Bytes to integer
+Convert bytes to an integer:
 
 ```python
 data = b"ABC"
@@ -818,7 +842,7 @@ value = int.from_bytes(data, "big")
 print(value)
 ```
 
-## Integer back to bytes
+Convert back:
 
 ```python
 recovered = value.to_bytes(3, "big")
@@ -832,21 +856,63 @@ Output:
 b'ABC'
 ```
 
-The word `"big"` means **big-endian byte order**: the most significant byte comes first.
+The argument `"big"` specifies **big-endian byte order**: the most significant byte appears first.
 
-We will discuss endianness more carefully when protocols and standards require it.
+Later, protocol specifications will make byte order extremely important.
 
-For now, remember:
+For now, remember the bridge:
 
-```text
-bytes ↔ integer
+\[
+\boxed{
+\text{bytes}
+\longleftrightarrow
+\text{integer}
+}
+\]
+
+### Base64
+
+Base64 frequently appears around cryptographic material because binary values often need to pass through text-oriented systems.
+
+Example:
+
+```python
+import base64
+
+data = b"hello"
+
+encoded = base64.b64encode(data)
+decoded = base64.b64decode(encoded)
+
+print(encoded)
+print(decoded)
 ```
 
-is one of the most common representation bridges in cryptographic code.
+But Base64 provides **no confidentiality**.
+
+Anyone can decode it.
+
+Keep the categories separate:
+
+```text
+hex      → representation
+
+Base64   → encoding
+
+AES      → encryption
+
+SHA-256  → hashing
+
+HMAC     → message authentication
+```
+
+These operations solve completely different problems.
 
 ---
 
-# 18. Bits and binary notation
+## 6. Bits and bitwise operations
+
+Cryptographic constructions frequently operate below the byte level.
 
 Python lets us write binary values directly:
 
@@ -863,19 +929,17 @@ The prefix:
 
 means binary.
 
-You can inspect a number in binary:
+You can inspect a number in binary using:
 
 ```python
 print(bin(x))
 ```
 
----
-
-# 19. XOR: one of the most important operations in cryptography
+### XOR
 
 XOR means **exclusive OR**.
 
-Python uses:
+Python uses the operator:
 
 ```python
 ^
@@ -899,7 +963,7 @@ Bit by bit:
 0 XOR 0 = 0
 ```
 
-So:
+Thus:
 
 ```text
 1010
@@ -908,20 +972,21 @@ So:
 0110
 ```
 
-XOR appears everywhere:
+XOR appears throughout cryptography:
 
+- one-time pads,
 - stream ciphers,
 - block ciphers,
-- AES state operations,
+- AES,
 - masks,
 - hash constructions,
-- finite fields of characteristic 2.
+- finite fields of characteristic two.
 
-One useful property is:
+One fundamental identity is:
 
-$$
+\[
 x\oplus y\oplus y=x.
-$$
+\]
 
 In Python:
 
@@ -932,15 +997,13 @@ y = 77
 assert (x ^ y) ^ y == x
 ```
 
----
-
-# 20. AND and OR
+### AND and OR
 
 Python also provides:
 
 ```text
-&   bitwise AND
-|   bitwise OR
+&    bitwise AND
+|    bitwise OR
 ```
 
 Example:
@@ -953,17 +1016,20 @@ print(bin(x & y))
 print(bin(x | y))
 ```
 
-We will use these later when:
+These become useful when:
 
-- extracting bits,
-- testing masks,
-- implementing byte-oriented cryptography.
+- extracting bit fields,
+- applying masks,
+- parsing encodings,
+- implementing byte-oriented algorithms.
 
-We will postpone a detailed discussion of bitwise NOT (`~`) because Python integers do not behave like fixed-width 8-bit registers unless we explicitly apply a mask. That distinction matters.
+We will postpone a detailed treatment of bitwise NOT (`~`) because Python integers do not behave like fixed-width 8-bit registers unless we explicitly impose a width or mask.
 
----
+That distinction matters in cryptographic implementations.
 
-# 21. Shifts
+### Bit shifts
+
+Python supports:
 
 ```python
 x = 0b0011
@@ -976,22 +1042,70 @@ print(bin(x >> 1))
 
 `>>` shifts right.
 
-These become important when we implement:
+Bit shifts appear later in:
 
 - byte parsing,
+- packing and unpacking,
 - finite-field multiplication,
-- AES operations,
-- packing and unpacking.
+- AES internals,
+- hash functions,
+- implementation optimizations.
 
 ---
 
-# 22. Modular exponentiation: use three-argument `pow`
+## 7. Modular arithmetic in Python
 
-Suppose we want:
+Modular arithmetic is one of the main bridges between elementary Python and cryptography.
 
-$$
+Consider:
+
+```python
+20 % 17
+```
+
+The result is:
+
+```text
+3
+```
+
+because
+
+\[
+20\equiv3\pmod{17}.
+\]
+
+Later we will repeatedly compute expressions such as:
+
+\[
+a+b\pmod n,
+\]
+
+\[
+ab\pmod n,
+\]
+
+and
+
+\[
+a^e\pmod n.
+\]
+
+The `%` operator is therefore not merely a programming convenience.
+
+It is our first computational entrance into arithmetic in
+
+\[
+\mathbb Z_n.
+\]
+
+### Efficient modular exponentiation
+
+Suppose we want to compute:
+
+\[
 3^{100}\pmod{17}.
-$$
+\]
 
 We could write:
 
@@ -999,45 +1113,54 @@ We could write:
 (3 ** 100) % 17
 ```
 
-But Python provides a much better form:
+but Python offers a much better operation:
 
 ```python
 pow(3, 100, 17)
 ```
 
-This computes modular exponentiation efficiently without first constructing the enormous integer $3^{100}$.
-
-This pattern will appear constantly:
+The three-argument form:
 
 ```python
 pow(base, exponent, modulus)
 ```
 
-Later it becomes the computational core of:
+performs modular exponentiation efficiently without first constructing the complete enormous integer \(3^{100}\).
+
+This pattern will later appear everywhere:
 
 - RSA,
 - Diffie-Hellman,
-- Fermat tests,
+- Fermat's theorem,
 - Miller-Rabin,
-- many number-theoretic experiments.
+- discrete-logarithm experiments,
+- finite-field arithmetic.
+
+It is worth becoming comfortable with it immediately.
 
 ---
 
-# 23. Randomness: `random` and `secrets` are not interchangeable
+## 8. Randomness: `random` versus `secrets`
 
 This distinction is security-critical.
 
-Python's:
+Python's standard:
 
 ```python
 random
 ```
 
-module is designed for simulations, games, randomized testing, and general programming.
+module is useful for:
 
-It is **not** intended for generating cryptographic secrets.
+- simulations,
+- games,
+- reproducible experiments,
+- randomized testing,
+- general programming.
 
-Example:
+It is **not intended for generating cryptographic secrets**.
+
+For example:
 
 ```python
 import random
@@ -1049,13 +1172,13 @@ print(rng1.randrange(1000))
 print(rng2.randrange(1000))
 ```
 
-The same seed reproduces the same pseudorandom sequence.
+Both generators begin from the same seed and therefore produce the same pseudorandom sequence.
 
-That is useful for experiments.
+That is extremely useful when we want reproducible scientific experiments.
 
-It is dangerous for secret-key generation.
+It is dangerous when the value is supposed to remain secret from an adversary.
 
-For cryptographic application-level randomness, Python provides:
+For application-level cryptographic randomness, Python provides:
 
 ```python
 import secrets
@@ -1064,22 +1187,17 @@ secret_value = secrets.randbelow(1000)
 random_bytes = secrets.token_bytes(32)
 ```
 
-The `secrets` module uses the operating system's cryptographically secure random source.
+The `secrets` module delegates to the operating system's cryptographic randomness facilities.
 
-Later we will study randomness as its own security topic.
-
-For now:
+A useful working rule is:
 
 ```text
 simulation / reproducible experiment → random
-secret material                  → secrets
+
+secret cryptographic material        → secrets
 ```
 
----
-
-## What about `os.urandom()`?
-
-You may also see:
+You may also encounter:
 
 ```python
 import os
@@ -1089,15 +1207,26 @@ data = os.urandom(32)
 
 This also obtains random bytes from the operating system.
 
-For normal application code, `secrets` makes the cryptographic intent clearer and provides convenient helpers.
+For normal application code, `secrets` often communicates the programmer's cryptographic intent more clearly and provides convenient helpers.
+
+This is only the programming-level distinction.
+
+Randomness is deep enough to deserve its own article, where we examine:
+
+- entropy,
+- CSPRNGs,
+- operating-system randomness,
+- reseeding,
+- state compromise,
+- nonce requirements.
 
 ---
 
-# 24. Assertions: turn mathematical claims into executable checks
+## 9. Assertions and executable invariants
 
-An assertion says:
+An assertion means:
 
-> This must be true. If it is not true, stop.
+> This property must hold. If it does not, stop.
 
 Example:
 
@@ -1105,87 +1234,65 @@ Example:
 assert (3 + 5) % 7 == 1
 ```
 
-If the expression is false, Python raises an error.
+If the expression is false, Python raises an `AssertionError`.
 
-This habit is fundamental to this series.
+This habit is central to **Cryptography From Zero**.
 
-Every time we implement a mathematical relation, we should ask:
+Whenever we implement a mathematical relation, we should ask:
 
-> What property must always hold?
+> What property must always hold if this implementation is correct?
 
-Then test it.
+Then we encode that property as a test.
 
-Examples we will eventually use:
+Examples we will encounter later include:
 
-$$
-\gcd(a,b)=\gcd(b,a\bmod b),
-$$
+\[
+\gcd(a,b)
+=
+\gcd(b,a\bmod b),
+\]
 
-$$
-a\cdot a^{-1}\equiv1\pmod n,
-$$
+\[
+a\cdot a^{-1}
+\equiv
+1
+\pmod n,
+\]
 
-$$
+\[
 D_K(E_K(m))=m,
-$$
+\]
 
-$$
-\operatorname{INTT}(\operatorname{NTT}(a))=a,
-$$
+\[
+\operatorname{INTT}
+(
+\operatorname{NTT}(a)
+)
+=
+a,
+\]
 
-$$
+and eventually for a KEM:
+
+\[
 \operatorname{Decaps}(dk,c)=K.
-$$
+\]
 
-Cryptographic code should not be trusted because it "looks right".
+Cryptographic code should never be trusted merely because it "looks mathematically reasonable."
 
 We test invariants.
 
----
-
-# 25. Base64: useful encoding, not encryption
-
-Base64 often appears near cryptographic material because binary data sometimes needs to travel through text-oriented systems.
-
-Example:
-
-```python
-import base64
-
-data = b"hello"
-
-encoded = base64.b64encode(data)
-decoded = base64.b64decode(encoded)
-
-print(encoded)
-print(decoded)
-```
-
-But Base64 does **not** provide confidentiality.
-
-Anyone can decode it.
-
-So:
-
-```text
-hex      → representation
-Base64   → encoding
-AES      → encryption
-SHA-256  → hashing
-HMAC     → message authentication
-```
-
-These are different operations with different security goals.
-
-Keeping these categories separate will prevent many beginner mistakes.
+That distinction will become particularly important later when we debug cryptographic implementations that run without crashing but implement subtly incorrect equations.
 
 ---
 
-# 26. A small cryptographic-style Python experiment
+## 10. Two small cryptographic experiments
 
-Let us combine several ideas.
+We now have enough Python to perform experiments that already resemble the beginning of real cryptographic mathematics.
 
-We will compute powers of 3 modulo 17:
+### Experiment 1: powers modulo 17
+
+Consider:
 
 ```python
 p = 17
@@ -1201,63 +1308,59 @@ for exponent in range(16):
     value = (value * g) % p
 ```
 
-What is happening?
+We begin from:
 
-We start with:
-
-$$
+\[
 3^0=1.
-$$
+\]
 
-Each step multiplies by 3:
+At each step:
 
-$$
-3^{k+1}=3^k\cdot3.
-$$
+\[
+3^{k+1}=3^k\cdot3,
+\]
 
-But after every multiplication we reduce modulo 17.
+and then reduce the result modulo \(17\).
 
-This experiment will later help us understand:
+This tiny experiment will later help us understand:
 
 - cyclic groups,
-- order,
+- multiplicative order,
 - generators,
 - Diffie-Hellman,
 - discrete logarithms.
 
-For now, just notice the workflow:
+Notice the workflow:
 
 ```text
 mathematical question
         ↓
 Python representation
         ↓
-loop
+iteration
         ↓
 modular arithmetic
         ↓
 observable experiment
 ```
 
-That workflow is the foundation of this entire project.
+That pattern will repeat throughout CryptoCave.
 
----
-
-# 27. A simple polynomial representation
+### Experiment 2: representing a polynomial
 
 Take:
 
-$$
+\[
 f(x)=3+x+4x^2.
-$$
+\]
 
-Represent it:
+Represent the coefficients as:
 
 ```python
 f = [3, 1, 4]
 ```
 
-Inspect coefficients:
+Now inspect them:
 
 ```python
 for degree, coefficient in enumerate(f):
@@ -1274,9 +1377,11 @@ coefficient of x^1 = 1
 coefficient of x^2 = 4
 ```
 
-Much later, those innocent coefficient lists will lead us to:
+This innocent representation eventually leads surprisingly far:
 
 ```text
+coefficient lists
+        ↓
 polynomial arithmetic
         ↓
 finite fields
@@ -1294,67 +1399,82 @@ Module-LWE
 ML-KEM
 ```
 
-That is why we are learning only the Python structures that connect directly to cryptography.
+That is why we are learning only the programming structures that connect directly to cryptography.
 
 ---
 
-# 28. Common beginner mistakes
+## 11. Common beginner mistakes
 
-## Mistake 1: thinking text and bytes are the same
+Several small mistakes appear repeatedly when someone first begins implementing cryptographic mathematics.
 
-Wrong mental model:
+They are worth collecting in one place.
+
+### Text and bytes are not the same thing
+
+This is false as a Python statement:
 
 ```text
 "hello" == b"hello"
 ```
 
-They represent related information, but they are different Python types.
+The two objects represent related information, but they have different types and different semantics.
 
 Use explicit encoding and decoding.
 
----
+### Base64 and hexadecimal are not encryption
 
-## Mistake 2: treating Base64 as encryption
+Encoding changes representation.
 
-Base64 only changes representation.
+Encryption introduces a security transformation controlled by a key.
 
-There is no secret key.
+For:
 
----
+```text
+hex
+Base64
+```
 
-## Mistake 3: generating keys with `random`
+there is no secret key.
 
-Do not use:
+Anyone can reverse the representation.
+
+### Do not generate real keys with `random`
+
+Avoid:
 
 ```python
 random.randint(...)
 ```
 
-for real secret material.
+for real secret key material.
 
-Use a cryptographic randomness interface.
+Use an interface intended for cryptographic randomness.
 
----
+### Remember the modulus
 
-## Mistake 4: forgetting modular reduction
-
-This:
+In ordinary integer arithmetic:
 
 ```python
 a * b
 ```
 
-and this:
+and:
 
 ```python
 (a * b) % q
 ```
 
-are different operations when we are working in $\mathbb Z_q$.
+are different operations.
 
----
+When working inside
 
-## Mistake 5: using `/` when you mean integer division
+\[
+\mathbb Z_q,
+\]
+
+the reduction is part of the operation.
+
+### `/` and `//` mean different things
 
 Python:
 
@@ -1368,7 +1488,7 @@ returns:
 3.4
 ```
 
-while:
+whereas:
 
 ```python
 17 // 5
@@ -1380,39 +1500,43 @@ returns:
 3
 ```
 
-In number theory, the distinction matters.
+The distinction is important in number-theoretic algorithms.
+
+### Modular division is not ordinary division
+
+Later we will encounter expressions such as:
+
+\[
+\frac{a}{b}\pmod n.
+\]
+
+This does not mean ordinary real-number division.
+
+When \(b\) is invertible modulo \(n\), it means:
+
+\[
+a\cdot b^{-1}\pmod n.
+\]
+
+And the inverse:
+
+\[
+b^{-1}
+\]
+
+may not exist.
+
+Understanding exactly when modular inverses exist will become one of our first major number-theoretic steps.
 
 ---
 
-## Mistake 6: assuming mathematical division always exists modulo $n$
+## 12. What you do not need to know yet
 
-Later we will learn that:
-
-$$
-a/b \pmod n
-$$
-
-does not mean ordinary division.
-
-It means multiplication by an inverse:
-
-$$
-a\cdot b^{-1}\pmod n,
-$$
-
-and that inverse may not exist.
-
-That will be one of our first major cryptographic lessons.
-
----
-
-# 29. What you do NOT need to know yet
-
-You do not need to master:
+At this stage you do **not** need to master:
 
 - object-oriented programming,
 - decorators,
-- generators,
+- Python generators,
 - asynchronous Python,
 - metaclasses,
 - web frameworks,
@@ -1421,23 +1545,31 @@ You do not need to master:
 - SageMath,
 - cryptographic libraries.
 
-We will introduce abstraction only when it solves a real problem.
+We will introduce abstractions when they solve an actual cryptographic or mathematical problem.
 
-The goal is not:
+The learning strategy is not:
 
-> Become a Python expert and then study cryptography.
+> Become a Python expert and then begin cryptography.
 
-The goal is:
+It is:
 
 > Learn exactly enough Python to make each new piece of cryptographic mathematics executable.
 
+That keeps programming subordinate to the cryptography rather than allowing the programming language to become a prerequisite wall.
+
 ---
 
-# 30. Mini exercises
+## 13. Practice lab and reader checkpoint
 
-Try these before reading the next article.
+The exercises below deliberately stay small.
 
-## Exercise 1 — Even numbers
+The objective is not to solve a difficult cryptographic problem yet.
+
+The objective is to make the basic programming operations natural enough that, in the next article, our attention can shift toward the mathematics.
+
+### A. Arithmetic and modular operations
+
+#### Exercise 1 — Even numbers
 
 Write:
 
@@ -1446,7 +1578,7 @@ def is_even(n):
     ...
 ```
 
-It should return `True` when $n$ is even.
+It should return `True` exactly when \(n\) is even.
 
 Hint:
 
@@ -1454,28 +1586,60 @@ Hint:
 n % 2
 ```
 
----
+Ask yourself what the remainder must be when \(n\) is divisible by two.
 
-## Exercise 2 — Modular subtraction
+#### Exercise 2 — Modular subtraction
 
-Write:
+Implement:
 
 ```python
 def mod_sub(a, b, modulus):
     ...
 ```
 
-Example:
+and verify:
 
-$$
+\[
 3-5\equiv5\pmod7.
-$$
+\]
 
----
+Your function should work not only when \(a>b\), but also when ordinary subtraction produces a negative number.
 
-## Exercise 3 — Bytes to integer values
+#### Exercise 3 — Modular exponentiation
 
-Write a function:
+Compute:
+
+\[
+7^{12345}\pmod{65537}
+\]
+
+using:
+
+```python
+pow(...)
+```
+
+Do not first construct the complete value \(7^{12345}\).
+
+Then compare:
+
+```python
+pow(7, 12345, 65537)
+```
+
+with:
+
+```python
+(7 ** 12345) % 65537
+```
+
+and verify that the mathematical result is the same.
+
+### B. Bytes and bit operations
+
+#### Exercise 4 — Bytes to integers
+
+Write:
 
 ```python
 def bytes_to_integer_list(data):
@@ -1494,9 +1658,17 @@ returns:
 [65, 66, 67]
 ```
 
----
+This exercise should make the representation chain explicit:
 
-## Exercise 4 — XOR
+\[
+\text{text}
+\rightarrow
+\text{bytes}
+\rightarrow
+\text{integers}.
+\]
+
+#### Exercise 5 — XOR
 
 Write:
 
@@ -1508,30 +1680,27 @@ def xor_integers(a, b):
 and verify:
 
 ```python
-assert xor_integers(0b1010, 0b1100) == 0b0110
+assert xor_integers(
+    0b1010,
+    0b1100
+) == 0b0110
 ```
 
----
-
-## Exercise 5 — Modular exponentiation
-
-Compute:
-
-$$
-7^{12345}\pmod{65537}
-$$
-
-using:
+Then verify the cancellation identity:
 
 ```python
-pow(...)
+x = 123
+mask = 77
+
+assert xor_integers(
+    xor_integers(x, mask),
+    mask
+) == x
 ```
 
-Do not first compute the full value $7^{12345}$.
+Explain why the second XOR removes the same mask.
 
----
-
-## Exercise 6 — Encoding is not encryption
+### C. Representation is not cryptography
 
 Take:
 
@@ -1541,54 +1710,64 @@ message = b"cryptography"
 
 Convert it to:
 
-1. hex,
-2. Base64,
+1. hexadecimal,
+2. Base64.
 
-then recover the original bytes.
+Then recover the original bytes from both representations.
 
-Ask yourself:
+While doing this, ask:
 
 > Where is the secret key?
 
 There is none.
 
-Therefore neither conversion is encryption.
+Therefore neither transformation is encryption.
 
----
+### Reader checkpoint
 
-# 31. Reader checkpoint
+You do not need to memorize every syntax detail in this article.
 
-Before moving on, you should be able to answer these questions.
+You should, however, be comfortable answering the following questions.
 
-### Python
+**Python and representation**
 
 - What is the difference between `//` and `%`?
 - What is the difference between `str` and `bytes`?
-- Why does `b"ABC"[0]` return `65`?
-- What does `^` mean?
-- Why is `pow(a, e, n)` useful?
-- Why should cryptographic secrets not come from `random`?
-- What does an `assert` do?
+- Why does `b"ABC"[0]` return `65` rather than `"A"`?
+- What does `^` mean in Python?
+- Why is `pow(a, e, n)` useful for cryptography?
+- Why should real cryptographic secrets not be generated with `random`?
+- What does an `assert` allow us to express?
+- What does `"big"` mean in `int.from_bytes(..., "big")`?
 
-### Cryptographic thinking
+**Cryptographic thinking**
 
-- Why do we reduce values modulo $n$?
-- Why might a brute-force loop still be useful for learning?
+- Why do we repeatedly reduce values modulo \(n\)?
+- Why can brute force still be useful in a teaching implementation?
 - Why are bytes more fundamental to cryptographic code than human-readable text?
-- Why is Base64 not encryption?
-- Why are executable invariants important?
+- Why are hexadecimal and Base64 representations rather than cryptography?
+- Why is converting a mathematical identity into an executable assertion useful?
+- What is the difference between representing a mathematical object correctly and implementing it securely?
 
-If any answer still feels vague, experiment with the examples before continuing.
+If an answer still feels vague, modify one of the examples.
+
+Change an input.
+
+Break an assertion deliberately.
+
+Print intermediate values.
+
+Experimenting with the representation is often more useful than rereading the same paragraph.
 
 ---
 
-# 32. Where this is going
+## 14. Where this is going
 
-The next articles will begin turning these Python operations into mathematics.
+We now have enough Python to begin turning basic number theory into executable mathematics.
 
-First:
+The next step is:
 
-$$
+\[
 \boxed{
 \text{integers}
 \rightarrow
@@ -1598,43 +1777,75 @@ $$
 \rightarrow
 \gcd
 }
-$$
+\]
 
 Then:
 
-$$
+\[
 \gcd
 \rightarrow
-\text{Extended Euclid}
+\text{Extended Euclidean Algorithm}
 \rightarrow
-\text{modular inverses}
-$$
+\text{Bézout coefficients}
+\rightarrow
+\text{modular inverses}.
+\]
 
-and from there the path expands into:
+From there, the path expands dramatically:
 
 ```text
-RSA
+integers
+   ↓
+modular arithmetic
+   ↓
+groups
+   ↓
 Diffie-Hellman
-elliptic curves
-finite fields
+   ↓
+RSA
+```
+
+while another branch eventually leads toward:
+
+```text
 polynomials
+   ↓
+finite fields
+   ↓
 AES
+   ↓
 NTT
-LWE
+   ↓
 Ring-LWE
+   ↓
 Module-LWE
+   ↓
 ML-KEM
 ```
 
-We are starting with very small Python ideas.
+and another toward:
+
+```text
+finite fields
+   ↓
+elliptic curves
+   ↓
+ECDH
+   ↓
+ECDSA / Schnorr
+   ↓
+threshold signatures
+```
+
+We are starting with extremely small programming ideas.
 
 We are not staying small.
 
 ---
 
-# 33. Run the companion code
+## Run the companion code
 
-Inside the **Cryptography From Zero** repository:
+Inside the **Cryptography From Zero** companion material, run:
 
 ```powershell
 python chapters/00_python_for_cryptographers/examples.py
@@ -1646,7 +1857,24 @@ Then open:
 chapters/00_python_for_cryptographers/exercises.py
 ```
 
-and complete the TODOs.
+and complete the exercises.
+
+The examples are intentionally simple enough that you should be able to modify them freely.
+
+Try changing:
+
+- the modulus,
+- the base,
+- the loop range,
+- the input bytes,
+- the polynomial coefficients,
+- the XOR mask.
+
+The point is not merely to obtain the expected output.
+
+The point is to develop the habit of asking:
+
+> What mathematical object am I representing, and what property should remain true?
 
 ---
 
@@ -1654,4 +1882,4 @@ and complete the TODOs.
 
 **Blog 01 — Integers, Division, and Why Cryptography Starts Here**
 
-That is where Python syntax begins turning into number theory.
+That is where the Python vocabulary from this chapter begins turning into number theory.

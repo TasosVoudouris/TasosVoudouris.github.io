@@ -43,7 +43,6 @@ const isActive = (href: string) => {
 
 			</div>
 
-
 			<div class="brand-copy">
 
 				<span class="brand-name">
@@ -76,7 +75,6 @@ const isActive = (href: string) => {
 				Home
 			</a>
 
-
 			<a
 				href="/library/"
 				class:list={[
@@ -87,7 +85,6 @@ const isActive = (href: string) => {
 				<span class="nav-index">01</span>
 				Library
 			</a>
-
 
 			<a
 				href="/blog/"
@@ -100,7 +97,6 @@ const isActive = (href: string) => {
 				Articles
 			</a>
 
-
 			<a
 				href="/series/"
 				class:list={[
@@ -111,7 +107,6 @@ const isActive = (href: string) => {
 				<span class="nav-index">03</span>
 				Series
 			</a>
-
 
 			<a
 				href="/topics/"
@@ -124,7 +119,6 @@ const isActive = (href: string) => {
 				Topics
 			</a>
 
-
 			<a
 				href="/tags/"
 				class:list={[
@@ -136,16 +130,26 @@ const isActive = (href: string) => {
 				Tags
 			</a>
 
-
 			<a
 				href="/about/"
 				class:list={[
 					'nav-link',
-					{ active: isActive('/about/') },
+					{ active: isActive('/about/') && !isActive('/about-me/') },
 				]}
 			>
 				<span class="nav-index">06</span>
-				About
+				About CryptoCave
+			</a>
+
+			<a
+				href="/about-me/"
+				class:list={[
+					'nav-link',
+					{ active: isActive('/about-me/') },
+				]}
+			>
+				<span class="nav-index">07</span>
+				About Me
 			</a>
 
 		</nav>
@@ -156,21 +160,13 @@ const isActive = (href: string) => {
 
 <style>
 
-	/* ================================================== */
-	/* HEADER                                             */
-	/* ================================================== */
-
 	.site-header {
 		position: sticky;
-
 		top: 0;
-
 		z-index: 1000;
-
 		width: 100%;
 
 		background: rgba(255, 255, 255, 0.94);
-
 		backdrop-filter: blur(18px);
 
 		border-bottom: 1px solid #e5e7eb;
@@ -178,23 +174,17 @@ const isActive = (href: string) => {
 
 
 	.header-inner {
-		width: min(1240px, calc(100% - 3rem));
-
+		width: min(1380px, calc(100% - 3rem));
 		height: 78px;
-
 		margin: 0 auto;
 
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 
-		gap: 3rem;
+		gap: 2rem;
 	}
 
-
-	/* ================================================== */
-	/* BRAND                                              */
-	/* ================================================== */
 
 	.brand {
 		display: flex;
@@ -205,7 +195,6 @@ const isActive = (href: string) => {
 		flex-shrink: 0;
 
 		color: #111827;
-
 		text-decoration: none;
 	}
 
@@ -224,7 +213,6 @@ const isActive = (href: string) => {
 
 	.symbol-core {
 		position: relative;
-
 		z-index: 2;
 
 		font-family:
@@ -351,17 +339,13 @@ const isActive = (href: string) => {
 	}
 
 
-	/* ================================================== */
-	/* NAVIGATION                                         */
-	/* ================================================== */
-
 	nav {
 		display: flex;
 		align-items: stretch;
 
 		height: 100%;
 
-		gap: 1.8rem;
+		gap: 1.35rem;
 	}
 
 
@@ -371,14 +355,16 @@ const isActive = (href: string) => {
 		display: flex;
 		align-items: center;
 
-		gap: 0.45rem;
+		gap: 0.4rem;
 
 		height: 100%;
 
 		color: #6b7280;
 
-		font-size: 0.84rem;
+		font-size: 0.82rem;
 		font-weight: 600;
+
+		white-space: nowrap;
 
 		text-decoration: none;
 
@@ -420,7 +406,6 @@ const isActive = (href: string) => {
 
 		left: 0;
 		right: 0;
-
 		bottom: -1px;
 
 		height: 2px;
@@ -428,10 +413,6 @@ const isActive = (href: string) => {
 		background: #4f46e5;
 	}
 
-
-	/* ================================================== */
-	/* DARK / HOMEPAGE MODE                               */
-	/* ================================================== */
 
 	.home-header {
 		background:
@@ -518,9 +499,22 @@ const isActive = (href: string) => {
 	}
 
 
-	/* ================================================== */
-	/* MOBILE                                             */
-	/* ================================================== */
+	@media (max-width: 1050px) {
+
+		.nav-index {
+			display: none;
+		}
+
+		nav {
+			gap: 1rem;
+		}
+
+		.nav-link {
+			font-size: 0.76rem;
+		}
+
+	}
+
 
 	@media (max-width: 820px) {
 
@@ -566,11 +560,6 @@ const isActive = (href: string) => {
 			bottom: -4px;
 		}
 
-
-		.nav-index {
-			display: none;
-		}
-
 	}
 
 
@@ -598,7 +587,7 @@ const isActive = (href: string) => {
 
 
 		nav {
-			justify-content: space-between;
+			justify-content: flex-start;
 
 			width: 100%;
 		}

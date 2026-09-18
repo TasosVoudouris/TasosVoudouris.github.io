@@ -2,270 +2,1702 @@
 title: "Discrete Logarithms I: The DLP and ECDLP"
 description: "An introduction to discrete logarithms in additive and multiplicative groups, including the elliptic-curve discrete logarithm problem and its cryptographic role."
 pubDate: "2025-05-26"
-updatedDate: '2026-09-12'
+updatedDate: "2026-09-18"
 topics:
-- "Discrete Logarithms"
-- "Mathematical Foundations"
-- "Public-Key Cryptography"
+  - "Discrete Logarithms"
+  - "Mathematical Foundations"
+  - "Public-Key Cryptography"
 tags:
-- "discrete-logarithm"
-- "dlp"
-- "ecdlp"
-- "groups"
+  - "discrete-logarithm"
+  - "dlp"
+  - "ecdlp"
+  - "groups"
 difficulty: "Intermediate"
 series: "Discrete Logarithm Algorithms"
 seriesOrder: 1
 sourcePath: "experiments/ready-material/discrete-log"
 draft: false
 ---
-We now now turn to one of the two fundamental computational problems underpinning modern public-key cryptography: the *Discrete Logarithm Problem (DLP)*. Alongside the Integer Factorization Problem, the DLP forms the cryptographic backbone of numerous protocols, including Diffie–Hellman key exchange, ElGamal encryption, and many digital signature schemes.
 
-Before we formally state the problem, let’s first review some essential mathematical structures used in its definition.
+## Table of Contents
 
-## Additive and Multiplicative Groups
+- [From Group Operations to One-Way Problems](#from-group-operations-to-one-way-problems)
+- [Groups, Orders, Generators, and Cyclic Subgroups](#groups-orders-generators-and-cyclic-subgroups)
+- [The Discrete Logarithm Problem](#the-discrete-logarithm-problem)
+- [Worked Examples in Finite Multiplicative Groups](#worked-examples-in-finite-multiplicative-groups)
+- [The Elliptic-Curve Discrete Logarithm Problem](#the-elliptic-curve-discrete-logarithm-problem)
+- [Why DLP and ECDLP Have Different Practical Security](#why-dlp-and-ecdlp-have-different-practical-security)
+- [Cryptographic Protocols Built Around Discrete Logarithms](#cryptographic-protocols-built-around-discrete-logarithms)
+- [Executable Experiments](#executable-experiments)
+- [Attack Landscape Preview](#attack-landscape-preview)
+- [Conclusion](#conclusion)
+- [References](#references)
 
-* An **additive group** is a set equipped with an addition operation. For any element $a$, its **additive inverse** $x$ satisfies:
+---
 
-  $$
-  a + x = 0
-  $$
+## From Group Operations to One-Way Problems
 
-  where $0$ is the identity element of the group.
+The discrete logarithm problem is one of the classical computational foundations of public-key cryptography.
 
-* A **multiplicative group** is a set equipped with a multiplication operation. For any element $a$, its **multiplicative inverse** $x$ satisfies:
+It appears in several forms:
 
-  $$
-  a \cdot x = 1
-  $$
+- finite-field Diffie–Hellman;
+- ElGamal encryption;
+- DSA-style signatures;
+- elliptic-curve Diffie–Hellman;
+- ECDSA;
+- EdDSA;
+- many zero-knowledge and commitment constructions.
 
-  where $1$ is the identity element of the group.
+The common pattern is simple.
 
-The most common group in classical cryptography is the **multiplicative group of integers modulo $n$**, denoted:
+There is a group operation that is easy to iterate:
 
-$$
-(\mathbb{Z}/n\mathbb{Z})^\times
-$$
+\[
+x
+\longmapsto
+g^x
+\]
 
-This group consists of all integers between 1 and $n-1$ that are coprime to $n$, with multiplication modulo $n$ as the group operation.
+in multiplicative notation, or:
 
-* Example: The group $(\mathbb{Z}/15\mathbb{Z})^\times$ consists of the elements:
+\[
+x
+\longmapsto
+[x]P
+\]
 
-  $$
-  \{1, 2, 4, 7, 8, 11, 13, 14\}
-  $$
+in additive elliptic-curve notation.
 
-These are the integers less than 15 that are **coprime** to 15. Their multiplication modulo 15 forms a group of order 8.
+The inverse problem is intended to be difficult:
 
+\[
+g^x=h
+\quad\Longrightarrow\quad
+\text{recover }x,
+\]
 
+or:
 
-* The **order** of a group is the number of elements it contains.
+\[
+Q=[x]P
+\quad\Longrightarrow\quad
+\text{recover }x.
+\]
 
-  * Example: $|(\mathbb{Z}/15\mathbb{Z})^\times| = 8$
-  * The additive group $\mathbb{Z}/10\mathbb{Z}$ has order 10.
+This is the discrete logarithm problem.
 
-* When $n = p$ is a **prime**, the ring $\mathbb{Z}/p\mathbb{Z}$ becomes a **finite field**, often denoted:
+The phrase **discrete logarithm** is an analogy with ordinary logarithms.
 
-  $$
-  \mathbb{F}_p \quad \text{or} \quad \mathrm{GF}(p)
-  $$
+Over the positive real numbers:
 
-  The **multiplicative group** of $\mathbb{F}_p$, that is $\mathbb{F}_p^\times$, has order $p-1$ and is a **cyclic group**.
+\[
+a^x=b
+\]
 
-> In fact, $\mathbb{F}_p^\times \cong \mathbb{Z}/(p-1)\mathbb{Z}$, which means it behaves like modular integers under addition, but now applied to exponents.
->
+can be inverted using:
 
-Below is a simple SageMath example: 
+\[
+x=\log_a b.
+\]
+
+In a finite cyclic group, exponentiation remains easy, but there is no corresponding efficient general-purpose logarithm algorithm known for well-chosen cryptographic groups.
+
+That asymmetry is what cryptography uses.
+
+---
+
+## Groups, Orders, Generators, and Cyclic Subgroups
+
+Before defining the DLP precisely, we need to separate several concepts that are often blurred together.
+
+### Additive and multiplicative notation
+
+A group can be written additively or multiplicatively.
+
+In an additive group:
+
+\[
+a+0=a,
+\]
+
+and the inverse of \(a\) is:
+
+\[
+-a
+\]
+
+such that:
+
+\[
+a+(-a)=0.
+\]
+
+Repeated addition is written:
+
+\[
+[n]P
+=
+\underbrace{
+P+\cdots+P
+}_{n\text{ times}}.
+\]
+
+Elliptic-curve groups are normally written this way.
+
+In a multiplicative group:
+
+\[
+a\cdot1=a,
+\]
+
+and the inverse is:
+
+\[
+a^{-1}
+\]
+
+such that:
+
+\[
+aa^{-1}=1.
+\]
+
+Repeated multiplication is exponentiation:
+
+\[
+g^n.
+\]
+
+Finite-field DLPs are usually written multiplicatively.
+
+### The multiplicative group modulo \(n\)
+
+For a positive integer \(n\), define:
+
+\[
+(\mathbb Z/n\mathbb Z)^\times
+=
+\{a\bmod n:\gcd(a,n)=1\}.
+\]
+
+These are exactly the residue classes that possess multiplicative inverses modulo \(n\).
+
+For example:
+
+\[
+(\mathbb Z/15\mathbb Z)^\times
+=
+\{1,2,4,7,8,11,13,14\}.
+\]
+
+Its order is:
+
+\[
+\varphi(15)=8.
+\]
+
+The individual element orders are:
+
+\[
+\operatorname{ord}(1)=1,
+\]
+
+\[
+\operatorname{ord}(2)=4,
+\]
+
+\[
+\operatorname{ord}(4)=2,
+\]
+
+and similarly for the remaining elements.
+
+By Lagrange's theorem:
+
+\[
+\boxed{
+\operatorname{ord}(g)
+\mid
+|G|.
+}
+\]
+
+So every element order divides the group order.
+
+### Composite moduli need not give cyclic unit groups
+
+A useful correction is that:
+
+\[
+(\mathbb Z/n\mathbb Z)^\times
+\]
+
+is not always cyclic.
+
+For:
+
+\[
+n=15,
+\]
+
+the group has order 8, but no element has order 8.
+
+So the group is not cyclic.
+
+This matters because a DLP is always really a problem inside the cyclic subgroup generated by the chosen base.
+
+### Prime fields
+
+When:
+
+\[
+p
+\]
+
+is prime,
+
+\[
+\mathbb Z/p\mathbb Z
+\]
+
+is the finite field:
+
+\[
+\mathbb F_p.
+\]
+
+Its nonzero elements form the multiplicative group:
+
+\[
+\mathbb F_p^\times.
+\]
+
+This group has order:
+
+\[
+p-1.
+\]
+
+Moreover:
+
+\[
+\mathbb F_p^\times
+\]
+
+is cyclic.
+
+Therefore there exists at least one element \(g\) such that:
+
+\[
+\langle g\rangle
+=
+\mathbb F_p^\times.
+\]
+
+Such a \(g\) is called a generator or primitive element.
+
+Because the group is cyclic:
+
+\[
+\mathbb F_p^\times
+\cong
+\mathbb Z/(p-1)\mathbb Z.
+\]
+
+This is an abstract group isomorphism.
+
+It is not a canonical identification of field elements with exponents.
+
+### The order of an element
+
+For:
+
+\[
+g\in G,
+\]
+
+the order of \(g\) is the smallest positive integer \(r\) such that:
+
+\[
+g^r=1
+\]
+
+in multiplicative notation.
+
+The generated subgroup is:
+
+\[
+\langle g\rangle
+=
+\{1,g,g^2,\ldots,g^{r-1}\}.
+\]
+
+Its size is exactly:
+
+\[
+r=\operatorname{ord}(g).
+\]
+
+This is the correct modulus for discrete logarithms to the base \(g\).
+
+Not necessarily the order of the full ambient group.
+
+### Why protocols often use a subgroup
+
+A cryptographic protocol does not always choose a generator of the entire group.
+
+It may deliberately choose a subgroup:
+
+\[
+G=\langle g\rangle
+\]
+
+of large prime order:
+
+\[
+q.
+\]
+
+For finite-field Diffie–Hellman one commonly works in a large prime-order subgroup of:
+
+\[
+\mathbb F_p^\times.
+\]
+
+The security-critical quantity for generic attacks is then the subgroup order \(q\), not merely the field modulus \(p\).
+
+This also explains why small-subgroup checks and public-key validation matter in real protocols.
+
+---
+
+## The Discrete Logarithm Problem
+
+Let:
+
+\[
+G=\langle g\rangle
+\]
+
+be a finite cyclic group generated by \(g\).
+
+Let:
+
+\[
+n=\operatorname{ord}(g).
+\]
+
+Given:
+
+\[
+h\in\langle g\rangle,
+\]
+
+the **Discrete Logarithm Problem (DLP)** is:
+
+> Find \(x\) such that
+
+\[
+\boxed{
+g^x=h.
+}
+\]
+
+The value \(x\) is called the discrete logarithm of \(h\) to the base \(g\), often written:
+
+\[
+x=\log_g h.
+\]
+
+### The logarithm is defined modulo the order of \(g\)
+
+If:
+
+\[
+g^x=h,
+\]
+
+then:
+
+\[
+g^{x+n}
+=
+g^xg^n
+=
+h.
+\]
+
+Therefore all exponents:
+
+\[
+x+kn
+\]
+
+for:
+
+\[
+k\in\mathbb Z
+\]
+
+represent the same group element.
+
+So the discrete logarithm is naturally defined modulo:
+
+\[
+\boxed{
+\operatorname{ord}(g).
+}
+\]
+
+If \(g\) generates the entire group, then:
+
+\[
+\operatorname{ord}(g)=|G|.
+\]
+
+If \(g\) generates only a proper subgroup, then the logarithm is defined modulo the subgroup order instead.
+
+### Existence of a solution
+
+A solution exists if and only if:
+
+\[
+h\in\langle g\rangle.
+\]
+
+If \(g\) is a generator of all of \(G\), then every:
+
+\[
+h\in G
+\]
+
+has a discrete logarithm to base \(g\).
+
+If \(g\) is not a generator of the full group, some elements may have no logarithm to that base.
+
+This is more precise than saying merely:
+
+> "the group must be cyclic."
+
+The actual DLP instance lives inside:
+
+\[
+\langle g\rangle.
+\]
+
+### Uniqueness
+
+Inside:
+
+\[
+0\le x<n,
+\]
+
+the solution is unique.
+
+Equivalently:
+
+\[
+g^x=g^y
+\]
+
+if and only if:
+
+\[
+x\equiv y\pmod n.
+\]
+
+So the right statement is:
+
+\[
+\boxed{
+\log_g h
+\text{ is unique modulo }
+\operatorname{ord}(g).
+}
+\]
+
+---
+
+## Worked Examples in Finite Multiplicative Groups
+
+Small examples make the group-order distinction very clear.
+
+### Example 1: \(3^x\equiv5\pmod{11}\)
+
+Consider:
+
+\[
+3^x\equiv5\pmod{11}.
+\]
+
+Compute successive powers:
+
+\[
+3^0\equiv1,
+\]
+
+\[
+3^1\equiv3,
+\]
+
+\[
+3^2\equiv9,
+\]
+
+\[
+3^3\equiv5,
+\]
+
+\[
+3^4\equiv4,
+\]
+
+\[
+3^5\equiv1
+\pmod{11}.
+\]
+
+Therefore:
+
+\[
+\operatorname{ord}_{11}(3)=5.
+\]
+
+So:
+
+\[
+3
+\]
+
+is **not** a generator of:
+
+\[
+\mathbb F_{11}^{\times},
+\]
+
+because that group has order:
+
+\[
+10.
+\]
+
+The subgroup generated by 3 is:
+
+\[
+\langle3\rangle
+=
+\{1,3,9,5,4\}.
+\]
+
+Since:
+
+\[
+5\in\langle3\rangle,
+\]
+
+the DLP has a solution:
+
+\[
+x=3.
+\]
+
+But the important statement is:
+
+\[
+\boxed{
+x\equiv3\pmod5.
+}
+\]
+
+So:
+
+\[
+x=8
+\]
+
+also works because:
+
+\[
+8\equiv3\pmod5.
+\]
+
+Indeed:
+
+\[
+3^8
+=
+3^{3+5}
+\equiv
+3^3
+\equiv
+5
+\pmod{11}.
+\]
+
+This example is useful because it shows that logarithm uniqueness is controlled by:
+
+\[
+\operatorname{ord}(3)=5,
+\]
+
+not by the ambient group order \(10\).
+
+### Example 2: a generator modulo 11
+
+Now take:
+
+\[
+g=2.
+\]
+
+Its powers modulo 11 are:
+
+\[
+2^0\equiv1,
+\]
+
+\[
+2^1\equiv2,
+\]
+
+\[
+2^2\equiv4,
+\]
+
+\[
+2^3\equiv8,
+\]
+
+\[
+2^4\equiv5,
+\]
+
+\[
+2^5\equiv10,
+\]
+
+\[
+2^6\equiv9,
+\]
+
+\[
+2^7\equiv7,
+\]
+
+\[
+2^8\equiv3,
+\]
+
+\[
+2^9\equiv6,
+\]
+
+\[
+2^{10}\equiv1.
+\]
+
+So:
+
+\[
+\operatorname{ord}_{11}(2)=10.
+\]
+
+Therefore:
+
+\[
+2
+\]
+
+generates all of:
+
+\[
+\mathbb F_{11}^{\times}.
+\]
+
+For example:
+
+\[
+2^x\equiv5\pmod{11}
+\]
+
+has:
+
+\[
+x\equiv4\pmod{10}.
+\]
+
+### Example 3: subgroup DLP
+
+Take:
+
+\[
+p=23.
+\]
+
+The multiplicative group:
+
+\[
+\mathbb F_{23}^{\times}
+\]
+
+has order:
+
+\[
+22.
+\]
+
+The element:
+
+\[
+g=2
+\]
+
+has order:
+
+\[
+11.
+\]
+
+So it generates a prime-order subgroup:
+
+\[
+G=\langle2\rangle
+\]
+
+with:
+
+\[
+|G|=11.
+\]
+
+Now:
+
+\[
+2^3\equiv8\pmod{23}.
+\]
+
+Therefore:
+
+\[
+\log_2 8
+\equiv3
+\pmod{11}.
+\]
+
+This is conceptually closer to how finite-field cryptography is usually organized: choose a large subgroup with a well-controlled order.
+
+---
+
+## The Elliptic-Curve Discrete Logarithm Problem
+
+Now replace multiplication in a finite field by point addition on an elliptic curve.
+
+Let:
+
+\[
+E/\mathbb F_q
+\]
+
+be an elliptic curve over a finite field.
+
+Let:
+
+\[
+P\in E(\mathbb F_q)
+\]
+
+have order:
+
+\[
+n.
+\]
+
+The subgroup generated by \(P\) is:
+
+\[
+\langle P\rangle
+=
+\{
+\mathcal O,
+P,
+[2]P,
+\ldots,
+[n-1]P
+\},
+\]
+
+where:
+
+\[
+\mathcal O
+\]
+
+is the point at infinity.
+
+Given:
+
+\[
+Q\in\langle P\rangle,
+\]
+
+the **Elliptic-Curve Discrete Logarithm Problem (ECDLP)** is:
+
+> Find \(x\) such that
+
+\[
+\boxed{
+Q=[x]P.
+}
+\]
+
+Again:
+
+\[
+x
+\]
+
+is unique modulo:
+
+\[
+\operatorname{ord}(P)=n.
+\]
+
+### Additive notation does not change the underlying problem
+
+The classical DLP asks:
+
+\[
+h=g^x.
+\]
+
+The ECDLP asks:
+
+\[
+Q=[x]P.
+\]
+
+These are the same abstract problem in two different cyclic groups.
+
+The notation changes because the group law changes.
+
+### Prime-order subgroup versus whole curve group
+
+It is not necessary for:
+
+\[
+E(\mathbb F_q)
+\]
+
+itself to have prime order.
+
+In practice one commonly uses a large prime-order subgroup:
+
+\[
+\langle P\rangle
+\]
+
+with:
+
+\[
+\operatorname{ord}(P)=n
+\]
+
+prime or almost prime, together with a small cofactor.
+
+So the cryptographic DLP lives in the subgroup generated by \(P\), just as finite-field protocols often work in a subgroup of:
+
+\[
+\mathbb F_p^\times.
+\]
+
+### Why scalar multiplication is easy
+
+Given:
+
+\[
+x
+\]
+
+and:
+
+\[
+P,
+\]
+
+one can compute:
+
+\[
+[x]P
+\]
+
+efficiently using algorithms such as double-and-add.
+
+The number of group operations is:
+
+\[
+O(\log x).
+\]
+
+So the forward map:
+
+\[
+x\mapsto[x]P
+\]
+
+is efficient.
+
+The challenge is inverting it.
+
+---
+
+## Why DLP and ECDLP Have Different Practical Security
+
+The abstract problem looks the same.
+
+The best known classical algorithms depend strongly on the representation of the group.
+
+This is one of the most important ideas in the entire series.
+
+### Generic algorithms
+
+Algorithms such as:
+
+- baby-step giant-step;
+- Pollard rho;
+
+work in essentially any cyclic group.
+
+If the subgroup order is:
+
+\[
+n,
+\]
+
+their generic complexity is roughly:
+
+\[
+O(\sqrt n)
+\]
+
+group operations.
+
+Baby-step giant-step also uses roughly:
+
+\[
+O(\sqrt n)
+\]
+
+memory.
+
+Pollard rho reduces the memory requirement dramatically while retaining square-root expected running time.
+
+### Pohlig–Hellman and smooth group order
+
+Suppose:
+
+\[
+n
+=
+\prod_i p_i^{e_i}.
+\]
+
+Pohlig–Hellman reduces the DLP modulo \(n\) to DLPs in the prime-power factors.
+
+As a result, security is dominated by the largest prime factor of the group order.
+
+Therefore a group whose order is very smooth is a poor DLP group even if the total order is large.
+
+This is why subgroup order selection matters.
+
+### Finite fields have extra structure
+
+In:
+
+\[
+\mathbb F_p^\times
+\]
+
+and more general finite fields:
+
+\[
+\mathbb F_{p^k}^\times,
+\]
+
+the elements have algebraic representations that enable **index-calculus** techniques.
+
+These methods can be subexponential.
+
+That means finite-field DLP security is not determined only by the generic:
+
+\[
+O(\sqrt n)
+\]
+
+bound.
+
+This is one reason finite-field public-key parameters are much larger than elliptic-curve parameters for comparable classical security.
+
+### Standard elliptic curves resist general index calculus
+
+For ordinary elliptic curves over large prime fields, no general classical algorithm analogous to finite-field index calculus is known that gives a subexponential attack on the standard ECDLP.
+
+For well-chosen prime-order subgroups, Pollard-rho-style square-root attacks remain the central generic benchmark.
+
+This does **not** mean every elliptic curve is safe.
+
+Special curve classes can be weak because of:
+
+- small subgroup order;
+- anomalous structure;
+- small embedding degree;
+- pairing-based reductions;
+- special endomorphisms or field representation issues.
+
+Curve selection remains part of the security argument.
+
+### Security-per-bit
+
+This difference in attack complexity explains why elliptic-curve systems use much smaller public parameters.
+
+For example, NIST's classical security-strength table associates approximately 128-bit security with:
+
+- finite-field cryptography using a 3072-bit modulus and 256-bit subgroup order;
+- elliptic-curve cryptography with field sizes in the 256–383-bit range.
+
+So the statement:
+
+> "a 256-bit elliptic curve is comparable to a 3072-bit finite-field modulus"
+
+is a rough classical-security comparison, not a claim that the two groups have the same size or the same attack algorithms.
+
+### Quantum caveat
+
+Both finite-field DLP and ECDLP are vulnerable to Shor's algorithm on a sufficiently capable fault-tolerant quantum computer.
+
+So their classical security advantages do not make them post-quantum primitives.
+
+That is a separate security model from the classical attack analysis studied in this series.
+
+---
+
+## Cryptographic Protocols Built Around Discrete Logarithms
+
+The DLP itself is rarely the final protocol.
+
+Instead, cryptographic constructions use related assumptions.
+
+### Diffie–Hellman
+
+Let:
+
+\[
+G=\langle g\rangle.
+\]
+
+Alice chooses:
+
+\[
+a,
+\]
+
+and publishes:
+
+\[
+A=g^a.
+\]
+
+Bob chooses:
+
+\[
+b,
+\]
+
+and publishes:
+
+\[
+B=g^b.
+\]
+
+Both derive:
+
+\[
+g^{ab}.
+\]
+
+The protocol's security is related to computational Diffie–Hellman and decisional Diffie–Hellman assumptions, not merely to the statement "DLP is hard."
+
+These assumptions are connected but not identical.
+
+### ElGamal
+
+ElGamal encryption uses a cyclic group with hard discrete logarithms and fresh randomness to mask messages through Diffie–Hellman-style shared group elements.
+
+Again, its proof model is more specific than raw DLP hardness.
+
+### DSA and ECDSA
+
+Signature schemes use a secret scalar and public group element:
+
+\[
+Q=[x]P
+\]
+
+or:
+
+\[
+y=g^x.
+\]
+
+But signature security also depends critically on:
+
+- nonce generation;
+- hash handling;
+- subgroup validation;
+- exact verification equations.
+
+A hard DLP cannot rescue a signature system that reuses ephemeral nonces.
+
+### EdDSA
+
+EdDSA is also built in elliptic-curve groups but differs substantially in:
+
+- curve model;
+- encoding;
+- deterministic nonce derivation;
+- signature equation.
+
+So "based on ECDLP" is a useful first approximation, but not a complete security proof.
+
+### DLP as one layer of an assumption stack
+
+A mature cryptographic description should distinguish:
+
+\[
+\text{DLP}
+\]
+
+from:
+
+\[
+\text{CDH},
+\]
+
+\[
+\text{DDH},
+\]
+
+\[
+\text{signature unforgeability},
+\]
+
+and:
+
+\[
+\text{protocol security}.
+\]
+
+The hard mathematical problem is one layer.
+
+The protocol adds many more assumptions and invariants.
+
+---
+
+## Executable Experiments
+
+The first article should make the abstract definitions mechanically visible.
+
+### Multiplicative order
 
 ```python
-sage: n = 15
-sage: M = Zmod(n)
-sage: euler_phi(15) # order of the multiplicative group of the ring Z_{15}*
-8
-sage: for i in range(1, n):
-....:     if gcd(i,n) == 1:
-....:         # i is in the multiplicative group of the ring Z_{15}*
-....:         order = M(i).multiplicative_order()
-....:         print(f'the number {i} has order {order} because {i}^{order} = {pow(i,order,n)}')
-....:
-the number 1 has order 1 because 1^1 = 1
-the number 2 has order 4 because 2^4 = 1
-the number 4 has order 2 because 4^2 = 1
-the number 7 has order 4 because 7^4 = 1
-the number 8 has order 4 because 8^4 = 1
-the number 11 has order 2 because 11^2 = 1
-the number 13 has order 4 because 13^4 = 1
-the number 14 has order 2 because 14^2 = 1
+from math import gcd
+
+
+def multiplicative_order(
+    g,
+    modulus,
+):
+    if gcd(g, modulus) != 1:
+        raise ValueError(
+            "g must be invertible"
+        )
+
+    x = 1
+
+    for r in range(
+        1,
+        modulus + 1,
+    ):
+        x = (
+            x * g
+        ) % modulus
+
+        if x == 1:
+            return r
+
+    raise RuntimeError(
+        "order not found"
+    )
 ```
 
-Notice that the order of all elements (1,2,4) divides the order of the group which is 8. This is due to Lagrange’s Theorem that we refresh below: 
-
-> Let G be a group. The order of the elements of G always divides the order of G.
->
-
-Another simple SageMath example: 
+Now:
 
 ```python
-sage: p = 19
-sage: F = GF(p)
-sage: F.order() # the order of the additive group of the field F_{19}
-19
-sage: for i in range(1, p):
-....:     if gcd(i,p) == 1:
-....:         # i is in the multiplicative group of the field F_{19}
-....:         order = F(i).multiplicative_order()
-....:         print(f'the number {i} has order {order} because {i}^{order} = {pow(i,order,p)}')
-....:
-the number 1 has order 1 because 1^1 = 1
-the number 2 has order 18 because 2^18 = 1
-the number 3 has order 18 because 3^18 = 1
-the number 4 has order 9 because 4^9 = 1
-the number 5 has order 9 because 5^9 = 1
-the number 6 has order 9 because 6^9 = 1
-the number 7 has order 3 because 7^3 = 1
-the number 8 has order 6 because 8^6 = 1
-the number 9 has order 9 because 9^9 = 1
-the number 10 has order 18 because 10^18 = 1
-the number 11 has order 3 because 11^3 = 1
-the number 12 has order 6 because 12^6 = 1
-the number 13 has order 18 because 13^18 = 1
-the number 14 has order 18 because 14^18 = 1
-the number 15 has order 18 because 15^18 = 1
-the number 16 has order 9 because 16^9 = 1
-the number 17 has order 9 because 17^9 = 1
-the number 18 has order 2 because 18^2 = 1
+assert (
+    multiplicative_order(
+        3,
+        11,
+    )
+    == 5
+)
+
+assert (
+    multiplicative_order(
+        2,
+        11,
+    )
+    == 10
+)
 ```
 
-A *field* is more than just a group: it supports two operations—addition and multiplication—with the following properties:
+### Brute-force discrete logarithm
 
-* It is an *additive group* under $+$,
-* Its nonzero elements form a *multiplicative group* under $\cdot$,
-* There exist identity elements for both operations (0 and 1),
-* Every nonzero element has a multiplicative inverse.
+```python
+def discrete_log_bruteforce(
+    g,
+    h,
+    modulus,
+):
+    order = (
+        multiplicative_order(
+            g,
+            modulus,
+        )
+    )
 
-Finite fields are the setting where the Discrete Logarithm Problem is usually defined.
+    value = 1
 
-Next, we’ll formally define the Discrete Logarithm Problem and explore why it’s believed to be hard—and thus so central to cryptography.
+    for x in range(order):
+        if value == h:
+            return x
 
+        value = (
+            value * g
+        ) % modulus
 
-## Discrete Logarithm Problem
+    return None
+```
 
-Alongside integer factorization, DLP underpins the security of a wide range of cryptographic protocols, including *Diffie–Hellman key exchange*, *ElGamal encryption*, and *DSA* signature.
+Then:
 
-Let $G$ be a finite **cyclic group**, written multiplicatively, and let $g \in G$ be a **generator** of the group. Then the **Discrete Logarithm Problem** is defined as:
+```python
+assert (
+    discrete_log_bruteforce(
+        3,
+        5,
+        11,
+    )
+    == 3
+)
 
-> **Given**: $G$, a generator $g$, and an element $a \in G$ such that $a = g^x$
-> **Find**: the integer $x \in \mathbb{Z}$ such that
->$$g^x \equiv a \mod n$$
+assert (
+    discrete_log_bruteforce(
+        2,
+        5,
+        11,
+    )
+    == 4
+)
+```
 
+### Verify the full congruence class
 
-This problem is believed to be computationally hard in general, especially when the group order is large and the group is well-chosen.
+For base 3:
 
-A simple example with a brute-force approach. Find $x$ such that:
+```python
+solutions = [
+    x
+    for x in range(10)
+    if pow(
+        3,
+        x,
+        11,
+    ) == 5
+]
 
-$$
-3^x \equiv 5 \pmod{11}
-$$
+assert solutions == [
+    3,
+    8,
+]
+```
 
-Try successive powers of 3 modulo 11:
+This confirms:
 
-* $x = 0$: $3^0 \equiv 1$
-* $x = 1$: $3^1 \equiv 3$
-* $x = 2$: $3^2 \equiv 9$
-* $x = 3$: $3^3 \equiv 27 \equiv 5 \mod{11}$
+\[
+x\equiv3\pmod5.
+\]
 
-So, $x = 3$ is one solution.
-But it's *not unique*, e.g., $x = 8$ also works:
+### Subgroup membership
 
-$$
-3^8 \equiv 6561 \equiv 5 \mod{11}
-$$
+A target outside:
 
-> Note: In general, if the group is not cyclic or the base is not a generator, *some values might not have a solution at all*.
+\[
+\langle3\rangle
+\]
 
+has no discrete logarithm to base 3.
 
+For example:
 
-Remember that a group is *cyclic* if it can be generated by a single element $g$. That is:
+\[
+2\notin
+\{1,3,9,5,4\}.
+\]
 
-$$
-G = \langle g \rangle = \{g^0, g^1, \ldots, g^{n-1}\}
-$$
+So:
 
-* Such an element $g$ is called a *generator* or *primitive root* (in modular arithmetic).
-* Let’s check if $3$ is a generator mod 11:
+```python
+assert (
+    discrete_log_bruteforce(
+        3,
+        2,
+        11,
+    )
+    is None
+)
+```
 
-$$
-\begin{aligned}
-3^0 &\equiv 1 \mod{11} \\
-3^1 &\equiv 3 \\
-3^2 &\equiv 9 \\
-3^3 &\equiv 5 \\
-3^4 &\equiv 4 \\
-3^5 &\equiv 1 \Rightarrow \text{Cycle repeats}
-\end{aligned}
-$$
+This is a valuable test because it prevents the common mistake of assuming every target has a log to every base.
 
-* The powers of 3 modulo 11 only generate a subset:
+### A tiny elliptic-curve DLP
 
-  $$
-  \{1, 3, 9, 5, 4\}
-  $$
+Use the toy curve:
 
-  So **3 is not** a generator.
+\[
+E:
+y^2=x^3+2x+3
+\pmod{97}.
+\]
 
-Now try $g = 2$:
+Take:
 
-$$
-\begin{aligned}
-2^0 &\equiv 1 \\
-2^1 &\equiv 2 \\
-2^2 &\equiv 4 \\
-2^3 &\equiv 8 \\
-2^4 &\equiv 5 \\
-2^5 &\equiv 10 \\
-2^6 &\equiv 9 \\
-2^7 &\equiv 7 \\
-2^8 &\equiv 3 \\
-2^9 &\equiv 6 \\
-2^{10} &\equiv 1 \\
-\end{aligned}
-$$
+\[
+P=(3,6).
+\]
 
-* The powers of 2 modulo 11 generate all nonzero elements:
+For this curve:
 
-  $$
-  \mathbb{Z}_{11}^\times = \{1, 2, 3, \ldots, 10\}
-  $$
+\[
+\operatorname{ord}(P)=5.
+\]
 
-So, **2 is a generator** of $\mathbb{Z}_{11}^\times$.
+Compute:
 
-> If the base $g$ is a generator, then **a solution always exists** for any $a \in G$, and the discrete log is **well-defined modulo the group order**.
+\[
+Q=[2]P.
+\]
 
+The result is:
 
-The DLP (and its elliptic curve variant, *ECDLP*) provides the security basis for several important protocols as stated above. They rely on the assumption that computing discrete exponentiation $g^x \mod p$ is easy, but reversing it (i.e., solving for $x$) is *computationally hard* without special knowledge (e.g., a trapdoor).
+\[
+Q=(80,10).
+\]
 
+So the ECDLP instance:
 
-## Elliptic Curve Discrete Logarithm Problem (ECDLP)
+\[
+Q=[x]P
+\]
 
-Let $E$ be an elliptic curve defined over a finite field $\mathbb{F}_q$, and let $P \in E(\mathbb{F}_q)$ be a point of prime order. The ECDLP is defined as follows:
+has:
 
-> **Given:** Points $P, Q \in E(\mathbb{F}_q)$, where $Q = [n]P$,
-> **Find:** The integer $n \in \mathbb{Z}$ such that $Q = [n]P$.
+\[
+\boxed{
+x\equiv2\pmod5.
+}
+\]
 
-ECDLP generalizes the classical DLP to the additive group of points on an elliptic curve. It is currently believed to be significantly harder than the DLP in comparable finite fields, which allows elliptic curve cryptography (ECC) to use smaller key sizes while maintaining equivalent levels of security.
+A brute-force educational solver can simply add \(P\) repeatedly until it reaches \(Q\).
 
+This is not cryptographically secure.
 
-The ECDLP forms the security basis for:
+Its purpose is to make additive discrete logarithm notation concrete.
 
-* *ECDH (Elliptic Curve Diffie–Hellman)*
-* *ECDSA (Elliptic Curve Digital Signature Algorithm)*
-* *EdDSA (Edwards-curve Digital Signature Algorithm)*
-* *ECIES (Elliptic Curve Integrated Encryption Scheme)*
+---
 
-Both DLP and ECDLP share a common conceptual foundation: solving for an unknown exponent given a group, a generator, and a group element. The key distinction lies in the nature of the group:
+## Attack Landscape Preview
 
-* *DLP*: Operates in a *multiplicative* cyclic group, typically $\mathbb{Z}_p^*$ or subgroups of $\mathbb{F}_{p^k}^*$.
-* *ECDLP*: Operates in the *additive* group of points on an elliptic curve $E(\mathbb{F}_q)$.
+This series will now move from definitions to actual algorithms.
 
-Despite their similarity, ECDLP offers much stronger security-per-bit than classical DLP. For example, breaking the DLP in $\mathbb{Z}_p^*$ with a 3072-bit modulus requires roughly the same effort as solving the ECDLP on a 256-bit elliptic curve. Because of these differences in complexity, ECC has become the preferred approach in modern cryptographic implementations, especially where bandwidth, key size, and efficiency are critical (e.g., mobile devices, IoT). 
+The important distinction is between **generic algorithms** and **representation-specific algorithms**.
 
-In the upcoming parts, we gonna delve into some fascinating methods of "solving" the DLP/ECDLP faster than a bruteforce approach. Stay tuned!
+### Brute force
+
+Try:
+
+\[
+1,g,g^2,g^3,\ldots
+\]
+
+until the target is reached.
+
+Cost:
+
+\[
+O(n)
+\]
+
+group operations in the worst case.
+
+This is the baseline.
+
+### Baby-step giant-step
+
+Shanks' baby-step giant-step algorithm trades memory for time.
+
+For subgroup order \(n\):
+
+\[
+\boxed{
+O(\sqrt n)
+}
+\]
+
+time and:
+
+\[
+\boxed{
+O(\sqrt n)
+}
+\]
+
+memory.
+
+The algorithm is generic.
+
+### Pollard rho for logarithms
+
+Pollard rho also targets square-root complexity:
+
+\[
+O(\sqrt n)
+\]
+
+expected group operations, but with negligible memory compared with baby-step giant-step.
+
+This makes it the most important generic benchmark for ECDLP.
+
+### Pohlig–Hellman
+
+If:
+
+\[
+n
+\]
+
+factors into small prime powers, solve smaller DLPs modulo those factors and reconstruct the answer.
+
+This is why:
+
+\[
+\operatorname{ord}(g)
+\]
+
+must contain a large prime factor.
+
+### Index calculus
+
+Finite-field groups have algebraic representations that support factor-base methods.
+
+The generic template is:
+
+1. select a factor base;
+2. collect multiplicative relations;
+3. solve a large linear system for factor-base logarithms;
+4. solve the individual target logarithm.
+
+This eventually leads to subexponential algorithms in important finite-field settings.
+
+### Why ECDLP stays different
+
+Standard prime-field elliptic curves do not expose the same useful factorization structure.
+
+That is why no general-purpose analogue of finite-field index calculus is known that beats square-root complexity on standard prime-field ECDLP instances.
+
+This algorithmic gap is the main reason ECC achieves much smaller parameters.
+
+### Series roadmap
+
+The natural progression from here is:
+
+```text
+Part 01 — The DLP and ECDLP
+Part 02 — Brute Force and Baby-Step Giant-Step
+Part 03 — Pollard Rho for Discrete Logarithms
+Part 04 — Pohlig–Hellman
+Part 05 — Index Calculus
+Part 06 — ECDLP Algorithms and Generic-Group Attacks
+...
+```
+
+The exact later organization can adapt to the material, but the conceptual split should remain:
+
+\[
+\boxed{
+\text{group order structure}
++
+\text{group representation}
+\Rightarrow
+\text{best attack}.
+}
+\]
+
+---
+
+## Conclusion
+
+The discrete logarithm problem is fundamentally a problem about cyclic groups.
+
+Let:
+
+\[
+G=\langle g\rangle
+\]
+
+and:
+
+\[
+n=\operatorname{ord}(g).
+\]
+
+Given:
+
+\[
+h\in\langle g\rangle,
+\]
+
+the DLP asks for:
+
+\[
+x
+\]
+
+such that:
+
+\[
+\boxed{
+g^x=h.
+}
+\]
+
+The solution is unique modulo:
+
+\[
+n.
+\]
+
+That detail matters.
+
+In the example:
+
+\[
+3^x\equiv5\pmod{11},
+\]
+
+the base 3 has order 5, not 10.
+
+Therefore:
+
+\[
+\boxed{
+x\equiv3\pmod5,
+}
+\]
+
+which explains both:
+
+\[
+x=3
+\]
+
+and:
+
+\[
+x=8.
+\]
+
+When the base generates the full group, the logarithm is defined modulo the full group order.
+
+When it generates only a subgroup, the DLP lives inside that subgroup.
+
+The elliptic-curve version changes notation:
+
+\[
+Q=[x]P,
+\]
+
+but not the abstract problem.
+
+The important difference is algorithmic.
+
+Generic attacks such as baby-step giant-step and Pollard rho apply to both finite-field and elliptic-curve groups.
+
+Pohlig–Hellman exploits factorization of the subgroup order.
+
+Finite fields additionally support index-calculus-style methods that become subexponential.
+
+For standard prime-field elliptic curves, no comparable general subexponential classical attack is known.
+
+That difference explains the security-per-bit advantage of ECC in the classical setting.
+
+The most important idea to carry into the rest of the series is therefore:
+
+\[
+\boxed{
+\text{DLP difficulty depends not only on group size,
+but also on group order and group representation}.
+}
+\]
+
+So before asking:
+
+> "How many bits does this group have?"
+
+ask:
+
+- What subgroup are we actually using?
+- What is its order?
+- How does that order factor?
+- Which generic attacks apply?
+- Does the group representation enable index calculus or another special attack?
+- Is the element actually in the intended subgroup?
+
+Those questions determine whether a discrete-logarithm instance is cryptographically meaningful.
+
+The next article can now move from the definition to the first real time-memory tradeoff:
+
+\[
+\boxed{
+\text{Baby-Step Giant-Step}.
+}
+\]
+
+---
+
+## References
+
+1. Victor Shoup, **A Computational Introduction to Number Theory and Algebra**, chapters on cyclic groups and discrete logarithms.
+
+2. Alfred J. Menezes, Paul C. van Oorschot, and Scott A. Vanstone, **Handbook of Applied Cryptography**, Chapter 3.
+
+3. Daniel Shanks, work underlying the **Baby-Step Giant-Step** discrete-logarithm method.
+
+4. John M. Pollard, **Monte Carlo Methods for Index Computation (mod p)**, Mathematics of Computation, 1978.
+
+5. Stephen C. Pohlig and Martin E. Hellman, **An Improved Algorithm for Computing Logarithms over GF(p) and Its Cryptographic Significance**, IEEE Transactions on Information Theory, 1978.
+
+6. National Institute of Standards and Technology, **SP 800-56A Rev. 3: Recommendation for Pair-Wise Key-Establishment Schemes Using Discrete Logarithm Cryptography**, 2018.
+
+7. National Institute of Standards and Technology, **SP 800-57 Part 1 Rev. 5: Recommendation for Key Management — General**, for comparable classical security-strength tables.
+
+8. Alfred Menezes, Tatsuaki Okamoto, and Scott Vanstone, work on reductions and attacks relevant to elliptic-curve groups and special curve classes.

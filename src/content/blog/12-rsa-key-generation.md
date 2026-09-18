@@ -1,388 +1,435 @@
 ---
-title: 'RSA Key Generation From Zero: Choosing p, q, e, and Building the Private Exponent'
-description: We finally assemble primes, GCDs, modular inverses, Carmichael's function, and CRT into a complete toy RSA key pair—and see why key generation itself is part of RSA security.
-pubDate: '2026-09-08'
+title: "RSA Key Generation From Zero: Choosing p, q, e, and Building the Private Exponent"
+description: "We assemble primes, GCDs, modular inverses, Carmichael's function, and CRT into a complete toy RSA key pair—and see why secure key generation is part of RSA security."
+pubDate: "2026-09-08"
+updatedDate: "2026-09-14"
 topics:
-- Public-Key Cryptography
-- Cryptographic Engineering
+  - "Public-Key Cryptography"
+  - "Cryptographic Engineering"
 tags:
-- rsa
-- key-generation
-- carmichael-function
-- modular-inverse
-- primes
-- cryptography-from-zero
-difficulty: Introductory
-series: Cryptography From Zero
+  - "rsa"
+  - "key-generation"
+  - "carmichael-function"
+  - "modular-inverse"
+  - "primes"
+  - "cryptography-from-zero"
+difficulty: "Introductory"
+series: "Cryptography From Zero"
 seriesOrder: 13
 draft: false
 ---
-We have reached a point where almost every ingredient needed for RSA is already on the table.
+
+We have reached a point where almost every ingredient needed to construct an RSA key is already on the table.
 
 We know how to:
 
-- test candidate primes,
+- generate and test candidate primes,
 - compute GCDs,
-- construct modular inverses,
+- compute modular inverses,
 - work modulo composite integers,
-- exponentiate efficiently,
-- and reconstruct with CRT.
+- perform fast modular exponentiation,
+- and reconstruct values with the Chinese Remainder Theorem.
 
-So instead of introducing RSA as:
+So rather than introducing RSA as a mysterious collection of formulas, we can now build it from pieces we already understand.
 
-```text
-here is a formula
-```
-
-I want to build the key from the pieces we already understand.
-
-That is much more satisfying to me, because RSA stops looking like a mysterious algorithm invented all at once.
-
-It becomes a chain:
+The construction is essentially:
 
 ```text
-prime generation
-      ↓
-p, q
-      ↓
-N = pq
-      ↓
-λ(N)
-      ↓
-choose e
-      ↓
+generate secret primes
+        ↓
+       p, q
+        ↓
+      N = pq
+        ↓
+λ(N) = lcm(p - 1, q - 1)
+        ↓
+choose public exponent e
+        ↓
 gcd(e, λ(N)) = 1
-      ↓
-modular inverse
-      ↓
+        ↓
+compute modular inverse
+        ↓
 d = e⁻¹ mod λ(N)
+        ↓
+derive CRT parameters
 ```
 
-And suddenly Blog 01, Blog 02, Blog 10, and Blog 11 are all inside one construction.
+The same number theory that looked elementary several articles ago is now becoming a complete public-key construction.
 
 ![RSA key generation from primes to public and private keys](/images/blog/12-rsa-keygen.svg)
 
-*RSA key generation is a composition of number-theory operations we have already built individually.*
+*RSA key generation is a composition of number-theoretic operations that we have already studied individually.*
+
+---
+
+## Table of Contents
+
+- [Start with two secret primes](#start-with-two-secret-primes)
+- [From the primes to the public and private exponents](#from-the-primes-to-the-public-and-private-exponents)
+- [Euler’s totient versus Carmichael’s function](#eulers-totient-versus-carmichaels-function)
+- [Does the key actually work?](#does-the-key-actually-work)
+- [Practical RSA keys and CRT parameters](#practical-rsa-keys-and-crt-parameters)
+- [Real key generation is a security problem](#real-key-generation-is-a-security-problem)
+- [Standards perspective](#standards-perspective)
+- [When randomness fails: shared-prime RSA keys](#when-randomness-fails-shared-prime-rsa-keys)
+- [A complete educational pipeline](#a-complete-educational-pipeline)
+- [Reader checkpoint](#reader-checkpoint)
+- [Next](#next)
+- [Closing Cryptography From Zero](#closing-cryptography-from-zero)
 
 ---
 
 ## Start with two secret primes
 
-For a toy example, choose:
+For our toy example, choose two distinct primes:
 
-$$
+\[
 p=61,
 \qquad
 q=53.
-$$
+\]
 
-They must be distinct.
+The RSA modulus is
 
-Then the RSA modulus is:
-
-$$
+\[
 N=pq.
-$$
+\]
 
-So:
+Therefore,
 
-$$
+\[
 N=61\cdot53=3233.
-$$
+\]
 
-This value becomes public.
+The modulus
 
-The factorization:
+\[
+N=3233
+\]
 
-$$
+becomes public.
+
+Its factorization
+
+\[
 3233=61\cdot53
-$$
+\]
 
 must remain secret.
 
-That is the trapdoor structure.
+For this tiny example, factoring \(3233\) is easy. We use small numbers only so that every step can be checked manually.
 
-Anyone can see:
+In a real RSA key, \(N\) is large enough that recovering its prime factors is intended to be computationally infeasible for a classical attacker.
 
-$$
-N=3233.
-$$
+Knowledge of the factorization gives the private-key holder information that is unavailable from the public modulus alone.
 
-The private-key holder knows the hidden decomposition into $p$ and $q$.
-
-For our tiny example, of course, factoring $3233$ is trivial.
-
-The numbers are here only so that every step can be checked by hand.
+That hidden factorization will allow us to construct the private exponent.
 
 ---
 
-Now we need the arithmetic cycle length that connects the public and private exponents.
+## From the primes to the public and private exponents
 
-For two distinct primes:
+For an RSA modulus composed of two distinct primes,
 
-$$
+\[
+N=pq,
+\]
+
+Carmichael's function is
+
+\[
 \lambda(N)
 =
 \operatorname{lcm}(p-1,q-1).
-$$
+\]
 
-Here:
+For our example,
 
-$$
-p-1=60,
-$$
+\[
+p-1=60
+\]
 
-and:
+and
 
-$$
+\[
 q-1=52.
-$$
+\]
 
-Therefore:
+Therefore,
 
-$$
+\[
 \lambda(3233)
 =
 \operatorname{lcm}(60,52)
 =
 780.
-$$
+\]
 
-This is Carmichael's function for our RSA modulus.
+Now choose the public exponent \(e\).
 
-The public exponent $e$ must satisfy:
+It must satisfy
 
-$$
+\[
 \gcd(e,\lambda(N))=1.
-$$
+\]
 
-For the toy example choose:
+For our toy example, choose
 
-$$
+\[
 e=17.
-$$
+\]
 
-Check:
+Indeed,
 
-$$
+\[
 \gcd(17,780)=1.
-$$
+\]
 
-That is exactly the condition from Blog 02.
+Why is this condition important?
 
-Why do we care?
+Because it guarantees that \(e\) has a multiplicative inverse modulo \(\lambda(N)\).
 
-Because if $17$ is coprime to $780$, then it has a modular inverse modulo $780$.
+That inverse becomes the private exponent \(d\).
 
-And that inverse becomes the private exponent.
+We require
 
----
-
-## The private key is an Extended-Euclid result
-
-We want:
-
-$$
+\[
 ed\equiv1\pmod{\lambda(N)}.
-$$
+\]
 
-So:
+So in our example,
 
-$$
+\[
 17d\equiv1\pmod{780}.
-$$
+\]
 
-The Extended Euclidean Algorithm gives:
+The Extended Euclidean Algorithm gives
 
-$$
+\[
 d=413.
-$$
+\]
 
 Check:
 
-$$
-17\cdot413
-=
-7021.
-$$
+\[
+17\cdot413=7021,
+\]
 
-And:
+and
 
-$$
-7021
-=
-9\cdot780+1.
-$$
+\[
+7021=9\cdot780+1.
+\]
 
-Therefore:
+Therefore,
 
-$$
+\[
 \boxed{
 17\cdot413\equiv1\pmod{780}.
 }
-$$
+\]
 
-So our keys are now:
+Our basic RSA key pair is now:
 
-$$
+\[
 \boxed{
 \text{public key }(N,e)=(3233,17)
 }
-$$
+\]
 
-and conceptually:
+and
 
-$$
+\[
 \boxed{
-\text{private key }(N,d)=(3233,413).
+\text{private exponent }d=413.
 }
-$$
+\]
 
-But a practical private RSA key normally stores more than only $d$.
+Conceptually, the simplest representation of the private key is
 
-Because we know the factors, we can also precompute:
+\[
+(N,d)=(3233,413).
+\]
 
-$$
-d_P=d\bmod(p-1),
-$$
+So one of the main RSA relationships is simply:
 
-$$
-d_Q=d\bmod(q-1),
-$$
+\[
+\boxed{
+d=e^{-1}\pmod{\lambda(N)}.
+}
+\]
 
-and:
-
-$$
-q_{\text{inv}}=q^{-1}\bmod p.
-$$
-
-These values support the CRT optimization from Blog 09.
-
-So the hidden factorization is useful twice:
-
-```text
-p, q
-  ↓
-construct d
-
-and later
-
-p, q
-  ↓
-accelerate private operations with CRT
-```
+This is exactly the modular-inverse machinery we developed earlier.
 
 ---
 
-### A correction I want to preserve from my older notes
+## Euler's totient versus Carmichael's function
 
-Many introductory RSA explanations use Euler's totient:
+Many introductory RSA examples use Euler's totient:
 
-$$
+\[
 \varphi(N)
 =
 (p-1)(q-1).
-$$
+\]
 
-For our example:
+For our example,
 
-$$
+\[
 \varphi(3233)
 =
 60\cdot52
 =
 3120.
-$$
+\]
 
-If we compute:
+If we compute
 
-$$
+\[
 17^{-1}\pmod{3120},
-$$
+\]
 
-we obtain:
+we obtain
 
-$$
+\[
 d=2753.
-$$
+\]
 
-This is the famous textbook value for the $61,53,17$ example.
+This is the classic private exponent often shown for the textbook parameters
+
+\[
+p=61,
+\qquad
+q=53,
+\qquad
+e=17.
+\]
 
 And it works.
 
-But:
+But compare the two private exponents:
 
-$$
-2753\equiv413\pmod{780}.
-$$
+\[
+2753\bmod780=413.
+\]
 
-So both private exponents satisfy the underlying RSA cycle relation.
+Therefore,
 
-The more precise PKCS #1 key definition uses:
+\[
+2753\equiv413\pmod{\lambda(N)}.
+\]
 
-$$
+Both satisfy the essential RSA relation
+
+\[
+ed\equiv1\pmod{\lambda(N)}.
+\]
+
+The difference comes from using two related quantities:
+
+\[
+\varphi(N)
+=
+(p-1)(q-1),
+\]
+
+versus
+
+\[
+\lambda(N)
+=
+\operatorname{lcm}(p-1,q-1).
+\]
+
+For two primes,
+
+\[
+\lambda(N)\mid\varphi(N).
+\]
+
+So choosing
+
+\[
+ed\equiv1\pmod{\varphi(N)}
+\]
+
+also implies the necessary relation modulo \(\lambda(N)\).
+
+The \(\varphi(N)\)-based explanation is therefore not wrong.
+
+But the more precise RSA key relation is naturally expressed using Carmichael's function:
+
+\[
 \boxed{
 ed\equiv1\pmod{\lambda(N)}.
 }
-$$
+\]
 
-That is why I prefer:
+This is the formulation used by PKCS #1 for the basic \((N,d)\) private-key representation.
 
-$$
-d=413
-$$
+This is also a useful lesson in revisiting old cryptography notes:
 
-for the standards-facing version of this example.
+> An older explanation may be mathematically valid while a more precise formulation reveals the underlying structure more clearly.
 
-This is a useful example of something I keep finding while revisiting old notes:
+For the rest of this article, we use
 
-> the older explanation was not necessarily wrong; sometimes there is simply a cleaner or more precise formulation underneath it.
+\[
+d=413.
+\]
 
 ---
 
 ## Does the key actually work?
 
-Take a toy message representative:
+Take a small message representative:
 
-$$
+\[
 m=65.
-$$
+\]
 
-The public RSA operation is:
+The public RSA operation is
 
-$$
+\[
 c=m^e\bmod N.
-$$
+\]
 
 So:
 
-$$
-c=65^{17}\bmod3233.
-$$
+\[
+c
+=
+65^{17}\bmod3233.
+\]
 
-This gives:
+The result is
 
-$$
-\boxed{c=2790}.
-$$
+\[
+\boxed{
+c=2790.
+}
+\]
 
 Now apply the private exponent:
 
-$$
-m'=2790^{413}\bmod3233.
-$$
+\[
+m'
+=
+2790^{413}\bmod3233.
+\]
 
-The result is:
+We recover
 
-$$
-\boxed{m'=65}.
-$$
+\[
+\boxed{
+m'=65.
+}
+\]
 
-So:
+Therefore,
 
-$$
+\[
 m'=m.
-$$
+\]
 
 In Python:
 
@@ -394,19 +441,36 @@ q = 53
 e = 17
 
 N = p * q
-lambda_N = lcm(p - 1, q - 1)
+
+lambda_N = lcm(
+    p - 1,
+    q - 1,
+)
 
 assert gcd(e, lambda_N) == 1
 
-d = pow(e, -1, lambda_N)
+d = pow(
+    e,
+    -1,
+    lambda_N,
+)
 
 public_key = (N, e)
 private_key = (N, d)
 
 message = 65
 
-ciphertext = pow(message, e, N)
-recovered = pow(ciphertext, d, N)
+ciphertext = pow(
+    message,
+    e,
+    N,
+)
+
+recovered = pow(
+    ciphertext,
+    d,
+    N,
+)
 
 print(public_key)   # (3233, 17)
 print(private_key)  # (3233, 413)
@@ -416,210 +480,520 @@ print(recovered)    # 65
 assert recovered == message
 ```
 
-This is the first complete RSA key pair we have built from the arithmetic underneath it.
+We have now constructed a complete toy RSA key pair from the number theory underneath it.
 
-But there is an important warning.
+But there is an extremely important warning.
 
-This is still **textbook RSA arithmetic**.
+The expression
 
-The expression:
-
-$$
+\[
 c=m^e\bmod N
-$$
+\]
 
-is an RSA primitive.
+is the mathematical RSA primitive.
 
-It is **not yet a secure modern encryption scheme**.
+It is **not a complete modern encryption scheme**.
 
-No OAEP.
+Our toy example has:
 
-No encoding.
+```text
+no secure message encoding
+no randomized encryption layer
+no OAEP
+no production-size modulus
+no production prime generation
+no side-channel protection
+```
 
-No randomized encryption layer.
+So this code belongs in an educational cryptography repository.
 
-No production key generation.
-
-So the code belongs in our educational repository, not in a real application.
+It does not belong in a real application.
 
 ---
 
-## Real key generation is much more than "pick two primes"
+## Practical RSA keys and CRT parameters
 
-This is where key generation becomes a security topic rather than just setup.
+A practical RSA private key commonly stores more than just
 
-In production, we do not write:
+\[
+N
+\]
+
+and
+
+\[
+d.
+\]
+
+Because the private-key holder already knows
+
+\[
+p
+\]
+
+and
+
+\[
+q,
+\]
+
+it can precompute CRT parameters.
+
+The first two are the reduced private exponents:
+
+\[
+d_P=d\bmod(p-1),
+\]
+
+\[
+d_Q=d\bmod(q-1).
+\]
+
+For our example,
+
+\[
+d_P
+=
+413\bmod60
+=
+53,
+\]
+
+and
+
+\[
+d_Q
+=
+413\bmod52
+=
+49.
+\]
+
+Another useful value is
+
+\[
+q_{\text{inv}}
+=
+q^{-1}\bmod p.
+\]
+
+Here,
+
+\[
+q_{\text{inv}}
+=
+53^{-1}\bmod61
+=
+38.
+\]
+
+So our complete toy parameter set is:
+
+| Parameter | Value | Role |
+| --- | ---: | --- |
+| \(p\) | \(61\) | First secret prime |
+| \(q\) | \(53\) | Second secret prime |
+| \(N\) | \(3233\) | Public modulus |
+| \(\lambda(N)\) | \(780\) | RSA exponent cycle |
+| \(e\) | \(17\) | Public exponent |
+| \(d\) | \(413\) | Private exponent |
+| \(d_P\) | \(53\) | Private exponent modulo \(p-1\) |
+| \(d_Q\) | \(49\) | Private exponent modulo \(q-1\) |
+| \(q_{\text{inv}}\) | \(38\) | \(q^{-1}\bmod p\) |
+
+In Python:
+
+```python
+d_P = d % (p - 1)
+d_Q = d % (q - 1)
+q_inv = pow(q, -1, p)
+
+assert d_P == 53
+assert d_Q == 49
+assert q_inv == 38
+
+assert (q * q_inv) % p == 1
+```
+
+These values allow private RSA operations to use the Chinese Remainder Theorem:
+
+```text
+private operation modulo N
+        ↓
+split into two smaller computations
+        ↓
+modulo p
+modulo q
+        ↓
+CRT recombination
+```
+
+This is considerably faster than performing the entire private operation directly modulo \(N\).
+
+So the hidden factorization is useful in two connected ways:
+
+```text
+p, q
+ ↓
+construct λ(N)
+ ↓
+derive d
+```
+
+and later:
+
+```text
+p, q
+ ↓
+derive CRT parameters
+ ↓
+accelerate private operations
+```
+
+This is also the same CRT structure that produced the fault attack we studied earlier.
+
+An optimization and an attack surface can arise from exactly the same mathematical structure.
+
+---
+
+## Real key generation is a security problem
+
+Our toy key began with:
 
 ```python
 p = 61
 q = 53
 ```
 
-We need unpredictable prime candidates generated from a cryptographically suitable random source.
+Real RSA key generation obviously cannot work like that.
 
-Then we test them.
+The primes must be generated from unpredictable candidate values using a cryptographically appropriate random source.
 
-And the resulting primes must satisfy the parameter policy of the scheme or standard we are implementing.
+Those candidates must then pass primality testing and the additional requirements of the relevant RSA specification.
 
-For example, current RSA specifications impose constraints on:
+At a high level, real key generation must reason about:
 
-- the number and sizes of the primes,
-- distinctness of $p$ and $q$,
+- prime size,
+- prime randomness,
+- primality testing,
+- distinctness of \(p\) and \(q\),
+- the relationship between the primes,
 - the public exponent,
-- the distance between the prime factors,
-- the random-bit generator,
-- private-exponent properties,
-- and key validation.
+- the private exponent,
+- CRT parameters,
+- key validation,
+- random-number-generator quality.
 
-For modern NIST RSA signature key generation, FIPS 186-5 requires two prime factors and an odd public exponent satisfying:
+Current NIST RSA signature key generation uses two prime factors, and modern approved RSA signature moduli are at least 2048 bits.
 
-$$
+For the public exponent, FIPS 186-5 requires an odd \(e\) satisfying
+
+\[
 2^{16}<e<2^{256}.
-$$
+\]
 
-The familiar choice:
+The overwhelmingly common choice is
 
-$$
-e=65537=2^{16}+1
-$$
+\[
+e=65537=2^{16}+1.
+\]
 
-is therefore extremely common.
+Why \(65537\)?
 
-It is public.
+It is large enough to avoid historical issues associated with extremely small exponents, while its binary representation is sparse:
 
-It does not need to be random.
+\[
+65537=2^{16}+1.
+\]
 
-And choosing a much larger public exponent does not automatically make RSA "more secure."
+That makes public exponentiation efficient.
 
-The secret structure lives in the factorization and private exponent.
+Importantly, \(e\) is public.
 
-> **Standards connection.**  
-> PKCS #1 v2.2 defines a valid RSA public key using distinct odd prime factors and
->
-> $$
-> \gcd(e,\lambda(N))=1,
-> $$
->
-> and defines the private exponent by
->
-> $$
-> ed\equiv1\pmod{\lambda(N)}.
-> $$
->
-> [RFC 8017 — PKCS #1 v2.2](https://www.rfc-editor.org/rfc/rfc8017)
->
-> NIST FIPS 186-5 gives concrete RSA signature key-generation procedures, including approved randomness, probable-prime testing, exponent constraints, and separation conditions for $p$ and $q$.
->
-> [NIST FIPS 186-5](https://doi.org/10.6028/NIST.FIPS.186-5)
+It does not need to be random or secret.
 
-There is another current detail worth recording: NIST SP 800-56B Rev. 2, which specifies RSA-based key-establishment schemes, was reaffirmed by NIST as current on January 6, 2026.
+Choosing a larger public exponent does not automatically make RSA more secure.
 
-That does **not** make RSA post-quantum secure.
-
-It only describes the current classical standardization status for those uses.
+The private security of RSA lies elsewhere: in the hidden factorization, private exponent, key-generation process, and secure implementation.
 
 ---
 
-## BREAK: bad randomness can destroy RSA before encryption even begins
+## Standards perspective
 
-This is where Blog 01 comes back.
+It is useful to distinguish what our toy construction teaches from what a real specification requires.
 
-Imagine two RSA moduli:
+### PKCS #1
 
-$$
+PKCS #1 v2.2 defines an RSA public key using:
+
+\[
+(N,e)
+\]
+
+with \(N\) constructed from distinct odd prime factors and
+
+\[
+\gcd(e,\lambda(N))=1.
+\]
+
+For the simple private-key representation, the private exponent satisfies
+
+\[
+ed\equiv1\pmod{\lambda(N)}.
+\]
+
+It also defines the CRT representation using values corresponding to
+
+\[
+p,
+\quad
+q,
+\quad
+d_P,
+\quad
+d_Q,
+\quad
+q_{\text{inv}}.
+\]
+
+That is essentially the parameter set we have just reconstructed by hand.
+
+### NIST FIPS 186-5
+
+FIPS 186-5 gives concrete procedures for RSA keys used for digital signatures, including requirements around:
+
+- modulus sizes,
+- generation of \(p\) and \(q\),
+- probable-prime testing,
+- public exponent selection,
+- random-bit generation,
+- validation conditions.
+
+So production RSA key generation is not just the mathematical relation
+
+\[
+N=pq.
+\]
+
+It is a specified generation procedure.
+
+### RSA key establishment
+
+NIST SP 800-56B Rev. 2 specifies RSA-based integer-factorization key-establishment mechanisms.
+
+As of 2026, NIST has reaffirmed that publication as current.
+
+That says something about RSA's present **classical standardization status**.
+
+It does not change the fact that RSA is not post-quantum secure.
+
+A sufficiently capable cryptographically relevant quantum computer running Shor's algorithm would fundamentally change the security assumption behind RSA.
+
+---
+
+## When randomness fails: shared-prime RSA keys
+
+This brings us back to the randomness discussion from much earlier in the series.
+
+Suppose two independently generated RSA public moduli are
+
+\[
 N_1=pq_1
-$$
+\]
 
-and:
+and
 
-$$
+\[
 N_2=pq_2.
-$$
+\]
 
-If broken randomness accidentally causes both devices to reuse the same secret prime $p$, then:
+Normally, their prime factors should be independently generated.
 
-$$
+But suppose a failure in random-number generation causes both keys to reuse the same prime \(p\).
+
+Then:
+
+\[
+\gcd(N_1,N_2)
+=
+\gcd(pq_1,pq_2).
+\]
+
+Assuming the other primes are distinct,
+
+\[
+\boxed{
 \gcd(N_1,N_2)=p.
-$$
+}
+\]
 
-Both public keys are immediately factored.
+The shared secret factor falls out immediately.
+
+No discrete logarithm.
 
 No side channel.
 
-No quantum computer.
+No fault injection.
 
-No sophisticated number-field sieve.
+No general-purpose integer factorization algorithm.
 
 Just:
 
 ```python
-gcd(N1, N2)
+from math import gcd
+
+shared_factor = gcd(N1, N2)
 ```
 
-That is why secure prime generation is part of RSA security.
+Once \(p\) is known,
 
-Not housekeeping before the "real algorithm."
+\[
+q_1=\frac{N_1}{p}
+\]
 
-> **Research connection — key generation failed in the wild.**  
-> Heninger, Durumeric, Wustrow, and Halderman's 2012 USENIX Security paper *Mining Your Ps and Qs* studied widespread weak RSA keys caused by insufficient entropy and found public moduli sharing nontrivial prime factors.
->
-> [USENIX Security 2012 — Mining Your Ps and Qs](https://www.usenix.org/conference/usenixsecurity12/technical-sessions/presentation/heninger)
+and
 
-I like this connection because we encountered the GCD attack near the very beginning of the series.
+\[
+q_2=\frac{N_2}{p}.
+\]
 
-Now we understand **where the repeated prime came from**:
+Both RSA moduli are factored.
 
-the failure happened during key generation.
+This is why randomness during key generation is not merely setup before the "real cryptography."
+
+It is part of RSA security itself.
+
+### A real research connection
+
+A particularly important study is:
+
+**Nadia Heninger, Zakir Durumeric, Eric Wustrow, and J. Alex Halderman**,  
+*Mining Your Ps and Qs: Detection of Widespread Weak Keys in Network Devices*,  
+USENIX Security 2012.
+
+The researchers analysed large populations of public keys and found RSA keys sharing nontrivial prime factors, among other weak-key phenomena.
+
+The attack is mathematically simple:
+
+\[
+\gcd(N_i,N_j).
+\]
+
+The interesting question was why supposedly independent keys ever shared secret primes.
+
+The answer led back to weaknesses in key generation and entropy availability, particularly in constrained devices.
+
+This connects several earlier pieces of the series:
+
+```text
+poor entropy
+    ↓
+prime reuse
+    ↓
+RSA moduli share a factor
+    ↓
+GCD
+    ↓
+factorization
+    ↓
+private-key recovery
+```
+
+The GCD once again becomes cryptanalysis.
 
 ---
 
-A more realistic educational pipeline for the repository should therefore look like:
+## A complete educational pipeline
+
+A more realistic educational RSA key-generation pipeline should therefore look something like this:
 
 ```text
-generate random odd candidate
+cryptographic random source
         ↓
-small-prime trial division
+generate odd prime candidate
+        ↓
+small-prime filtering
         ↓
 Miller-Rabin
         ↓
-candidate prime p
-
-repeat for q
+candidate p
         ↓
-check p != q
-check key-generation constraints
+
+repeat independently
+        ↓
+candidate q
+        ↓
+
+check p ≠ q
+        ↓
+check required parameter conditions
         ↓
 N = pq
-λ(N) = lcm(p-1, q-1)
         ↓
-choose fixed e
+λ(N) = lcm(p - 1, q - 1)
+        ↓
+choose public exponent e
         ↓
 check gcd(e, λ(N)) = 1
         ↓
 d = e⁻¹ mod λ(N)
         ↓
-derive CRT parameters
+derive dP, dQ, qInv
         ↓
-validate the key pair
+validate key pair
 ```
 
-For the toy blog we deliberately skip most production constraints so every line remains visible.
+The toy article deliberately leaves out many production requirements so that every mathematical step remains visible.
 
-But now we know what is missing.
+But now we know what has been simplified.
 
-That distinction matters.
+That distinction is important.
+
+We are not pretending that:
+
+```python
+p = generate_prime()
+q = generate_prime()
+```
+
+is the whole RSA key-generation problem.
+
+We are using a transparent model to understand the structure that real implementations must build securely.
 
 ---
 
-At this point, RSA key generation no longer feels like:
+## Reader checkpoint
 
-```text
-pick two primes and somehow get a key
-```
+At this point you should be able to explain:
 
-It is a composition of ideas we already understand:
+1. Why RSA begins with two distinct secret primes.
+2. Why the modulus
+   \[
+   N=pq
+   \]
+   is public while its factorization remains secret.
+3. Why \(e\) must satisfy
+   \[
+   \gcd(e,\lambda(N))=1.
+   \]
+4. Why the private exponent is
+   \[
+   d=e^{-1}\pmod{\lambda(N)}.
+   \]
+5. Why using \(\varphi(N)\) in the classic textbook construction also works.
+6. Why \(\lambda(N)\) gives the more precise cycle relation.
+7. What \(d_P\), \(d_Q\), and \(q_{\text{inv}}\) are used for.
+8. Why the raw operation
+   \[
+   m^e\bmod N
+   \]
+   is not yet secure RSA encryption.
+9. Why poor randomness during prime generation can completely destroy an RSA key.
+10. Why two public RSA moduli sharing a secret prime can be factored with one GCD.
 
-$$
+The entire construction can now be summarized as:
+
+\[
 \boxed{
 \text{primes}
 +
@@ -631,24 +1005,79 @@ $$
 +
 \text{CRT}
 =
-\text{RSA trapdoor structure}.
+\text{RSA key structure}.
 }
-$$
+\]
 
-And I think that is the right place to stop for this post.
+That is the point I wanted to reach before treating RSA as a complete cryptographic system.
 
-Because the next temptation is immediate:
+---
 
-> We have a public key. Why not just encrypt a message with $m^e\bmod N$?
+## Next
 
-That works mathematically.
+We now possess a public key:
 
-Cryptographically, it is a disaster.
+\[
+(N,e)
+\]
 
-The same message always gives the same ciphertext.
+and a private key.
 
-The algebra is multiplicative.
+The obvious temptation is:
 
-And an attacker can exploit both facts.
+> Why not simply encrypt a message using
+> \[
+> c=m^e\bmod N?
+> \]
 
-**Next:** *Why Textbook RSA Is Not Encryption: Determinism, Malleability, and the Need for OAEP.*
+Mathematically, it works.
+
+But as encryption, textbook RSA is deeply inadequate.
+
+The same message always produces the same ciphertext.
+
+Its algebra is multiplicatively malleable.
+
+Small or structured message spaces can be dangerous.
+
+And there is no randomness protecting repeated encryptions.
+
+So the next step is not another key-generation detail.
+
+It is to understand the difference between a **mathematical trapdoor permutation** and a **secure encryption scheme**.
+
+## Closing Cryptography From Zero
+
+This article closes the **Cryptography From Zero** series.
+
+We started with basic Python and elementary integer arithmetic and gradually built the mathematical and implementation vocabulary needed to understand real cryptographic constructions:
+
+\[
+\text{integers}
+\rightarrow
+\text{GCD}
+\rightarrow
+\text{modular inverses}
+\rightarrow
+\text{modular arithmetic}
+\rightarrow
+\text{groups}
+\rightarrow
+\text{Diffie-Hellman}
+\rightarrow
+\text{CRT}
+\rightarrow
+\text{primes}
+\rightarrow
+\text{RSA key generation}.
+\]
+
+The purpose was never to cover every cryptographic primitive. It was to build enough foundations that the articles that follow no longer need to treat the underlying mathematics as a black box.
+
+From here, CryptoCave branches into more specialized series.
+
+For RSA, the natural continuation is **RSA Deep Dives**, beginning with a question that immediately appears after constructing an RSA key:
+
+> Why can we not simply encrypt with \(c=m^e\bmod N\)?
+
+**Continue with RSA Deep Dives: _Why Textbook RSA Is Not Encryption — Determinism, Malleability, and the Need for OAEP._**

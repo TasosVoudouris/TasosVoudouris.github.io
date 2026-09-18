@@ -1,18 +1,18 @@
 ---
 title: "Finite Fields I: From Prime Fields to Extension Fields"
-description: "How finite fields are constructed, why their sizes are prime powers, and how irreducible polynomials turn quotient rings into extension fields."
+description: "How finite fields are constructed, why their sizes are prime powers, how irreducible polynomials create extensions, and how arithmetic works inside finite fields."
 pubDate: "2025-05-16"
-updatedDate: '2026-09-13'
+updatedDate: "2026-09-16"
 topics:
-- "Mathematical Foundations"
-- "Finite Fields"
-- "Abstract Algebra"
+  - "Mathematical Foundations"
+  - "Finite Fields"
+  - "Abstract Algebra"
 tags:
-- "finite-fields"
-- "prime-fields"
-- "extension-fields"
-- "quotient-rings"
-- "irreducible-polynomials"
+  - "finite-fields"
+  - "prime-fields"
+  - "extension-fields"
+  - "quotient-rings"
+  - "irreducible-polynomials"
 difficulty: "Intermediate"
 status: "Reference"
 series: "Finite Fields & Polynomial Arithmetic"
@@ -20,116 +20,1896 @@ seriesOrder: 1
 sourcePath: "experiments/mathematics/finite-fields"
 draft: false
 ---
-Finite fields combine rigid algebraic structure with efficient computation. They appear in coding theory, elliptic curves, secret sharing, error correction, and essentially every algebraic cryptographic construction.
 
-## 1. Prime fields
+Finite fields combine rigid algebraic structure with efficient computation.
 
-For a prime $p$, the residue ring
-$$
+They appear throughout:
+
+- coding theory,
+- error correction,
+- secret sharing,
+- elliptic-curve cryptography,
+- pairing-based cryptography,
+- polynomial commitments,
+- and many other algebraic constructions.
+
+Unlike infinite fields such as:
+
+\[
+\mathbb Q,
+\qquad
+\mathbb R,
+\qquad
+\mathbb C,
+\]
+
+a finite field contains only finitely many elements.
+
+Yet its size cannot be arbitrary.
+
+Every finite field has exactly:
+
+\[
+\boxed{
+p^n
+}
+\]
+
+elements for some prime \(p\) and positive integer \(n\).
+
+Conversely, for every prime power:
+
+\[
+q=p^n,
+\]
+
+there exists a finite field with exactly \(q\) elements, unique up to isomorphism.
+
+This article develops the basic structure behind that classification and shows how extension fields are represented concretely using polynomial quotients.
+
+---
+
+## Table of Contents
+
+- [Prime fields](#prime-fields)
+- [Why finite-field sizes are prime powers](#why-finite-field-sizes-are-prime-powers)
+- [Constructing extension fields](#constructing-extension-fields)
+- [Arithmetic in extension fields](#arithmetic-in-extension-fields)
+- [The multiplicative group](#the-multiplicative-group)
+- [6. Frobenius and the polynomial (x^q-x)](#6-frobenius-and-the-polynomial-xq-x)
+- [Implementation boundary](#implementation-boundary)
+- [The structural picture](#the-structural-picture)
+- [Practice and checkpoint](#practice-and-checkpoint)
+- [References and further reading](#references-and-further-reading)
+- [Next](#next)
+
+---
+
+## Prime fields
+
+Let:
+
+\[
+p
+\]
+
+be prime.
+
+Then:
+
+\[
+\boxed{
+\mathbb F_p
+=
 \mathbb Z/p\mathbb Z
-$$
-is a field, denoted $\mathbb F_p$. Every nonzero element has a multiplicative inverse because
-$$
-\gcd(a,p)=1
-$$
-whenever $a\not\equiv0\pmod p$.
+}
+\]
 
-A composite modulus does **not** generally give a field. For example, in $\mathbb Z/15\mathbb Z$,
-$$
-3\cdot5=0,
-$$
-so nonzero zero divisors exist.
+is a field.
 
-The companion Python implementation therefore checks that the modulus is prime instead of silently calling every $\mathbb Z/n\mathbb Z$ a field.
+The elements are:
 
-## 2. Why finite-field sizes are prime powers
+\[
+0,1,\ldots,p-1,
+\]
 
-Every finite field $F$ has characteristic $p$ for some prime $p$. Therefore it contains a copy of $\mathbb F_p$ and is a finite-dimensional vector space over that prime field.
+with addition and multiplication performed modulo \(p\).
 
-If
-$$
-[F:\mathbb F_p]=n,
-$$
-then
-$$
-|F|=p^n.
-$$
+The crucial fact is that every nonzero residue has a multiplicative inverse.
 
-Conversely, for every prime power $q=p^n$, a field with exactly $q$ elements exists, and any two such fields are isomorphic. We therefore write **the** field $\mathbb F_q$, meaning unique up to isomorphism.
+If:
 
-## 3. Constructing an extension field
+\[
+a\not\equiv0\pmod p,
+\]
 
-Choose an irreducible polynomial
-$$
+then:
+
+\[
+\gcd(a,p)=1.
+\]
+
+By Bézout's identity, there exist integers \(x,y\) such that:
+
+\[
+ax+py=1.
+\]
+
+Reducing modulo \(p\):
+
+\[
+ax\equiv1\pmod p.
+\]
+
+Therefore:
+
+\[
+\boxed{
+a^{-1}\equiv x\pmod p.
+}
+\]
+
+So every nonzero element is invertible.
+
+---
+
+### Why composite moduli behave differently
+
+Consider:
+
+\[
+\mathbb Z/15\mathbb Z.
+\]
+
+We have:
+
+\[
+[3]\neq[0],
+\qquad
+[5]\neq[0],
+\]
+
+but:
+
+\[
+[3][5]
+=
+[15]
+=
+[0].
+\]
+
+Thus the ring contains nonzero zero divisors.
+
+A field cannot contain nonzero zero divisors.
+
+Therefore:
+
+\[
+\boxed{
+\mathbb Z/n\mathbb Z
+\text{ is a field}
+\iff
+n\text{ is prime}.
+}
+\]
+
+This distinction is important computationally.
+
+A class implementing:
+
+\[
+\mathbb F_p
+\]
+
+must verify that \(p\) is prime rather than silently interpreting an arbitrary modulus as a field.
+
+---
+
+### Prime subfields
+
+Every field has a smallest subfield generated by:
+
+\[
+1.
+\]
+
+This is called its **prime subfield**.
+
+If the field has characteristic \(0\), its prime subfield is isomorphic to:
+
+\[
+\mathbb Q.
+\]
+
+If the field has characteristic \(p>0\), its prime subfield is:
+
+\[
+\boxed{
+\mathbb F_p.
+}
+\]
+
+Every finite field necessarily has positive characteristic, so every finite field contains a copy of some:
+
+\[
+\mathbb F_p.
+\]
+
+---
+
+## Why finite-field sizes are prime powers
+
+Let:
+
+\[
+F
+\]
+
+be a finite field.
+
+Since \(F\) is finite, its characteristic cannot be \(0\).
+
+Therefore:
+
+\[
+\operatorname{char}(F)=p
+\]
+
+for some prime \(p\).
+
+Hence \(F\) contains its prime subfield:
+
+\[
+\mathbb F_p.
+\]
+
+Now view \(F\) as a vector space over:
+
+\[
+\mathbb F_p.
+\]
+
+Because \(F\) is finite, this vector space has finite dimension.
+
+Suppose:
+
+\[
+[F:\mathbb F_p]
+=
+n.
+\]
+
+Choose a basis:
+
+\[
+b_1,\ldots,b_n.
+\]
+
+Every element of \(F\) has a unique expression:
+
+\[
+a_1b_1+\cdots+a_nb_n,
+\]
+
+where:
+
+\[
+a_i\in\mathbb F_p.
+\]
+
+There are:
+
+\[
+p
+\]
+
+choices for every coefficient and \(n\) independent coefficients.
+
+Therefore:
+
+\[
+\boxed{
+|F|
+=
+p^n.
+}
+\]
+
+This proves:
+
+\[
+\boxed{
+\text{every finite field has prime-power cardinality}.
+}
+\]
+
+---
+
+### The converse
+
+The converse is equally important.
+
+For every:
+
+\[
+q=p^n
+\]
+
+with \(p\) prime and \(n\ge1\), there exists a field with exactly \(q\) elements.
+
+Moreover, any two fields with \(q\) elements are isomorphic.
+
+Therefore we write:
+
+\[
+\boxed{
+\mathbb F_q
+}
+\]
+
+or:
+
+\[
+\boxed{
+\operatorname{GF}(q).
+}
+\]
+
+The notation means:
+
+> a finite field with \(q\) elements, unique up to field isomorphism.
+
+It does **not** mean that there is a canonically preferred concrete representation.
+
+Different irreducible polynomials may produce different implementations of the same abstract field.
+
+---
+
+### Example
+
+There is, up to isomorphism, exactly one field of size:
+
+\[
+2^8=256.
+\]
+
+But it may be represented using different irreducible degree-\(8\) polynomials over:
+
+\[
+\mathbb F_2.
+\]
+
+The underlying abstract fields are isomorphic even though the bit-level representations and reduction polynomials may differ.
+
+This distinction between:
+
+\[
+\boxed{
+\text{abstract field}
+}
+\]
+
+and:
+
+\[
+\boxed{
+\text{chosen representation}
+}
+\]
+
+is important in implementations.
+
+---
+
+## Constructing extension fields
+
+How do we construct a field containing:
+
+\[
+p^n
+\]
+
+elements?
+
+Start with:
+
+\[
+\mathbb F_p.
+\]
+
+Choose an irreducible polynomial:
+
+\[
+\boxed{
 f(x)\in\mathbb F_p[x]
-$$
-of degree $n$. Then
-$$
+}
+\]
+
+of degree:
+
+\[
+n.
+\]
+
+Because \(f(x)\) is irreducible, the ideal:
+
+\[
+(f(x))
+\]
+
+is maximal in:
+
+\[
+\mathbb F_p[x].
+\]
+
+Therefore the quotient:
+
+\[
+\boxed{
 \mathbb F_p[x]/(f(x))
-$$
-is a field with $p^n$ elements.
+}
+\]
 
-Let
-$$
-\alpha=x+(f).
-$$
-Then $f(\alpha)=0$, and every element has a unique representation
-$$
-a_0+a_1\alpha+\cdots+a_{n-1}\alpha^{n-1},
-\qquad a_i\in\mathbb F_p.
-$$
+is a field.
 
-### Example: $\mathbb F_8$
+Since every residue class has a unique representative of degree less than \(n\), every element has the form:
 
-Over $\mathbb F_2$, the polynomial
-$$
-f(x)=x^3+x+1
-$$
-has no root in $\mathbb F_2$, so as a cubic it is irreducible. Therefore
-$$
-\mathbb F_8\cong\mathbb F_2[x]/(x^3+x+1).
-$$
-Inside the quotient,
-$$
-\alpha^3=\alpha+1
-$$
-because subtraction and addition coincide in characteristic $2$.
+\[
+\boxed{
+a_0
++
+a_1x
++
+\cdots+
+a_{n-1}x^{n-1},
+}
+\]
 
-## 4. Addition and multiplication
+with:
 
-Addition is coefficientwise modulo $p$.
+\[
+a_i\in\mathbb F_p.
+\]
 
-Multiplication proceeds in two stages:
+There are:
 
-1. multiply the representative polynomials;
-2. reduce the result modulo the defining polynomial $f(x)$.
+\[
+p^n
+\]
 
-Thus extension-field arithmetic is literally polynomial arithmetic plus modular reduction.
+such polynomials.
 
-## 5. The multiplicative group
+Hence:
 
-The nonzero elements form
-$$
-\mathbb F_q^\times,
-$$
-a cyclic group of order $q-1$.
+\[
+\boxed{
+\left|
+\mathbb F_p[x]/(f(x))
+\right|
+=
+p^n.
+}
+\]
 
-This gives
-$$
+Therefore:
+
+\[
+\boxed{
+\mathbb F_{p^n}
+\cong
+\mathbb F_p[x]/(f(x)).
+}
+\]
+
+---
+
+### The adjoined element
+
+Let:
+
+\[
+\alpha
+=
+x+(f)
+\]
+
+denote the residue class of \(x\).
+
+Since:
+
+\[
+f(x)\equiv0\pmod{f(x)},
+\]
+
+we obtain:
+
+\[
+\boxed{
+f(\alpha)=0.
+}
+\]
+
+So the quotient creates a field containing a root of \(f\).
+
+Every element may therefore be written as:
+
+\[
+\boxed{
+a_0
++
+a_1\alpha
++
+\cdots+
+a_{n-1}\alpha^{n-1}.
+}
+\]
+
+This is the **polynomial basis representation** determined by the chosen modulus \(f\).
+
+---
+
+### Example: constructing \(\mathbb F_8\)
+
+Consider:
+
+\[
+p=2
+\]
+
+and:
+
+\[
+f(x)
+=
+x^3+x+1.
+\]
+
+Over:
+
+\[
+\mathbb F_2,
+\]
+
+the only possible roots are:
+
+\[
+0
+\]
+
+and:
+
+\[
+1.
+\]
+
+Evaluate:
+
+\[
+f(0)=1,
+\]
+
+and:
+
+\[
+f(1)
+=
+1+1+1
+=
+1
+\pmod2.
+\]
+
+So \(f\) has no root in:
+
+\[
+\mathbb F_2.
+\]
+
+Because \(f\) has degree \(3\), having no root is enough to prove irreducibility.
+
+Therefore:
+
+\[
+\boxed{
+\mathbb F_8
+\cong
+\mathbb F_2[x]/(x^3+x+1).
+}
+\]
+
+Let:
+
+\[
+\alpha
+=
+x+(x^3+x+1).
+\]
+
+Then:
+
+\[
+\alpha^3+\alpha+1=0.
+\]
+
+Because the characteristic is \(2\):
+
+\[
+-1=1,
+\qquad
+-\alpha=\alpha.
+\]
+
+Therefore:
+
+\[
+\boxed{
+\alpha^3=\alpha+1.
+}
+\]
+
+The eight field elements are:
+
+\[
+0,
+\]
+
+\[
+1,
+\]
+
+\[
+\alpha,
+\]
+
+\[
+\alpha+1,
+\]
+
+\[
+\alpha^2,
+\]
+
+\[
+\alpha^2+1,
+\]
+
+\[
+\alpha^2+\alpha,
+\]
+
+\[
+\alpha^2+\alpha+1.
+\]
+
+---
+
+## Arithmetic in extension fields
+
+Once a representation:
+
+\[
+\mathbb F_{p^n}
+\cong
+\mathbb F_p[x]/(f(x))
+\]
+
+has been chosen, field arithmetic becomes polynomial arithmetic modulo \(f(x)\).
+
+---
+
+### Addition
+
+Addition is coefficientwise modulo \(p\).
+
+Suppose:
+
+\[
+a(x)
+=
+a_0+\cdots+a_{n-1}x^{n-1}
+\]
+
+and:
+
+\[
+b(x)
+=
+b_0+\cdots+b_{n-1}x^{n-1}.
+\]
+
+Then:
+
+\[
+a(x)+b(x)
+=
+\sum_{i=0}^{n-1}
+(a_i+b_i)x^i,
+\]
+
+where coefficients are reduced modulo \(p\).
+
+---
+
+### Characteristic two
+
+In:
+
+\[
+\mathbb F_{2^n},
+\]
+
+coefficient addition is XOR.
+
+Since:
+
+\[
+1+1=0,
+\]
+
+we have:
+
+\[
+a+a=0
+\]
+
+for every field element \(a\).
+
+Thus subtraction and addition coincide:
+
+\[
+\boxed{
+a-b=a+b.
+}
+\]
+
+This gives especially efficient binary representations.
+
+---
+
+### Multiplication
+
+Multiplication proceeds in two stages.
+
+First multiply the polynomial representatives:
+
+\[
+c(x)
+=
+a(x)b(x).
+\]
+
+Then reduce modulo the defining polynomial:
+
+\[
+\boxed{
+c(x)\bmod f(x).
+}
+\]
+
+The result has degree less than:
+
+\[
+n.
+\]
+
+So extension-field multiplication is:
+
+\[
+\boxed{
+\text{polynomial multiplication}
++
+\text{polynomial reduction}.
+}
+\]
+
+---
+
+### Example in \(\mathbb F_8\)
+
+Recall:
+
+\[
+\alpha^3=\alpha+1.
+\]
+
+Compute:
+
+\[
+\alpha^2\cdot\alpha^2
+=
+\alpha^4.
+\]
+
+Now:
+
+\[
+\alpha^4
+=
+\alpha\alpha^3.
+\]
+
+Using:
+
+\[
+\alpha^3=\alpha+1,
+\]
+
+we obtain:
+
+\[
+\alpha^4
+=
+\alpha(\alpha+1)
+=
+\alpha^2+\alpha.
+\]
+
+Therefore:
+
+\[
+\boxed{
+\alpha^2\cdot\alpha^2
+=
+\alpha^2+\alpha.
+}
+\]
+
+The relation defined by the irreducible polynomial keeps every result inside the \(3\)-dimensional basis:
+
+\[
+\{1,\alpha,\alpha^2\}.
+\]
+
+---
+
+### Multiplicative inverses
+
+Because the quotient is a field, every nonzero element has an inverse.
+
+There are several ways to compute it.
+
+One is exponentiation:
+
+\[
+\boxed{
+a^{-1}
+=
+a^{q-2}
+}
+\]
+
+for:
+
+\[
+a\neq0
+\]
+
+in:
+
+\[
+\mathbb F_q.
+\]
+
+Another is the polynomial Extended Euclidean Algorithm.
+
+If:
+
+\[
+a(x)\neq0
+\]
+
+modulo an irreducible \(f(x)\), then:
+
+\[
+\gcd(a(x),f(x))=1.
+\]
+
+Therefore there exist polynomials \(u,v\) such that:
+
+\[
+u(x)a(x)+v(x)f(x)=1.
+\]
+
+Reducing modulo \(f\):
+
+\[
+u(x)a(x)
+\equiv1
+\pmod f.
+\]
+
+Hence:
+
+\[
+\boxed{
+a(x)^{-1}
+\equiv
+u(x)
+\pmod f.
+}
+\]
+
+This is exactly the polynomial analogue of modular inversion in:
+
+\[
+\mathbb Z/p\mathbb Z.
+\]
+
+---
+
+## The multiplicative group
+
+For a finite field:
+
+\[
+\mathbb F_q,
+\]
+
+the nonzero elements form the multiplicative group:
+
+\[
+\boxed{
+\mathbb F_q^\times.
+}
+\]
+
+Its order is:
+
+\[
+\boxed{
+|\mathbb F_q^\times|
+=
+q-1.
+}
+\]
+
+A fundamental theorem states that this group is **cyclic**.
+
+Therefore there exists some:
+
+\[
+g\in\mathbb F_q^\times
+\]
+
+such that:
+
+\[
+\boxed{
+\mathbb F_q^\times
+=
+\langle g\rangle.
+}
+\]
+
+Such an element is called a **primitive element** or generator of the multiplicative group.
+
+---
+
+### Consequence: finite-field Fermat theorem
+
+Since:
+
+\[
+|\mathbb F_q^\times|
+=
+q-1,
+\]
+
+Lagrange's theorem gives:
+
+\[
+\boxed{
 a^{q-1}=1
-$$
-for every $a\ne0$, and
-$$
+}
+\]
+
+for every:
+
+\[
+a\in\mathbb F_q^\times.
+\]
+
+Multiplying by \(a\):
+
+\[
+\boxed{
 a^q=a
-$$
-for every $a\in\mathbb F_q$.
+}
+\]
 
-The polynomial identity
-$$
-x^q-x=\prod_{a\in\mathbb F_q}(x-a)
-$$
-is one of the most useful finite-field facts. It drives irreducibility tests and factorization algorithms later in this series.
+for every:
 
-## 6. Implementation boundary
+\[
+a\neq0.
+\]
 
-The companion `prime_field.py` deliberately implements only $\mathbb F_p$. Extension fields require a polynomial type and reduction modulo an irreducible polynomial; mixing those two abstraction levels into one short class is a common source of hidden bugs.
+The same identity is trivially true for:
+
+\[
+a=0.
+\]
+
+Therefore:
+
+\[
+\boxed{
+a^q=a
+\qquad
+\forall a\in\mathbb F_q.
+}
+\]
+
+This is one of the central identities of finite-field theory.
+
+---
+
+### Primitive elements and polynomial representation
+
+There is an important subtlety.
+
+Suppose:
+
+\[
+\mathbb F_{p^n}
+=
+\mathbb F_p[x]/(f(x))
+\]
+
+and:
+
+\[
+\alpha=x+(f).
+\]
+
+The element \(\alpha\) is guaranteed to generate the field as an extension:
+
+\[
+\mathbb F_{p^n}
+=
+\mathbb F_p(\alpha).
+\]
+
+But \(\alpha\) is **not automatically** a generator of:
+
+\[
+\mathbb F_{p^n}^\times.
+\]
+
+For that stronger property we need:
+
+\[
+\boxed{
+\operatorname{ord}(\alpha)
+=
+p^n-1.
+}
+\]
+
+If this holds, then \(\alpha\) is primitive.
+
+An irreducible polynomial whose root is primitive is called a **primitive polynomial**.
+
+Thus:
+
+\[
+\boxed{
+\text{irreducible}
+\neq
+\text{primitive}.
+}
+\]
+
+This distinction becomes important in finite-field implementations.
+
+---
+
+## 6. Frobenius and the polynomial \(x^q-x\)
+
+Finite fields have a canonical automorphism arising from their characteristic.
+
+Let:
+
+\[
+F
+\]
+
+have characteristic \(p\).
+
+Define the **Frobenius map**:
+
+\[
+\boxed{
+\operatorname{Fr}_p:
+F\rightarrow F,
+\qquad
+a\mapsto a^p.
+}
+\]
+
+Because:
+
+\[
+(a+b)^p
+=
+a^p+b^p
+\]
+
+in characteristic \(p\), Frobenius preserves addition.
+
+It also preserves multiplication:
+
+\[
+(ab)^p
+=
+a^pb^p.
+\]
+
+Therefore Frobenius is a field homomorphism.
+
+For a finite field it is injective, hence surjective, so it is an automorphism.
+
+---
+
+### Frobenius on \(\mathbb F_{p^n}\)
+
+Repeated application gives:
+
+\[
+a,
+\quad
+a^p,
+\quad
+a^{p^2},
+\quad
+\ldots.
+\]
+
+For:
+
+\[
+a\in\mathbb F_{p^n},
+\]
+
+we eventually obtain:
+
+\[
+\boxed{
+a^{p^n}=a.
+}
+\]
+
+Since:
+
+\[
+q=p^n,
+\]
+
+this is:
+
+\[
+\boxed{
+a^q=a.
+}
+\]
+
+---
+
+### The polynomial \(x^q-x\)
+
+Every:
+
+\[
+a\in\mathbb F_q
+\]
+
+satisfies:
+
+\[
+a^q-a=0.
+\]
+
+Therefore all \(q\) field elements are roots of:
+
+\[
+x^q-x.
+\]
+
+The polynomial has degree:
+
+\[
+q,
+\]
+
+so these are all of its roots.
+
+Hence:
+
+\[
+\boxed{
+x^q-x
+=
+\prod_{a\in\mathbb F_q}
+(x-a).
+}
+\]
+
+Moreover:
+
+\[
+\frac{d}{dx}(x^q-x)
+=
+qx^{q-1}-1.
+\]
+
+Because:
+
+\[
+q=p^n=0
+\]
+
+inside characteristic \(p\):
+
+\[
+\boxed{
+(x^q-x)'=-1.
+}
+\]
+
+Therefore the polynomial has no repeated roots.
+
+So:
+
+\[
+x^q-x
+\]
+
+splits into exactly \(q\) distinct linear factors over:
+
+\[
+\mathbb F_q.
+\]
+
+---
+
+### Why this identity matters
+
+The polynomial:
+
+\[
+x^{q^n}-x
+\]
+
+contains deep information about finite-field extensions.
+
+Its roots are exactly the elements of:
+
+\[
+\mathbb F_{q^n}.
+\]
+
+Moreover, over:
+
+\[
+\mathbb F_q,
+\]
+
+it factors as the product of all monic irreducible polynomials whose degrees divide \(n\).
+
+This fact drives several later algorithms for:
+
+- irreducibility testing,
+- polynomial factorization,
+- constructing finite extensions.
+
+So the identity:
+
+\[
+\boxed{
+x^{q^n}-x
+}
+\]
+
+is not merely a curiosity.
+
+It is one of the main computational tools of finite-field theory.
+
+---
+
+## Implementation boundary
+
+The companion implementation for this article deliberately distinguishes two abstraction levels.
+
+### Prime field
+
+A prime-field element can be represented simply by an integer:
+
+\[
+a\in\{0,\ldots,p-1\}.
+\]
+
+Arithmetic is integer arithmetic modulo \(p\).
+
+Conceptually:
+
+```python
+class PrimeFieldElement:
+    value: int
+    p: int
+```
+
+The implementation must guarantee:
+
+\[
+p\text{ is prime}.
+\]
+
+Otherwise the structure may contain zero divisors and cease to be a field.
+
+---
+
+### Extension field
+
+An extension-field element requires more information.
+
+We need:
+
+1. the characteristic \(p\);
+2. the extension degree \(n\);
+3. an irreducible polynomial:
+   \[
+   f(x);
+   \]
+4. a polynomial representative:
+   \[
+   a(x)
+   \]
+   with:
+   \[
+   \deg a<n.
+   \]
+
+Conceptually:
+
+```text
+GF(p^n) element
+      |
+      +-- base field GF(p)
+      |
+      +-- irreducible modulus f(x)
+      |
+      +-- polynomial coefficients
+```
+
+Arithmetic then requires:
+
+```text
+coefficient arithmetic mod p
+          +
+polynomial arithmetic
+          +
+reduction mod f(x)
+```
+
+These responsibilities should not be silently collapsed into a prime-field class.
+
+---
+
+### A minimal prime-field implementation
+
+```python
+from math import gcd
+
+
+class PrimeFieldElement:
+    def __init__(self, value, p):
+        if p < 2:
+            raise ValueError(
+                "p must be prime"
+            )
+
+        self.p = p
+        self.value = value % p
+
+    def __add__(self, other):
+        self._check_field(other)
+
+        return PrimeFieldElement(
+            self.value + other.value,
+            self.p,
+        )
+
+    def __sub__(self, other):
+        self._check_field(other)
+
+        return PrimeFieldElement(
+            self.value - other.value,
+            self.p,
+        )
+
+    def __mul__(self, other):
+        self._check_field(other)
+
+        return PrimeFieldElement(
+            self.value * other.value,
+            self.p,
+        )
+
+    def inverse(self):
+        if self.value == 0:
+            raise ZeroDivisionError(
+                "zero has no inverse"
+            )
+
+        return PrimeFieldElement(
+            pow(
+                self.value,
+                -1,
+                self.p,
+            ),
+            self.p,
+        )
+
+    def __truediv__(self, other):
+        return self * other.inverse()
+
+    def _check_field(self, other):
+        if self.p != other.p:
+            raise ValueError(
+                "elements belong to different fields"
+            )
+
+    def __repr__(self):
+        return (
+            f"{self.value} mod {self.p}"
+        )
+```
+
+For production-quality code, primality of \(p\) should be validated when the field object is created rather than repeatedly for each element.
+
+That suggests another useful design separation:
+
+```text
+Field object
+    ↓
+defines the algebraic environment
+
+Element object
+    ↓
+stores one value inside that environment
+```
+
+The same architecture becomes even more important for extension fields.
+
+---
+
+## The structural picture
+
+The first layer of finite-field theory can now be summarized compactly.
+
+Every finite field has characteristic:
+
+\[
+p.
+\]
+
+Therefore:
+
+\[
+\mathbb F_p
+\subseteq
+F.
+\]
+
+As a vector space:
+
+\[
+[F:\mathbb F_p]
+=
+n.
+\]
+
+Hence:
+
+\[
+\boxed{
+|F|=p^n.
+}
+\]
+
+Conversely, choose an irreducible:
+
+\[
+f(x)\in\mathbb F_p[x]
+\]
+
+of degree \(n\).
+
+Then:
+
+\[
+\boxed{
+\mathbb F_p[x]/(f)
+}
+\]
+
+is a field with:
+
+\[
+p^n
+\]
+
+elements.
+
+Thus:
+
+\[
+\boxed{
+\mathbb F_{p^n}
+\cong
+\mathbb F_p[x]/(f).
+}
+\]
+
+Its multiplicative group satisfies:
+
+\[
+\boxed{
+\mathbb F_{p^n}^\times
+\text{ is cyclic of order }
+p^n-1.
+}
+\]
+
+And every element satisfies:
+
+\[
+\boxed{
+a^{p^n}=a.
+}
+\]
+
+These four facts form the basic architecture of finite-field arithmetic.
+
+---
+
+## Practice and checkpoint
+
+### Exercise 1 — Prime field
+
+List all elements of:
+
+\[
+\mathbb F_7.
+\]
+
+Find the multiplicative inverse of each nonzero element.
+
+---
+
+### Exercise 2 — Composite modulus
+
+Explain why:
+
+\[
+\mathbb Z/12\mathbb Z
+\]
+
+is not a field.
+
+Give explicit nonzero zero divisors.
+
+---
+
+### Exercise 3 — Field size
+
+Suppose a finite field has characteristic:
+
+\[
+3
+\]
+
+and degree:
+
+\[
+4
+\]
+
+over its prime subfield.
+
+How many elements does it contain?
+
+---
+
+### Exercise 4 — Possible finite-field sizes
+
+Which of the following can be the size of a finite field?
+
+\[
+6,\quad
+8,\quad
+9,\quad
+12,\quad
+16,\quad
+25,\quad
+27.
+\]
+
+Explain your answer using the prime-power theorem.
+
+---
+
+### Exercise 5 — Constructing \(\mathbb F_4\)
+
+Show that:
+
+\[
+x^2+x+1
+\]
+
+is irreducible over:
+
+\[
+\mathbb F_2.
+\]
+
+Then construct:
+
+\[
+\mathbb F_4
+=
+\mathbb F_2[x]/(x^2+x+1).
+\]
+
+List all four elements.
+
+---
+
+### Exercise 6 — Constructing \(\mathbb F_8\)
+
+Use:
+
+\[
+x^3+x+1
+\]
+
+to construct:
+
+\[
+\mathbb F_8.
+\]
+
+With:
+
+\[
+\alpha^3=\alpha+1,
+\]
+
+reduce:
+
+\[
+\alpha^4,
+\qquad
+\alpha^5,
+\qquad
+\alpha^6.
+\]
+
+---
+
+### Exercise 7 — Multiplicative group
+
+How many elements are in:
+
+\[
+\mathbb F_{16}^\times?
+\]
+
+What are the possible element orders?
+
+---
+
+### Exercise 8 — Irreducible versus primitive
+
+Explain why an irreducible polynomial of degree \(n\) constructs:
+
+\[
+\mathbb F_{p^n},
+\]
+
+but its residue class:
+
+\[
+\alpha=x+(f)
+\]
+
+need not generate:
+
+\[
+\mathbb F_{p^n}^\times.
+\]
+
+What additional order condition is required?
+
+---
+
+### Exercise 9 — Frobenius
+
+In:
+
+\[
+\mathbb F_4,
+\]
+
+compute:
+
+\[
+a\mapsto a^2
+\]
+
+for every element.
+
+Verify that the map is a permutation of the field.
+
+---
+
+### Exercise 10 — The polynomial \(x^q-x\)
+
+For:
+
+\[
+q=3,
+\]
+
+factor:
+
+\[
+x^3-x
+\]
+
+over:
+
+\[
+\mathbb F_3.
+\]
+
+Verify:
+
+\[
+x^3-x
+=
+x(x-1)(x-2).
+\]
+
+---
+
+### Reader checkpoint
+
+You should now be able to explain:
+
+1. Why:
+   \[
+   \mathbb Z/p\mathbb Z
+   \]
+   is a field when \(p\) is prime.
+2. Why composite moduli generally produce zero divisors.
+3. What a prime subfield is.
+4. Why every finite field has characteristic \(p\) for some prime \(p\).
+5. Why every finite field has:
+   \[
+   p^n
+   \]
+   elements.
+6. Why finite fields exist for every prime power.
+7. Why two finite fields of the same size are isomorphic.
+8. Why the concrete representation is nevertheless not canonical.
+9. How an irreducible polynomial constructs:
+   \[
+   \mathbb F_{p^n}.
+   \]
+10. Why every field element has a polynomial representative of degree less than \(n\).
+11. How addition works in an extension field.
+12. How multiplication works through polynomial reduction.
+13. How multiplicative inverses can be computed with polynomial EEA.
+14. Why:
+    \[
+    |\mathbb F_q^\times|=q-1.
+    \]
+15. Why:
+    \[
+    \mathbb F_q^\times
+    \]
+    is cyclic.
+16. Why:
+    \[
+    a^{q-1}=1
+    \]
+    for nonzero \(a\).
+17. Why:
+    \[
+    a^q=a
+    \]
+    for every field element.
+18. What the Frobenius automorphism is.
+19. Why:
+    \[
+    x^q-x
+    \]
+    splits into all elements of \(\mathbb F_q\).
+20. The difference between an irreducible polynomial and a primitive polynomial.
+21. Why prime-field and extension-field implementations should be separate abstractions.
+
+If these ideas are clear, then a finite extension field is no longer an abstract object defined only by existence theorems.
+
+It is something we can construct, represent, and compute with explicitly.
+
+---
+
+## References and further reading
+
+**Rudolf Lidl and Harald Niederreiter**,  
+*Finite Fields.*
+
+The standard comprehensive reference for finite-field structure, extensions, polynomial factorization, and computational techniques.
+
+**Rudolf Lidl and Günter Pilz**,  
+*Applied Abstract Algebra.*
+
+A useful bridge between abstract algebra and computational applications of finite fields.
+
+**Victor Shoup**,  
+*A Computational Introduction to Number Theory and Algebra.*
+
+Excellent for algorithmic finite-field arithmetic, polynomial algorithms, and computational complexity.
+
+**Joachim von zur Gathen and Jürgen Gerhard**,  
+*Modern Computer Algebra.*
+
+A major reference for efficient polynomial and finite-field arithmetic.
+
+**Ian F. Blake, Gadiel Seroussi, and Nigel Smart**,  
+*Elliptic Curves in Cryptography.*
+
+Useful for seeing how finite-field arithmetic becomes the computational substrate of elliptic-curve systems.
+
+**Alfred J. Menezes, Paul C. van Oorschot, and Scott A. Vanstone**,  
+*Handbook of Applied Cryptography.*
+
+Provides the classical cryptographic context for arithmetic over finite fields.
+
+---
+
+## Next
+
+We now know how finite fields are built:
+
+\[
+\boxed{
+\mathbb F_{p^n}
+\cong
+\mathbb F_p[x]/(f(x)).
+}
+\]
+
+But that construction immediately creates computational questions.
+
+How do we represent polynomials efficiently?
+
+How do we compute:
+
+\[
+\gcd(f,g)?
+\]
+
+How do we find inverses modulo a polynomial?
+
+How do we test whether a candidate modulus polynomial is irreducible?
+
+And how do we factor polynomials over:
+
+\[
+\mathbb F_q?
+\]
+
+Those questions move the series from field structure to **polynomial arithmetic over finite fields**.

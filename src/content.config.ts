@@ -28,7 +28,7 @@ const blog = defineCollection({
 		status: z.enum(['Reviewed', 'Validated', 'Reference', 'Research Note', 'Experimental']).optional(),
 
 		series: z.enum(SERIES_NAMES).optional(),
-		seriesOrder: z.number().int().nonnegative().optional(),
+		seriesOrder: z.number().int().positive().optional(),
 
 		sourcePath: z.string().optional(),
 

@@ -1,559 +1,1715 @@
 ---
 title: "Number Theory Reference II: Modular Arithmetic"
-description: "A detailed treatment of congruences, residues, modular computation, units, inverses, and the arithmetic structure used throughout cryptography."
+description: "A detailed reference on congruences, residues, residue classes, modular computation, units, multiplicative inverses, and the arithmetic structure used throughout cryptography."
 pubDate: "2025-04-26"
-updatedDate: '2026-09-12'
+updatedDate: "2026-09-16"
 topics:
-- "Mathematical Foundations"
-- "Number Theory"
+  - "Mathematical Foundations"
+  - "Number Theory"
 tags:
-- "modular-arithmetic"
-- "congruences"
-- "residues"
-- "units"
-- "inverses"
+  - "modular-arithmetic"
+  - "congruences"
+  - "residues"
+  - "units"
+  - "inverses"
 difficulty: "Introductory"
 series: "Elementary Number Theory Reference"
 seriesOrder: 2
 draft: false
 ---
+
+In Part I, we developed the arithmetic machinery of the integers:
+
+\[
+\text{division}
+\rightarrow
+\text{divisibility}
+\rightarrow
+\gcd
+\rightarrow
+\text{Euclidean algorithm}
+\rightarrow
+\text{Bézout identity}.
+\]
+
+The final step already contained the beginning of modular arithmetic.
+
+If
+
+\[
+\gcd(a,n)=1,
+\]
+
+then Bézout tells us that there exist integers \(x,y\) such that
+
+\[
+ax+ny=1.
+\]
+
+Reducing the equation modulo \(n\) gives
+
+\[
+ax\equiv1\pmod n.
+\]
+
+So \(x\) behaves like a multiplicative inverse of \(a\).
+
+This article develops the arithmetic system in which that statement lives.
+
+We will distinguish a remainder from a congruence, construct residue classes, define the ring
+
+\[
+\mathbb Z/n\mathbb Z,
+\]
+
+identify its invertible elements, explain exactly when modular division is legal, and connect these ideas to efficient modular computation.
+
+These concepts appear almost everywhere in classical cryptography.
+
+---
+
 ## Table of Contents
 
-- [Number Theory (Part 2)](#number-theory-part-2)
-  - [Modular Arithmetic and Computation](#modular-arithmetic-and-computation)
-    - [Python’s `%` Operator](#pythons--operator)
-    - [Reduction at Intermediate Steps](#reduction-at-intermediate-steps)
-    - [Example: Computing ( 3^{999} \\mod 1000 )](#example-computing--3999-mod-1000-)
-  - [Residues](#residues)
-  - [Residue Classes](#residue-classes)
-    - [Congruence and Least Nonnegative Residues](#congruence-and-least-nonnegative-residues)
-    - [Example: Residue Classes Modulo 4](#example-residue-classes-modulo-4)
-    - [Complete Residue System](#complete-residue-system)
-  - [General Structure: Residue Classes Modulo ( n )](#general-structure-residue-classes-modulo--n-)
-    - [Example: Residue Classes Modulo 5](#example-residue-classes-modulo-5)
-    - [Structure of ( \\mathbb{Z}\_n )](#structure-of--mathbbz_n-)
-  - [Properties of Congruences](#properties-of-congruences)
-    - [Equivalence Properties (Reflexivity, Symmetry, Transitivity)](#equivalence-properties-reflexivity-symmetry-transitivity)
-    - [Compatibility with Addition](#compatibility-with-addition)
-    - [Compatibility with Multiplication](#compatibility-with-multiplication)
-    - [Compatibility with Exponentiation](#compatibility-with-exponentiation)
-  - [Modular Inverses](#modular-inverses)
-    - [Existence and Bézout Identity](#existence-and-bézout-identity)
-    - [Inverse of ( 137 \\mod 1337 )](#inverse-of--137-mod-1337-)
-    - [Necessary and Sufficient Condition](#necessary-and-sufficient-condition)
-  - [Bonus: Performance Analysis of Modular Exponentiation](#bonus-performance-analysis-of-modular-exponentiation)
-    - [Motivation](#motivation)
-    - [Naive Implementations](#naive-implementations)
-    - [Timing with `timeit`](#timing-with-timeit)
-    - [Benchmarking with Random Inputs](#benchmarking-with-random-inputs)
-    - [Automated Comparison](#automated-comparison)
-    - [Python’s `pow` Function](#pythons-pow-function)
-  - [Wrap-up](#wrap-up)
-
-
-## Modular Arithmetic and Computation
-
-Modular arithmetic is a cornerstone of modern number theory and cryptography. It enables arithmetic within a finite set of integers, and underpins protocols such as RSA, ElGamal, and Diffie–Hellman key exchange.
-
-We begin by examining both the computational and theoretical aspects of congruences, modular operations, and inverses, ultimately building toward secure arithmetic in $ \mathbb{Z}_n $.
+- [Congruence modulo (n)](#congruence-modulo-n)
+- [Residues and residue classes](#residues-and-residue-classes)
+- [Complete residue systems](#complete-residue-systems)
+- [The structure of (\mathbb Z_n)](#the-structure-of-mathbb-z_n)
+- [Arithmetic with congruences](#arithmetic-with-congruences)
+- [Reduction during computation](#reduction-during-computation)
+- [Cancellation and modular division](#cancellation-and-modular-division)
+- [Units and modular inverses](#units-and-modular-inverses)
+- [Example: (137^${-1}\pmod${1337})](#example-137-1pmod1337)
+- [The group of units](#the-group-of-units)
+- [Efficient modular exponentiation](#efficient-modular-exponentiation)
+- [Python and SageMath](#python-and-sagemath)
+- [Why this matters in cryptography](#why-this-matters-in-cryptography)
+- [Practice and checkpoint](#practice-and-checkpoint)
+- [References and further reading](#references-and-further-reading)
+- [Next](#next)
 
 ---
 
-### Python’s `%` Operator
+## Congruence modulo \(n\)
 
-In programming languages such as Python, the symbol `%` denotes the *modulus* or *remainder* operator. For example:
+Let
+
+\[
+a,b\in\mathbb Z
+\]
+
+and let
+
+\[
+n\in\mathbb Z,
+\qquad
+n>0.
+\]
+
+We say that \(a\) is **congruent to \(b\) modulo \(n\)** when
+
+\[
+n\mid(a-b).
+\]
+
+We write
+
+\[
+\boxed{
+a\equiv b\pmod n.
+}
+\]
+
+Equivalently, there exists an integer \(k\) such that
+
+\[
+a-b=kn.
+\]
+
+For example,
+
+\[
+23\equiv3\pmod5
+\]
+
+because
+
+\[
+23-3=20=4\cdot5.
+\]
+
+Likewise,
+
+\[
+-7\equiv3\pmod5
+\]
+
+because
+
+\[
+-7-3=-10=-2\cdot5.
+\]
+
+So modulo \(5\),
+
+\[
+\ldots,-7,-2,3,8,13,\ldots
+\]
+
+all represent the same modular value.
+
+### Congruence is not the same thing as `%`
+
+In Python:
 
 ```python
-23 % 5  # Output: 3
+23 % 5
 ```
 
-Here, the result 3 is the remainder after dividing 23 by 5.
+returns:
 
-While useful, this operation differs slightly in conceptual motivation from that in mathematics. For a number theorist, writing:
-$$
-23 \equiv 3 \pmod{5}
-$$
-means that 23 and 3 are *congruent modulo 5*, i.e., their difference is divisible by 5:
-$$
-23 - 3 = 20 \equiv 0 \pmod{5}
-$$
+```text
+3
+```
 
->**Congruence**: Let $ a, b \in \mathbb{Z} $, and let $ n \in \mathbb{N} $ with $ n > 0 $. We say that $ a $ is  *congruent* to $ b $ modulo $ n $, written:
->
->\[
->a \equiv b \pmod{n}
->\]
->
->if $ n \mid (a - b) $. The integer $ n $ is called the *modulus* of the congruence.
+This computes the **least nonnegative remainder** for the positive modulus \(5\).
 
-In this interpretation, we are not merely computing a remainder but entering a new arithmetic system—the set of *equivalence classes modulo 5*. The value 3 is called the **natural representative** of 23 modulo 5 within the residue class system.
+Mathematically, we may write:
+
+\[
+23\bmod5=3.
+\]
+
+But the statement
+
+\[
+23\equiv3\pmod5
+\]
+
+expresses something different.
+
+The first is an operation:
+
+\[
+23\bmod5
+\longrightarrow
+3.
+\]
+
+The second is a relation:
+
+\[
+23
+\sim
+3
+\]
+
+because their difference is divisible by \(5\).
+
+This distinction is worth keeping precise:
+
+\[
+\boxed{
+a\bmod n
+\text{ produces a representative}
+}
+\]
+
+whereas
+
+\[
+\boxed{
+a\equiv b\pmod n
+\text{ says that }a\text{ and }b
+\text{ belong to the same residue class}.
+}
+\]
 
 ---
 
-### Reduction at Intermediate Steps
+## Residues and residue classes
 
-A powerful property of modular arithmetic is that reductions can be performed at every step without affecting the final result (for addition, subtraction, and multiplication). For example:
+The Division Algorithm tells us that every integer \(a\) can be written uniquely as
+
+\[
+a=qn+r,
+\qquad
+0\le r<n.
+\]
+
+Therefore,
+
+\[
+a-r=qn,
+\]
+
+so
+
+\[
+a\equiv r\pmod n.
+\]
+
+Thus every integer is congruent modulo \(n\) to exactly one value in
+
+\[
+\{0,1,2,\ldots,n-1\}.
+\]
+
+This unique value is the **least nonnegative residue** of \(a\) modulo \(n\).
+
+For example,
+
+\[
+-17\bmod5=3
+\]
+
+because
+
+\[
+-17\equiv3\pmod5.
+\]
+
+### Residue classes
+
+Instead of thinking only about one representative, we can collect every integer congruent to \(a\).
+
+The residue class of \(a\) modulo \(n\) is
+
+\[
+[a]_n
+=
+\{
+x\in\mathbb Z:
+x\equiv a\pmod n
+\}.
+\]
+
+For example, modulo \(4\):
+
+\[
+[0]_4
+=
+\{\ldots,-8,-4,0,4,8,\ldots\},
+\]
+
+\[
+[1]_4
+=
+\{\ldots,-7,-3,1,5,9,\ldots\},
+\]
+
+\[
+[2]_4
+=
+\{\ldots,-6,-2,2,6,10,\ldots\},
+\]
+
+and
+
+\[
+[3]_4
+=
+\{\ldots,-5,-1,3,7,11,\ldots\}.
+\]
+
+Every integer belongs to exactly one of these four classes.
+
+That is because congruence modulo \(n\) is an **equivalence relation**.
+
+It is reflexive:
+
+\[
+a\equiv a\pmod n.
+\]
+
+It is symmetric:
+
+\[
+a\equiv b\pmod n
+\quad\Longrightarrow\quad
+b\equiv a\pmod n.
+\]
+
+And it is transitive:
+
+\[
+a\equiv b\pmod n
+\quad\text{and}\quad
+b\equiv c\pmod n
+\quad\Longrightarrow\quad
+a\equiv c\pmod n.
+\]
+
+The equivalence classes partition \(\mathbb Z\).
+
+---
+
+## Complete residue systems
+
+A set
+
+\[
+\{a_0,a_1,\ldots,a_{n-1}\}
+\]
+
+is a **complete residue system modulo \(n\)** if every residue class modulo \(n\) is represented exactly once.
+
+The most familiar complete residue system is
+
+\[
+\{0,1,\ldots,n-1\}.
+\]
+
+But the representatives do not need to lie in that range.
+
+For example,
+
+\[
+\{-12,-4,11,13,22,82,91\}
+\]
+
+forms a complete residue system modulo \(7\).
+
+Indeed,
+
+\[
+\begin{aligned}
+-12 &\equiv2\pmod7,\\
+-4  &\equiv3\pmod7,\\
+11  &\equiv4\pmod7,\\
+13  &\equiv6\pmod7,\\
+22  &\equiv1\pmod7,\\
+82  &\equiv5\pmod7,\\
+91  &\equiv0\pmod7.
+\end{aligned}
+\]
+
+Every class
+
+\[
+[0]_7,[1]_7,\ldots,[6]_7
+\]
+
+appears exactly once.
+
+---
+
+## The structure of \(\mathbb Z_n\)
+
+The set of residue classes modulo \(n\) is commonly written
+
+\[
+\mathbb Z/n\mathbb Z.
+\]
+
+In cryptographic and computational writing, the shorter notation
+
+\[
+\mathbb Z_n
+\]
+
+is also widely used.
+
+Thus:
+
+\[
+\boxed{
+\mathbb Z_n
+=
+\{
+[0]_n,
+[1]_n,
+\ldots,
+[n-1]_n
+\}.
+}
+\]
+
+There are exactly \(n\) residue classes.
+
+Two classes are equal exactly when their representatives are congruent:
+
+\[
+[a]_n=[b]_n
+\iff
+a\equiv b\pmod n.
+\]
+
+### Addition
+
+Define:
+
+\[
+[a]_n+[b]_n
+=
+[a+b]_n.
+\]
+
+For example, in \(\mathbb Z_7\),
+
+\[
+[5]_7+[6]_7
+=
+[11]_7
+=
+[4]_7.
+\]
+
+### Multiplication
+
+Similarly,
+
+\[
+[a]_n[b]_n
+=
+[ab]_n.
+\]
+
+For example,
+
+\[
+[5]_7[3]_7
+=
+[15]_7
+=
+[1]_7.
+\]
+
+These operations are **well-defined**.
+
+That means the result does not depend on which representative of the residue class we choose.
+
+If
+
+\[
+a\equiv a'\pmod n
+\]
+
+and
+
+\[
+b\equiv b'\pmod n,
+\]
+
+then
+
+\[
+a+b\equiv a'+b'\pmod n
+\]
+
+and
+
+\[
+ab\equiv a'b'\pmod n.
+\]
+
+Therefore the arithmetic genuinely belongs to the equivalence classes themselves.
+
+### Ring structure
+
+With addition and multiplication modulo \(n\),
+
+\[
+\mathbb Z_n
+\]
+
+forms a **commutative ring with identity**.
+
+The additive identity is
+
+\[
+[0]_n,
+\]
+
+and the multiplicative identity is
+
+\[
+[1]_n.
+\]
+
+But something important depends on \(n\).
+
+If \(n\) is composite, not every nonzero element has a multiplicative inverse.
+
+For example, in
+
+\[
+\mathbb Z_{15},
+\]
+
+the element
+
+\[
+[5]_{15}
+\]
+
+has no multiplicative inverse because
+
+\[
+\gcd(5,15)=5.
+\]
+
+By contrast, if \(p\) is prime, then every nonzero element of
+
+\[
+\mathbb Z_p
+\]
+
+is invertible.
+
+In that case,
+
+\[
+\mathbb Z_p
+\]
+
+is a **field**.
+
+We will study that distinction in greater depth later, but it is already one of the most important structural facts in cryptography.
+
+---
+
+## Arithmetic with congruences
+
+Congruences behave much like ordinary equalities under addition and multiplication.
+
+Suppose
+
+\[
+a\equiv b\pmod n
+\]
+
+and
+
+\[
+c\equiv d\pmod n.
+\]
+
+Then:
+
+\[
+a+c
+\equiv
+b+d
+\pmod n.
+\]
+
+Likewise,
+
+\[
+a-c
+\equiv
+b-d
+\pmod n.
+\]
+
+And:
+
+\[
+ac
+\equiv
+bd
+\pmod n.
+\]
+
+For every nonnegative integer \(k\),
+
+\[
+a^k
+\equiv
+b^k
+\pmod n.
+\]
+
+Thus:
+
+\[
+\boxed{
+a\equiv b\pmod n
+\Longrightarrow
+f(a)\equiv f(b)\pmod n
+}
+\]
+
+for expressions \(f\) constructed from addition and multiplication with integer coefficients.
+
+This is why we are allowed to replace numbers by smaller congruent representatives during modular computations.
+
+### Example
+
+Suppose we want
+
+\[
+38\cdot47\pmod{13}.
+\]
+
+Reduce first:
+
+\[
+38\equiv12\pmod{13},
+\]
+
+and
+
+\[
+47\equiv8\pmod{13}.
+\]
+
+Therefore,
+
+\[
+38\cdot47
+\equiv
+12\cdot8
+=
+96
+\equiv5
+\pmod{13}.
+\]
+
+We never needed to preserve the original integers.
+
+Only their residue classes mattered.
+
+---
+
+## Reduction during computation
+
+One of the most practically useful properties of modular arithmetic is that reduction can happen after every arithmetic step.
+
+For example:
 
 ```python
 ((17 + 38) * (105 - 193)) % 13
 ```
 
-yields the same result as:
+produces the same result as:
 
 ```python
-(((17 % 13) + (38 % 13)) * ((105 % 13) - (193 % 13))) % 13
+(
+    ((17 % 13) + (38 % 13))
+    *
+    ((105 % 13) - (193 % 13))
+) % 13
 ```
 
-This technique prevents unnecessary growth of numbers in computation. The effect becomes particularly significant in exponentiation.
+Why?
 
-### Example: Computing $ 3^{999} \mod 1000 $
+Because:
 
-A naïve computation of $ 3^{999} $ produces a massive number. Instead, we reduce modulo 1000 at each step:
+\[
+17
+\equiv
+17\bmod13
+\pmod{13},
+\]
+
+and similarly for every other operand.
+
+Addition, subtraction, and multiplication preserve congruence.
+
+This prevents intermediate values from growing unnecessarily.
+
+The advantage becomes especially important in exponentiation.
+
+Suppose we want
+
+\[
+3^{999}\bmod1000.
+\]
+
+A simple educational loop is:
 
 ```python
-P = 1
+result = 1
+
 for _ in range(999):
-    P = (P * 3) % 1000
-print(P)
+    result = (result * 3) % 1000
+
+print(result)
 ```
 
-Here, all intermediate results remain below 1000, enabling efficient arithmetic even with large exponents.
+Every intermediate value remains below \(1000\).
+
+This is already far better than carrying the complete integer \(3^{999}\) through the computation.
+
+But we can do much better still.
+
+Rather than performing \(999\) multiplications, binary exponentiation uses the bits of the exponent and requires only \(O(\log 999)\) squaring/multiplication steps.
+
+We will return to that shortly.
 
 ---
 
-## Residues
+## Cancellation and modular division
 
-If $ x \equiv y \pmod{m} $, we say that $ y $ is a **residue** of $ x $ modulo $ m $.
+This is one of the places where modular arithmetic differs subtly from ordinary arithmetic.
 
-A set $ \{x_1, x_2, \ldots, x_m\} $ is a complete residue system modulo $ m $ if for every integer $ y \in \mathbb{Z} $, there exists exactly one $ x_j $ such that:
-$$
-y \equiv x_j \pmod{m}.
-$$
+Suppose
 
----
+\[
+ac\equiv bc\pmod n.
+\]
 
-## Residue Classes
+Can we cancel \(c\) and conclude
 
-Modular arithmetic gives rise to a powerful and elegant structure known as *residue classes*. These are equivalence classes of integers modulo a fixed positive integer $ n $, and form the basis for defining the set of integers modulo $ n $, denoted $ \mathbb{Z}_n $.
+\[
+a\equiv b\pmod n?
+\]
 
-### Congruence and Least Nonnegative Residues
+Not always.
 
-For any integer $ a $, the division algorithm guarantees the existence of unique integers $ q $ and $ r $ such that:
-$$
-a = qn + r, \quad \text{where} \quad 0 \leq r < n.
-$$
-By the definition of congruence modulo $ n $, this implies:
-$$
-a \equiv r \pmod{n}.
-$$
-Hence, every integer is congruent modulo $ n $ to exactly one integer in the set:
-$$
-\{0, 1, 2, \ldots, n - 1\}.
-$$
-This set is called the **set of least nonnegative residues modulo $ n $**.
+### A counterexample
 
----
+Consider modulo \(6\):
 
+\[
+2\cdot1
+\equiv
+2\cdot4
+\pmod6.
+\]
 
+Indeed,
 
-### Example: Residue Classes Modulo 4
+\[
+2\equiv8\pmod6.
+\]
 
-The equivalence classes modulo 4 are:
+But:
 
-- $ \ldots \equiv -8 \equiv -4 \equiv 0 \equiv 4 \equiv 8 \equiv \ldots \pmod{4} $
-- $ \ldots \equiv -7 \equiv -3 \equiv 1 \equiv 5 \equiv 9 \equiv \ldots \pmod{4} $
-- $ \ldots \equiv -6 \equiv -2 \equiv 2 \equiv 6 \equiv 10 \equiv \ldots \pmod{4} $
-- $ \ldots \equiv -5 \equiv -1 \equiv 3 \equiv 7 \equiv 11 \equiv \ldots \pmod{4} $
+\[
+1\not\equiv4\pmod6.
+\]
 
-These define the residue classes:
-$$
-[0]_4,\ [1]_4,\ [2]_4,\ [3]_4.
-$$
+So cancellation of the factor \(2\) failed.
 
-Thus, every integer belongs to exactly one such residue class modulo 4.
+Why?
 
----
+Because
 
-### Complete Residue System
+\[
+\gcd(2,6)=2\neq1.
+\]
 
-A set of integers $ \{a_1, a_2, \ldots, a_n\} $ is a **complete residue system modulo $ n $** if every integer is congruent modulo $ n $ to exactly one of the $ a_i $, and no two of the $ a_i $ are congruent to each other modulo $ n $.
+The factor \(2\) is not invertible modulo \(6\).
 
-In other words:
-- The system contains exactly $ n $ integers.
-- Each equivalence class modulo $ n $ is represented exactly once.
+### When cancellation is valid
 
+If
 
-The integers:
-$$
-\{-12, -4, 11, 13, 22, 82, 91\}
-$$
-form a complete residue system modulo $ 7 $, because:
+\[
+\gcd(c,n)=1,
+\]
 
-$$
-\begin{aligned}
--12 &\equiv 2 \pmod{7}, \quad
--4  &\equiv 3 \pmod{7}, \quad
-11  &\equiv 4 \pmod{7}, \\
-13  &\equiv 6 \pmod{7}, \quad
-22  &\equiv 1 \pmod{7}, \quad
-82  &\equiv 5 \pmod{7}, \quad
-91  &\equiv 0 \pmod{7}.
-\end{aligned}
-$$
+then \(c\) has a multiplicative inverse modulo \(n\).
 
-Since each residue $ 0, 1, \ldots, 6 $ appears exactly once, the set is complete.
+Suppose:
 
----
+\[
+ac\equiv bc\pmod n.
+\]
 
+Multiply both sides by
 
+\[
+c^{-1}.
+\]
 
-## General Structure: Residue Classes Modulo $ n $
+Then:
 
-We now define the central object of interest.
+\[
+c^{-1}ac
+\equiv
+c^{-1}bc
+\pmod n,
+\]
 
+so:
 
-Let $ n \in \mathbb{N}^* $. Define a relation $ \equiv_n $ on $ \mathbb{Z} $ by:
-$$
-a \equiv_n b \iff a \equiv b \pmod{n}.
-$$
+\[
+\boxed{
+a\equiv b\pmod n.
+}
+\]
 
-This relation $ \equiv_n $ is an **equivalence relation**, and its equivalence classes are called **residue classes modulo $ n $**.
+Thus cancellation is valid when the factor being cancelled is a **unit**.
 
-We denote the equivalence class of $ a \in \mathbb{Z} $ by:
-$$
-[a]_n = \{ x \in \mathbb{Z} : x \equiv a \pmod{n} \}.
-$$
+This gives the correct interpretation of modular division.
 
----
+Writing informally
 
-### Example: Residue Classes Modulo 5
+\[
+\frac{a}{c}\pmod n
+\]
 
-$$
-\begin{aligned}
-[0]_5 &= \{ \ldots, -10, -5, 0, 5, 10, \ldots \} \\
-[1]_5 &= \{ \ldots, -9, -4, 1, 6, 11, \ldots \} \\
-[2]_5 &= \{ \ldots, -8, -3, 2, 7, 12, \ldots \} \\
-[3]_5 &= \{ \ldots, -7, -2, 3, 8, 13, \ldots \} \\
-[4]_5 &= \{ \ldots, -6, -1, 4, 9, 14, \ldots \}
-\end{aligned}
-$$
+means:
 
-Each integer belongs to exactly one of these five residue classes.
+\[
+a c^{-1}\pmod n,
+\]
 
----
+and this operation only makes sense when \(c^{-1}\) exists.
 
-### Structure of $ \mathbb{Z}_n $
+So:
 
-Let $ n \in \mathbb{N}^* $. Then:
+\[
+\boxed{
+\text{division modulo }n
+=
+\text{multiplication by an inverse}.
+}
+\]
 
-- The set of residue classes modulo $ n $, denoted $ \mathbb{Z}_n $, contains exactly $ n $ elements:
-$$
-\mathbb{Z}_n = \{ [0]_n, [1]_n, \ldots, [n-1]_n \}.
-$$
-- For each $ a, b \in \mathbb{Z} $:
-$$
-[a]_n = [b]_n \iff a \equiv b \pmod{n}.
-$$
-
-
-While not the focus at this stage, it is important to note that $ \mathbb{Z}_n $, the set of residue classes modulo $ n $, possesses a rich algebraic structure. In particular:
-
-- $ \mathbb{Z}_n $ forms a **commutative ring** with identity, where the operations of addition and multiplication are defined modulo $ n $.
-- This ring structure is central to modern number theory and cryptography, and will be studied in greater detail later, particularly in the context of finite fields, group theory, and algebraic structures relevant to cryptographic protocols.
+This distinction becomes crucial in RSA, elliptic curves, finite fields, secret sharing, and essentially every algebraic cryptographic construction.
 
 ---
 
-## Properties of Congruences
+## Units and modular inverses
 
-Now that we have introduced the notion of congruence and residue classes modulo $ n $, we turn to the algebraic properties that govern their behavior. These properties allow us to manipulate congruences analogously to equalities in standard arithmetic, while keeping in mind that all calculations are performed *modulo* $ n $.
+Let
 
-### Equivalence Properties (Reflexivity, Symmetry, Transitivity)
+\[
+a\in\mathbb Z
+\]
 
+and
 
-These ensure that congruence modulo $ n $ defines an *equivalence relation* on $ \mathbb{Z} $. Let $ a, b, c, d, x, y \in \mathbb{Z} $ and $ n \in \mathbb{N} $ with $ n > 0 $. The following fundamental properties hold:
+\[
+n>1.
+\]
 
-- **Reflexivity**:  
-  $$
-  a \equiv a \pmod{n}
-  $$
-- **Symmetry**:  
-  $$
-  a \equiv b \pmod{n} \quad \Rightarrow \quad b \equiv a \pmod{n}
-  $$
-- **Transitivity**:  
-  $$
-  a \equiv b \pmod{n} \text{ and } b \equiv c \pmod{n} \quad \Rightarrow \quad a \equiv c \pmod{n}
-  $$
+A **multiplicative inverse** of \(a\) modulo \(n\) is an integer \(x\) satisfying
+
+\[
+ax\equiv1\pmod n.
+\]
+
+If it exists, we write
+
+\[
+x\equiv a^{-1}\pmod n.
+\]
+
+This does **not** mean the real-number reciprocal
+
+\[
+\frac1a.
+\]
+
+It means an element of the modular arithmetic system satisfying the multiplicative identity relation.
+
+### Existence criterion
+
+The fundamental theorem is:
+
+\[
+\boxed{
+a^{-1}\pmod n
+\text{ exists}
+\iff
+\gcd(a,n)=1.
+}
+\]
+
+This condition is both necessary and sufficient.
+
+### Why Bézout gives the inverse
+
+Suppose
+
+\[
+\gcd(a,n)=1.
+\]
+
+Bézout's identity guarantees integers \(u,v\) satisfying
+
+\[
+au+nv=1.
+\]
+
+Reduce modulo \(n\):
+
+\[
+au+nv
+\equiv
+1
+\pmod n.
+\]
+
+Since
+
+\[
+nv\equiv0\pmod n,
+\]
+
+we obtain
+
+\[
+au\equiv1\pmod n.
+\]
+
+Therefore,
+
+\[
+\boxed{
+u\equiv a^{-1}\pmod n.
+}
+\]
+
+This is why the Extended Euclidean Algorithm computes modular inverses.
+
+### Why the condition is necessary
+
+Suppose instead that an inverse \(x\) exists:
+
+\[
+ax\equiv1\pmod n.
+\]
+
+Then for some integer \(k\),
+
+\[
+ax-kn=1.
+\]
+
+So \(1\) is an integer linear combination of \(a\) and \(n\).
+
+Every common divisor of \(a\) and \(n\) must therefore divide \(1\).
+
+Hence,
+
+\[
+\gcd(a,n)=1.
+\]
+
+So the equivalence really goes both ways.
 
 ---
 
-### Compatibility with Addition
+## Example: \(137^{-1}\pmod{1337}\)
 
-Congruences are preserved under addition and additive inverses:
+We want to solve
 
-  $$
-  a \equiv b \pmod{n} \quad \Rightarrow \quad a + c \equiv b + c \pmod{n}
-  $$
-  $$
-  a \equiv b \pmod{n},\ c \equiv d \pmod{n} \quad \Rightarrow \quad a + c \equiv b + d \pmod{n}
-  $$
-  $$
-  a \equiv b \pmod{n} \quad \Rightarrow \quad -a \equiv -b \pmod{n}
-  $$
+\[
+137x\equiv1\pmod{1337}.
+\]
 
----
+From the Extended Euclidean Algorithm developed in Part I:
 
-### Compatibility with Multiplication
+\[
+1
+=
+1337(-54)
++
+137(527).
+\]
 
-Congruences behave predictably under multiplication:
+Reduce modulo \(1337\):
 
-  $$
-  a \equiv b \pmod{n} \quad \Rightarrow \quad ka \equiv kb \pmod{n}, \quad \forall k \in \mathbb{Z}
-  $$
-  $$
-  a \equiv b \pmod{n},\ c \equiv d \pmod{n} \quad \Rightarrow \quad ac \equiv bd \pmod{n}
-  $$
+\[
+137(527)
+\equiv
+1
+\pmod{1337}.
+\]
 
----
+Therefore,
 
-### Compatibility with Exponentiation
+\[
+\boxed{
+137^{-1}\equiv527\pmod{1337}.
+}
+\]
 
-If the base is congruent modulo $ n $, then all powers of the base remain congruent:
+Check:
 
-  $$
-  a \equiv b \pmod{n} \quad \Rightarrow \quad a^k \equiv b^k \pmod{n}, \quad \forall k \in \mathbb{N}
-  $$
+\[
+137\cdot527
+=
+72199.
+\]
 
-These properties make modular arithmetic *well-behaved* under the usual operations of arithmetic, provided one is working within a fixed modulus $ n $. They are essential in proving results in number theory and cryptography, such as Fermat’s Little Theorem, Euler’s Theorem, and in the design of modular exponentiation schemes for cryptographic applications.
+And:
 
----
+\[
+72199\bmod1337=1.
+\]
 
-## Modular Inverses
+In Python:
 
-Let $ a \in \mathbb{Z} $ and let $ n \in \mathbb{N}^* $. A **multiplicative inverse** of $ a $ modulo $ n $ is an integer $ x \in \mathbb{Z} $ such that:
-$$
-a \cdot x \equiv 1 \pmod{n}.
-$$
-
-Such an inverse exists if and only if $ \gcd(a, n) = 1 $, i.e., $ a $ and $ n $ are coprime. If an inverse exists, it is unique modulo $ n $, and we write:
-$$
-x \equiv a^{-1} \pmod{n}.
-$$
-
-> **Important**: The notation $ a^{-1} \mod n $ refers to the *modular multiplicative inverse* and must not be confused with the real-valued reciprocal $ \frac{1}{a} $, which is undefined in modular arithmetic unless the inverse exists.
-
----
-
-### Existence and Bézout Identity
-
-The existence of an inverse is guaranteed by Bézout’s identity: if $ \gcd(a, n) = 1 $, then there exist integers $ u, v \in \mathbb{Z} $ such that:
-$$
-au + nv = 1.
-$$
-
-Taking both sides modulo $ n $, we obtain:
-$$
-au \equiv 1 \pmod{n}.
-$$
-
-Hence, $ u $ is the multiplicative inverse of $ a $ modulo $ n $.
-
----
-
-### Inverse of $ 137 \mod 1337 $
-
-We want to compute:
-$$
-137^{-1} \mod 1337.
-$$
-
-Using the extended Euclidean algorithm, we find:
-$$
-1 = 1337 \cdot (-54) + 137 \cdot 527.
-$$
-
-Taking both sides modulo 1337, we obtain:
-$$
-137 \cdot 527 \equiv 1 \pmod{1337}.
-$$
-
-Thus, the modular inverse is:
-$$
-\boxed{137^{-1} \equiv 527 \mod 1337}.
-$$
-
-
-Modular inverses can be computed efficiently using the **Extended Euclidean Algorithm** or built-in functions in computational systems.
-
-In Python (via `Crypto.Util.number`):
 ```python
-from Crypto.Util.number import inverse
-inverse(137, 1337)  # Output: 527
+inverse = pow(137, -1, 1337)
+
+print(inverse)  # 527
+
+assert (137 * inverse) % 1337 == 1
 ```
 
-In SageMath:
+This is the exact computational meaning of the modular inverse.
+
+---
+
+## The group of units
+
+The invertible residue classes modulo \(n\) form an important subset of \(\mathbb Z_n\).
+
+Define:
+
+\[
+\mathbb Z_n^\times
+=
+\{
+[a]_n:
+\gcd(a,n)=1
+\}.
+\]
+
+This is called the **group of units modulo \(n\)**.
+
+For example, modulo \(10\),
+
+\[
+\mathbb Z_{10}
+=
+\{
+[0],[1],[2],[3],[4],
+[5],[6],[7],[8],[9]
+\}.
+\]
+
+Only the classes represented by integers coprime to \(10\) are invertible:
+
+\[
+\boxed{
+\mathbb Z_{10}^{\times}
+=
+\{
+[1],[3],[7],[9]
+\}.
+}
+\]
+
+Check:
+
+\[
+3\cdot7
+=
+21
+\equiv1\pmod{10},
+\]
+
+so:
+
+\[
+3^{-1}\equiv7\pmod{10}.
+\]
+
+Likewise:
+
+\[
+9^2=81\equiv1\pmod{10},
+\]
+
+so \(9\) is its own inverse.
+
+The units form a group under multiplication modulo \(n\).
+
+This object,
+
+\[
+\mathbb Z_n^\times,
+\]
+
+will become central when we study:
+
+- Euler's theorem,
+- RSA,
+- finite-group cryptography,
+- multiplicative orders,
+- generators.
+
+The number of units modulo \(n\) is given by Euler's totient function:
+
+\[
+\varphi(n)
+=
+|\mathbb Z_n^\times|.
+\]
+
+That will be developed in a later reference article.
+
+---
+
+## Efficient modular exponentiation
+
+Expressions of the form
+
+\[
+a^e\bmod n
+\]
+
+appear constantly in cryptography.
+
+RSA computes modular powers.
+
+Diffie-Hellman computes modular powers.
+
+Primality tests compute modular powers.
+
+So efficiency matters.
+
+There are three conceptually different approaches worth distinguishing.
+
+### Full exponentiation followed by reduction
+
+We could write:
+
 ```python
-pow(137, -1, 1337)
-# Output: 527
+result = (base ** exponent) % modulus
 ```
 
-Both approaches are based on the underlying implementation of the extended Euclidean algorithm.
+This is mathematically correct.
 
----
+But it first constructs the potentially enormous integer
 
-### Necessary and Sufficient Condition
+\[
+\text{base}^{\text{exponent}}
+\]
 
-Let $ a, n \in \mathbb{Z} $. Then:
+and only then reduces it.
 
-- $ a $ is invertible modulo $ n $ if and only if:
-$$
-\gcd(a, n) = 1.
-$$
+For large cryptographic exponents, this is not the right computational model.
 
-This criterion is central in number theory and cryptography. For instance, in RSA, decryption relies on computing the inverse of the encryption exponent modulo $ \varphi(n) $.
+### Repeated multiplication with reduction
 
-The concept of a modular inverse is foundational in modular arithmetic and appears throughout cryptographic protocols. Whether determining decryption keys or computing signatures, the ability to efficiently compute and reason about inverses modulo $ n $ is critical. The Extended Euclidean Algorithm not only proves the existence of such inverses when they exist, but also enables practical computation in both symbolic and applied contexts.
-
-
----
-
-## Bonus: Performance Analysis of Modular Exponentiation
-
-### Motivation
-
-Efficient computation of modular exponentiation is fundamental in cryptography. Many cryptographic algorithms, such as RSA, rely heavily on evaluating expressions of the form:
-
-$$
-a^k \mod m
-$$
-
-While modular arithmetic theoretically ensures that intermediate results can be reduced modulo $ m $ at each step, performance varies significantly depending on implementation. We explore this with a comparative performance analysis of several methods.
-
----
-
-### Naive Implementations
-
-We define two basic approaches to compute $ a^k \mod m $.
+A better educational version is:
 
 ```python
-def powermod_1(base, exponent, modulus):
-    return (base**exponent) % modulus  # Naive: exponentiate first, then reduce
+def powmod_repeated(base, exponent, modulus):
+    result = 1
 
-def powermod_2(base, exponent, modulus):
-    P = 1
     for _ in range(exponent):
-        P = (P * base) % modulus  # Iterative reduction
-    return P
+        result = (result * base) % modulus
+
+    return result
 ```
 
-Although `powermod_2` applies modular reduction at each multiplication step—thus avoiding large intermediate values—it is not always faster.
+Intermediate values remain bounded by the modulus.
+
+But the algorithm still performs
+
+\[
+O(e)
+\]
+
+multiplications.
+
+If \(e\) is a 2048-bit integer, that is completely impractical.
+
+### Binary exponentiation
+
+The correct algorithmic idea is **exponentiation by squaring**, also called binary exponentiation.
+
+The exponent is processed through its binary representation.
+
+For example,
+
+\[
+13=(1101)_2
+=
+8+4+1.
+\]
+
+So:
+
+\[
+a^{13}
+=
+a^8a^4a.
+\]
+
+The required powers can be generated by repeated squaring:
+
+\[
+a,
+\quad
+a^2,
+\quad
+a^4,
+\quad
+a^8,
+\ldots
+\]
+
+This reduces the operation count to
+
+\[
+O(\log e).
+\]
+
+A simple right-to-left implementation is:
+
+```python
+def powmod_binary(base, exponent, modulus):
+    result = 1
+    base %= modulus
+
+    while exponent > 0:
+        if exponent & 1:
+            result = (result * base) % modulus
+
+        base = (base * base) % modulus
+        exponent >>= 1
+
+    return result
+```
+
+Check:
+
+```python
+assert powmod_binary(3, 999, 1000) == pow(3, 999, 1000)
+```
+
+In normal Python code, use the optimized built-in operation:
+
+```python
+pow(base, exponent, modulus)
+```
+
+For example:
+
+```python
+result = pow(3, 999, 1000)
+
+print(result)
+```
+
+The important computational lesson is:
+
+\[
+\boxed{
+\text{three-argument } \operatorname{pow}
+\text{ performs modular exponentiation efficiently}.
+}
+\]
+
+It should generally be preferred to:
+
+```python
+(base ** exponent) % modulus
+```
+
+for large modular powers.
+
+One cryptographic warning is also worth recording:
+
+> Efficient does not automatically mean constant-time.
+
+Python's ordinary big-integer operations are useful for mathematical experimentation, but should not be treated as a guarantee of production side-channel resistance.
+
+That is a separate implementation-security problem.
 
 ---
 
-### Timing with `timeit`
+## Python and SageMath
 
+The basic modular operations are already available directly in Python.
+
+### Least nonnegative remainder
 
 ```python
-import timeit as TI
-print(TI.timeit('powermod_1(3, 999, 1000)', "from __main__ import powermod_1", number=10000))
-print(TI.timeit('powermod_2(3, 999, 1000)', "from __main__ import powermod_2", number=10000))
+print(23 % 5)   # 3
+print(-17 % 5)  # 3
 ```
 
-The `number` argument specifies the number of repetitions. The result is the total elapsed time, so average time per run can be obtained by dividing by this number.
+### Modular exponentiation
+
+```python
+print(
+    pow(3, 999, 1000)
+)
+```
+
+### Modular inverse
+
+Modern Python supports:
+
+```python
+inverse = pow(
+    137,
+    -1,
+    1337,
+)
+
+print(inverse)  # 527
+```
+
+If the inverse does not exist:
+
+```python
+pow(6, -1, 15)
+```
+
+raises an error because
+
+\[
+\gcd(6,15)=3.
+\]
+
+### GCD check
+
+```python
+from math import gcd
+
+a = 137
+n = 1337
+
+assert gcd(a, n) == 1
+
+inverse = pow(a, -1, n)
+
+assert (a * inverse) % n == 1
+```
+
+### SageMath
+
+SageMath provides natural modular objects.
+
+For example:
+
+```python
+R = Integers(17)
+
+a = R(5)
+b = R(9)
+
+print(a + b)
+print(a * b)
+print(a**-1)
+```
+
+The value:
+
+```python
+R(5)
+```
+
+is not merely an ordinary Python integer.
+
+It is an element of the ring
+
+\[
+\mathbb Z_{17}.
+\]
+
+That distinction becomes increasingly valuable as our mathematical objects become more sophisticated.
 
 ---
 
-### Benchmarking with Random Inputs
+## Why this matters in cryptography
 
-We can assess expected runtime across randomized input values. Using Python’s `random.randint`, we simulate a broad input space:
+This article contains several ideas that later appear as actual cryptographic operations.
 
-```python
-from random import randint
+RSA requires:
 
-Freq = {i: 0 for i in range(1, 11)}
-for _ in range(10000):
-    Freq[randint(1, 10)] += 1
-```
+\[
+d
+=
+e^{-1}
+\pmod{\lambda(N)}.
+\]
 
-For visualization:
+Diffie-Hellman works with repeated multiplication and exponentiation inside finite groups.
 
-```python
-import matplotlib.pyplot as plt
-plt.bar(Freq.keys(), Freq.values())
-plt.show()
-```
+Elliptic-curve arithmetic performs division by multiplying with finite-field inverses.
 
----
+Shamir secret sharing reconstructs polynomials using divisions inside a finite field.
 
-### Automated Comparison
+ECDSA contains expressions such as
 
-We now compare both methods over 1000 random samples:
+\[
+k^{-1}\pmod n.
+\]
 
-```python
-time_1 = 0
-time_2 = 0
+The Chinese Remainder Theorem works by constructing modular inverses.
 
-for _ in range(1000):
-    base = randint(10, 99)
-    exponent = randint(1000, 1999)
-    modulus = randint(1000, 1999)
+Even many attacks depend on understanding exactly which modular operations are legal.
 
-    time_1 += TI.timeit('powermod_1(base, exponent, modulus)', 
-                        "from __main__ import powermod_1, base, exponent, modulus", number=10)
+The central progression is:
 
-    time_2 += TI.timeit('powermod_2(base, exponent, modulus)', 
-                        "from __main__ import powermod_2, base, exponent, modulus", number=10)
+\[
+\boxed{
+\text{congruence}
+\rightarrow
+\text{residue class}
+\rightarrow
+\text{ring}
+\rightarrow
+\text{unit}
+\rightarrow
+\text{inverse}
+\rightarrow
+\text{group arithmetic}.
+}
+\]
 
-print("powermod_1 total time: {:.5f} seconds".format(time_1))
-print("powermod_2 total time: {:.5f} seconds".format(time_2))
-```
-
-Typically, `powermod_1` is faster due to Python's highly optimized internal `**` operator.
-
----
-
-We explored why `powermod_1` outperforms `powermod_2`:
-
-- The modular reduction `%` is extremely fast (nanoseconds).
-- Built-in operators like `**` are implemented in C and compiled to machine code.
-- Our loop in `powermod_2` uses more multiplications than necessary.
-
-```python
-print(TI.timeit('1238712 % 1237')) # Extremely fast
-```
+That progression is one of the main mathematical roads into cryptography.
 
 ---
 
-### Python’s `pow` Function
+## Practice and checkpoint
 
-Python provides a specialized three-argument `pow(base, exponent, modulus)` function that performs modular exponentiation efficiently:
+### Exercise 1 — Congruence
+
+Determine whether each statement is true:
+
+\[
+38\equiv3\pmod5,
+\]
+
+\[
+-12\equiv2\pmod7,
+\]
+
+\[
+41\equiv5\pmod9.
+\]
+
+For each one, verify whether the modulus divides the difference.
+
+### Exercise 2 — Least nonnegative residues
+
+Find:
+
+\[
+37\bmod8,
+\]
+
+\[
+-37\bmod8,
+\]
+
+and
+
+\[
+1234\bmod17.
+\]
+
+Verify the results using Python.
+
+### Exercise 3 — Residue classes
+
+Write the four residue classes modulo \(4\).
+
+Then determine which class contains:
+
+\[
+123.
+\]
+
+### Exercise 4 — Complete residue system
+
+Determine whether
+
+\[
+\{2,5,8,11,14\}
+\]
+
+is a complete residue system modulo \(5\).
+
+Do not look only at the number of elements.
+
+Reduce each value modulo \(5\).
+
+### Exercise 5 — Units
+
+Find every element of
+
+\[
+\mathbb Z_{12}^{\times}.
+\]
+
+Hint:
+
+\[
+[a]_{12}
+\]
+
+is invertible exactly when
+
+\[
+\gcd(a,12)=1.
+\]
+
+### Exercise 6 — Modular inverses
+
+Compute:
+
+\[
+7^{-1}\pmod{26}.
+\]
+
+Then verify:
+
+\[
+7x\equiv1\pmod{26}.
+\]
+
+Try the same question for:
+
+\[
+6^{-1}\pmod{15}.
+\]
+
+Explain why the second inverse does not exist.
+
+### Exercise 7 — Cancellation
+
+Consider:
+
+\[
+4x\equiv4y\pmod{10}.
+\]
+
+Can you always conclude:
+
+\[
+x\equiv y\pmod{10}?
+\]
+
+What goes wrong?
+
+Now replace \(4\) with \(3\).
+
+Why does cancellation become valid?
+
+### Exercise 8 — Modular exponentiation
+
+Compute:
+
+\[
+7^{12345}\bmod65537
+\]
+
+using:
 
 ```python
-pow(3, 999)             # Returns a large integer
-pow(3, 999, 1000)       # Efficiently computes (3^999) % 1000
-pow(3, 999) % 1000      # Less efficient than built-in pow with three arguments
-
-print(TI.timeit('pow(3, 999, 1000)'))
-print(TI.timeit('pow(3, 999) % 1000'))
+pow(7, 12345, 65537)
 ```
 
-The three-argument version is significantly faster due to internal optimizations using *modular exponentiation algorithms* such as **exponentiation by squaring**.
+Then implement binary modular exponentiation yourself and verify that both methods agree.
 
+### Reader checkpoint
 
-The performance analysis above illustrates a broader principle in algorithm design:
+You should now be able to explain:
 
-> *Built-in operations, implemented in low-level languages and optimized for speed, are generally faster than user-defined loops in high-level languages like Python.*
+1. What
+   \[
+   a\equiv b\pmod n
+   \]
+   means in terms of divisibility.
 
-However, understanding the algorithm behind modular exponentiation remains essential. It allows us to:
+2. The difference between
+   \[
+   a\bmod n
+   \]
+   and
+   \[
+   a\equiv b\pmod n.
+   \]
 
-- Write portable and language-agnostic implementations.
-- Modify algorithms when cryptographic needs arise.
-- Analyze complexity and security in cryptographic primitives.
+3. What a residue class is.
 
-## Wrap-up 
+4. Why there are exactly \(n\) residue classes modulo \(n\).
 
-In this part, we explored the foundations of *modular arithmetic*, a central theme in number theory and cryptography. We introduced the concept of congruence modulo $ n $, examined the structure of the residue classes $ \mathbb{Z}_n $, and studied how arithmetic operations—addition, subtraction, multiplication, and exponentiation—behave under congruence relations.
+5. Why addition and multiplication of residue classes are well-defined.
 
-We also clarified the distinction between the computational `%` operator in programming and the formal equivalence $ a \equiv b \pmod{n} $ in mathematics, emphasizing their interconnected roles.
+6. Why \(\mathbb Z_n\) is a ring.
 
-Most importantly, we established that modular arithmetic respects the familiar rules of arithmetic, allowing us to reduce intermediate results *modulo* $ n $ at every step without affecting the final outcome. This property is not only elegant but also highly efficient in practical computations, especially in cryptographic protocols where large integers are involved.
+7. Why not every nonzero element of \(\mathbb Z_n\) is necessarily invertible.
+
+8. Why
+   \[
+   a^{-1}\pmod n
+   \]
+   exists exactly when
+   \[
+   \gcd(a,n)=1.
+   \]
+
+9. Why modular division means multiplication by an inverse.
+
+10. Why cancellation can fail when the cancelled factor is not a unit.
+
+11. What
+    \[
+    \mathbb Z_n^\times
+    \]
+    represents.
+
+12. Why binary modular exponentiation is fundamentally better than repeated multiplication for large exponents.
+
+If these distinctions are clear, we are ready to study the multiplicative structure of modular arithmetic much more deeply.
+
+---
+
+## References and further reading
+
+**Kenneth H. Rosen**,  
+*Elementary Number Theory and Its Applications.*
+
+A clear reference for congruences, residue classes, modular inverses, and elementary modular arithmetic.
+
+**Ivan Niven, Herbert S. Zuckerman, and Hugh L. Montgomery**,  
+*An Introduction to the Theory of Numbers.*
+
+A classical treatment of congruences and elementary number-theoretic structure.
+
+**Victor Shoup**,  
+*A Computational Introduction to Number Theory and Algebra.*
+
+Particularly useful for connecting the abstract mathematics to efficient computation.
+
+**Alfred J. Menezes, Paul C. van Oorschot, and Scott A. Vanstone**,  
+*Handbook of Applied Cryptography.*
+
+The early mathematical chapters show how congruences, inverses, modular exponentiation, and multiplicative groups enter concrete cryptographic systems.
+
+---
+
+## Next
+
+We now understand arithmetic in
+
+\[
+\mathbb Z_n.
+\]
+
+But multiplication reveals a smaller and even more important object inside it:
+
+\[
+\mathbb Z_n^\times.
+\]
+
+This is the set of invertible residue classes.
+
+Its size is
+
+\[
+\varphi(n),
+\]
+
+its elements form a group, and their powers eventually repeat.
+
+That leads naturally to:
+
+- Euler's totient function,
+- multiplicative order,
+- Euler's theorem,
+- Fermat's little theorem,
+- cyclic subgroups,
+- generators.
+
+Those ideas form the bridge from modular arithmetic to the group structures used directly in public-key cryptography.
+
+**Next: Number Theory Reference III — Euler's Totient Function, Units, Orders, and Modular Exponentiation.**

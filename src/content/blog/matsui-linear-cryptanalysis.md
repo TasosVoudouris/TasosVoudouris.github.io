@@ -1,591 +1,783 @@
 ---
-title: 'Linear Cryptanalysis of Block Ciphers: Matsui’s Algorithms'
-description: A rigorous executable treatment of linear approximations, LAT/Walsh conventions,
-  the piling-up lemma, Matsui Algorithms 1 and 2, and partial last-round subkey recovery
-  on a teaching SPN.
-pubDate: '2026-08-12'
-updatedDate: '2026-09-12'
+title: "Linear Cryptanalysis of Block Ciphers: Matsui’s Algorithms"
+description: "A rigorous executable treatment of linear approximations, LAT and Walsh conventions, mask propagation, the piling-up lemma, Matsui Algorithms 1 and 2, and partial last-round subkey recovery on a teaching SPN."
+pubDate: "2026-08-12"
+updatedDate: "2026-09-17"
 topics:
-- Symmetric Cryptography
-- Cryptanalysis
-- Mathematical Foundations
+  - "Symmetric Cryptography"
+  - "Cryptanalysis"
+  - "Mathematical Foundations"
 tags:
-- linear-cryptanalysis
-- matsui
-- lat
-- walsh
-- spn
-- sbox
-difficulty: Advanced
-series: Symmetric Cryptography
+  - "linear-cryptanalysis"
+  - "matsui"
+  - "lat"
+  - "walsh"
+  - "spn"
+  - "sbox"
+  - "linear-hulls"
+difficulty: "Advanced"
+series: "Symmetric Cryptography"
 seriesOrder: 6
-sourcePath: experiments/cryptanalysis/matsui-linear
-status: Validated
+sourcePath: "experiments/cryptanalysis/matsui-linear"
+status: "Validated"
 draft: false
 ---
+
 > A rigorous, executable introduction to linear approximations, linear trails,
 > Matsui's algorithms, and partial subkey recovery on a teaching SPN.
 
-This chapter develops the original material from first principles and keeps its
-progression: masks, S-box approximations, key addition, several rounds, the
-piling-up lemma, Matsui's Algorithm 1, Matsui's Algorithm 2, and a 16-bit SPN.
-All code used here is available in [`matsui1.py`](https://github.com/TasosVoudouris/TasosVoudouris.github.io/blob/main/experiments/cryptanalysis/matsui-linear/matsui1.py), and its expected
-results are checked by [`test.py`](https://github.com/TasosVoudouris/TasosVoudouris.github.io/blob/main/experiments/cryptanalysis/matsui-linear/test.py).
+This is the final article in the **Symmetric Cryptography** series. The previous parts built block ciphers from the design side: first a toy SPN, then DES and the Feistel structure, AES, classical modes of operation, and finally authenticated encryption and AEAD. We now turn the perspective around.
 
-The examples are intentionally tiny. They make exhaustive checking possible,
-but they are **not** evidence that a modern, correctly designed block cipher can
-be attacked with the same small amount of work.
+Instead of asking:
 
-## Contents
+> How should a cipher be constructed?
 
-1. [Scope and attack model](#1-scope-and-attack-model)
-2. [Notation and bit conventions](#2-notation-and-bit-conventions)
-3. [Linear and affine Boolean functions](#3-linear-and-affine-boolean-functions)
-4. [Masks and binary inner products](#4-masks-and-binary-inner-products)
-5. [Approximating an S-box](#5-approximating-an-s-box)
-6. [The LAT, Walsh coefficients, bias, and correlation](#6-the-lat-walsh-coefficients-bias-and-correlation)
-7. [Adding key material](#7-adding-key-material)
-8. [Moving masks through an SPN](#8-moving-masks-through-an-spn)
-9. [Chaining approximations and the piling-up lemma](#9-chaining-approximations-and-the-piling-up-lemma)
-10. [Linear trails and linear hulls](#10-linear-trails-and-linear-hulls)
-11. [Matsui's Algorithm 1](#11-matsuis-algorithm-1)
-12. [Matsui's Algorithm 2](#12-matsuis-algorithm-2)
-13. [Partial last-round subkey recovery on a 16-bit SPN](#13-partial-last-round-subkey-recovery-on-a-16-bit-spn)
-14. [Complexity and experimental discipline](#14-complexity-and-experimental-discipline)
-15. [What the attack does and does not recover](#15-what-the-attack-does-and-does-not-recover)
-16. [Design resistance and advanced directions](#16-design-resistance-and-advanced-directions)
-17. [Reproducing the results](#17-reproducing-the-results)
-18. [References](#18-references)
+we ask:
+
+> What statistical structure would a cryptanalyst try to exploit, and how do modern designs suppress that structure?
+
+Linear cryptanalysis is one of the clearest ways to answer that question. It connects Boolean functions, S-box design, Walsh spectra, diffusion, key addition, probability, statistical hypothesis testing, and partial key recovery in one coherent framework.
+
+The examples are intentionally small. That is a feature, not a weakness: on a 4-bit S-box or a 16-bit teaching SPN we can exhaustively verify every claim, reproduce every table, and inspect the exact signal used by the attack. The same experiment is **not** evidence that AES or another modern full-round cipher can be attacked with comparable effort.
+
+The companion implementation is available in [`matsui1.py`](https://github.com/TasosVoudouris/TasosVoudouris.github.io/blob/main/experiments/cryptanalysis/matsui-linear/matsui1.py), with regression checks in [`test.py`](https://github.com/TasosVoudouris/TasosVoudouris.github.io/blob/main/experiments/cryptanalysis/matsui-linear/test.py).
+
+## Table of Contents
+
+- [Foundations and Attack Model](#foundations-and-attack-model)
+- [S-box Approximations and Linear Statistics](#s-box-approximations-and-linear-statistics)
+- [\beta\cdot S(x)
+}](#betacdot-sx)
+- [2^${n-1}](#2n-1)
+- [From Local Relations to Multi-Round Trails](#from-local-relations-to-multi-round-trails)
+- [Matsui’s Algorithms](#matsuis-algorithms)
+- [End-to-End Partial Subkey Recovery](#end-to-end-partial-subkey-recovery)
+- [Complexity, Resistance, and Reproducibility](#complexity-resistance-and-reproducibility)
+- [Series Synthesis and Conclusion](#series-synthesis-and-conclusion)
+- [References](#references)
 
 ---
 
-## 1. Scope and attack model
+## Foundations and Attack Model
 
-Linear cryptanalysis was introduced by Mitsuru Matsui as a statistical attack
-on block ciphers. The classic setting is a **known-plaintext attack**: the
-attacker knows many plaintext-ciphertext pairs produced under one fixed secret
-key and knows the cipher design, but not the key.
+Linear cryptanalysis was introduced by Mitsuru Matsui as a statistical cryptanalytic method for block ciphers. In its classical form the attacker works in a **known-plaintext setting**: many plaintext-ciphertext pairs are available under one fixed unknown secret key, and the cipher design is public.
 
-The high-level strategy is:
+The attack does not attempt to replace the cipher by an exact linear function. Instead, it searches for Boolean linear or affine relations that hold with probability measurably different from one half.
 
-1. approximate nonlinear parts of the cipher with Boolean linear expressions;
-2. connect compatible approximations across rounds;
-3. obtain a relation involving selected plaintext, ciphertext, and key bits;
-4. detect a small deviation from random behaviour; and
-5. use that deviation either to infer a key parity or to rank subkey guesses.
+For masks \(\alpha\), \(\beta\), and a key mask \(\kappa\), a useful whole-cipher relation may have the form
 
-For masks $\alpha$, $\beta$, and $\kappa$, the target relation has the form
-
-$$
-\alpha \cdot M \oplus \beta \cdot C \oplus \kappa \cdot K = 0
-$$
+\[
+\alpha\cdot M
+\oplus
+\beta\cdot C
+\oplus
+\kappa\cdot K
+=
+0
+\]
 
 with probability
 
-$$
-\Pr[\alpha \cdot M \oplus \beta \cdot C \oplus \kappa \cdot K = 0]
-= \frac{1}{2} + \epsilon,
-$$
+\[
+\Pr[
+\alpha\cdot M
+\oplus
+\beta\cdot C
+\oplus
+\kappa\cdot K
+=
+0
+]
+=
+\frac12+\epsilon,
+\]
 
-where $\epsilon \ne 0$ is the **bias**. If the probability were exactly
-$1/2$, this particular statistic would not distinguish the cipher from a
-random permutation or reveal the targeted key relation.
+where
 
-### Important boundaries
+\[
+\epsilon\neq 0
+\]
 
-- The attack is statistical; one plaintext-ciphertext pair does not establish a
-  key relation.
-- The secret key is fixed while data is collected.
-- The approximations depend on the exact S-boxes, linear layer, round structure,
-  and key schedule.
-- A reduced teaching cipher is not a substitute for analysis of AES, PRESENT,
-  DES, or another real design.
-- Linear cryptanalysis is not limited to SPNs, but the examples here use SPNs
-  because their mask propagation is easy to see.
+is the **bias**.
 
----
+If the probability were exactly \(1/2\), that particular relation would look balanced and would provide no statistical preference for either parity value.
 
-## 2. Notation and bit conventions
+The high-level attack logic is therefore:
 
-| Symbol | Meaning |
-|---|---|
-| $M$, $C$ | plaintext and ciphertext |
-| $K$, $K_r$ | master key and round key |
-| $X$, $Y$ | input and output of a component |
-| $S$ | S-box |
-| $L$ or $P$ | linear or bit-permutation layer |
-| $\alpha$, $\beta$, $\gamma$ | input, output, or intermediate masks |
-| $\oplus$ | XOR, addition in $\mathrm{GF}(2)$ |
-| $\alpha \cdot X$ | binary inner product |
-| $p$ | probability that an approximation equals zero |
-| $\epsilon=p-1/2$ | bias |
-| $C=2\epsilon$ | normalized correlation |
-| $W$ | Walsh coefficient |
+1. find useful approximations for nonlinear components;
+2. propagate masks correctly through linear components;
+3. combine compatible approximations across rounds;
+4. obtain an observable relation involving plaintext, ciphertext, and selected key bits;
+5. collect enough data to measure the bias;
+6. infer a key parity or rank subkey candidates.
 
-### Bit numbering
+The attack is statistical. One pair proves essentially nothing. The key is kept fixed while data is collected, and the exact approximation depends on the actual S-boxes, diffusion layer, round order, and key schedule.
 
-This project uses **zero-based, most-significant-bit-first** positions in prose
-and P-box functions. For a 4-bit word
+### Linear and affine Boolean functions
 
-$$
-x=x_1x_2x_3x_4,
-$$
+A Boolean map
 
-the code positions are `0, 1, 2, 3`; position `0` is $x_1$, the most
-significant bit. Integer masks retain their normal hexadecimal meaning. Thus
-`0b1001` selects $x_1$ and $x_4$.
+\[
+f:\mathrm{GF}(2)^n\rightarrow \mathrm{GF}(2)
+\]
 
-```python
-from matsui1 import get_bit_msb
+is linear when
 
-x = 0b01010
-assert [get_bit_msb(x, i, 5) for i in range(5)] == [0, 1, 0, 1, 0]
-```
+\[
+f(x\oplus y)=f(x)\oplus f(y)
+\]
 
-Stating the convention matters. A trail copied from a paper that numbers bits
-least-significant first can be wrong even when its hexadecimal masks appear
-plausible.
+for every \(x,y\).
 
----
+Every such function can be written as
 
-## 3. Linear and affine Boolean functions
+\[
+f(x)=a\cdot x,
+\]
 
-A map $f:\mathrm{GF}(2)^n\rightarrow\mathrm{GF}(2)$ is **linear** when
+where \(a\) is a fixed bit mask.
 
-$$
-f(x \oplus y)=f(x)\oplus f(y)
-$$
+An affine Boolean function permits one additional constant:
 
-for every $x,y$. Every Boolean linear function can be written as
+\[
+f(x)=a\cdot x\oplus b,
+\qquad
+b\in\{0,1\}.
+\]
 
-$$
-f(x)=a\cdot x
-$$
+This small distinction matters in linear cryptanalysis. A negative correlation often means that the complementary affine equation is the one that holds more frequently.
 
-for a fixed mask $a$. An **affine** Boolean function additionally permits a
-constant:
+For example, the nonlinear Boolean function
 
-$$
-f(x)=a\cdot x\oplus b,\qquad b\in\{0,1\}.
-$$
+\[
+f(x_1,x_2)=x_1\land x_2
+\]
 
-The distinction is small but important: a nonzero constant makes a function
-affine, not linear. In linear cryptanalysis, the sign of a correlation is
-equivalent to whether the better affine approximation uses constant zero or
-one.
+equals zero on three of four inputs. Thus the approximation
 
-### Why nonlinear components matter
+\[
+f(x_1,x_2)\approx 0
+\]
 
-XOR with a constant key and a fixed bit permutation are affine/linear over
-$\mathrm{GF}(2)$ and can be followed exactly. In a conventional SPN, S-boxes
-are the nonlinear components that must be approximated.
+has
 
-That statement is architecture-specific. In an ARX cipher, addition modulo
-$2^n$ is nonlinear relative to bitwise XOR because of carries. Other designs
-may contain nonlinear finite-field operations or data-dependent layers.
+\[
+p=\frac34,
+\qquad
+\epsilon=\frac14,
+\qquad
+C=2\epsilon=\frac12.
+\]
 
-### A one-bit example: AND
+The function is still nonlinear. "Linear approximation" means statistical correlation, not equality on every input.
 
-For $f(x_1,x_2)=x_1\land x_2$, the approximation $f(x)\approx 0$ is correct on
-three of four inputs. Its probability is $3/4$, bias is $1/4$, and correlation
-is $1/2$. The function is still nonlinear; “approximation” means statistically
-related, not equal on every input.
+### Masks and binary inner products
 
----
+For two \(n\)-bit values \(x\) and \(\alpha\),
 
-## 4. Masks and binary inner products
-
-For two $n$-bit values $x$ and $\alpha$, define
-
-$$
+\[
 \alpha\cdot x
-=\bigoplus_{i=0}^{n-1}\alpha_i x_i
-=\operatorname{parity}(\alpha\mathbin{\&}x).
-$$
+=
+\bigoplus_{i=0}^{n-1}\alpha_i x_i
+=
+\operatorname{parity}(\alpha\mathbin{\&}x).
+\]
 
-A `1` in a mask selects a bit; a `0` ignores it.
+A `1` in the mask selects a bit. A `0` ignores it.
 
 ```python
-from matsui1 import bit_parity, dot
+def bit_parity(x: int) -> int:
+    return x.bit_count() & 1
+
+def dot(x: int, mask: int) -> int:
+    return bit_parity(x & mask)
 
 assert bit_parity(0b1011) == 1
-assert dot(0b1011, 0b1001) == 0  # 1 XOR 1
-assert dot(0b1101, 0b1100) == 0  # 1 XOR 1
+assert dot(0b1011, 0b1001) == 0
 ```
 
-For the diagram below, $\alpha=1001_2$ and $\beta=0001_2$, so
+This article uses **zero-based, most-significant-bit-first** positions in prose and P-box helpers. For a 4-bit word
 
-$$
-\alpha\cdot X=x_1\oplus x_4,
+\[
+x=x_1x_2x_3x_4,
+\]
+
+code position `0` denotes \(x_1\), the most significant bit.
+
+Thus the hexadecimal mask
+
+```text
+0x9 = 1001₂
+```
+
+selects
+
+\[
+x_1\oplus x_4.
+\]
+
+Bit conventions must be stated explicitly. A trail copied from a paper using least-significant-bit-first numbering can become wrong even when the hexadecimal masks still look plausible.
+
+For the following diagram, let
+
+\[
+\alpha=1001_2,
 \qquad
+\beta=0001_2.
+\]
+
+Then
+
+\[
+\alpha\cdot X=x_1\oplus x_4
+\]
+
+and
+
+\[
 \beta\cdot S(X)=y_4.
-$$
+\]
 
 ![A masked S-box approximation](/images/cryptanalysis/matsui/linearapprox.png)
 
-The approximation is therefore
+The candidate approximation is therefore
 
-$$
-x_1\oplus x_4 = y_4.
-$$
+\[
+x_1\oplus x_4=y_4.
+\]
 
-It need not hold for every input. The useful quantity is how far its success
-probability is from $1/2$.
+Its value is not determined by appearance. We must count how often it holds over the complete S-box domain.
 
 ---
 
-## 5. Approximating an S-box
+## S-box Approximations and Linear Statistics
 
-Let $S:\mathrm{GF}(2)^n\rightarrow\mathrm{GF}(2)^m$. For masks $\alpha$ and
-$\beta$, study the Boolean expression
+Let
 
-$$
-Z_{\alpha,\beta}(x)=\alpha\cdot x\oplus\beta\cdot S(x).
-$$
+\[
+S:\mathrm{GF}(2)^n\rightarrow\mathrm{GF}(2)^m.
+\]
 
-The approximation “holds” when $Z_{\alpha,\beta}(x)=0$. Exhaustive evaluation
-is practical for the small S-boxes used in block ciphers.
+For masks \(\alpha\) and \(\beta\), define
+
+\[
+Z_{\alpha,\beta}(x)
+=
+\alpha\cdot x
+\oplus
+\beta\cdot S(x).
+\]
+
+The approximation is satisfied when
+
+\[
+Z_{\alpha,\beta}(x)=0.
+\]
+
+For a small S-box this can be measured exhaustively:
 
 ```python
-from matsui1 import count_matches
+def count_matches(alpha, beta, sbox, width):
+    return sum(
+        dot(x, alpha) == dot(sbox[x], beta)
+        for x in range(1 << width)
+    )
 
 def probability(alpha, beta, sbox, width):
     return count_matches(alpha, beta, sbox, width) / (1 << width)
 ```
 
-For the PRESENT 4-bit S-box
+Consider the PRESENT 4-bit S-box
 
 ```python
-S = [12, 5, 6, 11, 9, 0, 10, 13,
-     3, 14, 15, 8, 4, 7, 1, 2]
+PRESENT_SBOX = [
+    12, 5, 6, 11,
+    9, 0, 10, 13,
+    3, 14, 15, 8,
+    4, 7, 1, 2,
+]
 ```
 
-the masks $\alpha=9$ and $\beta=1$ match on 12 of 16 inputs:
+For
 
-$$
+\[
+\alpha=9,
+\qquad
+\beta=1,
+\]
+
+the relation matches on 12 of 16 inputs:
+
+\[
 p=\frac{12}{16}=\frac34,
-\quad
-\epsilon=\frac14,
-\quad
-C=\frac12.
-$$
+\]
 
-For $\alpha=1$ and $\beta=5$, only 4 of 16 inputs match:
+\[
+\epsilon
+=
+p-\frac12
+=
+\frac14,
+\]
 
-$$
-p=\frac{4}{16}=\frac14,
-\quad
+\[
+C=2\epsilon=\frac12.
+\]
+
+For
+
+\[
+\alpha=1,
+\qquad
+\beta=5,
+\]
+
+it matches on only 4 of 16 inputs:
+
+\[
+p=\frac14,
+\qquad
 \epsilon=-\frac14,
-\quad
+\qquad
 C=-\frac12.
-$$
+\]
 
-A negative bias is just as useful as a positive bias. It says the complementary
-affine equation holds more often. The sign must be retained when trails are
-combined or a parity is inferred.
+A negative correlation is not "bad" for the attacker. It is just a signal with the opposite sign.
 
----
+### The Linear Approximation Table
 
-## 6. The LAT, Walsh coefficients, bias, and correlation
+Different books and programs use different LAT conventions. This article stores **centered match counts**:
 
-Different books store different quantities in a “linear approximation table.”
-This project uses **centered match counts**:
-
-$$
+\[
 \operatorname{LAT}[\alpha,\beta]
-=\#\{x:\alpha\cdot x=\beta\cdot S(x)\}-2^{n-1}.
-$$
+=
+\#\{
+x:
+\alpha\cdot x
+=
+\beta\cdot S(x)
+\}
+-
+2^{n-1}.
+\]
 
-For an $n$-bit S-box, the related conventions are:
+If we call the centered entry \(B\), then
 
-| Quantity | Definition from the centered LAT entry $B$ |
-|---|---:|
-| matches | $2^{n-1}+B$ |
-| probability | $p=1/2+B/2^n$ |
-| bias | $\epsilon=B/2^n$ |
-| Walsh coefficient | $W=2B$ |
-| normalized correlation | $C=W/2^n=B/2^{n-1}=2\epsilon$ |
+\[
+\text{matches}=2^{n-1}+B,
+\]
 
-This conversion table prevents a common factor-of-two error. A paper may print
-Walsh coefficients where this code prints centered biases.
+\[
+p=\frac12+\frac{B}{2^n},
+\]
 
-```python
-from matsui1 import PRESENT_SBOX, linear_approximation_table
+\[
+\epsilon=\frac{B}{2^n},
+\]
 
-lat = linear_approximation_table(PRESENT_SBOX, 4)
-assert lat[9][1] == 4
-assert lat[1][5] == -4
-```
+\[
+W=2B,
+\]
 
-The complete implementation is deliberately direct:
+and
+
+\[
+C
+=
+\frac{W}{2^n}
+=
+\frac{B}{2^{n-1}}
+=
+2\epsilon.
+\]
+
+This conversion is worth keeping visible because factor-of-two errors are common when one source prints Walsh coefficients and another prints centered LAT values.
 
 ```python
 def linear_approximation_table(sbox, width):
     size = 1 << width
     center = size // 2
+
     return [
-        [count_matches(a, b, sbox, width) - center
-         for b in range(size)]
+        [
+            count_matches(a, b, sbox, width) - center
+            for b in range(size)
+        ]
         for a in range(size)
     ]
+
+lat = linear_approximation_table(PRESENT_SBOX, 4)
+
+assert lat[0x9][0x1] == 4
+assert lat[0x1][0x5] == -4
 ```
 
-### Trivial and zero-mask entries
+The trivial entry
 
-- $(\alpha,\beta)=(0,0)$ is trivial and always matches. Its centered entry is
-  $2^{n-1}$.
-- For a bijective S-box, `LAT[0][beta]` is zero for every nonzero `beta`.
-- `LAT[alpha][0]` is zero for every nonzero `alpha`.
-- A zero entry means this exact component approximation has probability $1/2$;
-  it does not prove that the whole cipher is secure.
+\[
+(\alpha,\beta)=(0,0)
+\]
 
-### S-box linearity and nonlinearity
+always matches and has centered value \(2^{n-1}\). It must be excluded when ranking useful approximations.
 
-For a vectorial $n\times n$ S-box, one common definition is
+For a bijective \(n\times n\) S-box:
 
-$$
-\operatorname{Lin}(S)=
-\max_{(\alpha,\beta)\ne(0,0)}|W_S(\alpha,\beta)|.
-$$
+\[
+\operatorname{LAT}[0,\beta]=0
+\quad
+\text{for }\beta\neq0,
+\]
 
-Its vectorial nonlinearity is
+and
 
-$$
-\operatorname{NL}(S)=2^{n-1}-\frac{\operatorname{Lin}(S)}{2}.
-$$
+\[
+\operatorname{LAT}[\alpha,0]=0
+\quad
+\text{for }\alpha\neq0.
+\]
 
-Lower maximum absolute correlation, equivalently higher nonlinearity, is one
-component of resistance to linear cryptanalysis. It is not sufficient alone;
-the diffusion layer and the number of active S-boxes also matter.
+A zero LAT entry means that this exact component relation is balanced. It does **not** prove that the entire cipher is resistant to linear cryptanalysis.
+
+### Walsh coefficients and S-box nonlinearity
+
+A common vectorial linearity measure is
+
+\[
+\operatorname{Lin}(S)
+=
+\max_{(\alpha,\beta)\neq(0,0)}
+|W_S(\alpha,\beta)|.
+\]
+
+One associated vectorial nonlinearity definition is
+
+\[
+\operatorname{NL}(S)
+=
+2^{n-1}
+-
+\frac{\operatorname{Lin}(S)}{2}.
+\]
+
+Lower maximum absolute correlation, or equivalently higher nonlinearity under this measure, is one ingredient in resistance to linear cryptanalysis.
+
+It is not sufficient by itself.
+
+A cipher also needs a diffusion layer that forces many S-boxes to become active across multiple rounds.
 
 ![A second 4-bit S-box example](/images/cryptanalysis/matsui/lat2.png)
 
-For the second S-box in that figure, the centered LAT contains
-`LAT[9][2] = -6` and `LAT[D][D] = -6`. These mean
-
-$$
-p=\frac{2}{16}=\frac18,
-\quad \epsilon=-\frac38,
-\quad C=-\frac34.
-$$
+The picture above is useful precisely because it visualizes a point that can get lost in the formulas: one S-box may contain many candidate approximations, with different signs and magnitudes. Cryptanalysis is not about finding "the linear approximation." It is about selecting and connecting statistically useful mask transitions under the exact structure of the cipher.
 
 ---
 
-## 7. Adding key material
+## From Local Relations to Multi-Round Trails
 
-Suppose one keyed S-box layer is
+An S-box approximation becomes cryptanalytically useful only after we understand what happens when key addition and diffusion are inserted between S-box layers.
 
-$$
+### Key addition
+
+Suppose
+
+\[
 Y=S(X\oplus K).
-$$
+\]
 
-Set $U=X\oplus K$. If the keyless approximation
+Define
 
-$$
-\alpha\cdot U\oplus\beta\cdot S(U)=0
-$$
+\[
+U=X\oplus K.
+\]
 
-holds with probability $1/2+\epsilon$, then linearity of XOR gives
+If the keyless relation
 
-$$
-\alpha\cdot X\oplus\beta\cdot Y
-=\alpha\cdot K
-$$
+\[
+\alpha\cdot U
+\oplus
+\beta\cdot S(U)
+=
+0
+\]
 
-with that same probability. The input mask is also the mask on this AddKey:
-$\kappa=\alpha$.
+holds with probability \(1/2+\epsilon\), then
+
+\[
+\alpha\cdot X
+\oplus
+\beta\cdot Y
+=
+\alpha\cdot K
+\]
+
+holds with the same probability.
+
+The AddRoundKey operation contributes a **fixed key parity**.
 
 ![Key addition before an S-box](/images/cryptanalysis/matsui/addkey.png)
 
-For $\alpha=1001_2$ and $\beta=0001_2$,
+For
 
-$$
-x_1\oplus x_4\oplus y_4=k_1\oplus k_4.
-$$
+\[
+\alpha=1001_2,
+\qquad
+\beta=0001_2,
+\]
 
-The equation can return `False` on an individual input because it is a
-statistical approximation. Across the complete 4-bit input space, the exact
-frequency equals the corresponding LAT-derived probability.
+the relation becomes
 
-### Keys change signs, not magnitudes
+\[
+x_1\oplus x_4\oplus y_4
+=
+k_1\oplus k_4.
+\]
 
-XOR with fixed key material contributes a fixed parity. It may complement the
-Boolean relation and therefore flip the correlation sign, but it does not
-change the absolute correlation of that fixed trail. Across many trails in a
-linear hull, different key-dependent signs can reinforce or cancel, so the
-hull magnitude itself may depend on the key.
+The key does not change the magnitude of the correlation for a fixed trail. It can change its sign by complementing the relevant Boolean relation.
 
----
+This becomes more subtle for a **linear hull**, where several trails with key-dependent signs may reinforce or cancel.
 
-## 8. Moving masks through an SPN
+### Propagating a mask through a linear layer
 
-An SPN alternates key addition, nonlinear substitution, and linear diffusion.
-Masks move differently through these layers.
+Let
 
-### AddKey
+\[
+Y=L(X)
+\]
 
-If $Y=X\oplus K$, then
+for a binary linear map \(L\).
 
-$$
-\beta\cdot Y=\beta\cdot X\oplus\beta\cdot K.
-$$
+Then
 
-The state mask is unchanged; a key-parity term is introduced.
+\[
+\beta\cdot Y
+=
+\beta\cdot L(X)
+=
+(L^T\beta)\cdot X.
+\]
 
-### S-box layer
+Therefore the corresponding input mask is obtained through the transpose relation.
 
-An input mask and output mask are connected statistically through an LAT entry.
-Parallel S-box correlations multiply only under the usual independence model.
+Depending on whether a source uses row vectors, column vectors, forward masks, or backward masks, the formula may be written differently. The safest implementation check is not to memorize notation but to verify the invariant:
 
-### Linear layer
-
-Let $Y=L(X)$ for a binary linear map $L$. Then
-
-$$
-\beta\cdot Y=\beta\cdot L(X)=(L^T\beta)\cdot X.
-$$
-
-Therefore the mask propagated backward through the layer is $L^T\beta$.
-Depending on whether a source defines masks as row or column vectors, the same
-rule may be written using an inverse transpose. The safe method is to verify
-
-$$
+\[
 \operatorname{dot}(L(x),\beta)
-=\operatorname{dot}(x,\alpha)
-$$
+=
+\operatorname{dot}(x,\alpha)
+\]
 
-for all $x$ or for a basis of $x$ values.
+for all \(x\), or at least over a basis.
 
 ```python
-from matsui1 import dot, permute, propagate_mask_backwards
+input_mask = propagate_mask_backwards(
+    output_mask,
+    pbox,
+)
 
-input_mask = propagate_mask_backwards(output_mask, pbox)
 assert all(
-    dot(permute(x, pbox, 16), output_mask) == dot(x, input_mask)
+    dot(
+        permute(x, pbox, 16),
+        output_mask,
+    )
+    ==
+    dot(
+        x,
+        input_mask,
+    )
     for x in range(1 << 16)
 )
 ```
 
-The intermediate mask after one S-box is **not automatically** the input mask
-of the next S-box when a diffusion layer lies between them. It must first be
-transported through that layer.
+This point is crucial.
 
----
+The output mask of one S-box layer is **not automatically** the input mask of the next S-box layer. The diffusion layer must transport it.
 
-## 9. Chaining approximations and the piling-up lemma
+### Chaining approximations: the piling-up lemma
 
-Consider two compatible Boolean expressions $Z_1$ and $Z_2$ with biases
-$\epsilon_1$ and $\epsilon_2$. If they are independent, their XOR is zero when
-both expressions agree: both are zero or both are one. Thus
+Suppose two compatible Boolean expressions \(Z_1\) and \(Z_2\) have biases
 
-$$
-\Pr[Z_1\oplus Z_2=0]
-=p_1p_2+(1-p_1)(1-p_2)
-=\frac12+2\epsilon_1\epsilon_2.
-$$
-
-For $r$ independent expressions, the **piling-up lemma** gives
-
-$$
-\epsilon_{\text{total}}
-=2^{r-1}\prod_{i=1}^{r}\epsilon_i.
-$$
-
-Because $C_i=2\epsilon_i$, the correlation form is simpler:
-
-$$
-C_{\text{total}}=\prod_{i=1}^{r}C_i,
+\[
+\epsilon_1,
 \qquad
-\epsilon_{\text{total}}=\frac{C_{\text{total}}}{2}.
-$$
+\epsilon_2.
+\]
 
-```python
-from matsui1 import piling_up_bias
+If the relevant variables are independent, then
 
-assert piling_up_bias([0.25, -0.25]) == -0.125
-```
+\[
+\Pr[Z_1\oplus Z_2=0]
+=
+p_1p_2
++
+(1-p_1)(1-p_2)
+\]
 
-Here $p_1=3/4$ and $p_2=1/4$, so the combined probability is
-$1/2-1/8=3/8$.
+and therefore
+
+\[
+\Pr[Z_1\oplus Z_2=0]
+=
+\frac12
++
+2\epsilon_1\epsilon_2.
+\]
+
+For \(r\) independent expressions,
+
+\[
+\epsilon_{\text{total}}
+=
+2^{r-1}
+\prod_{i=1}^{r}\epsilon_i.
+\]
+
+Since
+
+\[
+C_i=2\epsilon_i,
+\]
+
+the correlation form is cleaner:
+
+\[
+C_{\text{total}}
+=
+\prod_{i=1}^{r}C_i,
+\]
+
+\[
+\epsilon_{\text{total}}
+=
+\frac{C_{\text{total}}}{2}.
+\]
+
+For example,
+
+\[
+\epsilon_1=+\frac14,
+\qquad
+\epsilon_2=-\frac14
+\]
+
+gives
+
+\[
+\epsilon_{\text{total}}
+=
+2
+\left(\frac14\right)
+\left(-\frac14\right)
+=
+-\frac18.
+\]
+
+Thus
+
+\[
+p
+=
+\frac12-\frac18
+=
+\frac38.
+\]
 
 ![Two chained S-box approximations](/images/cryptanalysis/matsui/moresbox.png)
 
-### Independence is an assumption
+The independence assumption must not be hidden.
 
-Piling up local biases is a model for a selected trail. Internal variables in a
-real cipher are not automatically independent. Shared variables, overlapping
-S-box inputs, the key schedule, and multiple trails with the same endpoints can
-make the observed correlation differ from the single-trail estimate. Exact
-enumeration on reduced ciphers and experiments across several keys are valuable
-checks.
+Internal variables in a real cipher may share dependencies. Trails can overlap, the key schedule may introduce structure, and many compatible trails may connect the same external masks. The piling-up lemma gives the correlation estimate for the modeled combination; exact reduced-cipher experiments are valuable precisely because they show when the model and measured behavior diverge.
 
----
+### Linear trails and linear hulls
 
-## 10. Linear trails and linear hulls
+A **linear trail** fixes the intermediate masks through every round.
 
-These terms should not be used interchangeably.
+Its estimated correlation is the signed product of the active component correlations, with exact propagation through each linear layer.
 
-### Linear trail
+A **linear hull** fixes only the external masks \((\alpha,\beta)\). Every compatible trail between those masks contributes.
 
-A **linear trail** (or linear characteristic) fixes every intermediate mask.
-Its estimated correlation is the signed product of the active component
-correlations, with masks transported exactly through linear layers.
+For a fixed key \(K\),
 
-### Linear hull
-
-A **linear hull** fixes only the external input and output masks. All compatible
-trails between those endpoints contribute. For a fixed key $K$,
-
-$$
+\[
 C_K(\alpha,\beta)
-=\sum_{\tau:\alpha\leadsto\beta} C_K(\tau).
-$$
+=
+\sum_{\tau:\alpha\leadsto\beta}
+C_K(\tau).
+\]
 
-This is a signed sum, not a sum of magnitudes. Trails may cancel or reinforce.
-The phenomenon is the **linear hull effect**. A locally best trail is therefore
-not always the best overall distinguisher.
+This is a **signed sum**, not a sum of magnitudes.
 
-### Practical trail-search checklist
+Trails may cancel or reinforce.
 
-1. compute and label the LAT convention;
-2. exclude the trivial zero-mask relation when ranking entries;
-3. retain signs as well as magnitudes;
-4. propagate masks through every linear layer using its exact transpose rule;
-5. count active S-boxes and multiply their correlations for a trail estimate;
-6. search other trails with the same endpoints; and
-7. validate selected approximations by exact enumeration when the block size
-   permits it, or by reproducible experiments over several independent keys.
+The resulting **linear hull effect** explains why the locally strongest trail is not guaranteed to be the strongest externally observable approximation.
+
+A disciplined search therefore needs to:
+
+- define the LAT convention,
+- retain signs,
+- propagate every mask exactly,
+- count active S-boxes,
+- estimate trail correlations,
+- search for other trails with the same endpoints,
+- validate promising approximations empirically when feasible.
 
 ---
 
-## 11. Matsui's Algorithm 1
+## Matsui’s Algorithms
 
-Algorithm 1 uses a whole-cipher approximation to recover **one parity of key
-bits**. Suppose
+Matsui's work turns linear approximations into concrete key information.
 
-$$
-\alpha\cdot M\oplus\beta\cdot C
-=\kappa\cdot K
-$$
+The two classical algorithms use the same statistical structure in different ways.
 
-with a known nonzero correlation sign.
+### Matsui Algorithm 1: recover a key parity
 
-For each known pair, compute
+Suppose a whole-cipher approximation gives
 
-$$
-q_i=\alpha\cdot M_i\oplus\beta\cdot C_i.
-$$
+\[
+\alpha\cdot M
+\oplus
+\beta\cdot C
+=
+\kappa\cdot K
+\]
 
-Let $T_0$ count $q_i=0$ and $T_1$ count $q_i=1$.
+with known nonzero correlation sign.
 
-- If the keyless correlation is positive, the majority value estimates
-  $\kappa\cdot K$.
-- If it is negative, complement the majority value.
-- If $T_0=T_1$, the current data gives no preference.
+For every known plaintext-ciphertext pair, compute
+
+\[
+q_i
+=
+\alpha\cdot M_i
+\oplus
+\beta\cdot C_i.
+\]
+
+Let:
+
+\[
+T_0
+=
+\#\{i:q_i=0\},
+\]
+
+\[
+T_1
+=
+\#\{i:q_i=1\}.
+\]
+
+If the keyless approximation has positive correlation, the majority value estimates
+
+\[
+\kappa\cdot K.
+\]
+
+If the correlation is negative, the interpretation is complemented.
+
+Algorithm 1 therefore recovers **one parity relation on key bits**, not necessarily the complete key.
+
+A minimal interface is:
 
 ```python
-from matsui1 import matsui1_details
-
 result = matsui1_details(
     messages,
     ciphertexts,
@@ -593,167 +785,267 @@ result = matsui1_details(
     beta,
     correlation_sign=+1,
 )
-print(result.key_parity, result.t0, result.t1)
+
+print(
+    result.key_parity,
+    result.t0,
+    result.t1,
+)
 ```
 
-### Complete 4-bit demonstration
-
-For `PRESENT_SBOX`, `alpha = 0x9`, and `beta = 0x1`, the keyless bias is
-positive. With a fixed key and all 16 distinct plaintexts:
+For the PRESENT S-box example,
 
 ```python
-from matsui1 import PRESENT_SBOX, dot, matsui1_details
-
 key = 0xA
 messages = list(range(16))
-ciphertexts = [PRESENT_SBOX[m ^ key] for m in messages]
+ciphertexts = [
+    PRESENT_SBOX[m ^ key]
+    for m in messages
+]
 
-result = matsui1_details(messages, ciphertexts, 0x9, 0x1, +1)
+result = matsui1_details(
+    messages,
+    ciphertexts,
+    0x9,
+    0x1,
+    +1,
+)
+
 assert result.key_parity == dot(key, 0x9)
 ```
 
-The result is one linear combination of key bits, not the complete key.
-Independent approximations can provide additional equations.
+Because the entire 4-bit domain is available, this is an exact toy experiment rather than a noisy large-domain sample.
 
 ![A two-S-box cipher used to illustrate Algorithm 1](/images/cryptanalysis/matsui/matsui1example.png)
 
-For the second S-box, `LAT[D][D] = -6`. Chaining the same approximation over
-two S-boxes gives a positive estimated correlation because two negative signs
-multiply. Key parities from every crossed AddKey must be included.
+Several independent key-parity equations can be assembled into a linear system over
 
----
+\[
+\mathrm{GF}(2).
+\]
 
-## 12. Matsui's Algorithm 2
+The rank of that system determines how many independent key bits are constrained. Any remaining entropy still requires additional cryptanalysis or search.
 
-Algorithm 2 does not require a useful approximation to cross the final round.
-Instead it guesses selected outer-round key bits, partially encrypts or decrypts
-the data, and tests an approximation covering the remaining rounds.
+### Matsui Algorithm 2: guess outer-round key bits
 
-Suppose the approximation ends at an internal value $U$ immediately before a
-final S-box and final whitening key:
+Algorithm 2 is often more directly useful for key ranking.
 
-$$
+Instead of requiring an approximation to cross the final nonlinear layer, it stops at an internal state and guesses the last-round subkey bits needed to expose that state.
+
+Suppose the final layer has the form
+
+\[
 C=S(U)\oplus K_f.
-$$
+\]
 
-For each candidate $k$:
+For a candidate subkey \(k\),
 
-1. partially decrypt $U_k=S^{-1}(C\oplus k)$;
-2. compute $q_i(k)=\alpha\cdot M_i\oplus\beta\cdot U_{k,i}$;
-3. count $T_0(k)$ and $T_1(k)$; and
-4. score $D(k)=T_0(k)-T_1(k)$.
+\[
+U_k
+=
+S^{-1}(C\oplus k).
+\]
 
-The default ranking statistic is
+Then compute the candidate-dependent statistic
 
-$$
-|D(k)|=|T_0(k)-T_1(k)|,
-$$
+\[
+q_i(k)
+=
+\alpha\cdot M_i
+\oplus
+\beta\cdot U_{k,i}.
+\]
 
-not merely `D(k)`. An unknown key parity or negative trail correlation can flip
-the sign without destroying the signal.
+For each candidate define
+
+\[
+D(k)
+=
+T_0(k)-T_1(k).
+\]
+
+If the sign is not independently known for the guessed outer-key relation, a natural ranking statistic is
+
+\[
+|D(k)|.
+\]
+
+A correct guess should preserve the targeted correlation more strongly than typical wrong guesses.
 
 ![Matsui Algorithm 2: guess an outer-round subkey and expose an internal state](/images/cryptanalysis/matsui/matsui2.png)
 
 ![A three-S-box toy cipher for Algorithm 2](/images/cryptanalysis/matsui/matsui2example.png)
 
 ```python
-from matsui1 import inverse_sbox, matsui2, rank_key_guesses
+scores = matsui2(
+    messages,
+    ciphertexts,
+    alpha,
+    beta,
+    inverse_sbox(sbox),
+)
 
-scores = matsui2(messages, ciphertexts, alpha, beta, inverse_sbox(sbox))
-ranking = rank_key_guesses(scores)  # descending abs(T0 - T1)
+ranking = rank_key_guesses(scores)
+
 print(ranking[:5])
 ```
 
-### Wrong-key randomization is an approximation
+The usual phrase **wrong-key randomization** should be understood as a heuristic model, not a magical theorem saying that every wrong key produces exactly uniform statistics.
 
-The common heuristic says wrong subkey guesses produce nearly random internal
-values, while the correct guess preserves the selected correlation. On a tiny
-4-bit permutation, the full codebook contains only 16 distinct plaintexts and
-several guesses can form equivalent or strongly correlated classes. Therefore
-the small example demonstrates scoring and ranking; it must not claim unique
-key recovery.
+On a tiny 4-bit domain there are only 16 distinct plaintexts. Different subkey guesses can form equivalent or strongly correlated classes. Repeating the same known pair thousands of times does not create thousands of independent samples.
 
-Repeating a known 4-bit pair does not create new evidence. For a fixed key, use
-the 16 distinct pairs. If a Monte Carlo experiment varies keys, say so
-explicitly and aggregate separate experiments rather than pretending repeated
-tiny-domain samples are independent data.
+That is why the larger 16-bit experiment matters.
 
 ---
 
-## 13. Partial last-round subkey recovery on a 16-bit SPN
+## End-to-End Partial Subkey Recovery
 
-The larger example uses a four-round, 16-bit SPN with four parallel 4-bit
-S-boxes per layer:
+We now return to the teaching SPN introduced at the beginning of the series.
 
-- rounds 1–3: AddKey, S-box layer, P-box;
-- round 4: AddKey, S-box layer;
-- final whitening AddKey;
-- a 32-bit master key expanded into five overlapping 16-bit round keys.
+The cipher has:
+
+- a 16-bit block,
+- four parallel 4-bit S-boxes,
+- three rounds of `AddKey -> S-box -> P-box`,
+- one final `AddKey -> S-box`,
+- a final whitening key,
+- a 32-bit master key,
+- five overlapping 16-bit round keys.
+
+The S-box is
 
 ```python
-from matsui1 import SPN, TOY_SPN_PBOX, TOY_SPN_SBOX
-
-cipher = SPN(TOY_SPN_SBOX, TOY_SPN_PBOX)
+TOY_SPN_SBOX = [
+    14, 4, 13, 1,
+    2, 15, 11, 8,
+    3, 10, 6, 12,
+    5, 9, 0, 7,
+]
 ```
 
-The P-box is
+and the P-box is
+
+```python
+TOY_SPN_PBOX = [
+    0, 4, 8, 12,
+    1, 5, 9, 13,
+    2, 6, 10, 14,
+    3, 7, 11, 15,
+]
+```
+
+with the convention:
+
+> output bit position `i` receives input bit position `pbox[i]`.
+
+The implementation computes an inverse permutation explicitly during decryption instead of assuming that every P-box is self-inverse.
+
+### Selected three-round trail
+
+We approximate the first three rounds from plaintext mask
 
 ```text
-[0, 4, 8, 12, 1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15]
+0x0B00
 ```
 
-with the convention that output position `i` receives input position
-`pbox[i]`. The implementation computes and uses the inverse P-box during
-decryption; assuming that every P-box is self-inverse would be a bug.
+to the input of the final S-box layer with mask
 
-### The selected three-round trail
+```text
+0x0505
+```
 
-We approximate the first three rounds from plaintext mask `0x0B00` to the input
-of the final S-box layer with mask `0x0505`.
+using:
 
-| Round | S input | S output | After P | Transitions | $C$ |
+| Round | S-box input mask | S-box output mask | After P | Active transitions | Correlation |
 |---:|---:|---:|---:|---|---:|
-| 1 | `0x0B00` | `0x0400` | `0x0400` | `B -> 4` | $+1/2$ |
-| 2 | `0x0400` | `0x0500` | `0x0404` | `4 -> 5` | $-1/2$ |
-| 3 | `0x0404` | `0x0505` | `0x0505` | two copies of `4 -> 5` | $(-1/2)^2=+1/4$ |
+| 1 | `0x0B00` | `0x0400` | `0x0400` | `B -> 4` | \(+1/2\) |
+| 2 | `0x0400` | `0x0500` | `0x0404` | `4 -> 5` | \(-1/2\) |
+| 3 | `0x0404` | `0x0505` | `0x0505` | two copies of `4 -> 5` | \(+1/4\) |
 
-The four active S-box correlations multiply to
+There are four active S-box transitions in total.
 
-$$
+Their signed correlation product is
+
+\[
 C_{\text{trail}}
-=\left(\frac12\right)
- \left(-\frac12\right)
- \left(-\frac12\right)^2
-=-\frac1{16}.
-$$
+=
+\left(\frac12\right)
+\left(-\frac12\right)
+\left(-\frac12\right)^2
+=
+-\frac1{16}.
+\]
 
-Hence the trail bias estimate is
+The corresponding bias estimate is
 
-$$
-\epsilon_{\text{trail}}=\frac{C_{\text{trail}}}{2}=-\frac1{32}.
-$$
+\[
+\epsilon_{\text{trail}}
+=
+\frac{C_{\text{trail}}}{2}
+=
+-\frac1{32}.
+\]
 
-The heuristic scale $1/\epsilon^2$ is $1024$ pairs, but a reliable key-ranking
-experiment can require a larger constant because 256 candidates are compared,
-wrong candidates are not perfectly independent, a hull may be present, and a
-specific success probability is desired.
+A common heuristic says that detecting bias \(\epsilon\) requires data on the scale
 
-### Which key bits are guessed?
+\[
+N\sim\frac{1}{\epsilon^2}.
+\]
 
-The endpoint mask `0x0505` activates the second and fourth 4-bit S-boxes of the
-last layer. Consequently Algorithm 2 guesses the corresponding nibbles of the
-final whitening key: shifts 8 and 0.
+Here that gives
 
-For master key `0x3A94D63F`, the round keys are
+\[
+N\sim1024.
+\]
+
+This is only a scale estimate. Real key-ranking success also depends on the number of candidates, trail/hull effects, score variance, and the desired success probability.
+
+### Which subkey bits are guessed?
+
+The endpoint mask
 
 ```text
-3A94, A94D, 94D6, 4D63, D63F
+0x0505
 ```
 
-and the two attacked final-key nibbles are `6` and `F`, packed as candidate
-`0x6F`. They are not the contiguous byte `(master_key >> 8) & 0xFF`.
+activates the second and fourth 4-bit S-box positions of the last layer.
 
-### Reproducible attack
+Therefore Algorithm 2 needs only the corresponding nibbles of the final whitening key.
+
+For master key
+
+```text
+0x3A94D63F
+```
+
+the toy schedule gives:
+
+```text
+K1 = 3A94
+K2 = A94D
+K3 = 94D6
+K4 = 4D63
+K5 = D63F
+```
+
+The attacked nibbles of the final key are:
+
+```text
+6
+F
+```
+
+which are packed as candidate
+
+```text
+0x6F
+```
+
+for the ranking experiment.
+
+This detail is easy to get wrong: `0x6F` is **not** simply a contiguous byte extracted from the master key. It is a compact representation of two selected whitening-key nibbles.
+
+### Reproducible Matsui-2 experiment
 
 ```python
 from random import Random
@@ -766,13 +1058,24 @@ from matsui1 import (
     rank_key_guesses,
 )
 
-cipher = SPN(TOY_SPN_SBOX, TOY_SPN_PBOX)
+cipher = SPN(
+    TOY_SPN_SBOX,
+    TOY_SPN_PBOX,
+)
+
 master_key = 0x3A94D63F
 
-# Distinct known plaintexts sampled without replacement.
 rng = Random(0xC0DEC0DE)
-messages = rng.sample(range(1 << 16), 8_192)
-ciphertexts = [cipher.encrypt(m, master_key) for m in messages]
+
+messages = rng.sample(
+    range(1 << 16),
+    8_192,
+)
+
+ciphertexts = [
+    cipher.encrypt(m, master_key)
+    for m in messages
+]
 
 scores = matsui2_spn(
     messages,
@@ -782,6 +1085,7 @@ scores = matsui2_spn(
     sbox_inverse=cipher.sbox_inv,
     nibble_shifts=(8, 0),
 )
+
 ranking = rank_key_guesses(scores)
 
 actual = extract_round_key_nibbles(
@@ -793,122 +1097,161 @@ assert actual == 0x6F
 assert ranking[0] == actual
 ```
 
-This example performs $256\times8192$ partial decryptions. The fixed seed makes
-the result reproducible; it is not meant to conceal the experimental choices.
+This experiment performs
+
+\[
+256\times8192
+=
+2,097,152
+\]
+
+candidate/pair partial-decryption evaluations.
+
+The deterministic seed is not intended to hide randomness. It exists so that documentation, tests, and future refactoring can reproduce the same result.
+
+### What has actually been recovered?
+
+The experiment recovers **eight selected bits of the final whitening key**.
+
+It does not directly recover:
+
+- the complete 16-bit final round key,
+- the 32-bit master key,
+- every internal round key.
+
+To extend the attack, one could:
+
+1. select additional approximations terminating at other final S-boxes;
+2. obtain rankings for more key nibbles;
+3. combine the statistics carefully;
+4. map round-key constraints backward through the key schedule;
+5. enumerate remaining master-key candidates;
+6. verify surviving keys on independent known pairs.
+
+This distinction is essential. A successful partial-key experiment should never be advertised as "full key recovery" unless the remaining search and verification steps are actually performed.
 
 ---
 
-## 14. Complexity and experimental discipline
+## Complexity, Resistance, and Reproducibility
 
-### Data complexity
+### Data, time, and memory
 
-For a fixed nonzero bias, statistical detection generally has order
+For a fixed nonzero bias, statistical detection typically has a scale
 
-$$
-N=\Theta(\epsilon^{-2})=\Theta(C^{-2}).
-$$
+\[
+N=\Theta(\epsilon^{-2})
+=
+\Theta(C^{-2}),
+\]
 
-Writing $N=1/\epsilon^2$ is only a heuristic scale. The constant depends on:
+up to convention-dependent constants.
 
-- desired success probability;
-- whether bias $\epsilon$ or correlation $C=2\epsilon$ is used;
-- the number of key candidates;
-- the score and threshold;
-- signal-to-noise assumptions;
-- dependence between approximations; and
-- the advantage assigned to the attacker.
+Writing
 
-### Time and memory
+\[
+N=\frac1{\epsilon^2}
+\]
 
-If $k$ subkey bits are guessed and $N$ pairs are processed, the direct
-Algorithm 2 loop costs approximately
+as though it were an exact theorem is too strong.
 
-$$
+The required constant depends on:
+
+- desired success probability,
+- bias versus correlation convention,
+- number of key candidates,
+- ranking statistic,
+- dependence between approximations,
+- signal-to-noise behavior,
+- attack advantage.
+
+If \(k\) subkey bits are guessed over \(N\) pairs, a direct Algorithm 2 implementation costs roughly
+
+\[
 O(2^kN)
-$$
+\]
 
-partial operations. The basic counter implementation uses $O(2^k)$ scores.
-Partial-sum and FFT techniques can reduce time for structured attacks, but add
-implementation and memory complexity.
+partial operations and stores approximately
 
-### Reliable experiments
+\[
+O(2^k)
+\]
 
-1. keep the secret key fixed within one attack;
-2. avoid counting duplicate tiny-domain pairs as fresh evidence;
-3. sample without replacement when enough distinct plaintexts exist;
-4. use deterministic seeds for regression tests;
-5. repeat performance studies over many independent keys and seeds;
-6. report the true-key rank, not only whether it was first;
-7. compare signed and absolute scores deliberately;
-8. validate encryption/decryption round trips;
-9. verify selected LAT entries independently; and
-10. state the LAT, bit-ordering, P-box, and key-schedule conventions.
+candidate scores.
 
----
+More advanced attacks use partial-sum and FFT techniques to reorganize the computation, trading time, memory, and implementation complexity.
 
-## 15. What the attack does and does not recover
+### How modern designs resist linear cryptanalysis
 
-The SPN example recovers **eight selected bits of the final whitening key**. It
-does not directly recover the full 16-bit final round key or the 32-bit master
-key.
+A block cipher does not defeat linear cryptanalysis merely by choosing an S-box with no obvious relation.
 
-To move toward complete master-key recovery, an analyst can:
+Resistance is systemic.
 
-1. select additional approximations activating other final-round S-boxes;
-2. obtain and combine rankings for more subkey nibbles;
-3. account for dependencies when combining statistics;
-4. use the key schedule to map recovered round-key constraints to the master
-   key;
-5. enumerate remaining master-key candidates; and
-6. verify each surviving candidate against independent known pairs.
+Useful design principles include:
 
-Algorithm 1 similarly gives one key parity per useful independent equation.
-Several parity equations can be solved as a linear system, but only up to their
-rank; remaining key entropy still requires other analysis or search.
+- low maximum absolute S-box correlation,
+- strong diffusion that activates many S-boxes,
+- enough rounds for correlations to decay,
+- analysis of entire trails and hulls,
+- key schedules that avoid harmful symmetries and relations,
+- conservative security margins,
+- automated search plus independent cryptanalysis.
 
----
+If each active S-box contributes a correlation magnitude below one, forcing more active S-boxes tends to make a single trail's correlation product rapidly shrink.
 
-## 16. Design resistance and advanced directions
+That is one reason diffusion criteria such as branch number matter: they are not merely aesthetic measures of "mixing." They can be used to prove lower bounds on the number of active nonlinear components across rounds.
 
-### Defensive design principles
+This observation closes a loop with the earlier AES article. AES's S-box properties and its wide-trail diffusion strategy are meaningful partly because they make both differential and linear trails accumulate enough active nonlinear components that useful probabilities or correlations decay rapidly across rounds.
 
-A cipher resists basic linear cryptanalysis by combining:
+### Beyond one linear approximation
 
-- S-boxes with low maximum absolute correlation;
-- diffusion that forces many active S-boxes across several rounds;
-- enough rounds that useful correlations decay below exploitable levels;
-- a key schedule that avoids damaging relations and symmetries;
-- analysis of hulls, not only individual trails; and
-- conservative security margins supported by automated trail searches and
-  independent cryptanalysis.
+The single-trail, single-counter experiments are the beginning rather than the end of linear cryptanalysis.
 
-More active S-boxes usually make the product of component correlations approach
-zero in magnitude. Saying the distribution “becomes less uniform” would reverse
-the intended security intuition: a secure design aims to make externally
-visible linear relations closer to uniform.
+Important extensions include:
 
-### Beyond a single approximation
+**Multiple linear cryptanalysis.** Several approximations are combined to improve discrimination or key ranking.
 
-- **Multiple linear cryptanalysis** combines several approximations to improve
-  key ranking.
-- **Multidimensional linear cryptanalysis** studies the joint distribution of a
-  vector space of approximations rather than treating each independently.
-- **Linear-hull analysis** sums all compatible trail correlations for fixed
-  endpoints and accounts for key-dependent signs.
-- **Zero-correlation linear cryptanalysis** exploits structural approximations
-  whose correlation is exactly zero over all keys for a specified number of
-  rounds; deviations after guessed outer rounds can rank keys.
-- **Partial-sum and FFT attacks** reorganize candidate evaluation to reduce time.
+**Multidimensional linear cryptanalysis.** A vector space of approximations is modeled jointly rather than as independent scalar relations.
 
-These methods require more careful statistical models than the single-counter
-examples in this chapter, but they grow from the same masks, correlations, and
-partial-decryption ideas.
+**Linear-hull analysis.** All compatible trails between fixed endpoints are considered, including key-dependent signs.
 
----
+**Zero-correlation linear cryptanalysis.** Structural approximations that have exactly zero correlation across a specified number of rounds are exploited by guessing outer rounds and looking for deviations.
 
-## 17. Reproducing the results
+**Partial-sum and FFT techniques.** Candidate evaluation is reorganized to reduce attack time.
 
-Python 3.10 or newer is sufficient; the project uses only the standard library.
+These techniques require more careful statistics, but the core vocabulary remains the same:
+
+\[
+\boxed{
+\text{masks}
+\rightarrow
+\text{correlations}
+\rightarrow
+\text{propagation}
+\rightarrow
+\text{statistics}
+\rightarrow
+\text{key ranking}
+}
+\]
+
+### Experimental discipline
+
+Reduced-cipher experiments are easy to overinterpret.
+
+A reliable workflow should:
+
+- keep the secret key fixed within one attack,
+- use distinct plaintext-ciphertext pairs,
+- sample without replacement when the domain permits it,
+- state the random seed,
+- repeat performance studies across several keys and seeds,
+- report true-key rank rather than only a single success/failure result,
+- distinguish signed and absolute scores,
+- verify encryption/decryption round trips,
+- independently verify selected LAT entries,
+- document bit order, LAT convention, P-box semantics, and key-schedule rules.
+
+For the current project:
 
 ```bash
 python matsui1.py
@@ -917,50 +1260,161 @@ python -m unittest -v test.py
 
 Expected checkpoints include:
 
-- `PRESENT_SBOX`: `LAT[9][1] = 4` and `LAT[1][5] = -4`;
-- second S-box: `LAT[9][2] = -6` and `LAT[D][D] = -6`;
-- two biases `+0.25` and `-0.25` pile up to `-0.125`;
-- the SPN encrypt/decrypt tests round-trip;
-- the selected trail has correlation `-1/16` and bias `-1/32`; and
-- the deterministic SPN attack ranks packed subkey `0x6F` first.
+```text
+PRESENT_SBOX:
+    LAT[9][1] =  4
+    LAT[1][5] = -4
 
-The notebook [`Linear Cryptanalysis.ipynb`](https://github.com/TasosVoudouris/TasosVoudouris.github.io/blob/main/experiments/cryptanalysis/matsui-linear/Linear%20Cryptanalysis.ipynb)
-provides a shorter interactive route through the same checked implementation.
+piling-up:
+    +0.25 and -0.25 -> -0.125 bias
 
----
+toy SPN:
+    encrypt/decrypt round trip passes
 
-## 18. References
+selected trail:
+    correlation = -1/16
+    bias        = -1/32
 
-The accompanying [`references.bib`](https://github.com/TasosVoudouris/TasosVoudouris.github.io/blob/main/experiments/cryptanalysis/matsui-linear/references.bib) contains machine-readable
-BibTeX entries.
+Matsui-2 experiment:
+    actual packed subkey = 0x6F
+    rank(actual)         = 1
+```
 
-1. M. Matsui, “Linear Cryptanalysis Method for DES Cipher,” *Advances in
-   Cryptology—EUROCRYPT '93*, LNCS 765, pp. 386–397, 1994.
-   <https://doi.org/10.1007/3-540-48285-7_33>
-2. M. Matsui, “The First Experimental Cryptanalysis of the Data Encryption
-   Standard,” *Advances in Cryptology—CRYPTO '94*, LNCS 839, pp. 1–11, 1994.
-   <https://doi.org/10.1007/3-540-48658-5_1>
-3. K. Nyberg, “Linear Approximation of Block Ciphers,” *Advances in
-   Cryptology—EUROCRYPT '94*, LNCS 950, pp. 439–444, 1995.
-   <https://doi.org/10.1007/BFb0053460>
-4. E. Biham, “On Matsui's Linear Cryptanalysis,” *Advances in
-   Cryptology—EUROCRYPT '94*, LNCS 950, pp. 341–355, 1995.
-   <https://doi.org/10.1007/BFb0053449>
-5. B. S. Kaliski Jr. and M. J. B. Robshaw, “Linear Cryptanalysis Using Multiple
-   Approximations,” *Advances in Cryptology—CRYPTO '94*, LNCS 839, 1994.
-   <https://doi.org/10.1007/3-540-48658-5_4>
-6. J. Y. Cho, M. Hermelin, and K. Nyberg, “A New Technique for Multidimensional
-   Linear Cryptanalysis with Applications on Reduced Round Serpent,” ICISC
-   2008, LNCS 5461, pp. 383–398, 2009.
-   <https://doi.org/10.1007/978-3-642-00730-9_24>
-7. A. Bogdanov and V. Rijmen, “Linear Hulls with Correlation Zero and Linear
-   Cryptanalysis of Block Ciphers,” *Designs, Codes and Cryptography*, vol. 70,
-   pp. 369–383, 2014.
-   <https://doi.org/10.1007/s10623-012-9697-z>
+The notebook [`Linear Cryptanalysis.ipynb`](https://github.com/TasosVoudouris/TasosVoudouris.github.io/blob/main/experiments/cryptanalysis/matsui-linear/Linear%20Cryptanalysis.ipynb) provides a shorter interactive route through the same material.
 
 ---
+
+## Series Synthesis and Conclusion
+
+This article closes the **Symmetric Cryptography** series by returning to the architecture with the perspective of an analyst.
+
+The series began with a toy SPN. At that point, substitution, permutation, repeated rounds, and key addition were introduced as construction principles.
+
+Then DES showed a different architecture:
+
+\[
+\text{Feistel network}
+\]
+
+where round-function invertibility is not required.
+
+AES returned to the SPN family with much stronger algebraic structure:
+
+\[
+\text{SubBytes}
+\rightarrow
+\text{ShiftRows}
+\rightarrow
+\text{MixColumns}
+\rightarrow
+\text{AddRoundKey}.
+\]
+
+The modes article then moved one level upward:
+
+\[
+\text{block cipher}
+\rightarrow
+\text{message encryption},
+\]
+
+showing that even a strong primitive can be misused through ECB leakage, CBC malleability, or CTR nonce reuse.
+
+AEAD added the next missing property:
+
+\[
+\text{confidentiality}
++
+\text{authentication},
+\]
+
+and explained why modern cryptographic interfaces should reject tampered ciphertext before releasing plaintext.
+
+Linear cryptanalysis now takes us back inside the block cipher.
+
+The key lesson is that **nonlinearity and diffusion are not vague design slogans**.
+
+They can be measured.
+
+An S-box exposes a Walsh spectrum and an LAT. A diffusion layer transports masks and forces more S-boxes to become active. Repeated rounds multiply small correlations until a single trail becomes weak enough to be impractical. Multiple trails can still form a hull, so serious analysis must consider more than the locally strongest component relation.
+
+Matsui's algorithms then show how a tiny surviving statistical bias can become actual key information:
+
+\[
+\boxed{
+\text{S-box approximation}
+\rightarrow
+\text{multi-round relation}
+\rightarrow
+\text{statistical bias}
+\rightarrow
+\text{subkey ranking}
+}
+\]
+
+That is the connection worth carrying forward.
+
+Cryptographic design and cryptanalysis are not separate subjects. Each explains the other.
+
+We design S-boxes with low correlation because cryptanalysts measure linear correlations. We design strong diffusion because cryptanalysts count active S-boxes. We add rounds because trail probabilities and correlations must decay below useful levels. We validate implementations because a theorem about a cipher says nothing about code that implements a different bit ordering or permutation by mistake.
+
+The final 16-bit experiment deliberately remains small enough to understand completely:
+
+\[
+K=\texttt{3A94D63F},
+\]
+
+\[
+K_5=\texttt{D63F},
+\]
+
+\[
+C_{\text{trail}}=-\frac1{16},
+\]
+
+\[
+\epsilon_{\text{trail}}=-\frac1{32},
+\]
+
+and the selected final-key nibbles are correctly ranked as
+
+\[
+\boxed{\texttt{0x6F}}.
+\]
+
+The number itself is not the important result.
+
+The important result is that every step between the Boolean approximation and the ranked subkey is visible, testable, and reproducible.
+
+That is exactly the level at which a cryptographic construction should be studied.
 
 ### Ethical use
 
-Use these techniques only on systems and data you own or are explicitly
-authorized to test. The code is designed for education and reduced ciphers.
+The implementations in this article are designed for education, research, and reduced teaching ciphers. Apply cryptanalytic techniques only to systems, implementations, and data that you own or are explicitly authorized to test.
+
+---
+
+## References
+
+1. M. Matsui, “Linear Cryptanalysis Method for DES Cipher,” *Advances in Cryptology — EUROCRYPT '93*, LNCS 765, pp. 386–397, 1994.  
+   https://doi.org/10.1007/3-540-48285-7_33
+
+2. M. Matsui, “The First Experimental Cryptanalysis of the Data Encryption Standard,” *Advances in Cryptology — CRYPTO '94*, LNCS 839, pp. 1–11, 1994.  
+   https://doi.org/10.1007/3-540-48658-5_1
+
+3. K. Nyberg, “Linear Approximation of Block Ciphers,” *Advances in Cryptology — EUROCRYPT '94*, LNCS 950, pp. 439–444, 1995.  
+   https://doi.org/10.1007/BFb0053460
+
+4. E. Biham, “On Matsui's Linear Cryptanalysis,” *Advances in Cryptology — EUROCRYPT '94*, LNCS 950, pp. 341–355, 1995.  
+   https://doi.org/10.1007/BFb0053449
+
+5. B. S. Kaliski Jr. and M. J. B. Robshaw, “Linear Cryptanalysis Using Multiple Approximations,” *Advances in Cryptology — CRYPTO '94*, LNCS 839, 1994.  
+   https://doi.org/10.1007/3-540-48658-5_4
+
+6. J. Y. Cho, M. Hermelin, and K. Nyberg, “A New Technique for Multidimensional Linear Cryptanalysis with Applications on Reduced Round Serpent,” *ICISC 2008*, LNCS 5461, pp. 383–398, 2009.  
+   https://doi.org/10.1007/978-3-642-00730-9_24
+
+7. A. Bogdanov and V. Rijmen, “Linear Hulls with Correlation Zero and Linear Cryptanalysis of Block Ciphers,” *Designs, Codes and Cryptography*, vol. 70, pp. 369–383, 2014.  
+   https://doi.org/10.1007/s10623-012-9697-z
+
+The accompanying [`references.bib`](https://github.com/TasosVoudouris/TasosVoudouris.github.io/blob/main/experiments/cryptanalysis/matsui-linear/references.bib) contains machine-readable BibTeX entries.

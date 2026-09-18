@@ -1,1228 +1,1964 @@
 ---
 title: "Padding and Encryption Modes"
-description: "A practical study of PKCS#7 padding and major block-cipher modes, with implementation examples and the security implications of how blocks are chained."
+description: "A construction-oriented study of PKCS#7 padding and the classical block-cipher confidentiality modes ECB, CBC, CFB, OFB, and CTR, including formal definitions, IV and nonce requirements, error propagation, malleability, implementation pitfalls, and executable AES examples."
 pubDate: "2025-04-11"
-updatedDate: '2026-09-12'
+updatedDate: "2026-09-17"
 topics:
-- "Symmetric Cryptography"
-- "Implementation Security"
-- "Cryptographic Engineering"
+  - "Symmetric Cryptography"
+  - "Implementation Security"
+  - "Cryptographic Engineering"
 tags:
-- "pkcs7"
-- "ecb"
-- "cbc"
-- "cfb"
-- "ofb"
-- "ctr"
-- "padding"
-- "block-cipher-modes"
+  - "pkcs7"
+  - "ecb"
+  - "cbc"
+  - "cfb"
+  - "ofb"
+  - "ctr"
+  - "padding"
+  - "iv"
+  - "nonce"
+  - "block-cipher-modes"
 difficulty: "Intermediate"
 series: "Symmetric Cryptography"
 seriesOrder: 4
 draft: false
 ---
-- [Padding and Encryption modes](#padding-and-encryption-modes)
-- [Introduction](#introduction)
-- [PKCS#7 Padding](#pkcs7-padding)
-  - [How PKCS#7 Works](#how-pkcs7-works)
-  - [PKCS#7 Padding in Python](#pkcs7-padding-in-python)
-    - [Example of Padding a String](#example-of-padding-a-string)
-    - [Example of Padding a short message](#example-of-padding-a-short-message)
-    - [Example of Padding another string](#example-of-padding-another-string)
-- [Modes of Operation in Block Ciphers](#modes-of-operation-in-block-ciphers)
-    - [Types of Encryption Schemes](#types-of-encryption-schemes)
-    - [Key Questions in Analyzing Modes](#key-questions-in-analyzing-modes)
-  - [Popular Modes of Operation](#popular-modes-of-operation)
-    - [1. Electronic Codebook (ECB)](#1-electronic-codebook-ecb)
-    - [2. Cipher Block Chaining (CBC)](#2-cipher-block-chaining-cbc)
-    - [3. Counter Mode (CTR)](#3-counter-mode-ctr)
-  - [Electronic Codebook (ECB) Mode](#electronic-codebook-ecb-mode)
-    - [How ECB Works](#how-ecb-works)
-    - [Parallelizability](#parallelizability)
-    - [Security Analysis](#security-analysis)
-      - [Strengths](#strengths)
-      - [Weaknesses](#weaknesses)
-    - [Example (Single Block):](#example-single-block)
-    - [Example (Multi Blocks):](#example-multi-blocks)
-  - [What actually happens in ECB mode?](#what-actually-happens-in-ecb-mode)
-    - [Step 1: Padding](#step-1-padding)
-    - [Step 2: Splitting into blocks](#step-2-splitting-into-blocks)
-    - [Step 3: ECB Encryption](#step-3-ecb-encryption)
-  - [Another Python example](#another-python-example)
-    - [Step 1: Define the Key](#step-1-define-the-key)
-    - [Step 2: Define and Inspect the Message](#step-2-define-and-inspect-the-message)
-    - [Step 3: Apply Padding](#step-3-apply-padding)
-    - [Step 4: Encrypt and Decrypt](#step-4-encrypt-and-decrypt)
-    - [Step 5: Unpad to Recover the Original Message](#step-5-unpad-to-recover-the-original-message)
-  - [ECB Weakness Demonstration – Identical Blocks Leak Patterns](#ecb-weakness-demonstration--identical-blocks-leak-patterns)
-- [Cipher Block Chaining (CBC) Mode](#cipher-block-chaining-cbc-mode)
-  - [Overview](#overview)
-    - [What is an Initialization Vector (IV)?](#what-is-an-initialization-vector-iv)
-  - [How CBC Works](#how-cbc-works)
-    - [Encryption](#encryption)
-    - [Decryption](#decryption)
-  - [Parallelizability](#parallelizability-1)
-  - [Security Analysis](#security-analysis-1)
-    - [IV Security](#iv-security)
-  - [CBC Mode – Python Example (Multi-Block Encryption)](#cbc-mode--python-example-multi-block-encryption)
-    - [Encryption and Decryption](#encryption-and-decryption)
-  - [CBC Mode Example with Patterned Message](#cbc-mode-example-with-patterned-message)
-    - [Setup and Key/IV Generation](#setup-and-keyiv-generation)
-    - [Demonstrating how ECB weakness is resolved in CBC mode](#demonstrating-how-ecb-weakness-is-resolved-in-cbc-mode)
-- [Cipher Feedback Mode (CFB)](#cipher-feedback-mode-cfb)
-  - [Overview](#overview-1)
-  - [How CFB Works](#how-cfb-works)
-    - [Encryption](#encryption-1)
-    - [Decryption](#decryption-1)
-  - [Parallelizability](#parallelizability-2)
-  - [Security Analysis](#security-analysis-2)
-  - [CFB Mode Coding Example and CPA Attack Demonstration](#cfb-mode-coding-example-and-cpa-attack-demonstration)
-    - [Encryption and Decryption](#encryption-and-decryption-1)
-    - [CFB CPA Attack](#cfb-cpa-attack)
-    - [Step 1: Define Key and IV](#step-1-define-key-and-iv)
-- [Output Feedback Mode (OFB)](#output-feedback-mode-ofb)
-  - [Overview](#overview-2)
-  - [How OFB Works](#how-ofb-works)
-    - [Encryption](#encryption-2)
-    - [Decryption](#decryption-2)
-  - [Parallelizability](#parallelizability-3)
-  - [Security Analysis](#security-analysis-3)
-    - [Bit-Flipping Behavior](#bit-flipping-behavior)
-    - [CPA Insecurity (again like CFB) with Reused IV](#cpa-insecurity-again-like-cfb-with-reused-iv)
-  - [OFB Mode Example](#ofb-mode-example)
-    - [Setup](#setup)
-- [Counter Mode (CTR)](#counter-mode-ctr)
-  - [Overview](#overview-3)
-  - [How CTR Works](#how-ctr-works)
-    - [Encryption](#encryption-3)
-    - [Decryption](#decryption-3)
-  - [Parallelizability](#parallelizability-4)
-  - [Security Analysis](#security-analysis-4)
-    - [Indistinguishability Under CPA](#indistinguishability-under-cpa)
-    - [⚠️ Nonce Reuse](#️-nonce-reuse)
-  - [CTR Mode Example](#ctr-mode-example)
-    - [Setup](#setup-1)
-- [Conclusion](#conclusion)
 
----
-## Introduction 
-We will explore **padding mechanisms, modes of operation, and practical implementations.**
+## Padding and Encryption Modes
 
-We should have in mind that:
+The previous article built the AES-128 block primitive from the inside. That primitive accepts exactly one 128-bit input block and, under a fixed key, returns exactly one 128-bit output block.
 
-✔ Messages are **split into fixed-size blocks** before encryption.  
-✔ In this guide, **16 bytes will be the default block length**.  
-✔ If the message is **larger than 16 bytes**, a **block cipher mode of operation** is required to handle multiple blocks securely.  
+Real messages do not naturally arrive as isolated 16-byte objects.
 
-A small example is the following: when the message length is a multiple of the block length (= 112 bytes)
+They may be:
 
+- shorter than one AES block,
+- longer than one block,
+- not aligned to a block boundary,
+- streamed over time,
+- stored in files,
+- repeated,
+- truncated,
+- reordered,
+- modified by an adversary.
 
-![](/images/ready/padding-and-encryption-modes/image.png)
+A **mode of operation** defines how repeated invocations of a block cipher are composed to process a longer message.
 
-Another example is when the message length is **not** a multiple of the block length (= 73 bytes)
+This article studies the five classical confidentiality modes standardized in NIST SP 800-38A:
 
-![alt text](/images/ready/padding-and-encryption-modes/image-1.png)
+- ECB — Electronic Codebook,
+- CBC — Cipher Block Chaining,
+- CFB — Cipher Feedback,
+- OFB — Output Feedback,
+- CTR — Counter mode.
 
-## PKCS#7 Padding
+Before the modes themselves, we need one more low-level issue: **padding**.
 
-**PKCS#7** is one of the most popular padding schemes used in block ciphers. It ensures that plaintext messages fit perfectly into fixed-size blocks required by encryption algorithms like **AES**.
-
-## How PKCS#7 Works
-
-✔ The **value of each padding byte** is equal to the **total number of padding bytes added**.  
-✔ Used in **block cipher modes that require padding** (e.g., **CBC, ECB**).  
-
-Consider the message **"Welcome"**, which has a length of **7 bytes**.  AES requires **16-byte blocks**, so the message must be **padded with 9 additional bytes**.
-
-- **Block size** = 16 bytes  
-- **Message size** = 7 bytes  
-- **Padding required** = 16 - 7 = **9 bytes**  
-- **Padding value** = `0x09` (since 9 bytes are added)  
-
-Padded Message: `"Welcome\x09\x09\x09\x09\x09\x09\x09\x09\x09"`
-
-
-This ensures the final message aligns perfectly with the **16-byte block size**.
+> **Important scope boundary.** ECB, CBC, CFB, OFB, and CTR are confidentiality mechanisms. By themselves, they do **not** authenticate ciphertexts. Modern protocol design normally prefers an authenticated-encryption construction such as an AEAD mode. We will study that next; here the goal is to understand the classical modes precisely.
 
 ---
 
-PKCS#7 provides **block alignment only**. It does **not** provide message integrity or authenticity; those properties require a MAC or, preferably in modern designs, an AEAD construction.
+## 1. From a Block Cipher to a Message Cipher
 
-## PKCS#7 Padding in Python
+Let
 
-The **Crypto.Util.Padding** module in Python provides an easy way to **apply PKCS#7 padding** to messages.
+\[
+E_K : \{0,1\}^n \rightarrow \{0,1\}^n
+\]
 
-### Example of Padding a String
+be a block cipher under key \(K\), with inverse
+
+\[
+D_K = E_K^{-1}.
+\]
+
+For AES,
+
+\[
+n=128.
+\]
+
+Thus a single AES invocation maps
+
+\[
+P_i \in \{0,1\}^{128}
+\]
+
+to
+
+\[
+C_i = E_K(P_i).
+\]
+
+For a long message,
+
+\[
+M = P_1 \| P_2 \| \cdots \| P_\ell,
+\]
+
+we need a rule that says:
+
+- what enters each block-cipher invocation,
+- whether blocks depend on previous blocks,
+- whether an IV or nonce is required,
+- whether encryption can run in parallel,
+- whether the final block must be padded,
+- what happens when ciphertext is modified,
+- what security property the resulting construction actually provides.
+
+That rule is the **mode of operation**.
+
+### 1.1 The mode is not the cipher
+
+AES and CBC are not interchangeable terms.
+
+- **AES** is a block cipher.
+- **CBC** is a mode that can use a block cipher such as AES.
+- **AES-CBC** means AES instantiated inside CBC mode.
+
+The same distinction applies to AES-CTR, AES-CFB, AES-OFB, and AES-ECB.
+
+---
+
+## 2. Why Padding Exists
+
+ECB and CBC require plaintext input consisting of complete cipher blocks.
+
+For AES, each block contains 16 bytes.
+
+If the plaintext length is already a multiple of 16, block parsing is straightforward:
+
+![Aligned plaintext blocks](/images/ready/padding-and-encryption-modes/image.png)
+
+If the final block is incomplete, a padding rule can extend it to a full block:
+
+![Plaintext requiring padding](/images/ready/padding-and-encryption-modes/image-1.png)
+
+Stream-like modes such as CFB, OFB, and CTR can process a partial final segment or block and therefore do **not inherently require PKCS#7 padding**.
+
+This distinction is important:
+
+| Mode | PKCS#7 normally required? |
+|---|---|
+| ECB | Yes, for arbitrary byte-length messages |
+| CBC | Yes, unless a scheme such as ciphertext stealing is used |
+| CFB | No |
+| OFB | No |
+| CTR | No |
+
+---
+
+# 3. PKCS#7-Style Padding
+
+The padding convention commonly called **PKCS#7 padding** appends \(p\) bytes, each with value \(p\), where
+
+\[
+p = B - (|M| \bmod B)
+\]
+
+and \(B\) is the block size in bytes.
+
+For AES,
+
+\[
+B=16.
+\]
+
+The rule has one subtle but essential consequence:
+
+> **Padding is always added.**
+
+If the plaintext length is already a multiple of 16, then an entire block of
+
+```text
+10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10
+```
+
+is appended.
+
+This is what makes unpadding unambiguous.
+
+The modern CMS specification in RFC 5652 describes this padding rule for block-oriented content encryption.
+
+---
+
+## 3.1 Example: `"Welcome"`
+
+The byte string
+
+```text
+Welcome
+```
+
+contains 7 bytes.
+
+Therefore
+
+\[
+p = 16-7=9.
+\]
+
+The padding byte is
+
+\[
+09_{16}.
+\]
+
+The padded message is
+
+```text
+Welcome 09 09 09 09 09 09 09 09 09
+```
+
+or in Python notation:
+
+```python
+b"Welcome\x09\x09\x09\x09\x09\x09\x09\x09\x09"
+```
+
+---
+
+## 3.2 Example: a message exactly one block long
+
+```python
+b"This is padding!"
+```
+
+contains exactly 16 bytes.
+
+It still receives a complete padding block:
+
+```text
+10 10 10 10 10 10 10 10
+10 10 10 10 10 10 10 10
+```
+
+Without the extra block, the receiver could not reliably distinguish data bytes from padding in the general case.
+
+---
+
+## 3.3 Python implementation
+
+Using PyCryptodome:
+
+```python
+from Crypto.Util.Padding import pad, unpad
+
+m = b"Welcome"
+
+padded = pad(m, 16)
+
+print(padded)
+print(unpad(padded, 16))
+```
+
+A clearer hexadecimal inspection is:
+
+```python
+print(padded.hex())
+```
+
+which ends in:
+
+```text
+090909090909090909
+```
+
+---
+
+## 3.4 Preserve the original examples
 
 ```python
 from Crypto.Util.Padding import pad
 
-msg = b'This is padding!'
-padded_msg = pad(msg, 16)
-
-print(padded_msg)
-
-output : b'This is padding!\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10'
-
+print(pad(b"This is padding!", 16))
+print(pad(b"Custom", 16))
+print(pad(b"AES is cool", 16))
 ```
 
-### Example of Padding a short message
+The padding lengths are:
 
-```python
-msg = b'Custom'
-padded_msg = pad(msg, 16)
+- `"This is padding!"`: 16 bytes of `0x10`,
+- `"Custom"`: 10 bytes of `0x0a`,
+- `"AES is cool"`: 5 bytes of `0x05`.
 
-print(padded_msg)
+The second output may visually contain newline characters because byte value `0x0a` is newline.
 
-output : b'Custom\n\n\n\n\n\n\n\n\n\n'
+---
 
-```
-### Example of Padding another string
+## 3.5 What padding does not provide
 
-```python 
-msg = b'AES is cool'
-padded_msg = pad(msg, 16)
+Padding provides **length alignment**, not:
 
-print(padded_msg)
+- confidentiality,
+- authenticity,
+- integrity,
+- tamper detection,
+- replay protection.
 
-output: b'AES is cool\x05\x05\x05\x05\x05'
+Padding must not be treated as a security layer.
 
-```
+When unauthenticated CBC decryption exposes whether padding is valid, the padding parser itself can become an attack oracle.
 
-- The pad() function adds bytes so that the total length is a multiple of the block size.
-- The value of the padding byte is equal to the number of padding bytes added.
-- In the last example, 5 bytes of 0x05 were added to make the total length a multiple of 16.
+---
 
-PKCS#7 padding is essential for block ciphers like AES, where messages must be aligned to a fixed block size.
+# 4. Security Vocabulary for Modes
 
-## Modes of Operation in Block Ciphers
+Before studying the modes one by one, it helps to separate several properties.
 
-Block ciphers, such as AES, operate on fixed-size blocks of plaintext (e.g., 128 bits for AES-128). To encrypt messages longer than a single block, we employ *modes of operation*—methods for chaining block cipher calls to process data of arbitrary length securely.
+## 4.1 Deterministic encryption
 
-Let $(E, D)$ be a block cipher with the following notation:
-- $E, D : \mathcal{K} \times \{0,1\}^l \rightarrow \{0,1\}^l$  
-- $m, c \in \{0,1\}^l$, where $l$ is the block size in bits.
+A deterministic encryption construction maps the same plaintext under the same key to the same ciphertext.
 
-Basic encryption and decryption are defined as:
-- $c = E(k, m)$
-- $m = D(k, c)$
+ECB has this property block by block.
 
-Our objective is to extend this to:
-- **Encryption:** $(c_1, c_2, \dots, c_n) \leftarrow \text{MODE}(k, m_1, m_2, \dots, m_n)$  
-- **Decryption:** $(m_1, m_2, \dots, m_n) \leftarrow \text{MODE}^{-1}(k, c_1, c_2, \dots, c_n)$
+Determinism leaks equality information and is generally incompatible with modern indistinguishability goals for ordinary message encryption.
 
-### Types of Encryption Schemes
+---
 
-- **Deterministic Encryption:** The same plaintext encrypted with the same key always yields the same ciphertext.
+## 4.2 Randomized or nonce-based encryption
 
-- **Probabilistic Encryption:** Encryption incorporates randomness, so the same plaintext encrypted multiple times yields different ciphertexts. This is crucial for semantic security.
+Other modes incorporate an additional public value:
 
-### Key Questions in Analyzing Modes
+- an **IV**,
+- a **nonce**,
+- or a **counter block**.
 
-1. How does the mode operate?
-2. What are its security guarantees and weaknesses?
-3. Can it be implemented in parallel (encryption/decryption)?
+The extra input makes repeated encryptions of the same plaintext produce different ciphertexts when used correctly.
 
-We should take into account the following:
+This value usually does **not** need to be secret.
 
-- Plaintext must be padded to align with the block size. **PKCS#7 padding** is a common method.
-- Improper padding may lead to **padding oracle attacks**.
-- Modes of operation define how blocks are linked or processed.
+Its required property depends on the mode:
 
-## Popular Modes of Operation
+- unpredictable,
+- unique,
+- nonrepeating,
+- or generated according to a specific format.
 
-### 1. Electronic Codebook (ECB)
+These requirements are not interchangeable.
 
-- Encrypts each block independently.
-- Identical plaintext blocks yield identical ciphertext blocks.
-- Not recommended for structured or sensitive data due to pattern leakage.
+---
 
-### 2. Cipher Block Chaining (CBC)
+## 4.3 Confidentiality is not integrity
 
-- Introduces an **Initialization Vector (IV)** to randomize encryption.
-- Each plaintext block is XORed with the previous ciphertext block before encryption.
-- Encryption is sequential (not parallelizable); decryption is parallelizable.
+A mode may hide plaintext while still allowing an adversary to modify the ciphertext in a meaningful way.
 
-### 3. Counter Mode (CTR)
+That property is called **malleability**.
 
-- Transforms a block cipher into a stream cipher.
-- A counter value is encrypted to generate a keystream, which is then XORed with the plaintext.
-- Both encryption and decryption are parallelizable.
-- IV or nonce must be unique for each encryption.
+CBC, CFB, OFB, and CTR are all malleable when used without authentication.
 
-In the following lines, we will implement and analyze these modes to understand their design, advantages, and potential vulnerabilities.
+> **"The plaintext is encrypted" does not imply "the ciphertext cannot be safely modified."**
 
-## Electronic Codebook (ECB) Mode
+---
 
-### How ECB Works
+# 5. Electronic Codebook — ECB
 
-- **Encryption:**  
-  Each plaintext block is encrypted independently using the block cipher:  
-  $$
-  c_i = E(k, m_i)
-  $$
+ECB is the simplest block-cipher mode.
 
-- **Decryption:**  
-  Each ciphertext block is decrypted independently:  
-  $$
-  m_i = D(k, c_i)
-  $$
+For each plaintext block \(P_i\),
 
-### Parallelizability
+\[
+C_i = E_K(P_i).
+\]
 
-- **Encryption:** ✅ Yes  
-- **Decryption:** ✅ Yes  
-Both encryption and decryption processes are fully parallelizable since each block is processed independently.
+Decryption is
 
-### Security Analysis
+\[
+P_i = D_K(C_i).
+\]
 
-#### Strengths
-- Each individual block is encrypted securely using the underlying block cipher (e.g., AES).
-- Simple and efficient due to block-wise independence.
+There is:
 
-#### Weaknesses
-- **Deterministic behavior:** If two plaintext blocks are identical, their ciphertexts will also be identical:  
-  $$
-  m_i = m_j \Rightarrow c_i = c_j
-  $$  
-  This makes the encryption distinguishable from random and leaks data patterns.
+- no IV,
+- no nonce,
+- no chaining,
+- no interaction between blocks.
 
-- **Lack of diffusion:** Since each block is independent, an attacker can rearrange, remove, or replay blocks—susceptible to **man-in-the-middle** attacks.
+![ECB structure](/images/ready/padding-and-encryption-modes/image-3.png)
 
-- **Pattern leakage:** ECB mode is insecure for structured or repetitive data. For example, encrypting images may preserve visual patterns, as shown below. The penguin shape remains visible even after encryption due to the repeated blocks being encrypted identically.
+---
 
+## 5.1 Parallelism
 
-  ![ECB Penguin Example](/images/ready/padding-and-encryption-modes/penguin.PNG)
+Because every block is independent:
 
-- **Not semantically secure:** The deterministic nature of ECB fails to achieve semantic security (i.e., it cannot hide plaintext patterns in the ciphertext).
+**Encryption:** yes.
 
-More cryptographically now, below we can see the "internals" of ECB mode: 
+**Decryption:** yes.
 
-![alt text](/images/ready/padding-and-encryption-modes/image-3.png)
+All blocks may be processed simultaneously.
 
-> **Note:** The box labeled "block cipher encryption" in typical ECB diagrams represents a single invocation of the block cipher algorithm, such as AES.
+---
 
+## 5.2 The structural problem
 
-So what it does actually? In ECB mode, each plaintext block `M[i]` is independently encrypted with the same key: `C[i] = AESEncrypt(Key, M[i])`
+If
 
+\[
+P_i=P_j,
+\]
 
+then
 
+\[
+C_i=C_j.
+\]
 
-### Example (Single Block):
+The block cipher may be excellent, yet ECB exposes equality relationships at the message layer.
 
-```python 
-from Crypto.Cipher import AES
-from Crypto.Util.Padding import pad
-import os
-msg = b'Hello'
-msg = pad(msg, 16)
-key = os.urandom(16)  # Generate random secret key
-### ENCRYPTION ###
-cipher = AES.new(key, AES.MODE_ECB)
-ct = cipher.encrypt(msg)
-##################
-print('ct :', ct.hex())
-### DECRYPTION ###
-cipher = AES.new(key, AES.MODE_ECB)
-m = cipher.decrypt(ct)
-##################
-print('m :', m)
-print('Decrypted correctly?', m == msg)
-```
+This is why the classic image demonstration remains useful:
 
-and the result is: 
+![ECB pattern leakage](/images/ready/padding-and-encryption-modes/penguin.PNG)
 
-```python 
+ECB does not reveal the plaintext bytes directly, but repeated plaintext blocks become repeated ciphertext blocks.
 
-ct : 77bf8322b8022204b132517d090f848d
-m : b'Hello\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b'
-Decrypted correctly? True
-```
+---
 
-### Example (Multi Blocks):
-```python
-from Crypto.Cipher import AES
-from Crypto.Util.Padding import pad
-import os
-msg = b'Symmetric crypto is fun!'
-msg = pad(msg, 16)
-key = os.urandom(16)  # Generate random secret key
-### ENCRYPTION ###
-cipher = AES.new(key, AES.MODE_ECB)
-ct = cipher.encrypt(msg)
-##################
-print('ct :', ct.hex())
-### DECRYPTION ###
-cipher = AES.new(key, AES.MODE_ECB)
-m = cipher.decrypt(ct)
-##################
-print('m :', m)
-print('Decrypted correctly?', m == msg)
-```
-
-and the result is: 
-
-```python 
-ct : c187f46430771a166ecf56d193f2c980b8a62466626afea5f339c743949bd235
-m :
-b'Symmetric crypto is fun!\x08\x08\x08\x08\x08\x08\x08\x08'
-Decrypted correctly? True
-```
-
-## What actually happens in ECB mode?
-
-Let's say we have the message:
-
-**Message:** `"Symmetric crypto is fun!"`  
-**Length:** 24 bytes
-
-### Step 1: Padding
-AES works on 16-byte blocks, so the total message length must be a multiple of 16.  
-We need to pad it to the next multiple of 16:
-
-- Required length = 32 bytes  
-- Padding needed = 32 – 24 = **8 bytes**
-
-**Padded message:**  
-`b"Symmetric crypto is fun!\x08\x08\x08\x08\x08\x08\x08\x08"`
-
-(The value `\x08` indicates that 8 bytes of padding were added — this is PKCS#7 padding.)
-
-### Step 2: Splitting into blocks
-Now the padded message is 32 bytes, which gives us 2 blocks:
-
-- Block 1: `b"Symmetric crypto "`  
-- Block 2: `b"is fun!\x08\x08\x08\x08\x08\x08\x08\x08"`
-
-### Step 3: ECB Encryption
-Each block is encrypted **independently** using the same key:
-
-- `C[0] = AESEncrypt(Key, Block 1)`
-- `C[1] = AESEncrypt(Key, Block 2)`
-
-**Final ciphertext = C[0] || C[1]**
-
-
-![alt text](/images/ready/padding-and-encryption-modes/image-4.png)
-
-## Another Python example 
-
-### Step 1: Define the Key
-
-```python
-KEY = b"some secret key1" # 16 bytes = 128 bits
-```
-
-### Step 2: Define and Inspect the Message
-```python
-m = b"a message secret longer than 128 bits"
-print(len(m) * 8, len(m) * 8 > 128)
-
-#output: 296 True
-```
-The message length is 296 bits—larger than a single AES block—so padding is required again.
-
-### Step 3: Apply Padding
-```python
-from Crypto.Util.Padding import pad
-
-padded_message = pad(m, 16)
-print(padded_message)
-
-#output: b'a message secret longer than 128 bits\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b'
-
-```
-PKCS#7 padding, which appends 0x0b now (11 in decimal) to reach the required block size.
-
-### Step 4: Encrypt and Decrypt
-```python
-from Crypto.Cipher import AES
-
-cipher = AES.new(KEY, AES.MODE_ECB)
-
-# Encrypt
-c = cipher.encrypt(padded_message)
-print(c)
-
-# Decrypt
-m_decrypted = cipher.decrypt(c)
-print(m_decrypted)
-
-#output: 
-# b'Ub,I\xc36\x07W\x1as\x03\x1d\x14\x99m_\x13\xd44\x1f\xd8\xa3\xb1\x9c\x87l&U\x93\x00\xac\xf7Y\x10wD.\xa2\xb9\x17L\x1a\xe3N\x1c\xf9\x8b_'
-# b'a message secret longer than 128 bits\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b'
-
-```
-The decrypted result still includes the padding.
-
-### Step 5: Unpad to Recover the Original Message
-
-```python
-from Crypto.Util.Padding import unpad
-
-original_message = unpad(m_decrypted, 16)
-print(original_message)
-
-#output: b'a message secret longer than 128 bits'
-
-```
-## ECB Weakness Demonstration – Identical Blocks Leak Patterns
-
-One of the most critical weaknesses of ECB mode is that **repeating plaintext blocks produce repeating ciphertext blocks**. This deterministic behavior allows attackers to identify patterns and make inferences about the plaintext.
-
-We construct a message composed of three 16-byte blocks:
-- Block 1: 16 `'a'` characters
-- Block 2: 16 `'b'` characters
-- Block 3: 16 `'a'` characters (identical to Block 1)
+## 5.3 Repeated-block experiment
 
 ```python
 from Crypto.Cipher import AES
 
-KEY = b"some secret key1"  # 16-byte key
+KEY = b"some secret key1"
 
-# Construct a message with repeating blocks
-m = b"a" * 16 + b"b" * 16 + b"a" * 16
+m = (
+    b"a" * 16 +
+    b"b" * 16 +
+    b"a" * 16
+)
 
-# Encrypt using ECB
 cipher = AES.new(KEY, AES.MODE_ECB)
 c = cipher.encrypt(m)
 
-# Display ciphertext
-print(c)
+C1 = c[0:16]
+C2 = c[16:32]
+C3 = c[32:48]
 
-# Check for repeated ciphertext blocks
-print("First 16 bytes == last 16 bytes? ", c[:16] == c[-16:])
-
-# Decrypt
-m_decr = cipher.decrypt(c)
-print(m_decr)
+print(C1 == C3)  # True
 ```
 
-The first and last 16 bytes of ciphertext are identical, because the first and third blocks of the plaintext are the same (b'a'*16).
-
-This reveals a repeating pattern in the ciphertext, allowing an adversary to detect duplicate plaintext blocks.
-
-
-This confirms that ECB is not semantically secure. An attacker observing ciphertext can infer:
-
-- Which blocks are repeated.
-
-- Where repetitions occur.
-
-- General structure of the plaintext.
-
-Final Remarks: 
-
-- ECB mode is easy to implement and supports parallel encryption/decryption.
-
-- However, it is not semantically secure and leaks patterns.
-
-- Only use ECB for simple, short, and non-repetitive data.
-
-- For better security, consider using CBC, CTR, or GCM modes.
-
-## Cipher Block Chaining (CBC) Mode
-
-CBC (Cipher Block Chaining) is a widely used block cipher mode that addresses the major weaknesses of ECB by introducing randomness and chaining dependencies across blocks. It makes the encryption probabilistic and breaks deterministic patterns in the ciphertext.
+This preserves the original project's pattern-leakage experiment.
 
 ---
 
-## Overview
+## 5.4 ECB and padding
 
-CBC mode solves the fundamental problem of ECB: the repetition of ciphertext for repeated plaintext blocks. This is done using a randomly generated **Initialization Vector (IV)**.
+For arbitrary byte-length input:
 
-![CBC Overview](/images/ready/padding-and-encryption-modes/image-5.png)
+```python
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
 
-### What is an Initialization Vector (IV)?
+key = b"some secret key1"
+message = b"Symmetric crypto is fun!"
 
-- A random (or pseudo-random) value used as a **starting point** for encryption.
-- Ensures that encrypting the same plaintext twice results in **different ciphertexts**.
-- **Length:** Must match the cipher's block size (e.g., 128 bits for AES).
-- **Secrecy:** It **does not need to be secret**, but must be **unique** for each encryption session.
-- IVs are typically transmitted alongside the ciphertext.
+padded = pad(message, 16)
 
----
+cipher = AES.new(key, AES.MODE_ECB)
+ciphertext = cipher.encrypt(padded)
 
-## How CBC Works
+cipher = AES.new(key, AES.MODE_ECB)
+recovered_padded = cipher.decrypt(ciphertext)
 
-Let $E(k, \cdot)$ and $D(k, \cdot)$ be the block cipher's encryption and decryption functions, and let $m_i$ be the plaintext blocks:
+recovered = unpad(recovered_padded, 16)
 
-### Encryption
+assert recovered == message
+```
 
-- First block:
-  $$
-  c_1 = E(k, m_1 \oplus IV)
-  $$
-- Subsequent blocks:
-  $$
-  c_i = E(k, m_i \oplus c_{i-1}) \quad \text{for } i > 1
-  $$
+For the 24-byte message
 
-### Decryption
+```text
+Symmetric crypto is fun!
+```
 
-- First block:
-  $$
-  m_1 = D(k, c_1) \oplus IV
-  $$
-- Subsequent blocks:
-  $$
-  m_i = D(k, c_i) \oplus c_{i-1} \quad \text{for } i > 1
-  $$
+PKCS#7 appends eight bytes of `0x08`, producing two AES blocks:
 
+```text
+Block 1 = b"Symmetric crypto "
+Block 2 = b"is fun!\x08\x08\x08\x08\x08\x08\x08\x08"
+```
 
-## Parallelizability
-
-- **Encryption:** ❌ No  
-  Each encryption step depends on the previous ciphertext block.
-  
-- **Decryption:** ✅ Yes  
-  Decryption can be parallelized, as each block can be decrypted independently (given $c_{i-1}$).
-
-
-## Security Analysis
-
-CBC avoids ECB's direct block-pattern leakage by chaining blocks, but its confidentiality guarantee depends critically on the IV and it still provides **no ciphertext integrity**.
-
-### IV Security
-
-- For CBC encryption, the IV must be **fresh and unpredictable** for each encryption under a key.
-- The IV does **not** need to be secret; it is normally transmitted alongside the ciphertext.
-- Reusing or allowing an attacker to predict the IV can destroy the intended IND-CPA-style confidentiality guarantee.
-- Even with a correct IV, unauthenticated CBC is malleable. Modern applications should normally use an AEAD construction instead of composing raw CBC themselves.
+![ECB block processing](/images/ready/padding-and-encryption-modes/image-4.png)
 
 ---
 
+## 5.5 ECB security summary
 
-## CBC Mode – Python Example (Multi-Block Encryption)
+ECB has useful engineering properties:
 
-This example demonstrates how to use **AES in CBC mode** with proper padding and random key/IV generation using the `pycryptodome` library.
+- trivial implementation,
+- full parallelism,
+- random access to blocks,
+- no IV state.
 
+But for general confidential message encryption its determinism is a fundamental weakness.
 
+It also provides no integrity. Ciphertext blocks can be removed, duplicated, replaced, or reordered without any cryptographic authentication failure because there is no authentication mechanism at all.
 
-### Encryption and Decryption 
+This is more precise than calling ECB specifically a "man-in-the-middle attack." The core issue is **deterministic pattern leakage plus lack of integrity**.
+
+> **Practical rule:** do not select ECB for general data confidentiality. NIST has announced that its revision of SP 800-38A is intended to restrict ECB approval to narrowly specified uses.
+
+---
+
+# 6. Cipher Block Chaining — CBC
+
+CBC introduces a dependency between adjacent blocks.
+
+Let
+
+\[
+C_0 = IV.
+\]
+
+Encryption is:
+
+\[
+C_i = E_K(P_i \oplus C_{i-1}).
+\]
+
+Decryption is:
+
+\[
+P_i = D_K(C_i)\oplus C_{i-1}.
+\]
+
+For the first block:
+
+\[
+C_1=E_K(P_1\oplus IV),
+\]
+
+\[
+P_1=D_K(C_1)\oplus IV.
+\]
+
+![CBC overview](/images/ready/padding-and-encryption-modes/image-5.png)
+
+---
+
+## 6.1 What the IV does
+
+If two messages begin with the same first plaintext block but use independent appropriate IVs, the inputs to the first AES invocation differ.
+
+For CBC, NIST SP 800-38A specifies that the IV must be **unpredictable** for a particular encryption execution. In engineering practice it should also be freshly generated rather than reused.
+
+The IV:
+
+- is one block long,
+- does not need to be secret,
+- is normally transmitted with the ciphertext,
+- must be handled according to the mode's security requirements.
+
+---
+
+## 6.2 Why encryption is sequential
+
+To compute
+
+\[
+C_i,
+\]
+
+we need
+
+\[
+C_{i-1}.
+\]
+
+Therefore CBC encryption forms a dependency chain:
+
+```text
+P1 -> C1 -> C2 -> C3 -> ...
+```
+
+Encryption cannot naturally process all blocks in parallel.
+
+---
+
+## 6.3 Why decryption can be parallelized
+
+Each block satisfies
+
+\[
+P_i=D_K(C_i)\oplus C_{i-1}.
+\]
+
+All ciphertext blocks are already available to the receiver.
+
+Thus the expensive block-cipher decryptions can be evaluated in parallel and then XORed with the corresponding previous ciphertext blocks.
+
+---
+
+## 6.4 CBC example
 
 ```python
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 import os
 
-# Original plaintext message
-msg = b'IVs are pretty cool!'
+message = b"IVs are pretty cool!"
 
-# Apply PKCS#7 padding to make the message length a multiple of 16 bytes
-msg = pad(msg, 16)
-
-# Generate a random 16-byte AES key and IV
 key = os.urandom(16)
 iv = os.urandom(16)
 
-# --- ENCRYPTION ---
-cipher = AES.new(key, AES.MODE_CBC, iv)
-ct = cipher.encrypt(msg)
+padded = pad(message, 16)
 
-# Display IV and ciphertext (hex encoded for readability)
-print(f'iv : {iv.hex()}')
-print(f'ct : {ct.hex()}')
+cipher = AES.new(key, AES.MODE_CBC, iv=iv)
+ciphertext = cipher.encrypt(padded)
 
-# --- DECRYPTION ---
-cipher = AES.new(key, AES.MODE_CBC, iv)
-m = cipher.decrypt(ct)
+cipher = AES.new(key, AES.MODE_CBC, iv=iv)
+recovered_padded = cipher.decrypt(ciphertext)
 
-# Optionally remove padding to retrieve the original plaintext
-original_msg = unpad(m, 16)
+recovered = unpad(recovered_padded, 16)
 
-print(f'decrypted (padded)   : {m}')
-print(f'decrypted (original) : {original_msg}')
-print(f'Decrypted correctly? {original_msg == b"IVs are pretty cool!"}')
+assert recovered == message
+
+print("iv :", iv.hex())
+print("ct :", ciphertext.hex())
+print("pt :", recovered)
 ```
-
-Example output: 
-```
-iv : a300024abe9e6089932723fc8bdf5b36
-ct : d69301aac291baea08f9d39a07a74878d6192426468a600fb9e2d7fa619e7e84
-decrypted (padded)   : b'IVs are pretty cool!\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c'
-decrypted (original) : b'IVs are pretty cool!'
-Decrypted correctly? True
-```
-As we can see: 
-- Original message length: 20 bytes
-
-- AES block size: 16 bytes
-
-- To make the total length a multiple of 16, we pad with 12 bytes of 0x0c (decimal 12).
-
-- CBC mode chains blocks using XOR with the previous ciphertext block and a random IV for the first block.
-
-- Unpadding is required after decryption to remove the PKCS#7 padding.
-
-
-![alt text](/images/ready/padding-and-encryption-modes/image-7.png)
 
 ---
 
-## CBC Mode Example with Patterned Message
-
-This example demonstrates how **AES-CBC encryption** solves the block repetition weakness found in ECB mode. Using a secure IV and chaining blocks ensures that even repeated plaintext blocks result in **different ciphertext blocks**.
-
-### Setup and Key/IV Generation
+## 6.5 Patterned CBC experiment
 
 ```python
 from Crypto.Cipher import AES
-from Crypto.Util.Padding import pad, unpad
 import os
 
-# AES key (16 bytes = 128 bits)
 KEY = b"some secret key1"
-
-# Generate a secure random 16-byte IV
 IV = os.urandom(16)
-print(f"IV: {IV.hex()}")
-```
 
-And we have as an output: `IV: dbe8bc96b72cfa58e3cab1ac27a454df`
-Encrypting a longer message now: 
+m = (
+    b"a" * 16 +
+    b"b" * 16 +
+    b"a" * 16
+)
 
-```python
-m = b"a message secret longer than 128 bits"
-print(len(m) * 8, len(m) * 8 > 128)  # Output: 296 True
-
-# Pad to match AES block size (multiples of 16 bytes)
-padded = pad(m, 16)
-print(padded)
-
-# output: b'a message secret longer than 128 bits\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b'
-
-```
-The encryption and the decryption of CBC:
-```python
-# Encrypt the message
-cipher = AES.new(KEY, AES.MODE_CBC, iv=IV)
-c = cipher.encrypt(padded)
-print(c)
-
-# Decrypt the ciphertext
-cipher = AES.new(KEY, AES.MODE_CBC, iv=IV)
-m_decr = cipher.decrypt(c)
-print(m_decr)
-
-# output:
-# b'\xbc8\x99\xc0}O\xb9\xe2k&x\xf3\xe4,\xa0r...'
-# b'a message secret longer than 128 bits\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b'
-
-
-```
----
-###  Demonstrating how ECB weakness is resolved in CBC mode
-
-Now, test a message with repeating blocks (a known weakness in ECB):
-
-```python
-m = b"a" * 16 + b"b" * 16 + b"a" * 16  # Repeated 'a' blocks
-
-# Encrypt in CBC mode
 cipher = AES.new(KEY, AES.MODE_CBC, iv=IV)
 c = cipher.encrypt(m)
-print(c)
 
-# Check if repeated plaintext blocks yield repeated ciphertext blocks
-print("First 16 bytes == last 16 bytes? ", c[:16] == c[-16:])  # Should be False
-
-# Decrypt
-cipher = AES.new(KEY, AES.MODE_CBC, iv=IV)
-m_decr = cipher.decrypt(c)
-print(m_decr)
+print(c[:16] == c[-16:])  # overwhelmingly expected to be False
 ```
 
-Where the output is:
-```
-First 16 bytes == last 16 bytes?  False
-b'aaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaa'
-```
+Although the first and third plaintext blocks are identical, their chaining inputs differ.
 
-So as a wrapup:
-
-- ECB Mode Leak: Repeating plaintext blocks produce repeating ciphertext blocks.
-
-- CBC Solves This: Each block is XORed with the previous ciphertext block before encryption, ensuring randomness even with identical plaintext.
-
-- IV is crucial: use a fresh, unpredictable IV for every CBC encryption under a key.
-
-- CBC provides confidentiality only; it does not authenticate the ciphertext.
-
-For new protocol designs, prefer a standardized AEAD construction. The next article in this series explains why authenticated encryption is the safer abstraction.
+![CBC patterned message](/images/ready/padding-and-encryption-modes/image-7.png)
 
 ---
 
-## Cipher Feedback Mode (CFB)
+## 6.6 CBC is malleable
 
-CFB transforms a block cipher into a **self-synchronizing stream cipher**, suitable for encrypting data streams or byte-wise data. Unlike ECB or CBC, CFB does not directly encrypt the plaintext with the block cipher but instead encrypts the previous ciphertext block and **XORs** the result with the current plaintext block.
+CBC provides confidentiality, not integrity.
 
+Recall:
 
+\[
+P_i = D_K(C_i)\oplus C_{i-1}.
+\]
 
-## Overview
+If an attacker flips a bit in \(C_{i-1}\), the corresponding bit of \(P_i\) flips predictably.
 
-> CFB uses the block cipher to generate a keystream, turning the block cipher into a stream cipher.
+Let
 
-![CFB Diagram](/images/ready/padding-and-encryption-modes/cfb.PNG)
+\[
+C'_{i-1}=C_{i-1}\oplus\Delta.
+\]
 
+Then
 
-## How CFB Works
+\[
+P'_i
+=
+D_K(C_i)\oplus C'_{i-1}
+=
+P_i\oplus\Delta.
+\]
 
-Let $E(k, \cdot)$ denote encryption with key $k$, and let $IV$ be the initialization vector.
+The preceding plaintext block is also disturbed because the modified ciphertext block itself is decrypted, but the next plaintext block receives a controlled XOR difference.
 
-### Encryption
-
-- Initialization:
-  $$
-  c_0 = IV
-  $$
-- For each block $i \geq 1$:
-  $$
-  c_i = E(k, c_{i-1}) \oplus m_i
-  $$
-- Final ciphertext:
-  $$
-  C = IV \,\|\, c_1 \,\|\, c_2 \,\|\, \dots
-  $$
-
-### Decryption
-
-- For each block $i \geq 1$:
-  $$
-  m_i = E(k, c_{i-1}) \oplus c_i
-  $$
-
-## Parallelizability
-
-- **Encryption:** ❌ No 
-  - Encryption is sequential since each ciphertext block depends on the previous one.
-- **Decryption:**  ✅ Yes
-  - Decryption is parallelizable since each $m_i$ only depends on $c_{i-1}$ and $c_i$.
- 
-
-## Security Analysis
-
-CFB is **not CPA-secure** if the IV is used as a predictable nonce. Here's why:
-
-Let's demostrate an attack scenario with CPA insecurity: 
-
-- Suppose the attacker knows the IV and ciphertext:
-  $$
-  IV \,\|\, c_1 \,\|\, c_2 \,\|\, \dots
-  $$
-
-- Let them make a CPA query with:
-  - $IV = c_1$
-  - $m_1 = 0$ (a block of zeroes)
-
-- Then the output will be:
-  $$
-  c' = E(k, c_1) \oplus 0 = E(k, c_1)
-  $$
-
-- The attacker now knows $E(k, c_1)$ and can decrypt:
-  $$
-  m_2 = E(k, c_1) \oplus c_2 = c' \oplus c_2
-  $$
-
-- Hence, they can recover $m_2$, $m_3$, etc., breaking semantic security.
+The IV behaves like \(C_0\). Therefore modifying the IV allows controlled modifications of the first plaintext block unless the IV is authenticated.
 
 ---
 
-## CFB Mode Coding Example and CPA Attack Demonstration
+## 6.7 CBC padding oracles
 
+CBC commonly uses padding.
 
+Suppose a receiver:
 
-### Encryption and Decryption 
+1. decrypts attacker-controlled ciphertext,
+2. checks PKCS#7 padding,
+3. reveals through errors, timing, status codes, or network behavior whether the padding was valid.
 
-```python
-from Crypto.Cipher import AES
-from Crypto.Util.Padding import pad, unpad
-import os
+Then the adversary may obtain a **padding oracle**.
 
-# Setup
-KEY = b"some secret key1"
-IV = os.urandom(16)
+The attack does not require breaking AES.
 
-# Message longer than one block
-m = b"a message secret longer than 128 bits"
-print(len(m) * 8, len(m) * 8 > 128)
+Instead, it exploits:
 
-# Encrypt using AES in CFB mode
-cipher = AES.new(KEY, AES.MODE_CFB, iv=IV)
-c = cipher.encrypt(m)
-print(c)
-# output: 
-# 296 True
-# b'W\x07\xbeMZ\xbc\x993\xaa\x1c8\x03\x0e\r\x16(...truncated...)'
+- CBC's XOR structure,
+- attacker-controlled ciphertext,
+- and an observable validity predicate.
 
+The stronger design lesson is:
 
-# Decrypt
-cipher = AES.new(KEY, AES.MODE_CFB, iv=IV)
-m_decr = cipher.decrypt(c)
-print(m_decr)
-
-# output: b'a message secret longer than 128 bits\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b'
-
-```
-### CFB CPA Attack 
-We will show how an attacker can recover parts of the plaintext under chosen-IV or known-IV conditions. 
-
-### Step 1: Define Key and IV
-```python 
-KEY = b"some secret key1"
-IV = os.urandom(16)
-print(IV)
-
-######## STEP 2: ENCRYPT TARGET MESSAGE
-m = b"some trash inputSUPER SECRET STUFF HERE"
-print(len(m))  # 39 bytes
-
-cipher = AES.new(KEY, AES.MODE_CFB, iv=IV, segment_size=128)
-c = cipher.encrypt(m)  # Apply PKCS#7 padding
-print(len(c), c)
-
-# OUTPUT: 39
-# 48 b'\xf8\xdc`\x9c(...truncated...)'
-
-######### STEP 3: eXPLOIT THE ORACLE
-# Use c[0:16] as the IV, simulate an encryption oracle
-cipher2 = AES.new(KEY, AES.MODE_CFB, iv=c[:16], segment_size=128)
-c_ = cipher2.encrypt(bytes([0]) * 16)
-print(c_)
-
-
-#OUTPUT: b'M\x8bV\xa3lc\n\x8a\xfbA\x08&\x05Y\x8d\xd7'
-
-############# STEP 4: XOR with Ciphertext to Recover Plaintext
-# XOR function
-def xor_bytestring(a, b):
-    return bytes(x ^ y for x, y in zip(a, b))
-
-# Recover second plaintext block (contains "SUPER SECRET STU")
-recovered = xor_bytestring(c_, c[16:32])
-print(recovered)
-
-# OUTPUT:  b'SUPER SECRET STU'
-
-############ STEP 5 : REPEAT TO RECOVER MORE
-# Now use c[16:32] as the IV to decrypt the next block
-cipher2 = AES.new(KEY, AES.MODE_CFB, iv=c[16:32], segment_size=128)
-c_ = cipher2.encrypt(bytes([0]) * 16)
-print(c_)
-
-recovered2 = xor_bytestring(c_, c[32:48])
-print(recovered2)
-# OUTPUT: b'FF HERE\t\t\t\t\t\t\t\t\t'
-```
-
-Finally, the decrypted block contains: ` b'STUFF HERE\x09\x09\x09\x09\x09\x09\x09\x09\x09'` which is (PKCS#7 padding with \x09).
-
-So as a wrapup:  
-
-- CFB can securely encrypt data when used with a secure, unpredictable IV.
-
-- If the IV is reused or manipulated, it becomes vulnerable to CPA attacks.
-
-- This attack demonstrates the recovery of full plaintext blocks if an adversary controls or knows the IV and can submit chosen-plaintext queries.
-
-Always use a new random IV for every encryption session to preserve semantic security in CFB mode.
-
-## Output Feedback Mode (OFB)
-
-OFB (Output Feedback) mode turns a block cipher into a **synchronous stream cipher**. Instead of encrypting the message blocks directly, it uses the cipher to generate a keystream, which is XORed with the plaintext or ciphertext. OFB is **symmetric**, meaning encryption and decryption use the same process.
+> Authenticate ciphertext before exposing decryption-dependent validity information, or use an AEAD construction whose interface already binds confidentiality and integrity.
 
 ---
 
-## Overview
+# 7. Cipher Feedback — CFB
 
-> OFB uses the block cipher to create a **keystream** independent of the plaintext or ciphertext, just like a stream cipher.
+CFB uses the **encryption** function of the block cipher to produce a keystream segment from previous ciphertext.
 
-![OFB Mode Diagram](/images/ready/padding-and-encryption-modes/ofb.png)
+For full-block CFB, also called CFB128 for AES, let
 
-- Keystream blocks $y_i$ are generated independently of the message.
-- Message blocks are XORed with the keystream blocks for both encryption and decryption.
-- The block cipher **never sees the plaintext or ciphertext**, only the previous keystream block.
+\[
+C_0 = IV.
+\]
 
----
+Encryption:
 
-## How OFB Works
+\[
+C_i = P_i \oplus E_K(C_{i-1}).
+\]
 
-Let $E(k, \cdot)$ be the block cipher with key $k$, and let $IV$ be the initialization vector.
+Decryption:
 
-### Encryption
+\[
+P_i = C_i \oplus E_K(C_{i-1}).
+\]
 
-- Initialize keystream:
-  $$
-  y_0 = IV
-  $$
-- Generate keystream and encrypt:
-  $$
-  y_i = E(k, y_{i-1})
-  $$
-  $$
-  c_i = m_i \oplus y_i
-  $$
-- Final ciphertext:
-  $$
-  C = IV \,\|\, c_1 \,\|\, c_2 \,\|\, \dots
-  $$
+Notice that \(D_K\) is not required.
 
-### Decryption
+Both directions use \(E_K\).
 
-- Same procedure as encryption:
-  $$
-  y_i = E(k, y_{i-1}), \quad m_i = c_i \oplus y_i
-  $$
-
-> Since encryption and decryption are symmetric, only the inputs differ—plaintext vs ciphertext.
+![CFB diagram](/images/ready/padding-and-encryption-modes/cfb.PNG)
 
 ---
 
-## Parallelizability
-- **Encryption:** ❌ No           |
-- **Decryption:** ❌ No           |
+## 7.1 CFB as a self-synchronizing stream mode
 
-- Both processes depend on the **sequential generation** of keystream blocks.
-- However, the **keystream can be precomputed** in advance, allowing for partial parallelism if the message is already known.
-
-
-## Security Analysis
-
-### Bit-Flipping Behavior
-
-- Flipping a bit in a ciphertext block only affects the corresponding bit in the plaintext.
-- This makes OFB vulnerable to **bit-flipping attacks** unless used with authentication (e.g., MACs).
-
-### CPA Insecurity (again like CFB) with Reused IV
-
-- If the same IV is reused across multiple encryptions with the same key:
-  - The same keystream $y$ will be used.
-  - This enables attackers to XOR ciphertexts together and eliminate the keystream:
-    $$
-    c_1 \oplus c_2 = m_1 \oplus m_2
-    $$
-  - As a result, **semantic security is lost**, and OFB is no longer CPA-secure.
-
----
-
-## OFB Mode Example
-
-This example demonstrates how to use **AES in Output Feedback (OFB) mode** with the `pycryptodome` library. In OFB, encryption and decryption use the same process by XORing plaintext/ciphertext with a keystream generated from the block cipher.
-
-### Setup
-
-```python
-from Crypto.Cipher import AES
-from Crypto.Util.Padding import pad, unpad
-import os
-
-# Define AES key and generate a random IV
-KEY = b"some secret key1"
-IV = os.urandom(16)
-
-############### MESSAGE AND PADDING
-m = b"a message secret longer than 128 bits"
-print(len(m) * 8, len(m) * 8 > 128)  # Output: 296 bits → padding needed
-
-
-# OUTPUT: 296 TRUE
-
-################### ENCRYPTION AND DECRYPTION
-
-# Encrypt with OFB mode
-cipher = AES.new(KEY, AES.MODE_OFB, iv=IV)
-c = cipher.encrypt(m)  # PKCS#7 padding
-print(c)
-
-# Decrypt (same operation, just with ciphertext)
-cipher = AES.new(KEY, AES.MODE_OFB, iv=IV)
-m_decr = cipher.decrypt(c)
-print(m_decr)
-
-# OUTPUT: 
-#b'\x92\xfaU\xa3\xa7`\xecjM<\xe3\xeek\x11\x84|\xc8\r~\x02\x7f\x81\xdb\x04\x84\xe3L\x8b\xf1.,\xd2\x9b\x8c\x8e\xdcn7\xaa\xbd\x0c\x1b\x15\x1a\xc4\x91BR'
-
-#b'a message secret longer than 128 bits\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b'
-
-# The decrypted message includes padding. To recover the original message:
-
-original = unpad(m_decr, 16)
-print(original)
-
-# FINAL OUTPUT: b'a message secret longer than 128 bits'
-```
-
-So we should remember the following:
-
-- OFB mode turns a block cipher into a **synchronous stream cipher** using XOR and a keystream.
-- It is **symmetric**: the encryption and decryption operations are the same.
-- It avoids ciphertext repetition issues from ECB and CBC modes.
-- **Reusing the IV breaks security.** Always use a fresh, random IV per encryption session.
-- Pair OFB with a **MAC** or authentication tag to defend against bit-flipping attacks.
-
-> OFB is best used in scenarios where streaming data must be encrypted and decrypted consistently—but always with a secure IV strategy and integrity checks.
-
-
-
-## Counter Mode (CTR)
-
-CTR (Counter) mode transforms a block cipher (like AES) into a **stream cipher** by encrypting a combination of a **nonce** and a **counter**. It is highly efficient and fully parallelizable, making it widely used in practice.
-
-## Overview
-
-> CTR mode turns a block cipher into a **keystream generator**, much like a stream cipher.  
-> It encrypts a counter value (incremented for each block) and XORs the result with the plaintext or ciphertext.
-
-![CTR Mode Diagram](/images/ready/padding-and-encryption-modes/image-8.png)
-
-- The **nonce** acts like the Initialization Vector (IV).
-- The block cipher encrypts the nonce and counter value to produce a keystream.
-- The keystream is then XORed with the plaintext (or ciphertext) to encrypt (or decrypt).
-
----
-
-## How CTR Works
-
-Let $E(k, \cdot)$ be the block cipher encryption function with key $k$.
-
-### Encryption
-
-- For each block $i$:
-  $$
-  c_i = m_i \oplus E(k, IV + i)
-  $$
-
-### Decryption
-
-- Identical to encryption (symmetric process):
-  $$
-  m_i = c_i \oplus E(k, IV + i)
-  $$
-
-Where:
-- $IV$ is the initial counter (nonce).
-- $IV + i$ means incrementing the counter for each block.
-- No chaining between blocks—each block operates independently.
-
-$$
-C[i] = M[i] \oplus \text{AESEncrypt}(Key, \text{Nonce} \,\|\, \text{Counter}[i])
-$$
-
----
-
-## Parallelizability
-
-- **Encryption:** ✅ Yes 
-- **Decryption:** ✅ Yes 
-
-  - The keystream can be precomputed.
-  - Ideal for **high-throughput applications**, such as disk encryption or secure network traffic.
-
----
-
-## Security Analysis
-
-### Indistinguishability Under CPA
-
-- CTR mode is **semantically secure under a Chosen Plaintext Attack (CPA)**.
-- It provides strong confidentiality *as long as* each nonce is **never reused** with the same key.
-
-### ⚠️ Nonce Reuse
-
-- **Do not reuse the same nonce with the same key.**
-- Reusing a nonce leads to:
-  $$
-  c_1 \oplus c_2 = m_1 \oplus m_2
-  $$
-  $\rightarrow$ revealing the XOR of plaintexts, breaking confidentiality.
-
----
-
-
-
-
-Python Example using PyCryptodome library (Multi Blocks)
-
-```python 
- from Crypto.Cipher import AES 
- import os 
-  
- msg = b'This is nice!!!!'
- # CTR accepts arbitrary-length plaintext; no padding is required.
- key = os.urandom(16)
- nonce = os.urandom(15)
- 
- cipher = AES.new(key, AES.MODE_CTR, nonce=nonce, initial_value=255)
- ct = cipher.encrypt(msg)
- print(f'ct : {ct.hex()}')
- cipher = AES.new(key, AES.MODE_CTR, nonce=nonce, initial_value=255)
- m = cipher.decrypt(ct)
- print(f'm : {m}')
-  
- assert m == msg
- 
- ```
-
-The ciphertext changes on every run because the key and nonce are randomly generated. Decryption recovers exactly:
+For full-block CFB:
 
 ```text
-b'This is nice!!!!'
+feedback = IV
+keystream = E_K(feedback)
+ciphertext_block = plaintext_block XOR keystream
+feedback = ciphertext_block
 ```
 
-## CTR Mode Example
+The ciphertext itself becomes the next feedback value.
 
-This example demonstrates how to use **AES in CTR (Counter) mode** using the `pycryptodome` library. CTR mode transforms AES into a **stream cipher** by encrypting a nonce + counter value for each block and XORing it with the plaintext.
+This is why CFB is called **self-synchronizing**.
 
-### Setup
+---
+
+## 7.2 Segment size matters
+
+CFB is not defined only at the full 128-bit block size.
+
+NIST defines CFB with a segment size \(s\). Examples include:
+
+- CFB8,
+- CFB128.
+
+This matters directly in PyCryptodome.
+
+If we use the full-block equations above, the code should make that explicit:
+
+```python
+AES.new(
+    key,
+    AES.MODE_CFB,
+    iv=iv,
+    segment_size=128,
+)
+```
+
+This corrects an ambiguity in the original implementation examples.
+
+---
+
+## 7.3 CFB does not require PKCS#7 padding
+
+```python
+from Crypto.Cipher import AES
+import os
+
+key = os.urandom(16)
+iv = os.urandom(16)
+
+message = b"a message secret longer than 128 bits"
+
+cipher = AES.new(
+    key,
+    AES.MODE_CFB,
+    iv=iv,
+    segment_size=128,
+)
+ciphertext = cipher.encrypt(message)
+
+cipher = AES.new(
+    key,
+    AES.MODE_CFB,
+    iv=iv,
+    segment_size=128,
+)
+recovered = cipher.decrypt(ciphertext)
+
+assert recovered == message
+assert len(ciphertext) == len(message)
+```
+
+No padding is required.
+
+---
+
+## 7.4 CFB parallelism
+
+For full-block CFB:
+
+**Encryption:** sequential.
+
+To compute \(C_i\), we need \(C_{i-1}\).
+
+**Decryption:** block-cipher invocations can be parallelized once the ciphertext is available, because each plaintext block uses known values \(C_i\) and \(C_{i-1}\).
+
+---
+
+## 7.5 IV requirement
+
+NIST SP 800-38A specifies an **unpredictable IV** for CFB.
+
+The IV does not need to be secret.
+
+The original draft described a chosen-IV oracle experiment. That experiment is useful, but its security meaning must be stated carefully: it demonstrates failure when an interface lets an attacker select or manipulate the IV in a way that violates the intended IV-generation assumptions. Merely learning a correctly generated IV after generation is not the same attack.
+
+---
+
+## 7.6 Chosen-IV demonstration
+
+Suppose an API improperly lets an attacker request CFB encryption using arbitrary IVs.
+
+For a target ciphertext,
+
+\[
+C_1,C_2,\dots
+\]
+
+we have
+
+\[
+P_2=C_2\oplus E_K(C_1).
+\]
+
+If the attacker asks the service to encrypt the all-zero block using
+
+\[
+IV'=C_1,
+\]
+
+then the first returned ciphertext block is
+
+\[
+C'_1
+=
+0\oplus E_K(C_1)
+=
+E_K(C_1).
+\]
+
+Therefore:
+
+\[
+P_2=C_2\oplus C'_1.
+\]
+
+The block cipher is not broken. The API has exposed the exact keystream block needed to decrypt part of the target ciphertext.
+
+A compact educational implementation is:
+
+```python
+from Crypto.Cipher import AES
+import os
+
+KEY = b"some secret key1"
+IV = os.urandom(16)
+
+target = b"some trash inputSUPER SECRET STUFF HERE"
+
+cipher = AES.new(
+    KEY,
+    AES.MODE_CFB,
+    iv=IV,
+    segment_size=128,
+)
+c = cipher.encrypt(target)
+
+oracle = AES.new(
+    KEY,
+    AES.MODE_CFB,
+    iv=c[:16],
+    segment_size=128,
+)
+
+E_of_C1 = oracle.encrypt(bytes(16))
+
+recovered_second_block = bytes(
+    a ^ b
+    for a, b in zip(E_of_C1, c[16:32])
+)
+
+print(recovered_second_block)
+```
+
+This preserves the conceptual experiment from the original article while making the chosen-IV assumption explicit.
+
+---
+
+## 7.7 CFB malleability and error propagation
+
+CFB is unauthenticated and therefore malleable.
+
+In full-block CFB, changing one ciphertext block:
+
+- introduces a controlled XOR change in the corresponding plaintext block,
+- also corrupts the following plaintext block because the modified ciphertext becomes the input to the next block-cipher invocation,
+- then synchronization resumes.
+
+For smaller segment sizes, error propagation follows the feedback-register structure and should be analyzed at the segment level.
+
+---
+
+# 8. Output Feedback — OFB
+
+OFB turns the block cipher into a synchronous keystream generator.
+
+Let
+
+\[
+O_0 = IV.
+\]
+
+Then:
+
+\[
+O_i = E_K(O_{i-1}),
+\]
+
+\[
+C_i = P_i \oplus O_i.
+\]
+
+Decryption is identical:
+
+\[
+P_i = C_i \oplus O_i.
+\]
+
+![OFB mode](/images/ready/padding-and-encryption-modes/ofb.png)
+
+The crucial difference from CFB is the feedback value:
+
+- CFB feeds back **ciphertext**,
+- OFB feeds back **block-cipher output**.
+
+---
+
+## 8.1 OFB keystream is independent of the message
+
+The recurrence
+
+\[
+O_i=E_K(O_{i-1})
+\]
+
+depends only on:
+
+- the key,
+- the IV,
+- previous keystream state.
+
+It does not depend on plaintext or ciphertext.
+
+This means the keystream can be generated before message bytes are available.
+
+---
+
+## 8.2 OFB does not require padding
+
+The original draft imported `pad` and `unpad` and later displayed a padded plaintext even though the shown `encrypt(m)` call did not actually pad the message.
+
+The corrected example is:
+
+```python
+from Crypto.Cipher import AES
+import os
+
+key = os.urandom(16)
+iv = os.urandom(16)
+
+message = b"a message secret longer than 128 bits"
+
+cipher = AES.new(key, AES.MODE_OFB, iv=iv)
+ciphertext = cipher.encrypt(message)
+
+cipher = AES.new(key, AES.MODE_OFB, iv=iv)
+recovered = cipher.decrypt(ciphertext)
+
+assert recovered == message
+assert len(ciphertext) == len(message)
+```
+
+---
+
+## 8.3 OFB parallelism
+
+The OFB recurrence is sequential:
+
+\[
+O_i=E_K(O_{i-1}).
+\]
+
+Therefore generating block \(i\) requires block \(i-1\).
+
+**Encryption:** not naturally parallelizable.
+
+**Decryption:** not naturally parallelizable.
+
+However, because the keystream is message-independent, it can be **precomputed sequentially** once the key and IV are known.
+
+Precomputation is not the same thing as parallel computation.
+
+---
+
+## 8.4 IV reuse is catastrophic
+
+If the same key and IV are reused, the same OFB keystream is generated.
+
+For two messages:
+
+\[
+C=P\oplus O,
+\]
+
+\[
+C'=P'\oplus O.
+\]
+
+Then:
+
+\[
+C\oplus C'
+=
+P\oplus P'.
+\]
+
+The keystream disappears.
+
+NIST SP 800-38A requires unique IVs for OFB.
+
+---
+
+## 8.5 Bit flipping
+
+Because
+
+\[
+P=C\oplus O,
+\]
+
+if an attacker flips one ciphertext bit,
+
+\[
+C'=C\oplus\Delta,
+\]
+
+then
+
+\[
+P'=P\oplus\Delta.
+\]
+
+The same bit flips in the recovered plaintext.
+
+There is no authentication failure because OFB itself has no authentication mechanism.
+
+---
+
+# 9. Counter Mode — CTR
+
+CTR is structurally one of the cleanest classical modes.
+
+Instead of feeding output or ciphertext back into the block cipher, CTR encrypts a sequence of distinct **counter blocks**.
+
+Let the counter blocks be
+
+\[
+T_1,T_2,\dots,T_\ell,
+\]
+
+with the fundamental requirement:
+
+\[
+T_i \neq T_j
+\]
+
+for every block-cipher invocation under the same key.
+
+Generate the keystream:
+
+\[
+S_i=E_K(T_i).
+\]
+
+Then:
+
+\[
+C_i=P_i\oplus S_i.
+\]
+
+Decryption is identical:
+
+\[
+P_i=C_i\oplus S_i.
+\]
+
+![CTR mode](/images/ready/padding-and-encryption-modes/image-8.png)
+
+---
+
+## 9.1 Nonce and counter layout
+
+A common layout is:
+
+\[
+T_i = N \| \operatorname{ctr}_i,
+\]
+
+where:
+
+- \(N\) is a per-message nonce,
+- \(\operatorname{ctr}_i\) is a block counter.
+
+The exact partition is protocol-specific.
+
+The security condition is stronger and more precise than saying "use a random IV":
+
+> The same block-cipher input must never be repeated under the same key.
+
+A nonce may therefore be random, sequential, stateful, or otherwise generated—provided the construction guarantees nonrepetition within the allowed usage limits.
+
+---
+
+## 9.2 CTR padding
+
+CTR does not require padding.
+
+For a final short block, only the necessary number of keystream bytes are XORed.
+
+Thus:
+
+\[
+|C|=|P|.
+\]
+
+---
+
+## 9.3 Full parallelism
+
+Unlike CBC, CFB, and OFB, the CTR input blocks can be generated independently:
+
+\[
+T_i=N\|\operatorname{ctr}_i.
+\]
+
+Therefore all values
+
+\[
+E_K(T_i)
+\]
+
+can be computed in parallel.
+
+**Encryption:** parallelizable.
+
+**Decryption:** parallelizable.
+
+**Keystream generation:** parallelizable.
+
+CTR also naturally supports random access if the counter construction makes the block index computable directly.
+
+---
+
+## 9.4 PyCryptodome example
+
+Use a nonce that leaves a comfortable counter field rather than a 15-byte nonce with a one-byte counter.
+
+```python
+from Crypto.Cipher import AES
+import os
+
+message = b"a message secret longer than 128 bits"
+
+key = os.urandom(16)
+nonce = os.urandom(8)
+
+cipher = AES.new(
+    key,
+    AES.MODE_CTR,
+    nonce=nonce,
+)
+ciphertext = cipher.encrypt(message)
+
+cipher = AES.new(
+    key,
+    AES.MODE_CTR,
+    nonce=nonce,
+)
+recovered = cipher.decrypt(ciphertext)
+
+assert recovered == message
+assert len(ciphertext) == len(message)
+
+print("nonce:", nonce.hex())
+print("ct   :", ciphertext.hex())
+```
+
+---
+
+## 9.5 Explicit counter construction
 
 ```python
 from Crypto.Cipher import AES
 from Crypto.Util import Counter
-from Crypto.Util.number import bytes_to_long
 import os
 
-# Define AES key and generate a random IV (Nonce)
-KEY = b"some secret key1"
-IV = os.urandom(16)
+key = os.urandom(16)
+nonce = os.urandom(8)
+message = b"a message secret longer than 128 bits"
 
-m = b"a message secret longer than 128 bits"
-print(len(m) * 8, len(m) * 8 > 128)
+ctr = Counter.new(
+    64,
+    prefix=nonce,
+    initial_value=0,
+    little_endian=False,
+)
 
-#output: 296 True
+cipher = AES.new(key, AES.MODE_CTR, counter=ctr)
+ciphertext = cipher.encrypt(message)
 
-# Convert IV to integer for CTR counter
-ctr = Counter.new(128, initial_value=bytes_to_long(IV))
+ctr = Counter.new(
+    64,
+    prefix=nonce,
+    initial_value=0,
+    little_endian=False,
+)
 
-# Encrypt
-cipher = AES.new(KEY, AES.MODE_CTR, counter=ctr)
-c = cipher.encrypt(m)
-print(c)  #output: b'\xe36\x8b7#;\xa4C\x92z\xb4\xe0\x1aO...'
+cipher = AES.new(key, AES.MODE_CTR, counter=ctr)
+recovered = cipher.decrypt(ciphertext)
 
-# Decrypt (use the same IV and counter)
-ctr = Counter.new(128, initial_value=bytes_to_long(IV))
-cipher = AES.new(KEY, AES.MODE_CTR, counter=ctr)
-m_decr = cipher.decrypt(c)
-print(m_decr)  # b'a message secret longer than 128 bits'
-assert m_decr == m
+assert recovered == message
 ```
 
-And we finish with some key notes:
-- CTR mode is fast and **highly parallelizable**.
-- Encryption and decryption use the **same keystream-generation operation**.
-- It does not require padding because it naturally handles partial final blocks.
-- The counter/nonce input must **never repeat under the same key**.
-- CTR provides confidentiality but **not integrity**; ciphertext bit flips induce controlled plaintext bit flips.
+The 8-byte nonce plus the 8-byte counter forms one 16-byte AES input block.
 
-> In modern applications, use an AEAD construction when you need both confidentiality and authenticity.
+---
 
-## Conclusion
+## 9.6 Counter reuse: the two-time-pad failure
 
-And with that, we wrap up our analysis of **PKCS#7 padding** and the **modes of operation** for block ciphers.
+Suppose two plaintext streams use the same key and the same counter-block sequence:
 
-It's important to note that in real-world applications, messages rarely arrive as an exact multiple of a block size. AES itself always has a **128-bit block size** (its keys may be 128, 192, or 256 bits). Padding is needed only for modes such as ECB/CBC that require complete blocks; stream-like modes such as CTR do not require padding.
+\[
+C=P\oplus S,
+\]
 
-At the low level, encryption and decryption are actually carried out through **modes of operation**.  
-These modes (like ECB, CBC, CTR, etc.) define *how* blocks are processed and linked together, making them a fundamental and powerful tool in our cryptographic arsenal.
+\[
+C'=P'\oplus S.
+\]
 
-Understanding these modes is a crucial step in our journey into cryptography!
+Then:
+
+\[
+C\oplus C'
+=
+P\oplus P'.
+\]
+
+If part of one plaintext is known or predictable, the corresponding part of the other plaintext can immediately be derived.
+
+A compact demonstration:
+
+```python
+from Crypto.Cipher import AES
+
+key = b"some secret key1"
+nonce = b"12345678"
+
+m1 = b"Attack at dawn!!"
+m2 = b"Retreat at noon!"
+
+c1 = AES.new(
+    key,
+    AES.MODE_CTR,
+    nonce=nonce,
+).encrypt(m1)
+
+c2 = AES.new(
+    key,
+    AES.MODE_CTR,
+    nonce=nonce,
+).encrypt(m2)
+
+xor_ciphertexts = bytes(
+    a ^ b
+    for a, b in zip(c1, c2)
+)
+
+xor_plaintexts = bytes(
+    a ^ b
+    for a, b in zip(m1, m2)
+)
+
+assert xor_ciphertexts == xor_plaintexts
+```
+
+The cryptographic failure is caused by keystream reuse, not by a weakness in AES.
+
+---
+
+## 9.7 CTR bit flipping
+
+CTR is malleable for the same XOR reason as OFB.
+
+If:
+
+\[
+C'=C\oplus\Delta,
+\]
+
+then:
+
+\[
+P'=P\oplus\Delta.
+\]
+
+An attacker does not need the key to induce a selected difference in the decrypted plaintext.
+
+Authentication is the missing property.
+
+---
+
+# 10. Error Propagation
+
+Modes differ sharply in how transmission errors or deliberate ciphertext changes propagate.
+
+For full-block variants:
+
+| Mode | Modify one ciphertext block/segment | Effect on recovered plaintext |
+|---|---|---|
+| ECB | corrupted block | corresponding plaintext block becomes unpredictable |
+| CBC | modify \(C_i\) | \(P_i\) becomes unpredictable; \(P_{i+1}\) gets predictable XOR difference |
+| CFB128 | modify \(C_i\) | \(P_i\) gets predictable XOR difference; \(P_{i+1}\) becomes corrupted |
+| OFB | modify bit in \(C_i\) | same bit flips in \(P_i\) only |
+| CTR | modify bit in \(C_i\) | same bit flips in \(P_i\) only |
+
+These are not "integrity features." They are descriptions of malleability and error propagation.
+
+---
+
+# 11. Parallelism and Random Access
+
+| Mode | Encrypt parallel? | Decrypt parallel? | Random access? | Padding? |
+|---|---:|---:|---:|---:|
+| ECB | Yes | Yes | Yes | Yes for arbitrary lengths |
+| CBC | No | Yes | Decryption with previous block | Usually yes |
+| CFB128 | No | Yes | Requires previous ciphertext | No |
+| OFB | No | No | Not naturally | No |
+| CTR | Yes | Yes | Yes | No |
+
+CTR's engineering profile is one reason it became so influential.
+
+But high performance is not enough. Correct nonce/counter management is non-negotiable.
+
+---
+
+# 12. IV and Nonce Requirements Are Mode-Specific
+
+One of the most common implementation errors is treating every public auxiliary value as though it obeyed the same rule.
+
+It does not.
+
+## 12.1 CBC
+
+NIST SP 800-38A requires the IV to be **unpredictable**.
+
+A fresh random IV is the standard practical pattern.
+
+---
+
+## 12.2 CFB
+
+NIST SP 800-38A likewise requires an **unpredictable IV**.
+
+For PyCryptodome, also specify the intended `segment_size` so the code and mathematical model match.
+
+---
+
+## 12.3 OFB
+
+The IV must be **unique** for each encryption under the key according to SP 800-38A.
+
+Reuse regenerates the same keystream.
+
+---
+
+## 12.4 CTR
+
+The critical requirement is that the **counter blocks never repeat under a key**.
+
+If the counter block is constructed as
+
+\[
+nonce \| counter,
+\]
+
+then the nonce/counter allocation policy must ensure the entire 128-bit block sequence is unique.
+
+This includes preventing wraparound.
+
+---
+
+## 12.5 Secrecy is usually not the requirement
+
+IVs and nonces are usually transmitted openly with ciphertext.
+
+The security property comes from proper generation and nonrepetition/unpredictability rules, not from trying to hide these public values.
+
+---
+
+# 13. Deterministic vs Randomized / Nonce-Based Behavior
+
+### ECB
+
+Under a fixed key, encryption is deterministic block by block.
+
+Repeated plaintext blocks are visibly repeated.
+
+### CBC / CFB
+
+The encryption result depends on the IV.
+
+With correctly generated IVs, repeated messages do not deterministically map to the same ciphertext.
+
+### OFB / CTR
+
+The plaintext is XORed with a keystream determined by an IV/nonce/counter schedule.
+
+If that schedule repeats, the keystream repeats and confidentiality can fail dramatically.
+
+---
+
+# 14. A Controlled ECB vs CBC Experiment
+
+```python
+from Crypto.Cipher import AES
+import os
+
+key = os.urandom(16)
+iv = os.urandom(16)
+
+P = (
+    b"A" * 16 +
+    b"B" * 16 +
+    b"A" * 16
+)
+
+ecb = AES.new(key, AES.MODE_ECB)
+C_ecb = ecb.encrypt(P)
+
+cbc = AES.new(key, AES.MODE_CBC, iv=iv)
+C_cbc = cbc.encrypt(P)
+
+print(
+    "ECB first == third:",
+    C_ecb[:16] == C_ecb[32:48],
+)
+
+print(
+    "CBC first == third:",
+    C_cbc[:16] == C_cbc[32:48],
+)
+```
+
+Expected structural behavior:
+
+```text
+ECB first == third: True
+CBC first == third: False
+```
+
+This experiment teaches exactly what chaining changes.
+
+It does **not** imply that CBC automatically supplies integrity or that CBC should be preferred over modern AEAD.
+
+---
+
+# 15. Why Padding Oracles Matter So Much
+
+Suppose CBC decryption returns two visibly different responses:
+
+```text
+ERROR: bad padding
+```
+
+versus
+
+```text
+ERROR: valid padding but malformed message
+```
+
+That one bit of information can be queried repeatedly.
+
+An attacker may then adapt ciphertext bytes until the decrypted suffix accidentally satisfies a valid PKCS#7 pattern.
+
+The oracle leaks whether a manipulated intermediate value has a selected relation with the previous ciphertext block.
+
+Repeated carefully, this can reveal plaintext bytes.
+
+The key lesson is architectural:
+
+```text
+decrypt
+  -> parse
+  -> report detailed failure
+```
+
+is dangerous when unauthenticated attacker-controlled ciphertext reaches the decryptor.
+
+Authenticated-encryption APIs instead aim for:
+
+```text
+authenticate + decrypt
+  -> valid plaintext
+  -> or one authentication failure
+```
+
+without releasing unauthenticated plaintext to the application.
+
+---
+
+# 16. Why Encrypt-then-MAC Was Historically Important
+
+If a system must use a confidentiality-only mode such as CBC or CTR, adding an independent MAC can provide integrity.
+
+The clean classical composition is:
+
+\[
+C = Enc_{K_E}(M),
+\]
+
+\[
+T = MAC_{K_M}(metadata \| C),
+\]
+
+and the receiver verifies the MAC before accepting/decrypting the ciphertext.
+
+This is the **Encrypt-then-MAC** pattern.
+
+The encryption key and MAC key should be distinct cryptographic keys, typically derived from key material using an appropriate KDF.
+
+Modern AEAD schemes package confidentiality and authenticity into one standardized construction, reducing the opportunity for composition mistakes.
+
+---
+
+# 17. Classical Modes vs AEAD
+
+NIST SP 800-38A defines ECB, CBC, CFB, OFB, and CTR as **confidentiality modes**.
+
+NIST SP 800-38D defines GCM as an authenticated-encryption mode with associated data.
+
+The distinction is conceptual:
+
+```text
+Classical confidentiality mode:
+plaintext -> ciphertext
+```
+
+versus
+
+```text
+AEAD:
+plaintext + associated data + nonce
+             |
+             v
+       ciphertext + tag
+```
+
+The authentication tag lets the receiver reject modified data.
+
+Without such authentication, the malleability discussed throughout this article remains relevant.
+
+---
+
+# 18. Modern Status of the NIST Modes
+
+The five classical modes remain foundational and are still specified in NIST SP 800-38A.
+
+However, NIST has decided to revise SP 800-38A. The revision goals include:
+
+- limiting ECB approval to uses specifically permitted elsewhere,
+- clarifying IV and counter-block requirements,
+- emphasizing authentication,
+- incorporating the CBC ciphertext-stealing addendum.
+
+NIST IR 8459, published in 2024, reviews research and implementation issues across the SP 800-38 series.
+
+This is an important historical transition:
+
+> the classical modes remain essential to understand, but modern cryptographic engineering increasingly treats unauthenticated confidentiality as an incomplete interface.
+
+---
+
+# 19. Comparison Table
+
+| Property | ECB | CBC | CFB128 | OFB | CTR |
+|---|---|---|---|---|---|
+| Uses block encryption \(E_K\) | Yes | Yes | Yes | Yes | Yes |
+| Uses block decryption \(D_K\) for message decryption | Yes | Yes | No | No | No |
+| IV / nonce | None | IV | IV | IV | counter-block scheme |
+| Auxiliary-value requirement | — | unpredictable fresh IV | unpredictable fresh IV | unique IV | nonrepeating counter blocks |
+| Padding normally needed | Yes | Yes | No | No | No |
+| Encryption parallel | Yes | No | No | No | Yes |
+| Decryption parallel | Yes | Yes | Yes | No | Yes |
+| Repeated plaintext block leaks directly | Yes | Not directly | Not directly | Not directly | Not directly |
+| Ciphertext malleable without authentication | Yes / block substitution | Yes | Yes | Yes | Yes |
+| Good default for new application encryption? | No | Generally no | Generally no | Generally no | Not alone; authenticate it |
+| Main educational lesson | deterministic leakage | chaining + padding | ciphertext feedback | synchronous keystream | counters + nonce discipline |
+
+---
+
+# 20. Common Mistakes to Avoid
+
+## 20.1 "AES-128 has a 128-bit block, AES-256 has a 256-bit block"
+
+False.
+
+AES always has a 128-bit block size.
+
+AES-128, AES-192, and AES-256 refer to key sizes.
+
+---
+
+## 20.2 "Every AES mode needs padding"
+
+False.
+
+ECB and CBC operate on complete blocks and usually use padding for arbitrary-length messages.
+
+CFB, OFB, and CTR can process non-block-aligned input.
+
+---
+
+## 20.3 "An IV must be secret"
+
+Usually false.
+
+For the modes here, the IV/nonce is ordinarily public.
+
+What matters is satisfying the required generation property.
+
+---
+
+## 20.4 "Unique and unpredictable mean the same thing"
+
+False.
+
+A counter is predictable but can be unique.
+
+A random value can be unpredictable but, without proper bounds and state management, uniqueness is not logically guaranteed.
+
+Mode specifications deliberately distinguish these concepts.
+
+---
+
+## 20.5 "CBC fixes ECB, so CBC is secure"
+
+Incomplete.
+
+CBC fixes ECB's direct repeated-block equality leakage when its IV is correctly generated.
+
+CBC is still:
+
+- unauthenticated,
+- malleable,
+- padding-dependent in the usual form,
+- vulnerable to padding-oracle-style failures when applications expose decryption feedback.
+
+---
+
+## 20.6 "CTR is safe because AES is secure"
+
+Incomplete.
+
+CTR security depends on never repeating its counter-block sequence under the same key.
+
+AES can remain perfectly secure while the CTR construction fails catastrophically because of nonce reuse.
+
+---
+
+## 20.7 "CFB with a known IV is broken"
+
+Too broad.
+
+The IV does not need to be secret.
+
+The standard requires the CFB IV to be unpredictable. A known IV after generation is normal. The chosen-IV oracle experiment demonstrates what happens when an interface violates the IV assumptions.
+
+---
+
+## 20.8 "OFB precomputation means OFB is parallel"
+
+False.
+
+The keystream may be prepared before the message arrives, but each OFB state depends on the preceding state.
+
+CTR is the mode here whose keystream blocks are independently computable from their counters.
+
+---
+
+# 21. One Unified Python Demonstration
+
+```python
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
+import os
+
+
+KEY = os.urandom(16)
+MESSAGE = b"Symmetric cryptography modes are structural wrappers."
+
+
+# ECB
+ecb = AES.new(KEY, AES.MODE_ECB)
+ecb_ct = ecb.encrypt(pad(MESSAGE, 16))
+
+ecb = AES.new(KEY, AES.MODE_ECB)
+ecb_pt = unpad(ecb.decrypt(ecb_ct), 16)
+
+assert ecb_pt == MESSAGE
+
+
+# CBC
+cbc_iv = os.urandom(16)
+
+cbc = AES.new(KEY, AES.MODE_CBC, iv=cbc_iv)
+cbc_ct = cbc.encrypt(pad(MESSAGE, 16))
+
+cbc = AES.new(KEY, AES.MODE_CBC, iv=cbc_iv)
+cbc_pt = unpad(cbc.decrypt(cbc_ct), 16)
+
+assert cbc_pt == MESSAGE
+
+
+# CFB128
+cfb_iv = os.urandom(16)
+
+cfb = AES.new(
+    KEY,
+    AES.MODE_CFB,
+    iv=cfb_iv,
+    segment_size=128,
+)
+cfb_ct = cfb.encrypt(MESSAGE)
+
+cfb = AES.new(
+    KEY,
+    AES.MODE_CFB,
+    iv=cfb_iv,
+    segment_size=128,
+)
+cfb_pt = cfb.decrypt(cfb_ct)
+
+assert cfb_pt == MESSAGE
+
+
+# OFB
+ofb_iv = os.urandom(16)
+
+ofb = AES.new(KEY, AES.MODE_OFB, iv=ofb_iv)
+ofb_ct = ofb.encrypt(MESSAGE)
+
+ofb = AES.new(KEY, AES.MODE_OFB, iv=ofb_iv)
+ofb_pt = ofb.decrypt(ofb_ct)
+
+assert ofb_pt == MESSAGE
+
+
+# CTR
+ctr_nonce = os.urandom(8)
+
+ctr = AES.new(KEY, AES.MODE_CTR, nonce=ctr_nonce)
+ctr_ct = ctr.encrypt(MESSAGE)
+
+ctr = AES.new(KEY, AES.MODE_CTR, nonce=ctr_nonce)
+ctr_pt = ctr.decrypt(ctr_ct)
+
+assert ctr_pt == MESSAGE
+
+
+print("ECB:", ecb_ct.hex())
+print("CBC:", cbc_ct.hex())
+print("CFB:", cfb_ct.hex())
+print("OFB:", ofb_ct.hex())
+print("CTR:", ctr_ct.hex())
+```
+
+The ciphertexts differ because the modes transform block-cipher calls differently and, where applicable, use independent IVs/nonces.
+
+The fact that every decryption succeeds only proves functional correctness of the experiment. It does not mean every mode is equally suitable for a new protocol.
+
+---
+
+# 22. What We Preserved and What We Corrected
+
+The original article already contained the right broad progression:
+
+```text
+padding
+  ->
+ECB
+  ->
+CBC
+  ->
+CFB
+  ->
+OFB
+  ->
+CTR
+```
+
+and that structure is preserved.
+
+It also already included:
+
+- PKCS#7 examples,
+- ECB single- and multi-block examples,
+- the ECB repeated-block experiment,
+- CBC equations,
+- CBC random-IV examples,
+- a patterned CBC experiment,
+- CFB encryption/decryption,
+- a chosen-IV CFB demonstration,
+- OFB keystream reasoning,
+- CTR equations,
+- CTR nonce-reuse reasoning,
+- practical PyCryptodome code.
+
+The important corrections were:
+
+1. **Padding is not required for every mode.**
+2. **CFB code must specify `segment_size=128` when we use CFB128 equations.**
+3. **The CFB oracle example requires attacker control/manipulation of IV selection; merely knowing a correct IV is not the attack.**
+4. **OFB does not need PKCS#7 padding.**
+5. **OFB precomputation is not parallel generation.**
+6. **CBC IVs require unpredictability, not merely casual uniqueness.**
+7. **CTR's true condition is nonrepetition of the full counter blocks under one key.**
+8. **A 15-byte CTR nonce leaves only a one-byte counter in a common nonce/counter split and is a poor general teaching default for multi-block data.**
+9. **ECB's weakness is better described as deterministic pattern leakage and lack of integrity rather than generically as a MITM vulnerability.**
+10. **None of these confidentiality-only modes should be confused with authenticated encryption.**
+
+---
+
+# 23. Conclusion
+
+A block cipher encrypts one fixed-size block.
+
+A mode of operation decides how that primitive behaves over an actual message.
+
+The differences are structural:
+
+### ECB
+
+\[
+C_i=E_K(P_i).
+\]
+
+Simple and parallel, but deterministic and pattern-leaking.
+
+### CBC
+
+\[
+C_i=E_K(P_i\oplus C_{i-1}).
+\]
+
+Chaining hides direct equality patterns but introduces sequential encryption, IV requirements, malleability, and the practical complexity of padding.
+
+### CFB
+
+\[
+C_i=P_i\oplus E_K(C_{i-1}).
+\]
+
+Turns the block cipher into a self-synchronizing stream-like construction.
+
+### OFB
+
+\[
+O_i=E_K(O_{i-1}),
+\qquad
+C_i=P_i\oplus O_i.
+\]
+
+Generates a message-independent synchronous keystream; IV reuse repeats that keystream.
+
+### CTR
+
+\[
+C_i=P_i\oplus E_K(T_i).
+\]
+
+Uses distinct counter blocks, supports full parallelism and arbitrary-length input, but counter reuse creates a two-time-pad failure.
+
+The deeper lesson is that the mode is part of the cryptographic construction.
+
+A secure primitive used under the wrong mode, with the wrong IV rule, with nonce reuse, without authentication, or with unsafe decryption error handling can produce an insecure system without any weakness in AES itself.
+
+That observation leads directly to the next stage of the series:
+
+\[
+\boxed{
+\text{confidentiality}
+\quad\longrightarrow\quad
+\text{authenticated encryption}
+}
+\]
+
+where we will study authentication tags, AEAD, AES-GCM, and the precise security role of nonces and associated data.
+
+---
+
+## References
+
+1. National Institute of Standards and Technology, **SP 800-38A: Recommendation for Block Cipher Modes of Operation: Methods and Techniques**, December 2001.  
+   https://doi.org/10.6028/NIST.SP.800-38A
+
+2. National Institute of Standards and Technology, **Decision to Revise SP 800-38A**, April 2023.  
+   https://csrc.nist.gov/News/2023/decision-to-revise-nist-sp-800-38a
+
+3. National Institute of Standards and Technology, **IR 8459: Report on the Block Cipher Modes of Operation in the NIST SP 800-38 Series**, September 2024.  
+   https://doi.org/10.6028/NIST.IR.8459
+
+4. National Institute of Standards and Technology, **SP 800-38A Addendum: Three Variants of Ciphertext Stealing for CBC Mode**, October 2010.  
+   https://doi.org/10.6028/NIST.SP.800-38A-Add
+
+5. R. Housley, **RFC 5652: Cryptographic Message Syntax (CMS)**, September 2009, Section 6.3.  
+   https://www.rfc-editor.org/rfc/rfc5652
+
+6. National Institute of Standards and Technology, **SP 800-38D: Recommendation for Block Cipher Modes of Operation: Galois/Counter Mode (GCM) and GMAC**, November 2007.  
+   https://doi.org/10.6028/NIST.SP.800-38D
+
+7. PyCryptodome documentation, **Classic modes of operation for symmetric block ciphers**.  
+   https://pycryptodome.readthedocs.io/

@@ -1,587 +1,1999 @@
 ---
 title: "Prime Numbers I: Factorization and Structure"
-description: "A detailed introduction to primes, unique factorization, basic prime properties, and computational exploration of prime structure."
+description: "A detailed reference on prime numbers, Euclid's lemma, unique factorization, p-adic valuations, prime distribution, computational factorization, and the role of primes in cryptography."
 pubDate: "2025-04-28"
-updatedDate: '2026-09-12'
+updatedDate: "2026-09-16"
 topics:
-- "Mathematical Foundations"
-- "Number Theory"
-- "Cryptographic Engineering"
+  - "Mathematical Foundations"
+  - "Number Theory"
+  - "Cryptographic Engineering"
 tags:
-- "primes"
-- "factorization"
-- "fundamental-theorem-of-arithmetic"
-- "python"
+  - "primes"
+  - "factorization"
+  - "fundamental-theorem-of-arithmetic"
+  - "prime-number-theorem"
+  - "python"
 difficulty: "Intermediate"
 series: "Elementary Number Theory Reference"
 seriesOrder: 6
 sourcePath: "experiments/ready-material/primes"
 draft: false
 ---
-- [Prime Numbers (Part I)](#prime-numbers-part-i)
-  - [Primes and Factorization](#primes-and-factorization)
-    - [The Fundamental Theorem of Arithmetic](#the-fundamental-theorem-of-arithmetic)
-    - [Proof of the Fundamental Theorem of Arithmetic](#proof-of-the-fundamental-theorem-of-arithmetic)
-    - [Consequences of Unique Factorization](#consequences-of-unique-factorization)
-  - [Basic Properties of Primes](#basic-properties-of-primes)
-    - [Coprimality with Primes](#coprimality-with-primes)
-    - [Divisibility and Coprimality with Primes](#divisibility-and-coprimality-with-primes)
-    - [Prime Divisibility of Products](#prime-divisibility-of-products)
-    - [Converse of Prime Divisibility](#converse-of-prime-divisibility)
-    - [Divisibility in Multiple Factors](#divisibility-in-multiple-factors)
-  - [Infinitude and Structure of the Primes](#infinitude-and-structure-of-the-primes)
-    - [Gaps Between Primes](#gaps-between-primes)
-    - [The ( p )-adic Valuation](#the--p--adic-valuation)
-  - [Prime Number Theorem](#prime-number-theorem)
-    - [Euler's Totient Function](#eulers-totient-function)
-  - [Generating Large Primes](#generating-large-primes)
-    - [Using PyCryptodome in Python](#using-pycryptodome-in-python)
-    - [Using SageMath](#using-sagemath)
-  - [Numbers Factor as Products of Primes](#numbers-factor-as-products-of-primes)
-    - [Computational Factoring](#computational-factoring)
-  - [A prelude with some Factoring Challenges and Cryptographic Relevance](#a-prelude-with-some-factoring-challenges-and-cryptographic-relevance)
-  - [Wrap-up](#wrap-up)
 
+Prime numbers sit at an unusual intersection of simple definitions and deep structure.
 
-Every positive integer can be written uniquely as a product of prime numbers. For instance:
+A prime is easy to define.
 
-$$
-100 = 2^2 \cdot 5^2.
-$$
+An integer
 
-This fundamental property, while intuitively simple, is surprisingly nontrivial to prove. Moreover, actually *finding* the prime factorization of large numbers, such as integers with several hundred or thousand digits, remains computationally infeasible with current technology. This computational difficulty is the foundation for widely used applications in modern cryptography, including online transactions.
+\[
+p>1
+\]
 
-Since prime numbers are the basic building blocks of the integers, it is natural to study their distribution among the natural numbers. Don Zagier captured this duality in the behavior of primes:
+is prime when its only positive divisors are
 
+\[
+1
+\qquad\text{and}\qquad
+p.
+\]
 
-*There are two facts about the distribution of prime numbers. The first is that they are the most arbitrary and ornery objects studied by mathematicians: they grow like weeds among the natural numbers, seeming to obey no other law than that of chance, and nobody can predict where the next one will sprout. The second fact is even more astonishing, for it states just the opposite: that the prime numbers exhibit stunning regularity, that there are laws governing their behavior, and that they obey these laws with almost military precision.*
+Yet primes control the multiplicative structure of all integers.
 
+For example,
 
-The famous *Riemann Hypothesis* postulates a highly precise description of the distribution of prime numbers and remains the most important unsolved problem in number theory.
+\[
+100=2^2\cdot5^2,
+\]
 
-We will try to lay the foundations for the study of prime numbers by intertwining the themes of *unique factorization*, *integer factorization algorithms*, and the *distribution of primes*. We rigorously establish that every positive integer admits a prime factorization and discuss the challenges involved in factoring large integers. Subsequently, we present classical results concerning primes, including Euclid’s proof of the infinitude of primes and a discussion of the largest known primes. Eventually we will work towards the *Prime Number Theorem* and the *Riemann Hypothesis* as key results describing the asymptotic behavior of prime numbers.
+\[
+986=2\cdot17\cdot29,
+\]
 
-The principal objective of is to develop the *Fundamental Theorem of Arithmetic* (also known as the *Unique Factorization Theorem*), which asserts:
+and
 
-> Every integer $ n \geq 2 $ can be expressed uniquely, up to the order of the factors, as a product of prime numbers.
+\[
+10001=73\cdot137.
+\]
 
-Explicit examples of prime factorizations include:
+These are not merely possible decompositions.
 
-$$
-36 = 2^2 \cdot 3^2, \qquad 986 = 2 \cdot 17 \cdot 29, \qquad 10001 = 73 \cdot 137.
-$$
+They are essentially the **only** prime decompositions of those integers.
+
+That fact is the Fundamental Theorem of Arithmetic.
+
+It tells us that primes are the multiplicative building blocks of the integers.
+
+But it immediately creates a computational tension that matters enormously in cryptography:
+
+\[
+\boxed{
+\text{a factorization exists uniquely}
+\not\Rightarrow
+\text{the factorization is easy to find}.
+}
+\]
+
+This distinction lies behind RSA and the classical integer-factorization problem.
+
+At the same time, primes exhibit a remarkable global distribution: although the next prime may be difficult to predict locally, the Prime Number Theorem describes their asymptotic density with surprising precision.
+
+So in this first prime-number reference we will connect three viewpoints:
+
+\[
+\boxed{
+\text{algebraic structure}
++
+\text{distribution}
++
+\text{computation}.
+}
+\]
 
 ---
 
-## Primes and Factorization
-
-Remember what we said already about divisibility: 
-
-**(Divides):** Let $ a, b \in \mathbb{Z} $. We say that $ a $ *divides* $ b $, written $ a \mid b $, if there exists $ c \in \mathbb{Z} $ such that $ b = ac $.  
-Otherwise, we write $ a \nmid b $.
-
-For example, $ 2 \mid 6 $ and $ -3 \mid 15 $, but $ 3 \nmid 7 $.  
-Note that every integer divides $ 0 $, and $ 0 $ divides only itself.
-
-
-**(Prime and Composite):** An integer $ n > 1 $ is:
-
-- *Prime* if its only positive divisors are $ 1 $ and $ n $.
-- *Composite* if it is not prime.
-
-Prime numbers are often referred to as the *building blocks* of the integers. However, when generalizing to more abstract algebraic structures, it becomes necessary to distinguish between two closely related notions: *prime elements* and *irreducible elements*.
-
-
-**(Prime, Irreducible, and Composite Elements):** Let $ z \geq 2 $ be an integer. Then:
-
-- $ z $ is *prime* if, whenever $ z \mid ab $, then $ z \mid a $ or $ z \mid b $.
-- $ z $ is *irreducible* if its only positive divisors are $ 1 $ and $ z $.
-- $ z $ is *composite* if there exist $ a, b \in \mathbb{N} $ such that $ z = ab $ with $ 2 \leq a, b < z $.
-
-In $ \mathbb{Z} $, the notions of *prime* and *irreducible* coincide. However, in more general rings, these concepts may differ.  
-
-For instance, in the ring $ \mathbb{Z}[\sqrt{10}] $, the number $ 6 $ admits two distinct factorizations:
-
-$$
-6 = 2 \times 3 = (\sqrt{10} - 2)(\sqrt{10} + 2),
-$$
-where $ 2 $ is irreducible but not prime.  
-This highlights that *unique factorization* fails in some rings outside $ \mathbb{Z} $.
-
-A more striking example is found in $ \mathbb{Z}[\sqrt{-5}] $, defined as:
-
-$$
-\mathbb{Z}[\sqrt{-5}] = \{ a + b\sqrt{-5} : a, b \in \mathbb{Z} \}.
-$$
-
-This ring is closed under addition and multiplication and admits a *norm map*:
-
-$$
-N(a + b\sqrt{-5}) = a^2 + 5b^2,
-$$
-which satisfies the multiplicative property $ N(\alpha\beta) = N(\alpha)N(\beta) $.
-
-In $ \mathbb{Z}[\sqrt{-5}] $, the number $ 6 $ factors in two essentially different ways:
-
-$$
-6 = 2 \times 3 = (1+\sqrt{-5})(1-\sqrt{-5}),
-$$
-despite all the elements involved being irreducible.  
-Thus, *unique factorization* fails in this ring as well.
-
-The degree to which unique factorization fails in a ring is quantified by an important invariant called the *class number*, which we will discuss later.
-
-Some basic examples to keep in mind:
-
-- The number $ 1 $ is neither prime nor composite.
-- The first few primes are:
-
-$$
-2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, \ldots
-$$
-
-- The first few composites are:
-
-$$
-4, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20, 21, 22, 24, 25, 26, 27, 28, 30, 32, 33, 34, \ldots
-$$
-
->Every composite integer is divisible by an irreducible.
-
-**Theorem (Euclid's Lemma):** If $ p $ is prime and $ p \mid ab $, then $ p \mid a $ or $ p \mid b $. More generally, if $ p \mid a_1 \cdots a_n $, then $ p $ divides at least one of the factors $ a_i $.
-
-*Proof Sketch:* If $ p \nmid a $, then $\gcd(p,a) = 1$, and thus $ p \mid b $ by properties of greatest common divisors. The general case follows by induction.
-
-**(Perfect Squares and Square-Free Numbers)**:
-- A positive integer $ a $ is a **perfect square** if $ a = n^2 $ for some $ n \in \mathbb{Z} $.  
-  In the prime factorization of a perfect square, every exponent is even.
-
-- A number $ a $ is **square-free** if no prime square divides $ a $.  
-  Equivalently, all exponents in its prime factorization are $ 0 $ or $ 1 $.
-
-
-### The Fundamental Theorem of Arithmetic
-
-We now state one of the cornerstones of number theory.
-
-**Theorem (Fundamental Theorem of Arithmetic).**  
-Every integer $ z $ is either $ 0 $, $ \pm 1 $, or can be uniquely expressed (up to order and units $ \pm 1 $) as:
-
-$$
-z = u \cdot p_1^{\mu_1} \cdots p_n^{\mu_n},
-$$
-where:
-
-- $ u = \pm 1 $,
-- $ p_1 < p_2 < \cdots < p_n $ are primes,
-- $ \mu_i \in \mathbb{N} $ for each $ i $.
-
-Thus, every integer greater than $ 1 $ admits a unique factorization into primes.
-
-The *existence* part follows by an iterative process:  
-- If $ n $ is prime, it is already expressed as a prime power.
-- Otherwise, $ n = n_1 n_2 $, where $ 1 < n_1, n_2 < n $.
-- If either $ n_1 $ or $ n_2 $ is composite, they can be further factored.
-
-Since each new factor is strictly smaller than the previous number and greater than $ 1 $, the process must terminate, resulting in a product of primes.
-
-Thus, for any $ n > 1 $, we ultimately have:
-
-$$
-n = p_1^{a_1} p_2^{a_2} \cdots p_r^{a_r},
-$$
-where the $ p_i $ are distinct primes and $ a_i > 0 $.
-
-
-**Remark:** The Fundamental Theorem of Arithmetic is more delicate than it first appears. Unique factorization can fail in more general settings.
-
-**Theorem (Existence of Prime Factorization):** Every integer $ z \geq 2 $ can be expressed as a product of irreducibles.
-
-The existence part of the Fundamental Theorem of Arithmetic follows by successively factoring composite numbers until only irreducibles remain.
-
-**Lemma.**: In the integers $ \mathbb{Z} $, primes and irreducibles are identical.
-
-This equivalence is crucial, allowing us to equate "product of irreducibles" with "product of primes."
-
-For example, in the ring:
-
-$$
-\mathbb{Z}[\sqrt{-5}] = \{a + b\sqrt{-5} : a, b \in \mathbb{Z}\},
-$$
-the number $ 6 $ admits two distinct factorizations into irreducibles:
-
-$$
-6 = 2 \times 3 = (1+\sqrt{-5})(1-\sqrt{-5}),
-$$
-demonstrating that *unique factorization* does not always hold outside of $ \mathbb{Z} $.
-
-
-To compute primes in a range we gonna use SageMath:
-
-```python
-prime_range(10, 50)
-# Output: [11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
-```
-
-To list composites:
-
-```python
-[n for n in range(10, 30) if not is_prime(n)]
-# Output: [10, 12, 14, 15, 16, 18, 20, 21, 22, 24, 25, 26, 27, 28]
-```
-
-### Proof of the Fundamental Theorem of Arithmetic
-
-Suppose $ n > 1 $ has two prime factorizations:
-
-$$
-n = p_1 p_2 \cdots p_d = q_1 q_2 \cdots q_m.
-$$
-
-Using Euclid's Lemma:
-
-- $ p_1 $ divides $ q_1 q_2 \cdots q_m $,
-- Hence $ p_1 $ divides some $ q_i $, and because $ q_i $ is prime, $ p_1 = q_i $,
-- Cancel $ p_1 $ and $ q_i $ from both sides and continue by induction.
-
-Thus, the two factorizations consist of exactly the same primes, completing the proof.
-
-### Consequences of Unique Factorization
-
-**Corollary:** Suppose:
-
-$$
-a = p_1^{\mu_1} \cdots p_n^{\mu_n}, \quad b = p_1^{\nu_1} \cdots p_n^{\nu_n}
-$$
-are the unique prime factorizations of $ a $ and $ b $. Then:
-
-1. $ b \mid a $ if and only if $ \nu_i \leq \mu_i $ for all $ i $.
-2. \[
-\gcd(a, b) = p_1^{\min(\mu_1, \nu_1)} \cdots p_n^{\min(\mu_n, \nu_n)}.
-$$
-3. $ a $ is a perfect square if and only if every $ \mu_i $ is even.
-4. $ a^2 \mid b^2 $ implies $ a \mid b $.
-5. If $ ab $ is a perfect square and $ \gcd(a, b) = 1 $, then both $ a $ and $ b $ are perfect squares.
+## Table of Contents
+
+- [Prime and composite integers](#prime-and-composite-integers)
+- [Prime versus irreducible](#prime-versus-irreducible)
+- [Euclid’s lemma](#euclids-lemma)
+- [The Fundamental Theorem of Arithmetic](#the-fundamental-theorem-of-arithmetic)
+- [Why a prime factorization exists](#why-a-prime-factorization-exists)
+- [Why the factorization is unique](#why-the-factorization-is-unique)
+- [Consequences of unique factorization](#consequences-of-unique-factorization)
+- [The (p)-adic valuation](#the-p-adic-valuation)
+- [There are infinitely many primes](#there-are-infinitely-many-primes)
+- [Prime gaps](#prime-gaps)
+- [The Prime Number Theorem](#the-prime-number-theorem)
+- [\[
+\frac${B}${\ln B}](#fracbln-b)
+- [A note on the Riemann Hypothesis](#a-note-on-the-riemann-hypothesis)
+- [Prime density and cryptographic prime generation](#prime-density-and-cryptographic-prime-generation)
+- [Generating candidates in Python](#generating-candidates-in-python)
+- [Using PyCryptodome](#using-pycryptodome)
+- [Using SageMath](#using-sagemath)
+- [Factorization as a computational problem](#factorization-as-a-computational-problem)
+- [Input size matters](#input-size-matters)
+- [Primality testing is a different problem](#primality-testing-is-a-different-problem)
+- [Classical and quantum factorization](#classical-and-quantum-factorization)
+- [Historical factoring challenges](#historical-factoring-challenges)
+- [Python and SageMath experiments](#python-and-sagemath-experiments)
+- [Why this matters in cryptography](#why-this-matters-in-cryptography)
+- [The central distinction](#the-central-distinction)
+- [Practice and checkpoint](#practice-and-checkpoint)
+- [References and further reading](#references-and-further-reading)
+- [Next](#next)
 
 ---
 
-## Basic Properties of Primes
+## Prime and composite integers
 
-### Coprimality with Primes
+An integer
 
-**Proposition:** Let $ p $ be a prime. Then for each $ i \in \{1, 2, \ldots, p-1\} $, we have $\gcd(i, p) = 1$; that is, each such $ i $ is coprime to $ p $.
+\[
+p>1
+\]
 
-**Proof.**  
-Let $ i \in \{1, 2, \ldots, p-1\} $.  
-Since $ 1 \leq i < p $, $ i \neq 0 $, and $ p $ is a prime number, the only positive divisors of $ p $ are $ 1 $ and $ p $ itself.
+is **prime** if its only positive divisors are
 
-Suppose $ d = \gcd(i, p) $. Then $ d $ divides both $ i $ and $ p $.  
-Since $ d $ divides $ p $ and $ p $ is prime, $ d $ must be either $ 1 $ or $ p $.  
-But $ d \leq i < p $, hence $ d \neq p $, so $ d = 1 $.  
-Thus, $ \gcd(i, p) = 1 $, and $ i $ is coprime to $ p $.  $\blacksquare$
+\[
+1
+\]
 
+and
 
+\[
+p.
+\]
 
-**Remark:** This property characterizes primes: if $ p > 1 $ and every $ i \in \{1, \ldots, p-1\} $ is coprime to $ p $, then $ p $ must be prime.
+An integer
 
+\[
+n>1
+\]
 
-### Divisibility and Coprimality with Primes
+that is not prime is **composite**.
 
-**Proposition:** Let $ p $ be a prime, and let $ a \in \mathbb{Z} $.  
-Then either $ p \mid a $ or $ \gcd(p, a) = 1 $.
+Equivalently, \(n\) is composite if it can be written as
 
-**Proof.**  
-Assume, for contradiction, that neither $ p \mid a $ nor $ \gcd(p, a) = 1 $.
+\[
+n=ab
+\]
 
-Since $ p $ is prime, its only positive divisors are $ 1 $ and $ p $.  
-As $ \gcd(p, a) $ divides $ p $ and $ \gcd(p, a) \neq p $ (because $ p \nmid a $), we must have $ \gcd(p, a) = 1 $.  
-This contradicts the assumption that $ \gcd(p, a) \neq 1 $.
+with
 
-Thus, either $ p \mid a $ or $ \gcd(p, a) = 1 $.  $\blacksquare$
+\[
+1<a<n
+\]
 
+and
 
+\[
+1<b<n.
+\]
 
-**Remark:** The converse is also true: if for all integers $ a $, either $ p \mid a $ or $ \gcd(p,a) = 1 $, then $ p $ must be prime.
+The integer
 
+\[
+1
+\]
 
-### Prime Divisibility of Products
+is neither prime nor composite.
 
-**Theorem:** Let $ p $ be a prime, and let $ a, b \in \mathbb{Z} $.  
-If $ p \mid ab $, then $ p \mid a $ or $ p \mid b $.
+The first few primes are
 
-**Proof.**  
-Assume $ p \mid ab $ but $ p \nmid a $.  
-By the previous proposition, $ \gcd(p,a) = 1 $.  
-Thus, by basic properties of divisibility, $ p \mid b $.  $\blacksquare$
+\[
+2,3,5,7,11,13,17,19,23,29,31,37,\ldots
+\]
 
-### Converse of Prime Divisibility
+while the first few composite numbers are
 
-**Theorem (Converse):** Let $ p > 1 $ be an integer. If for all $ a, b \in \mathbb{Z} $, the condition $ p \mid ab $ implies $ p \mid a $ or $ p \mid b $, then $ p $ is prime.
+\[
+4,6,8,9,10,12,14,15,16,18,20,21,\ldots
+\]
 
-**Proof.**  
-Assume $ p $ is not prime.  
-Then $ p = ab $ for some $ 1 < a, b < p $.  
-Clearly $ p \mid ab $, but $ p \nmid a $ and $ p \nmid b $, contradicting the given property.  
-Thus, $ p $ must be prime. $\blacksquare$ 
+The prime \(2\) is special because it is the only even prime.
 
+Every integer
 
+\[
+n>2
+\]
 
-### Divisibility in Multiple Factors
-
-**Proposition:** Let $ p $ be a prime, and let $ a_1, a_2, \ldots, a_k \in \mathbb{Z} $.  
-If $ p \mid a_1 a_2 \cdots a_k $, then $ p \mid a_i $ for some $ i \in \{1,2,\ldots,k\} $.
-
-**Proof Sketch.**  
-The case $ k = 2 $ follows by the prime divisibility theorem.  
-The general case follows by induction on $ k $.
-
-So far, we have established several fundamental properties of primes:
-
-- Every integer less than a prime is coprime to it.
-- If a prime divides a product, it divides at least one factor.
-- The converse holds: primes are characterized by this divisibility property.
-- Prime divisibility extends naturally to products of multiple integers.
-
-These results are foundational for the development of modular arithmetic, Euler's theorem, and many deeper theorems in number theory.
-
-
-## Infinitude and Structure of the Primes
-
-
-**Theorem (Euclid).**: There are infinitely many primes.
-
-This fundamental result, first proven by Euclid around 300 BCE, guarantees that primes never "run out." 
-
-**Corollary:** The uniqueness part of the Fundamental Theorem of Arithmetic follows from the equivalence of primes and irreducibles.
-
-**Proposition.**: There are infinitely many primes of the form $ 4n-1 $.
-
-This extends Euclid’s idea into special residue classes.
-
-### Gaps Between Primes
-
-**Proposition:** For any $ k \in \mathbb{N} $, there exist $ k $ consecutive composite numbers.
-
-*Idea:* Consider $ (k+1)! + 2, (k+1)! + 3, \dotsc, (k+1)! + (k+1) $, each divisible by $ 2, 3, \dotsc, k+1 $ respectively.
-
-### The $ p $-adic Valuation
-
-**Definition (Valuation):** Let $ p $ be a prime and $ n \in \mathbb{N} $.  
-The $ p $-adic valuation of $ n $, denoted $ v_p(n) $, is the largest $ k \in \mathbb{N} \cup \{0\} $ such that $ p^k \mid n $.
-
-**Lemma:** For all $ m, n \in \mathbb{N} $ and prime $ p $:
-
-$$
-v_p(mn) = v_p(m) + v_p(n).
-$$
+that is even is divisible by \(2\), and therefore composite.
 
 ---
 
-## Prime Number Theorem
+## Prime versus irreducible
 
-Let $ \pi(x) $ denote the number of prime numbers less than or equal to $ x $. Then:
+Inside the ordinary integers, we often move freely between two descriptions of a prime.
 
-$$
-\lim_{x \to \infty} \frac{\pi(x)}{x / \ln x} = 1.
-$$
+One description is based on factorization.
 
-In words:  
-> For large values of $ x $, the number of primes up to $ x $ is approximately $ \frac{x}{\ln x} $.
+A positive integer \(p>1\) is irreducible when
 
-Thus, primes become less frequent as numbers grow, but in a very precise manner described asymptotically by $ \frac{x}{\ln x} $.
+\[
+p=ab
+\]
 
-For further reference, see [MathWorld: Prime Number Theorem](https://mathworld.wolfram.com/PrimeNumberTheorem.html).
+forces one factor to be a unit.
 
-We can numerically estimate the number of primes between two large numbers using the above approximation in Python: 
+Inside \(\mathbb Z\), the units are
 
-```python
-import numpy as np
+\[
+\pm1.
+\]
 
-n1 = 100000
-n2 = 1000000
+Another description is based on divisibility.
 
-def expected_num_primes(x):
-    return x / np.log(x)
+A nonzero nonunit \(p\) is a **prime element** when:
 
-print(f"Expected number of primes between {n1} and {n2} is {expected_num_primes(n2) - expected_num_primes(n1)}")
-```
+\[
+p\mid ab
+\quad\Longrightarrow\quad
+p\mid a
+\text{ or }
+p\mid b.
+\]
 
+In the integers,
 
-### Euler's Totient Function
+\[
+\boxed{
+\text{prime}
+\iff
+\text{irreducible}.
+}
+\]
 
-We recall that the *Euler totient function* $ \phi(n) $ counts the number of positive integers less than or equal to $ n $ that are coprime to $ n $.
+This equivalence is one of the structural reasons unique factorization works so cleanly in \(\mathbb Z\).
 
-$$
-\phi(n) = \#\{ 1 \leq k \leq n : \gcd(k, n) = 1 \}.
-$$
+But it is not true in every integral domain.
 
-Some fundamental properties: 
+### Why the distinction matters
 
-- If $ p $ is a prime number, then:
+Consider the ring
 
-$$
-\boxed{\phi(p) = p - 1}.
-$$
+\[
+\mathbb Z[\sqrt{-5}]
+=
+\{
+a+b\sqrt{-5}:
+a,b\in\mathbb Z
+\}.
+\]
 
-- **Multiplicative Property:**  
-If $ \gcd(m,n) = 1 $, then:
+Inside this ring,
 
-$$
-\phi(mn) = \phi(m) \cdot \phi(n).
-$$
+\[
+6
+=
+2\cdot3
+\]
 
-- **Formula from Prime Factorization:**  
+but also:
+
+\[
+6
+=
+(1+\sqrt{-5})
+(1-\sqrt{-5}).
+\]
+
+These are genuinely different factorizations into irreducible elements.
+
+The norm
+
+\[
+N(a+b\sqrt{-5})
+=
+a^2+5b^2
+\]
+
+helps show that the relevant factors cannot be decomposed further into nonunits.
+
+So unique factorization can fail outside \(\mathbb Z\).
+
+This distinction eventually leads into deeper algebraic number theory, ideals, and class groups.
+
+For the present reference, however, we work primarily inside:
+
+\[
+\mathbb Z,
+\]
+
+where prime factorization is unique.
+
+---
+
+## Euclid's lemma
+
+One of the key properties distinguishing primes is the following.
+
+### Euclid's Lemma
+
+If \(p\) is prime and
+
+\[
+p\mid ab,
+\]
+
+then:
+
+\[
+\boxed{
+p\mid a
+\quad\text{or}\quad
+p\mid b.
+}
+\]
+
+This is stronger than simply saying that \(p\) has no nontrivial factors.
+
+It tells us how primes interact with products.
+
+### Proof using Bézout's identity
+
+Suppose:
+
+\[
+p\mid ab.
+\]
+
 If:
 
-$$
-n = p_1^{e_1} p_2^{e_2} \cdots p_k^{e_k}
-$$
-is the prime factorization of $ n $, then:
+\[
+p\mid a,
+\]
 
-$$
-\phi(n) = n \left( 1 - \frac{1}{p_1} \right) \left( 1 - \frac{1}{p_2} \right) \cdots \left( 1 - \frac{1}{p_k} \right).
-$$
+we are done.
 
-For further details, see `EulerPhi.md` and [Wikipedia: Euler's Totient Function](https://en.wikipedia.org/wiki/Euler%27s_totient_function).
+Otherwise:
+
+\[
+p\nmid a.
+\]
+
+Since \(p\) is prime, the only possible positive common divisors of \(p\) and \(a\) are \(1\) and \(p\).
+
+But \(p\nmid a\), so:
+
+\[
+\gcd(p,a)=1.
+\]
+
+Bézout's identity therefore gives integers \(u,v\) satisfying:
+
+\[
+up+va=1.
+\]
+
+Multiply everything by \(b\):
+
+\[
+ubp+vab=b.
+\]
+
+Now:
+
+\[
+p\mid ubp,
+\]
+
+and because:
+
+\[
+p\mid ab,
+\]
+
+we also have:
+
+\[
+p\mid vab.
+\]
+
+Therefore \(p\) divides their sum:
+
+\[
+p\mid b.
+\]
+
+Thus:
+
+\[
+\boxed{
+p\mid ab
+\Longrightarrow
+p\mid a
+\text{ or }
+p\mid b.
+}
+\]
+
+### More than two factors
+
+By induction:
+
+\[
+p\mid a_1a_2\cdots a_k
+\]
+
+implies:
+
+\[
+p\mid a_i
+\]
+
+for at least one index \(i\).
+
+This apparently small lemma is the key to proving uniqueness of prime factorization.
 
 ---
 
-## Generating Large Primes
+## The Fundamental Theorem of Arithmetic
 
-### Using PyCryptodome in Python
+The Fundamental Theorem of Arithmetic states that every integer greater than \(1\) can be expressed as a product of primes, and that this decomposition is unique up to the ordering of the factors.
 
-The `PyCryptodome` library provides a simple interface to generate large prime numbers of specified bit length.
+More precisely, every integer
+
+\[
+n>1
+\]
+
+can be written uniquely as:
+
+\[
+\boxed{
+n
+=
+p_1^{\alpha_1}
+p_2^{\alpha_2}
+\cdots
+p_r^{\alpha_r}
+}
+\]
+
+where:
+
+\[
+p_1<p_2<\cdots<p_r
+\]
+
+are distinct primes and:
+
+\[
+\alpha_i\ge1.
+\]
+
+For a nonzero integer \(z\), we may include the sign as a unit:
+
+\[
+z
+=
+u
+p_1^{\alpha_1}
+\cdots
+p_r^{\alpha_r},
+\qquad
+u\in\{-1,1\}.
+\]
+
+The theorem has two logically separate parts:
+
+\[
+\boxed{
+\text{existence}
++
+\text{uniqueness}.
+}
+\]
+
+---
+
+## Why a prime factorization exists
+
+Let:
+
+\[
+n>1.
+\]
+
+If \(n\) is prime, then it is already a product of primes.
+
+If it is composite, then:
+
+\[
+n=ab
+\]
+
+for integers satisfying:
+
+\[
+1<a<n,
+\qquad
+1<b<n.
+\]
+
+If \(a\) and \(b\) are prime, we are done.
+
+If one is composite, factor it again.
+
+Every factor produced is smaller than the composite integer from which it came.
+
+Since positive integers cannot decrease forever, the process must eventually terminate.
+
+At termination, every remaining factor is prime.
+
+Therefore every integer:
+
+\[
+n>1
+\]
+
+has at least one prime factorization.
+
+---
+
+## Why the factorization is unique
+
+Suppose \(n\) has two prime factorizations:
+
+\[
+n
+=
+p_1p_2\cdots p_r
+=
+q_1q_2\cdots q_s.
+\]
+
+Because:
+
+\[
+p_1
+\mid
+q_1q_2\cdots q_s,
+\]
+
+Euclid's lemma tells us that:
+
+\[
+p_1\mid q_j
+\]
+
+for some \(j\).
+
+But both \(p_1\) and \(q_j\) are prime.
+
+Therefore:
+
+\[
+p_1=q_j.
+\]
+
+After reordering the second factorization, cancel the common prime.
+
+We obtain a smaller equality of prime products.
+
+Repeating the argument eventually matches every prime factor on both sides.
+
+Thus the two factorizations differ only in ordering.
+
+Therefore:
+
+\[
+\boxed{
+\text{prime factorization in }\mathbb Z
+\text{ is unique}.
+}
+\]
+
+This is one of the fundamental structural properties of the integers.
+
+---
+
+## Consequences of unique factorization
+
+Prime factorization allows many arithmetic questions to become questions about exponents.
+
+Suppose:
+
+\[
+a
+=
+\prod_p
+p^{\alpha_p}
+\]
+
+and:
+
+\[
+b
+=
+\prod_p
+p^{\beta_p},
+\]
+
+where all but finitely many exponents are zero.
+
+### Divisibility
+
+Then:
+
+\[
+\boxed{
+a\mid b
+\iff
+\alpha_p\le\beta_p
+\text{ for every prime }p.
+}
+\]
+
+For example:
+
+\[
+12
+=
+2^2\cdot3
+\]
+
+divides:
+
+\[
+360
+=
+2^3\cdot3^2\cdot5
+\]
+
+because:
+
+\[
+2\le3
+\]
+
+for the exponent of \(2\), and:
+
+\[
+1\le2
+\]
+
+for the exponent of \(3\).
+
+### Greatest common divisor
+
+The GCD takes the minimum exponent of every prime:
+
+\[
+\boxed{
+\gcd(a,b)
+=
+\prod_p
+p^{\min(\alpha_p,\beta_p)}.
+}
+\]
+
+### Least common multiple
+
+The LCM takes the maximum:
+
+\[
+\boxed{
+\operatorname{lcm}(a,b)
+=
+\prod_p
+p^{\max(\alpha_p,\beta_p)}.
+}
+\]
+
+That immediately explains:
+
+\[
+\gcd(a,b)
+\operatorname{lcm}(a,b)
+=
+|ab|.
+\]
+
+### Perfect squares
+
+An integer is a perfect square exactly when every prime exponent is even.
+
+For example:
+
+\[
+3600
+=
+2^4\cdot3^2\cdot5^2
+\]
+
+is a square because every exponent is even.
+
+Indeed:
+
+\[
+3600=60^2.
+\]
+
+### Square-free integers
+
+A positive integer is **square-free** when no square of a prime divides it.
+
+Equivalently:
+
+\[
+n
+=
+p_1p_2\cdots p_r
+\]
+
+with every prime appearing with exponent exactly \(1\).
+
+For example:
+
+\[
+30
+=
+2\cdot3\cdot5
+\]
+
+is square-free.
+
+But:
+
+\[
+12
+=
+2^2\cdot3
+\]
+
+is not.
+
+Square-free structure will reappear in Korselt's criterion for Carmichael numbers.
+
+---
+
+## The \(p\)-adic valuation
+
+Unique factorization lets us isolate the exponent of one particular prime.
+
+Let \(p\) be prime and let:
+
+\[
+n\neq0.
+\]
+
+The **\(p\)-adic valuation** of \(n\), written:
+
+\[
+v_p(n),
+\]
+
+is the exponent of \(p\) in the prime factorization of \(n\).
+
+Equivalently:
+
+\[
+\boxed{
+v_p(n)
+=
+\max
+\{
+k\ge0:
+p^k\mid n
+\}.
+}
+\]
+
+For example:
+
+\[
+360
+=
+2^3\cdot3^2\cdot5,
+\]
+
+so:
+
+\[
+v_2(360)=3,
+\]
+
+\[
+v_3(360)=2,
+\]
+
+\[
+v_5(360)=1,
+\]
+
+and:
+
+\[
+v_7(360)=0.
+\]
+
+The valuation converts multiplication into addition:
+
+\[
+\boxed{
+v_p(ab)
+=
+v_p(a)+v_p(b).
+}
+\]
+
+Likewise:
+
+\[
+v_p(a^m)
+=
+m\,v_p(a).
+\]
+
+And:
+
+\[
+v_p(\gcd(a,b))
+=
+\min
+\{
+v_p(a),v_p(b)
+\}.
+\]
+
+These identities are simply unique factorization written locally at one prime.
+
+Later, valuations become useful in:
+
+- divisibility arguments,
+- prime-power arithmetic,
+- factorials,
+- lifting exponent arguments,
+- algebraic number theory.
+
+---
+
+## There are infinitely many primes
+
+Prime factorization would be much less interesting if only finitely many primes existed.
+
+Euclid proved that this cannot happen.
+
+### Euclid's proof
+
+Assume there are only finitely many primes:
+
+\[
+p_1,p_2,\ldots,p_k.
+\]
+
+Construct:
+
+\[
+N
+=
+p_1p_2\cdots p_k+1.
+\]
+
+Clearly:
+
+\[
+N>1.
+\]
+
+Therefore \(N\) has some prime divisor \(q\).
+
+But for every \(p_i\),
+
+\[
+N
+\equiv1
+\pmod{p_i}.
+\]
+
+So none of the primes:
+
+\[
+p_1,\ldots,p_k
+\]
+
+divides \(N\).
+
+Therefore \(q\) is a prime that was not on our supposedly complete list.
+
+Contradiction.
+
+Hence:
+
+\[
+\boxed{
+\text{there are infinitely many primes}.
+}
+\]
+
+A subtle point is worth remembering.
+
+The number:
+
+\[
+p_1p_2\cdots p_k+1
+\]
+
+does **not** itself need to be prime.
+
+It merely has a prime divisor that was absent from the original list.
+
+That is enough.
+
+---
+
+## Prime gaps
+
+Although there are infinitely many primes, primes do not appear at fixed intervals.
+
+In fact, there are arbitrarily long runs of consecutive composite integers.
+
+Given any positive integer \(k\), consider:
+
+\[
+(k+1)!+2,
+\]
+
+\[
+(k+1)!+3,
+\]
+
+\[
+\ldots,
+\]
+
+\[
+(k+1)!+(k+1).
+\]
+
+For every:
+
+\[
+j\in\{2,\ldots,k+1\},
+\]
+
+the number:
+
+\[
+(k+1)!+j
+\]
+
+is divisible by \(j\).
+
+Therefore all \(k\) numbers are composite.
+
+So:
+
+\[
+\boxed{
+\text{prime gaps can be arbitrarily large}.
+}
+\]
+
+This does not contradict the fact that primes have a regular global density.
+
+Local irregularity and global statistical structure coexist.
+
+---
+
+## The Prime Number Theorem
+
+Let:
+
+\[
+\pi(x)
+\]
+
+denote the number of primes satisfying:
+
+\[
+p\le x.
+\]
+
+The **Prime Number Theorem** states:
+
+\[
+\boxed{
+\pi(x)
+\sim
+\frac{x}{\ln x}.
+}
+\]
+
+Equivalently:
+
+\[
+\lim_{x\rightarrow\infty}
+\frac{\pi(x)}
+{x/\ln x}
+=
+1.
+\]
+
+So near a large number \(x\), the rough density of primes is:
+
+\[
+\frac1{\ln x}.
+\]
+
+This does not predict exactly where the next prime is located.
+
+Instead, it gives an asymptotic description of how frequently primes occur.
+
+For example, a rough estimate for the number of primes in:
+
+\[
+[A,B]
+\]
+
+is:
+
+\[
+\frac{B}{\ln B}
+-
+\frac{A}{\ln A}.
+\]
+
+For better numerical estimates one can use the logarithmic integral:
+
+\[
+\operatorname{Li}(x).
+\]
+
+The important conceptual lesson is:
+
+\[
+\boxed{
+\text{primes look irregular locally}
+\quad\text{but}\quad
+\text{their global density is highly structured}.
+}
+\]
+
+---
+
+## A note on the Riemann Hypothesis
+
+The Riemann Hypothesis is deeply connected to the distribution of primes, but it should not be described as a formula that predicts the next prime.
+
+Very roughly, the zeros of the Riemann zeta function govern fluctuations in prime-counting formulas.
+
+The Prime Number Theorem gives the leading approximation:
+
+\[
+\pi(x)
+\sim
+\frac{x}{\ln x}.
+\]
+
+The Riemann Hypothesis would imply much stronger control over the error between prime-counting functions and their approximations.
+
+So the connection is:
+
+\[
+\boxed{
+\text{zeta zeros}
+\longleftrightarrow
+\text{fine structure in prime distribution}.
+}
+\]
+
+We do not need that analytic machinery for cryptographic prime generation, but it shows how deep the study of primes eventually becomes.
+
+---
+
+## Prime density and cryptographic prime generation
+
+The Prime Number Theorem also explains something practical.
+
+Suppose we search for a \(k\)-bit prime.
+
+A \(k\)-bit integer has size roughly:
+
+\[
+2^k.
+\]
+
+Near that size, the probability that a random integer is prime is approximately:
+
+\[
+\frac{1}{\ln(2^k)}
+=
+\frac{1}{k\ln2}.
+\]
+
+But except for \(2\), every prime is odd.
+
+If we generate **only odd candidates**, the approximate prime density doubles:
+
+\[
+\boxed{
+\Pr[
+\text{random odd }k\text{-bit candidate is prime}
+]
+\approx
+\frac{2}{k\ln2}.
+}
+\]
+
+So the expected number of odd candidates before encountering a prime is approximately:
+
+\[
+\boxed{
+\frac{k\ln2}{2}.
+}
+\]
+
+For example, around \(2048\) bits this is roughly:
+
+\[
+\frac{2048\ln2}{2}
+\approx
+710.
+\]
+
+This does **not** mean prime generation requires trial division against every possible factor.
+
+Instead, cryptographic prime generation typically follows a pipeline like:
+
+```text
+cryptographic random bits
+        ↓
+force required bit length
+        ↓
+force oddness
+        ↓
+cheap small-prime filtering
+        ↓
+strong primality testing
+        ↓
+candidate accepted as prime
+```
+
+The next prime-number reference will study that primality-testing step in detail.
+
+---
+
+## Generating candidates in Python
+
+A candidate should come from a cryptographically suitable random source.
+
+For example:
+
+```python
+import secrets
+
+
+def random_odd_candidate(bits):
+    if bits < 2:
+        raise ValueError(
+            "bits must be at least 2"
+        )
+
+    candidate = secrets.randbits(bits)
+
+    # Force the most significant bit:
+    # candidate really has 'bits' bits.
+    candidate |= 1 << (bits - 1)
+
+    # Force oddness.
+    candidate |= 1
+
+    return candidate
+```
+
+Now:
+
+```python
+candidate = random_odd_candidate(128)
+
+print(candidate)
+print(candidate.bit_length())
+
+assert candidate.bit_length() == 128
+assert candidate % 2 == 1
+```
+
+This gives us a **prime candidate**.
+
+It does not prove that the candidate is prime.
+
+That distinction matters:
+
+```text
+random odd candidate
+        ≠
+prime
+```
+
+The candidate still needs primality testing.
+
+---
+
+## Using PyCryptodome
+
+For experiments where we want the library to handle prime generation:
 
 ```python
 from Crypto.Util.number import getPrime
 
-# Generate a 128-bit prime
 p = getPrime(128)
-print(p)  # Output: A 128-bit prime number
-print(p.bit_length())  # Output: 128
 
-# Generate a 768-bit prime
+print(p)
+print(p.bit_length())
+
+assert p.bit_length() == 128
+```
+
+Likewise:
+
+```python
 p = getPrime(768)
-print(p)  # Output: A 768-bit prime number
-print(p.bit_length())  # Output: 768
+
+assert p.bit_length() == 768
 ```
 
-### Using SageMath
+For production cryptography, we should generally use the key-generation facilities of the relevant cryptographic library rather than manually assembling cryptographic keys from standalone primes.
 
-In SageMath, generating primes of a given size is straightforward:
-
-```python
-# Generate a random prime in the range [2^127, 2^128]
-p = random_prime(2^128, lbound=2^127)
-print(p)  # Output: A prime number within the specified range
-
-# Check the type of the generated prime
-print(type(p))  # Output: <class 'sage.rings.integer.Integer'>
-
-# Verify the number of bits
-print(p.nbits())  # Output: 128
-```
+The purpose here is to inspect the number-theoretic object itself.
 
 ---
 
+## Using SageMath
 
-## Numbers Factor as Products of Primes
-
-Since we have now established the essential theoretical foundations, our next objective is to discuss additional aspects related to integer factorization. It is important to note that a comprehensive analysis of factorization methods will be carried out later. At this stage, we will restrict ourselves to stating the basic principles, especially since we have already introduced the Fundamental Theorem of Arithmetic.
-
-As a motivating example, consider the integer $ n = 1275 $.
-
-Since the sum of its digits is divisible by $ 3 $, it follows that $ 3 \mid 1275 $. Dividing by $ 3 $ yields:
-$$
-1275 = 3 \times 425.
-$$
-Observing that $ 425 $ ends in $ 5 $, we conclude that $ 5 \mid 425 $, and thus:
-$$
-1275 = 3 \times 5 \times 85.
-$$
-Repeating the process by dividing $ 85 $ again by $ 5 $, we obtain:
-$$
-1275 = 3 \times 5^2 \times 17,
-$$
-where $ 17 $ is prime. Hence, the prime factorization of $ 1275 $ is complete.
-
-This procedure reflects the two general principles about the existence of prime factorization and divisor we talked above.
-
-It is notable that different sequences of divisions still lead to the same prime factorization. For instance:
-$$
-1275 = 5 \times 255, \quad 255 = 5 \times 51, \quad 51 = 17 \times 3,
-$$
-thus confirming once again:
-$$
-1275 = 3 \times 5^2 \times 17.
-$$
-
-This consistency suggests that prime factorizations are unique up to *ordering*.
-
-
-### Computational Factoring
-
-The `factor` command in SageMath factors integers into primes:
+SageMath can generate primes in a chosen range:
 
 ```python
-sage: factor(1275)
+p = random_prime(
+    2**128 - 1,
+    lbound=2**127,
+)
+
+print(p)
+print(p.nbits())
+
+assert p.nbits() == 128
+```
+
+It can also enumerate small primes:
+
+```python
+prime_range(10, 50)
+```
+
+which gives:
+
+```text
+[11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
+```
+
+These utilities hide the primality-testing machinery.
+
+Later we will unpack what "is prime" means computationally.
+
+---
+
+## Factorization as a computational problem
+
+The Fundamental Theorem of Arithmetic tells us that the prime factorization exists uniquely.
+
+It does **not** give us an efficient algorithm for finding it.
+
+Take:
+
+\[
+1275.
+\]
+
+By elementary divisibility:
+
+\[
+1275
+=
+3\cdot425
+\]
+
+and:
+
+\[
+425
+=
+5\cdot85.
+\]
+
+Then:
+
+\[
+85
+=
+5\cdot17.
+\]
+
+So:
+
+\[
+\boxed{
+1275
+=
+3\cdot5^2\cdot17.
+}
+\]
+
+A different sequence of divisions must eventually reach the same prime factors because factorization is unique.
+
+For small integers, this is easy.
+
+For carefully generated cryptographic semiprimes, the computational problem is entirely different.
+
+---
+
+## Input size matters
+
+Suppose the integer to be factored is \(N\).
+
+The natural input size is not \(N\) itself.
+
+It is approximately the number of bits required to represent it:
+
+\[
+\boxed{
+\ell
+=
+\lfloor\log_2N\rfloor+1.
+}
+\]
+
+An algorithm performing:
+
+\[
+O(N)
+\]
+
+operations is therefore exponential in the input length.
+
+Even trial division up to:
+
+\[
+\sqrt N
+\]
+
+requires approximately:
+
+\[
+2^{\ell/2}
+\]
+
+candidate-scale work for an \(\ell\)-bit number.
+
+That is why trial division becomes useless for cryptographic RSA moduli.
+
+More sophisticated classical algorithms exist, including:
+
+- Pollard's \(\rho\),
+- Pollard's \(p-1\),
+- the quadratic sieve,
+- the general number field sieve.
+
+They exploit much deeper mathematical structure than trial division.
+
+We will study these separately rather than compressing all of integer factorization into this foundational article.
+
+---
+
+## Primality testing is a different problem
+
+A very important distinction is:
+
+\[
+\boxed{
+\text{primality testing}
+\neq
+\text{integer factorization}.
+}
+\]
+
+Suppose we are given:
+
+\[
+N.
+\]
+
+The primality-testing problem asks:
+
+> Is \(N\) prime?
+
+The factorization problem asks:
+
+> If \(N\) is composite, what are its prime factors?
+
+A primality test can prove or provide overwhelming evidence that a number is composite without giving us its factors.
+
+For example:
+
+```text
+N is composite
+```
+
+is much less information than:
+
+```text
+N = pq
+```
+
+with explicit \(p\) and \(q\).
+
+This distinction is especially important cryptographically.
+
+Primality testing is known to admit deterministic polynomial-time algorithms.
+
+The AKS result established:
+
+\[
+\boxed{
+\mathrm{PRIMES}\in\mathbf P.
+}
+\]
+
+No polynomial-time classical algorithm is currently known for general integer factorization.
+
+So RSA does **not** rely on it being difficult to determine whether an integer is prime.
+
+RSA relies on the difficulty of recovering the secret factors of a specially generated composite modulus.
+
+---
+
+## Classical and quantum factorization
+
+For classical computation, efficient general factorization of large RSA-style integers remains a hard computational problem.
+
+Quantum computation changes the theoretical situation.
+
+Shor's algorithm gives a polynomial-time quantum algorithm for integer factorization.
+
+This means that a sufficiently large, fault-tolerant quantum computer capable of executing Shor's algorithm at cryptographic scale would break the mathematical hardness assumption underlying RSA.
+
+It is worth separating theory from experimental demonstrations.
+
+In 2001, an NMR-based quantum experiment demonstrated a small instance of Shor's algorithm by factoring:
+
+\[
+15=3\cdot5.
+\]
+
+That experiment was historically important as a demonstration of quantum-control techniques.
+
+It was not evidence that cryptographic-size RSA moduli could then be factored, and the experiment itself did not establish scalability to such sizes.
+
+That distinction remains essential whenever small demonstrations of quantum factoring are discussed.
+
+---
+
+## Historical factoring challenges
+
+RSA Laboratories historically published a sequence of large semiprimes as the **RSA Factoring Challenge**.
+
+The purpose was to provide concrete benchmarks for progress in integer-factorization algorithms.
+
+Researchers succeeded in factoring a number of those challenge integers, and the results helped demonstrate practical advances in algorithms and large-scale computation.
+
+The challenge program itself was discontinued in 2007.
+
+So the old challenge numbers remain valuable historical benchmarks, but they should not be interpreted as an active prize program.
+
+The lesson that remains relevant is broader:
+
+\[
+\boxed{
+\text{factorization security depends on}
+\text{ parameter size}
++
+\text{ algorithmic progress}
++
+\text{ computational resources}.
+}
+\]
+
+This is why cryptographic key sizes cannot be chosen simply by saying that a number "looks large."
+
+---
+
+## Python and SageMath experiments
+
+For small educational integers, we can implement trial factorization directly.
+
+```python
+def trial_factor(n):
+    if n < 2:
+        return []
+
+    factors = []
+
+    d = 2
+
+    while d * d <= n:
+        while n % d == 0:
+            factors.append(d)
+            n //= d
+
+        d += 1
+
+    if n > 1:
+        factors.append(n)
+
+    return factors
+```
+
+Examples:
+
+```python
+assert trial_factor(36) == [2, 2, 3, 3]
+
+assert trial_factor(986) == [
+    2,
+    17,
+    29,
+]
+
+assert trial_factor(1275) == [
+    3,
+    5,
+    5,
+    17,
+]
+```
+
+This implementation exposes the mathematics clearly.
+
+It is not a serious cryptographic factorization algorithm.
+
+### SageMath factorization
+
+SageMath makes small and moderate experiments convenient:
+
+```python
+factor(1275)
+```
+
+returns:
+
+```text
 3 * 5^2 * 17
-
-sage: factor(2007)
-3^2 * 223
-
-sage: factor(31415926535898)
-2 * 3 * 53 * 73 * 2531 * 534697
 ```
 
-An algorithm is said to operate in *polynomial time* if its running time is bounded above by a polynomial function of $ \log_{10}(n) $, where $ n $ is the size of the input. That is, the complexity is measured in terms of the number of digits of $ n $. A more detailed study of complexity theory will be presented in a subsequent analysis.
-
-At present, it remains an open question whether a polynomial-time algorithm for integer factorization exists on classical computers. However, Peter Shor developed a groundbreaking polynomial-time algorithm for factoring integers on quantum computers (see [Shor's algorithm](https://en.wikipedia.org/wiki/Shor%27s_algorithm)). In 2001, researchers at IBM successfully implemented Shor’s algorithm to factor the number $ 15 $ on a prototype quantum computer.
-
----
-
-## A prelude with some Factoring Challenges and Cryptographic Relevance
-
-Many cryptosystems depend on the difficulty of factoring large integers. To bolster confidence in the hardness of factoring, prizes have been offered for factoring challenge numbers.
-
-For example, until 2003, a \$10,000 bounty was offered for factoring the 174-digit number known as *RSA-576*:
-
-$$
-1881988129206079638386972394616504398071635633794173827007\ldots
-$$
-
-This number was eventually factored using sophisticated algorithms. Previous challenges, such as *RSA-155* (a 155-digit number), were also successfully factored, confirming the effectiveness of state-of-the-art techniques like the *Number Field Sieve*.
-
-The current open challenge (RSA-704) involves factoring a 704-bit integer, with a \$30,000 prize:
-
-$$
-74037563479561712828046796097429573142593188889231289084936232\ldots
-$$
-
-Using SageMath, it is easy to verify that RSA-704 is indeed composite:
+Likewise:
 
 ```python
-sage: n = 7403756347956171282804679609742957314259318888... (number continued)
-sage: n.is_prime()
-False
+factor(2007)
 ```
 
-There exist several algorithms for integer factorization. However, determining the optimal method for factoring integers remains an open and profound problem in both mathematics and computer science. A thorough understanding of factorization techniques is essential, especially considering their pivotal role in modern cryptography.
+returns:
 
-The tasks of factoring large integers and efficiently testing the primality of large numbers are both intrinsically difficult. These subjects require distinct and detailed treatment, as they form the foundation upon which many cryptographic protocols are built. 
+```text
+3^2 * 223
+```
 
-Accordingly, a careful and systematic study of integer factorization methods and primality testing algorithms will be indispensable for the continuation of our exploration into cryptographic systems.
+We can inspect the structured result:
+
+```python
+F = factor(1275)
+
+for p, exponent in F:
+    print(p, exponent)
+```
+
+This directly exposes the representation:
+
+\[
+n
+=
+\prod_i
+p_i^{e_i}.
+\]
+
+### Prime versus composite
+
+For small experiments:
+
+```python
+for n in range(10, 30):
+    print(
+        n,
+        is_prime(n),
+    )
+```
+
+In SageMath, `is_prime` handles the primality-testing machinery for us.
+
+That is useful for computation.
+
+But understanding how such testing works is the subject of the next stage.
 
 ---
 
-## Wrap-up
+## Why this matters in cryptography
 
-In this part, we have developed the fundamental notions regarding prime numbers and integer factorizations:
+Prime structure appears throughout cryptography, but in several different roles.
 
-- We introduced the concepts of divisibility, primes, composites and square-free numbers.
-- We proved the *Fundamental Theorem of Arithmetic*, establishing that every integer greater than one can be factored uniquely into primes.
-- We highlighted the special role of primes in modular arithmetic, including basic results such as *Euclid's Lemma* and the behavior of primes in congruences.
-- We briefly introduced the computational difficulty of integer factorization and primality testing, emphasizing their critical importance to modern cryptography.
-- We mentioned the distinction between classical and quantum approaches to factoring, noting the revolutionary impact of Shor’s algorithm on the theory of quantum computation.
+### RSA
 
-This foundational material prepares us for the next stages of study, where these principles will be applied extensively to develop cryptographic schemes, analyze security assumptions, and understand modern public-key infrastructures.
+RSA generates secret primes:
+
+\[
+p
+\qquad\text{and}\qquad
+q
+\]
+
+and publishes:
+
+\[
+N=pq.
+\]
+
+Multiplication is trivial.
+
+Recovering:
+
+\[
+p,q
+\]
+
+from \(N\) is intended to be computationally hard.
+
+So RSA depends directly on the gap between:
+
+\[
+\boxed{
+\text{easy multiplication}
+}
+\]
+
+and:
+
+\[
+\boxed{
+\text{hard factor recovery}.
+}
+\]
+
+### Modular groups
+
+When \(p\) is prime:
+
+\[
+\mathbb Z_p
+\]
+
+is a field.
+
+Therefore every nonzero element has an inverse.
+
+Its multiplicative group has order:
+
+\[
+p-1.
+\]
+
+That simple fact supports:
+
+- finite-field arithmetic,
+- Diffie-Hellman groups,
+- primitive roots,
+- Fermat's little theorem,
+- quadratic residues.
+
+### Prime-order subgroups
+
+Many cryptographic protocols deliberately work inside groups of prime order:
+
+\[
+q.
+\]
+
+Prime order gives particularly clean subgroup structure.
+
+By Lagrange's theorem, a group of prime order has no nontrivial proper subgroups.
+
+That property is extremely useful when reasoning about cryptographic group behavior.
+
+### Prime generation
+
+RSA and many other constructions require large primes that are:
+
+- correctly sized,
+- generated from sufficient entropy,
+- tested appropriately,
+- compatible with the surrounding protocol requirements.
+
+So prime generation itself becomes part of the cryptographic security boundary.
+
+---
+
+## The central distinction
+
+At this stage, four different tasks should no longer be conflated:
+
+```text
+PRIME STRUCTURE
+
+What properties do primes have?
+```
+
+```text
+PRIME DISTRIBUTION
+
+How frequently do primes occur?
+```
+
+```text
+PRIMALITY TESTING
+
+Given n, is n prime?
+```
+
+```text
+FACTORIZATION
+
+Given composite n,
+what are its prime factors?
+```
+
+They are deeply related mathematically.
+
+But computationally, they are different problems.
+
+That distinction is one of the most important lessons to carry forward.
+
+---
+
+## Practice and checkpoint
+
+### Exercise 1 — Prime or composite
+
+Classify:
+
+\[
+1,\quad2,\quad17,\quad21,\quad97,\quad121.
+\]
+
+For every composite value, give a nontrivial factorization.
+
+### Exercise 2 — Euclid's lemma
+
+Suppose:
+
+\[
+7\mid ab
+\]
+
+and:
+
+\[
+7\nmid a.
+\]
+
+Use Bézout's identity to explain why:
+
+\[
+7\mid b.
+\]
+
+Do not merely quote Euclid's lemma.
+
+Reconstruct its proof.
+
+### Exercise 3 — Unique factorization
+
+Factor:
+
+\[
+7560
+\]
+
+into primes.
+
+Then express:
+
+\[
+\gcd(7560,3600)
+\]
+
+and:
+
+\[
+\operatorname{lcm}(7560,3600)
+\]
+
+directly from the prime exponents.
+
+### Exercise 4 — Perfect squares
+
+Without computing a square root directly, determine whether:
+
+\[
+2^8 3^4 5^2 7^6
+\]
+
+is a perfect square.
+
+Now change the exponent of \(7\) from \(6\) to \(5\).
+
+What changes?
+
+### Exercise 5 — Valuations
+
+Compute:
+
+\[
+v_2(3600),
+\]
+
+\[
+v_3(3600),
+\]
+
+and:
+
+\[
+v_5(3600).
+\]
+
+Then verify:
+
+\[
+v_2(3600^3)
+=
+3v_2(3600).
+\]
+
+### Exercise 6 — Arbitrarily long composite runs
+
+Construct five consecutive composite integers using the factorial argument.
+
+Verify the divisibility of each one.
+
+### Exercise 7 — Prime density
+
+Using the Prime Number Theorem, estimate:
+
+\[
+\pi(10^6).
+\]
+
+Then compare the approximation with the actual value using SageMath.
+
+### Exercise 8 — Cryptographic candidate density
+
+For \(k=1024\), estimate:
+
+\[
+\frac{2}{k\ln2}.
+\]
+
+Interpret the result as the approximate probability that a random odd \(1024\)-bit integer is prime.
+
+Then estimate the expected number of candidates before finding a prime.
+
+### Exercise 9 — Factorization versus primality
+
+Explain why the statement:
+
+```text
+N is composite
+```
+
+does not solve the problem:
+
+```text
+find p and q such that N = pq
+```
+
+even though the two problems clearly interact.
+
+### Reader checkpoint
+
+You should now be able to explain:
+
+1. The difference between prime and composite integers.
+2. Why prime and irreducible elements coincide in \(\mathbb Z\).
+3. Why that equivalence need not hold in arbitrary rings.
+4. Euclid's lemma and its connection to Bézout's identity.
+5. The existence and uniqueness parts of the Fundamental Theorem of Arithmetic.
+6. Why prime exponent vectors determine divisibility.
+7. Why GCD uses minimum exponents and LCM uses maximum exponents.
+8. What \(v_p(n)\) measures.
+9. Euclid's proof that infinitely many primes exist.
+10. Why arbitrarily long prime gaps can occur.
+11. What
+    \[
+    \pi(x)\sim\frac{x}{\ln x}
+    \]
+    means.
+12. Why the Prime Number Theorem makes random prime search practical.
+13. Why a random odd candidate is not automatically prime.
+14. Why primality testing and integer factorization are distinct computational problems.
+15. Why RSA depends on factor recovery rather than on primality testing being hard.
+16. Why Shor's algorithm fundamentally changes the theoretical factoring landscape for scalable quantum computers.
+
+If these ideas are clear, we have separated the **structure of primes** from the algorithms needed to recognize them.
+
+That is exactly where the next topic begins.
+
+---
+
+## References and further reading
+
+**G. H. Hardy and E. M. Wright**,  
+*An Introduction to the Theory of Numbers.*
+
+A classical reference for primes, unique factorization, prime distribution, and elementary number theory.
+
+**Tom M. Apostol**,  
+*Introduction to Analytic Number Theory.*
+
+A strong bridge from elementary prime structure to the Prime Number Theorem and analytic number theory.
+
+**Richard Crandall and Carl Pomerance**,  
+*Prime Numbers: A Computational Perspective.*
+
+Especially valuable for primality testing, factorization, prime generation, and computational number theory.
+
+**Victor Shoup**,  
+*A Computational Introduction to Number Theory and Algebra.*
+
+A useful computational treatment of primes, modular arithmetic, algorithms, and algebraic structure.
+
+**Alfred J. Menezes, Paul C. van Oorschot, and Scott A. Vanstone**,  
+*Handbook of Applied Cryptography.*
+
+Connects prime generation and integer factorization directly to public-key cryptography.
+
+**Peter W. Shor**,  
+*Algorithms for Quantum Computation: Discrete Logarithms and Factoring*,  
+1994.
+
+The foundational quantum algorithm showing that integer factorization and discrete logarithms admit polynomial-time quantum algorithms.
+
+**Lieven M. K. Vandersypen et al.**,  
+*Experimental Realization of Shor's Quantum Factoring Algorithm Using Nuclear Magnetic Resonance*,  
+Nature, 2001.
+
+A historically important experimental demonstration using the small instance:
+
+\[
+15=3\cdot5.
+\]
+
+---
+
+## Next
+
+We now know what a prime **is**, why prime factorization exists uniquely, and why finding factors is not the same problem as recognizing primality.
+
+The next computational question is therefore:
+
+> Given a large candidate \(n\), how do we actually decide whether it is prime?
+
+Trial division works for tiny examples.
+
+For cryptographic-size candidates, it does not.
+
+That takes us into:
+
+\[
+\text{Fermat tests}
+\rightarrow
+\text{pseudoprimes}
+\rightarrow
+\text{Carmichael numbers}
+\rightarrow
+\text{Miller-Rabin}
+\rightarrow
+\text{practical prime generation}.
+\]
+
+**Next: Prime Numbers II — Primality Testing and Probable Primes.**

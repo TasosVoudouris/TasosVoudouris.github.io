@@ -1,0 +1,777 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+import {
+	SITE_TITLE,
+	GITHUB_URL,
+} from '../consts';
+
+const LINKEDIN_URL =
+	'https://www.linkedin.com/in/anastasis-voudouris-11724a11b/';
+
+/*
+ * Add the exact Google Scholar profile URL here when ready.
+ *
+ * Example:
+ * const GOOGLE_SCHOLAR_URL =
+ *   'https://scholar.google.com/citations?user=...';
+ */
+const GOOGLE_SCHOLAR_URL = 'https://scholar.google.com/citations?user=kU5Xb5kAAAAJ&hl=el';
+---
+
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<BaseHead
+			title={`About Me | ${SITE_TITLE}`}
+			description="About Anastasis Voudouris, the researcher behind CryptoCave."
+		/>
+	</head>
+
+	<body>
+
+		<Header />
+
+		<main>
+
+			<!-- ================================================== -->
+			<!-- HERO                                               -->
+			<!-- ================================================== -->
+
+			<section class="hero">
+
+				<div class="hero-copy">
+
+					<p class="eyebrow">
+						ABOUT ME
+					</p>
+
+					<h1>
+						Anastasis
+						<span>Voudouris.</span>
+					</h1>
+
+					<p class="intro">
+						PhD Candidate at the University of Piraeus,
+						working in cryptography, cybersecurity,
+						and the study of modern cryptographic systems.
+					</p>
+
+				</div>
+
+
+				<div class="portrait-shell">
+
+					<div class="portrait-placeholder">
+
+						<span class="portrait-mark">
+							AV
+						</span>
+
+						<span class="portrait-label">
+							PHOTO COMING SOON
+						</span>
+
+					</div>
+
+				</div>
+
+			</section>
+
+
+			<!-- ================================================== -->
+			<!-- WHO I AM                                           -->
+			<!-- ================================================== -->
+
+			<section class="content">
+
+				<div class="section-number">
+					01
+				</div>
+
+				<div>
+
+					<p class="label">
+						WHO I AM
+					</p>
+
+					<h2>
+						Researching cryptography
+						from theory to implementation.
+					</h2>
+
+					<p>
+						I am a PhD Candidate at the University of Piraeus
+						with a research focus on cryptography and cybersecurity.
+					</p>
+
+					<p>
+						My interests span the mathematical foundations of
+						cryptography, modern cryptographic protocols,
+						threshold and distributed cryptography,
+						post-quantum cryptography, zero-knowledge proofs,
+						secure implementations, and the analysis of
+						cryptographic systems.
+					</p>
+
+					<p>
+						I am particularly interested in understanding not only
+						how a construction works, but why it works, which
+						assumptions it relies on, how those assumptions appear
+						in code, and what can go wrong when a theoretical
+						construction becomes a real implementation.
+					</p>
+
+				</div>
+
+			</section>
+
+
+			<!-- ================================================== -->
+			<!-- CRYPTOCAVE                                         -->
+			<!-- ================================================== -->
+
+			<section class="content">
+
+				<div class="section-number">
+					02
+				</div>
+
+				<div>
+
+					<p class="label">
+						WHY I BUILT CRYPTOCAVE
+					</p>
+
+					<h2>
+						A place to keep digging.
+					</h2>
+
+					<p>
+						CryptoCave grew from research notes, implementations,
+						experiments, old coursework, debugging sessions,
+						papers, and questions that accumulated while studying
+						cryptography.
+					</p>
+
+					<p>
+						Instead of leaving that material scattered across
+						different repositories and notebooks, I wanted to build
+						a single place where it could be reorganized,
+						corrected, expanded, implemented, and connected.
+					</p>
+
+					<p>
+						The objective is not to present cryptography as a
+						collection of black-box algorithms. The objective is
+						to follow ideas from mathematical foundations to
+						protocol design, implementation, failure cases,
+						cryptanalysis, and current research.
+					</p>
+
+				</div>
+
+			</section>
+
+
+			<!-- ================================================== -->
+			<!-- RESEARCH INTERESTS                                 -->
+			<!-- ================================================== -->
+
+			<section class="content">
+
+				<div class="section-number">
+					03
+				</div>
+
+				<div>
+
+					<p class="label">
+						RESEARCH INTERESTS
+					</p>
+
+					<h2>
+						What I am currently exploring.
+					</h2>
+
+					<div class="interest-grid">
+
+						<span>Applied Cryptography</span>
+						<span>Threshold Cryptography</span>
+
+						<span>Post-Quantum Cryptography</span>
+						<span>Zero-Knowledge Proofs</span>
+
+						<span>Secure Multiparty Computation</span>
+						<span>Public-Key Infrastructure</span>
+
+						<span>Cryptographic Implementations</span>
+						<span>Formal & Security Analysis</span>
+
+						<span>Elliptic-Curve Cryptography</span>
+						<span>Lattice-Based Cryptography</span>
+
+					</div>
+
+				</div>
+
+			</section>
+
+
+			<!-- ================================================== -->
+			<!-- PROFILES                                           -->
+			<!-- ================================================== -->
+
+			<section class="content">
+
+				<div class="section-number">
+					04
+				</div>
+
+				<div>
+
+					<p class="label">
+						PROFILES
+					</p>
+
+					<h2>
+						Research and code elsewhere.
+					</h2>
+
+					<div class="profile-grid">
+
+						<a
+							class="profile-card"
+							href={GITHUB_URL}
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+
+							<span class="profile-type">
+								CODE
+							</span>
+
+							<strong>
+								GitHub
+							</strong>
+
+							<span class="profile-handle">
+								@TasosVoudouris
+							</span>
+
+							<span class="profile-arrow">
+								↗
+							</span>
+
+						</a>
+
+
+						<a
+							class="profile-card"
+							href={LINKEDIN_URL}
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+
+							<span class="profile-type">
+								NETWORK
+							</span>
+
+							<strong>
+								LinkedIn
+							</strong>
+
+							<span class="profile-handle">
+								Anastasis Voudouris
+							</span>
+
+							<span class="profile-arrow">
+								↗
+							</span>
+
+						</a>
+
+
+						{
+							GOOGLE_SCHOLAR_URL ? (
+
+								<a
+									class="profile-card"
+									href={GOOGLE_SCHOLAR_URL}
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+
+									<span class="profile-type">
+										PUBLICATIONS
+									</span>
+
+									<strong>
+										Google Scholar
+									</strong>
+
+									<span class="profile-handle">
+										Research profile
+									</span>
+
+									<span class="profile-arrow">
+										↗
+									</span>
+
+								</a>
+
+							) : (
+
+								<div class="profile-card profile-card-disabled">
+
+									<span class="profile-type">
+										PUBLICATIONS
+									</span>
+
+									<strong>
+										Google Scholar
+									</strong>
+
+									<span class="profile-handle">
+										Profile link coming soon
+									</span>
+
+								</div>
+
+							)
+						}
+
+					</div>
+
+				</div>
+
+			</section>
+
+
+			<!-- ================================================== -->
+			<!-- CLOSING                                            -->
+			<!-- ================================================== -->
+
+			<section class="closing">
+
+				<p>
+					Research begins with
+					<strong>questions.</strong>
+				</p>
+
+				<p>
+					Understanding comes from
+					<strong>digging deeper.</strong>
+				</p>
+
+			</section>
+
+		</main>
+
+		<Footer />
+
+	</body>
+
+</html>
+
+
+<style>
+
+	main {
+		width: min(1080px, calc(100% - 3rem));
+
+		margin: 0 auto;
+	}
+
+
+	/* ================================================== */
+	/* HERO                                               */
+	/* ================================================== */
+
+	.hero {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) 300px;
+
+		align-items: center;
+
+		gap: 5rem;
+
+		padding: 8rem 0 6rem;
+
+		border-bottom: 1px solid #e5e7eb;
+	}
+
+
+	.eyebrow,
+	.label {
+		margin: 0;
+
+		font-family:
+			Consolas,
+			'Courier New',
+			monospace;
+
+		font-size: 0.7rem;
+		font-weight: 700;
+
+		letter-spacing: 0.14em;
+
+		color: #4f46e5;
+	}
+
+
+	h1 {
+		margin: 1rem 0 2rem;
+
+		font-size: clamp(3.8rem, 8vw, 7rem);
+
+		line-height: 0.92;
+
+		letter-spacing: -0.055em;
+
+		color: #111827;
+	}
+
+
+	h1 span {
+		display: block;
+
+		color: #6b7280;
+	}
+
+
+	.intro {
+		max-width: 700px;
+
+		margin: 0;
+
+		font-size: 1.15rem;
+		line-height: 1.8;
+
+		color: #6b7280;
+	}
+
+
+	/* ================================================== */
+	/* PHOTO PLACEHOLDER                                  */
+	/* ================================================== */
+
+	.portrait-shell {
+		width: 100%;
+	}
+
+
+	.portrait-placeholder {
+		aspect-ratio: 4 / 5;
+
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+
+		gap: 1rem;
+
+		background:
+			linear-gradient(
+				135deg,
+				#f7f7ff,
+				#f3f4f6
+			);
+
+		border: 1px solid #dfe1e6;
+	}
+
+
+	.portrait-mark {
+		font-family:
+			Consolas,
+			'Courier New',
+			monospace;
+
+		font-size: 3rem;
+		font-weight: 800;
+
+		letter-spacing: -0.08em;
+
+		color: #4f46e5;
+	}
+
+
+	.portrait-label {
+		font-family:
+			Consolas,
+			'Courier New',
+			monospace;
+
+		font-size: 0.58rem;
+		font-weight: 700;
+
+		letter-spacing: 0.15em;
+
+		color: #9ca3af;
+	}
+
+
+	/* ================================================== */
+	/* CONTENT                                            */
+	/* ================================================== */
+
+	.content {
+		display: grid;
+		grid-template-columns: 80px 1fr;
+
+		gap: 2rem;
+
+		padding: 5rem 0;
+
+		border-bottom: 1px solid #e5e7eb;
+	}
+
+
+	.section-number {
+		font-family:
+			Consolas,
+			'Courier New',
+			monospace;
+
+		color: #9ca3af;
+	}
+
+
+	h2 {
+		max-width: 760px;
+
+		margin: 0.8rem 0 1.8rem;
+
+		font-size: clamp(2rem, 5vw, 3.5rem);
+
+		line-height: 1.05;
+
+		letter-spacing: -0.04em;
+
+		color: #111827;
+	}
+
+
+	.content p:not(.label) {
+		max-width: 760px;
+
+		font-size: 1.03rem;
+		line-height: 1.85;
+
+		color: #5f6875;
+	}
+
+
+	/* ================================================== */
+	/* INTERESTS                                          */
+	/* ================================================== */
+
+	.interest-grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+
+		margin-top: 2rem;
+
+		border-top: 1px solid #e5e7eb;
+	}
+
+
+	.interest-grid span {
+		padding: 1.2rem 0;
+
+		border-bottom: 1px solid #e5e7eb;
+
+		font-weight: 600;
+
+		color: #374151;
+	}
+
+
+	.interest-grid span:nth-child(odd) {
+		padding-right: 2rem;
+	}
+
+
+	/* ================================================== */
+	/* PROFILE LINKS                                      */
+	/* ================================================== */
+
+	.profile-grid {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+
+		gap: 1rem;
+
+		margin-top: 2.5rem;
+	}
+
+
+	.profile-card {
+		position: relative;
+
+		min-height: 170px;
+
+		display: flex;
+		flex-direction: column;
+
+		padding: 1.4rem;
+
+		background: #fafafa;
+
+		border: 1px solid #e5e7eb;
+
+		color: #111827;
+
+		text-decoration: none;
+
+		transition:
+			transform 0.2s ease,
+			border-color 0.2s ease,
+			background 0.2s ease;
+	}
+
+
+	a.profile-card:hover {
+		transform: translateY(-3px);
+
+		background: #ffffff;
+
+		border-color: #a5b4fc;
+	}
+
+
+	.profile-type {
+		margin-bottom: auto;
+
+		font-family:
+			Consolas,
+			'Courier New',
+			monospace;
+
+		font-size: 0.6rem;
+		font-weight: 700;
+
+		letter-spacing: 0.13em;
+
+		color: #4f46e5;
+	}
+
+
+	.profile-card strong {
+		margin-top: 2rem;
+
+		font-size: 1.15rem;
+	}
+
+
+	.profile-handle {
+		margin-top: 0.35rem;
+
+		font-size: 0.78rem;
+
+		color: #8a919d;
+	}
+
+
+	.profile-arrow {
+		position: absolute;
+
+		top: 1.2rem;
+		right: 1.2rem;
+
+		color: #9ca3af;
+	}
+
+
+	.profile-card-disabled {
+		opacity: 0.62;
+	}
+
+
+	/* ================================================== */
+	/* CLOSING                                            */
+	/* ================================================== */
+
+	.closing {
+		padding: 7rem 0;
+	}
+
+
+	.closing p {
+		margin: 0;
+
+		font-size: clamp(2.4rem, 6vw, 5rem);
+
+		line-height: 1.05;
+
+		letter-spacing: -0.05em;
+
+		color: #9ca3af;
+	}
+
+
+	.closing strong {
+		color: #111827;
+	}
+
+
+	/* ================================================== */
+	/* RESPONSIVE                                         */
+	/* ================================================== */
+
+	@media (max-width: 800px) {
+
+		.hero {
+			grid-template-columns: 1fr;
+
+			gap: 3rem;
+
+			padding: 5rem 0 4rem;
+		}
+
+
+		.portrait-shell {
+			max-width: 280px;
+		}
+
+
+		.profile-grid {
+			grid-template-columns: 1fr;
+		}
+
+	}
+
+
+	@media (max-width: 700px) {
+
+		main {
+			width: calc(100% - 2rem);
+		}
+
+
+		.content {
+			grid-template-columns: 1fr;
+		}
+
+
+		.section-number {
+			display: none;
+		}
+
+
+		.interest-grid {
+			grid-template-columns: 1fr;
+		}
+
+
+		.interest-grid span:nth-child(odd) {
+			padding-right: 0;
+		}
+
+	}
+
+</style>

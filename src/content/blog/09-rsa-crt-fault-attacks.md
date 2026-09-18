@@ -1,284 +1,475 @@
 ---
-title: 'Fault Attacks From Zero: How One Wrong RSA Computation Can Reveal a Prime Factor'
-description: CRT makes RSA private operations faster—but if a fault corrupts only one branch, a single incorrect result can expose a factor of the modulus through a GCD.
-pubDate: '2026-09-08'
+title: "Fault Attacks From Zero: How One Wrong RSA Computation Can Reveal a Prime Factor"
+description: "CRT makes RSA private operations faster—but if a fault corrupts only one branch, a single incorrect result can expose a factor of the modulus through a GCD."
+pubDate: "2026-09-08"
+updatedDate: "2026-09-14"
 topics:
-- Public-Key Cryptography
-- Cryptanalysis
-- Implementation Security
+  - "Public-Key Cryptography"
+  - "Cryptanalysis"
+  - "Implementation Security"
 tags:
-- rsa
-- crt
-- fault-attacks
-- bellcore
-- implementation-security
-- cryptography-from-zero
-difficulty: Intermediate
-series: Cryptography From Zero
+  - "rsa"
+  - "crt"
+  - "fault-attacks"
+  - "bellcore"
+  - "implementation-security"
+  - "cryptography-from-zero"
+difficulty: "Intermediate"
+series: "Cryptography From Zero"
 seriesOrder: 10
 draft: false
 ---
-In the previous post, the implementation leaked information because its execution pattern depended on secret bits.
 
-This time the implementation does something different.
+In the previous article, the implementation leaked information even though the final mathematical result was correct.
 
-It computes the **wrong answer**.
+This time the failure is different.
+
+The implementation computes the **wrong answer**.
 
 At first that sounds less dangerous.
 
 If a signature is wrong, verification should fail. So what?
 
-But CRT-RSA has a beautiful—and slightly terrifying—failure mode:
+But CRT-RSA has a remarkably clean — and slightly terrifying — failure mode:
 
-> if one CRT branch is correct and the other is faulty, the wrong output may contain enough algebraic structure to factor the RSA modulus.
+> If one CRT branch remains correct while the other is corrupted, a single faulty RSA result can contain enough algebraic structure to reveal a prime factor of the modulus.
 
-One incorrect computation.
+One faulty computation.
 
 One GCD.
 
-One prime factor.
+One secret prime.
 
-This is one of the cleanest examples I know of why implementation correctness is not only a reliability issue.
+This is one of the clearest examples of why implementation correctness is not merely a reliability concern.
 
-It can be a security boundary.
+It is a cryptographic security boundary.
 
 ![CRT-RSA fault attack](/images/blog/09-crt-rsa-fault.svg)
 
-*CRT-RSA computes independently modulo $p$ and $q$. A fault in only one branch creates an output that is still correct modulo one secret prime—and that asymmetry is exactly what the attacker exploits.*
+*CRT-RSA computes independently modulo \(p\) and \(q\). If a fault corrupts only one branch, the final output may remain correct modulo one secret prime. That asymmetry is exactly what the attacker exploits.*
 
 ---
 
-## Why RSA uses CRT in the first place
+## Table of Contents
 
-Let:
+- [Why RSA uses the Chinese Remainder Theorem](#why-rsa-uses-the-chinese-remainder-theorem)
+- [Injecting one faulty CRT branch](#injecting-one-faulty-crt-branch)
+- [Why one GCD reveals a prime factor](#why-one-gcd-reveals-a-prime-factor)
+- [The stronger single-fault variant](#the-stronger-single-fault-variant)
+- [Why the attack works](#why-the-attack-works)
+- [What kind of fault are we assuming?](#what-kind-of-fault-are-we-assuming)
+- [Mitigation: verify before releasing](#mitigation-verify-before-releasing)
+- [A connection back to the GCD](#a-connection-back-to-the-gcd)
+- [Reproduce the attack](#reproduce-the-attack)
+- [Papers and further reading](#papers-and-further-reading)
+- [What we have learned](#what-we-have-learned)
+- [Next](#next)
 
-$$
+---
+
+## Why RSA uses the Chinese Remainder Theorem
+
+Let
+
+\[
 N=pq
-$$
+\]
 
-be an RSA modulus.
+be an RSA modulus constructed from two secret primes \(p\) and \(q\).
 
-A private RSA operation computes something like:
+A private RSA operation computes a value of the form
 
-$$
-S=M^d\bmod N.
-$$
+\[
+S=M^d\bmod N,
+\]
 
-Instead of doing one large exponentiation modulo $N$, an implementation that knows $p$ and $q$ can compute separately:
+where:
 
-$$
+- \(M\) is an encoded message representative,
+- \(d\) is the private exponent.
+
+A direct exponentiation modulo \(N\) is possible.
+
+But an implementation that knows the factorization
+
+\[
+N=pq
+\]
+
+can perform the computation more efficiently by working separately modulo the two smaller primes.
+
+It computes
+
+\[
 S_p=M^d\bmod p
-$$
+\]
 
-and:
+and
 
-$$
+\[
 S_q=M^d\bmod q.
-$$
+\]
 
-Then the Chinese Remainder Theorem reconstructs the unique value:
+The Chinese Remainder Theorem then reconstructs the unique value
 
-$$
+\[
 S\bmod N
-$$
+\]
 
-satisfying:
+satisfying
 
-$$
+\[
 S\equiv S_p\pmod p
-$$
+\]
 
-and:
+and
 
-$$
+\[
 S\equiv S_q\pmod q.
-$$
+\]
 
-This is much faster because the arithmetic happens modulo the smaller primes.
+Conceptually:
 
-So CRT-RSA is not some strange insecure variant.
+```text
+                     M
+                     │
+          +----------+----------+
+          │                     │
+          ▼                     ▼
 
-It is an optimization.
+     exponentiate            exponentiate
+       modulo p                modulo q
 
-The security problem appears when we add a fault model.
+          │                     │
+          ▼                     ▼
+
+         Sp                    Sq
+
+          +----------+----------+
+                     │
+                     ▼
+
+              CRT recombination
+
+                     │
+                     ▼
+
+                  S mod N
+```
+
+This is not an exotic RSA variant.
+
+CRT-based private operations are a standard optimization.
+
+The security problem appears when we introduce a **fault model**.
 
 ---
 
-Take a tiny RSA example:
+## Injecting one faulty CRT branch
 
-$$
-p=11,\qquad q=13.
-$$
+Take a deliberately tiny RSA instance:
 
-Then:
+\[
+p=11,
+\qquad
+q=13.
+\]
 
-$$
-N=143.
-$$
+Then
 
-Choose:
+\[
+N=pq=143.
+\]
 
-$$
-e=7
-$$
+Choose the public exponent
 
-and:
+\[
+e=7.
+\]
 
-$$
-d=43,
-$$
+For these primes,
 
-because:
+\[
+\lambda(N)
+=
+\operatorname{lcm}(p-1,q-1)
+=
+\operatorname{lcm}(10,12)
+=
+60.
+\]
 
-$$
-7\cdot43\equiv1\pmod{60}.
-$$
+Choose
 
-Let the encoded message representative be:
+\[
+d=43
+\]
 
-$$
+because
+
+\[
+7\cdot43
+=
+301
+\equiv1\pmod{60}.
+\]
+
+So \(d\) is a valid RSA private exponent modulo the Carmichael value
+
+\[
+\lambda(N)=60.
+\]
+
+Notice that
+
+\[
+\varphi(N)
+=
+(p-1)(q-1)
+=
+120,
+\]
+
+so here we are explicitly using the condition
+
+\[
+ed\equiv1\pmod{\lambda(N)},
+\]
+
+which is sufficient for RSA.
+
+Let the encoded message representative be
+
+\[
 M=42.
-$$
+\]
 
-The correct RSA private operation gives:
+The correct RSA private operation gives
 
-$$
-S=42^{43}\bmod143=3.
-$$
+\[
+S
+=
+42^{43}\bmod143
+=
+3.
+\]
 
-And indeed:
+Public verification recovers the message representative:
 
-$$
-3^7\bmod143=42.
-$$
+\[
+S^e
+=
+3^7
+\equiv42\pmod{143}.
+\]
 
-The two CRT branches are:
+So the correct result is
 
-$$
-S_p=42^{43}\bmod11=3
-$$
+\[
+\boxed{
+S=3
+}
+\]
 
-and:
+and the signature equation holds.
 
-$$
-S_q=42^{43}\bmod13=3.
-$$
+### The two CRT branches
 
-Everything agrees.
+Modulo \(p=11\),
 
-Now imagine that during one execution, the computation modulo $p$ is corrupted.
+\[
+S_p
+=
+42^{43}\bmod11
+=
+3.
+\]
 
-Instead of:
+Modulo \(q=13\),
 
-$$
+\[
+S_q
+=
+42^{43}\bmod13
+=
+3.
+\]
+
+Thus the correct result satisfies
+
+\[
+S\equiv3\pmod{11}
+\]
+
+and
+
+\[
+S\equiv3\pmod{13}.
+\]
+
+Everything is consistent.
+
+Now introduce a fault.
+
+Suppose something corrupts only the computation modulo \(p\).
+
+Instead of
+
+\[
 S_p=3,
-$$
+\]
 
-the device obtains:
+the device obtains
 
-$$
+\[
 \widetilde S_p=4.
-$$
+\]
 
-But the $q$ branch remains correct:
+The computation modulo \(q\) remains correct:
 
-$$
+\[
 \widetilde S_q=3.
-$$
+\]
 
-CRT recombination now returns a faulty signature:
+CRT recombination now produces a faulty result
 
-$$
+\[
 \widetilde S=81.
-$$
+\]
 
-So:
+Indeed,
 
-$$
-\widetilde S\equiv4\pmod{11},
-$$
+\[
+81\equiv4\pmod{11},
+\]
+
+while
+
+\[
+81\equiv3\pmod{13}.
+\]
+
+This is the crucial structure:
+
+```text
+correct result S
+
+mod p → correct
+mod q → correct
+```
 
 but:
 
-$$
-\widetilde S\equiv3\pmod{13}.
-$$
+```text
+faulty result S~
 
-The key fact is that the correct and faulty signatures still agree modulo one secret prime.
+mod p → wrong
+mod q → still correct
+```
+
+The faulty value is globally incorrect modulo \(N\), but it remains correct modulo **one secret factor**.
+
+That is exactly what the attacker needs.
 
 ---
 
-## The GCD suddenly becomes a factorization tool
+## Why one GCD reveals a prime factor
 
-Compare:
+Compare the correct result
 
-$$
+\[
 S=3
-$$
+\]
 
-with:
+with the faulty result
 
-$$
+\[
 \widetilde S=81.
-$$
+\]
 
-Their difference is:
+Their difference is
 
-$$
-S-\widetilde S=-78.
-$$
+\[
+S-\widetilde S
+=
+3-81
+=
+-78.
+\]
 
-Because the correct $q$ branch survived,
+Because the \(q\)-branch survived the fault,
 
-$$
+\[
 S\equiv\widetilde S\pmod q.
-$$
+\]
 
-Therefore:
+Therefore,
 
-$$
+\[
 q\mid(S-\widetilde S).
-$$
+\]
 
-But the $p$ branch was corrupted, so generally:
+But the result is not normally correct modulo \(p\), so in the useful fault case,
 
-$$
+\[
 p\nmid(S-\widetilde S).
-$$
+\]
 
-Now compute:
+The difference therefore contains one prime factor of \(N\), but not the other.
 
-$$
+Compute:
+
+\[
 \gcd(S-\widetilde S,N).
-$$
+\]
 
-For our example:
+For our values,
 
-$$
+\[
 \gcd(3-81,143)
 =
 \gcd(-78,143)
 =
 13.
-$$
+\]
 
-We have recovered:
+Thus,
 
-$$
-\boxed{q=13}.
-$$
+\[
+\boxed{
+q=13
+}
+\]
 
-Then:
+and the second factor follows immediately:
 
-$$
-p=\frac{143}{13}=11.
-$$
+\[
+p
+=
+\frac{N}{q}
+=
+\frac{143}{13}
+=
+11.
+\]
 
-RSA is factored.
+The RSA modulus is factored.
 
-The private key is gone.
+Once
 
-In Python, the attack is almost absurdly short:
+\[
+p
+\]
+
+and
+
+\[
+q
+\]
+
+are known, the attacker can reconstruct the private key.
+
+The entire attack in Python is almost absurdly short:
 
 ```python
 from math import gcd
@@ -290,262 +481,699 @@ faulty = 81
 
 factor = gcd(correct - faulty, N)
 
-print(factor)  # 13
+print(factor)
 ```
 
-This is exactly the kind of attack that changed how I think about the phrase:
+Output:
 
-> "The output was only wrong once."
+```text
+13
+```
 
-One wrong output can be enough.
+One incorrect RSA output was enough.
+
+That is why the sentence
+
+> "The signature was wrong only once"
+
+is not reassuring.
+
+For a cryptographic implementation, one structurally wrong output can be catastrophic.
 
 ---
 
-### An even stronger version: the correct signature may not be needed
+## The stronger single-fault variant
 
-There is another elegant observation associated with Arjen Lenstra's 1996 memo.
+The previous attack assumed that the attacker possesses both:
 
-For a valid RSA signature:
+\[
+S
+\]
 
-$$
+and
+
+\[
+\widetilde S.
+\]
+
+But there is an even stronger observation.
+
+For a correct RSA signature,
+
+\[
 S^e\equiv M\pmod N.
-$$
+\]
 
-For our faulty result:
+The faulty signature
 
-$$
-\widetilde S=81.
-$$
+\[
+\widetilde S=81
+\]
 
-Public verification gives:
+does not satisfy this relation globally.
 
-$$
-81^7\bmod143=16,
-$$
+Indeed,
 
-which is wrong globally.
+\[
+81^7\bmod143
+=
+16
+\neq42.
+\]
 
-But because the $q$ branch was still correct:
+So public verification fails.
 
-$$
-\widetilde S^e\equiv M\pmod q.
-$$
+But remember: the computation remained correct modulo \(q\).
+
+Therefore,
+
+\[
+\widetilde S
+\equiv
+S
+\pmod q.
+\]
+
+Raising both sides to the public exponent gives
+
+\[
+\widetilde S^e
+\equiv
+S^e
+\pmod q.
+\]
+
+Since the correct signature satisfies
+
+\[
+S^e\equiv M\pmod q,
+\]
+
+we obtain
+
+\[
+\widetilde S^e
+\equiv
+M
+\pmod q.
+\]
+
+Therefore,
+
+\[
+q
+\mid
+(\widetilde S^e-M).
+\]
+
+Now compute:
+
+\[
+\gcd(\widetilde S^e-M,N).
+\]
+
+In the toy example,
+
+\[
+\widetilde S^e\bmod N
+=
+81^7\bmod143
+=
+16.
+\]
 
 So:
 
-$$
-q\mid(\widetilde S^e-M).
-$$
-
-Compute:
-
-$$
-\gcd(\widetilde S^e-M,N).
-$$
-
-In our toy example:
-
-$$
+\[
 \gcd(16-42,143)
 =
 \gcd(-26,143)
 =
 13.
-$$
+\]
 
-Again:
+Again,
 
-$$
-\boxed{q=13}.
-$$
+\[
+\boxed{
+q=13
+}
+\]
 
-So in this variant, the attacker needs:
+is recovered.
 
-- the public RSA key,
-- the message representative,
-- one faulty signature.
+This version requires only:
 
-The public verification equation itself helps expose the factor.
+- the public modulus \(N\),
+- the public exponent \(e\),
+- the message representative \(M\),
+- one faulty RSA signature \(\widetilde S\).
 
-That is a very powerful lesson:
+The correct signature is unnecessary.
 
-> public verifiability can become part of an attack when the implementation releases a structurally faulty result.
+That is a particularly striking result.
+
+A public verification equation, normally designed to confirm signatures, becomes part of the attack because the faulty output remains correct modulo one hidden prime.
 
 ---
 
-> **Research connection — the Bellcore fault-attack line.**  
-> Boneh, DeMillo, and Lipton showed that faults can break cryptographic implementations even when the underlying mathematics remains sound. Their EUROCRYPT '97 work, *On the Importance of Checking Cryptographic Protocols for Faults*, includes the famous CRT-RSA setting where a faulty computation can reveal a factor of the modulus.
->
-> [Boneh–DeMillo–Lipton publication page](https://crypto.stanford.edu/~dabo/abstracts/faults.html)
->
-> Arjen Lenstra's 1996 memo, *RSA Signature Generation in the Presence of Faults*, described the particularly strong verification-based variant that can use a message and a single faulty CRT-RSA signature.
+## Why the attack works
 
-The important wording here is not:
+The important statement is **not**
 
 ```text
 CRT is insecure
 ```
 
-It is:
+and it is not:
 
 ```text
-CRT creates independent secret-modulus branches
-        ↓
-one-branch fault creates asymmetric correctness
-        ↓
-asymmetry exposes a common divisor
-        ↓
-GCD factors N
+RSA mathematics is broken
 ```
 
-That is a much more precise cryptographic statement.
+The real structure is:
+
+```text
+CRT-RSA
+   ↓
+two computations modulo secret primes
+   ↓
+fault corrupts only one branch
+   ↓
+one branch remains algebraically correct
+   ↓
+faulty output agrees with the correct result
+modulo exactly one secret factor
+   ↓
+difference has a nontrivial common divisor with N
+   ↓
+GCD reveals the factor
+```
+
+Algebraically, if the \(q\)-branch remains correct,
+
+\[
+S\equiv\widetilde S\pmod q.
+\]
+
+Hence
+
+\[
+S-\widetilde S
+\equiv0\pmod q.
+\]
+
+Therefore,
+
+\[
+q\mid(S-\widetilde S).
+\]
+
+But if the \(p\)-branch is genuinely corrupted,
+
+\[
+S\not\equiv\widetilde S\pmod p
+\]
+
+in the useful fault case.
+
+Thus:
+
+\[
+\gcd(S-\widetilde S,pq)=q.
+\]
+
+The GCD acts as a detector for the hidden modular agreement.
+
+This is why CRT creates such an elegant fault attack.
+
+The faulty output remembers which secret modular branch remained correct.
 
 ---
 
-## Mitigate: never release an unchecked private result
+## What kind of fault are we assuming?
 
-The most obvious lesson is:
+Our toy experiment simply changes
 
-> do not let a faulty private computation escape as if it were valid.
+\[
+S_p=3
+\]
 
-For a signature, one conceptual countermeasure is to verify the result before returning it.
+into
 
-If:
+\[
+\widetilde S_p=4.
+\]
 
-$$
+A real attacker obviously does not normally edit an internal Python variable by hand.
+
+Physical and hardware fault attacks instead attempt to disturb a device during computation.
+
+Depending on the target, faults may be induced through mechanisms such as:
+
+- voltage glitches,
+- clock glitches,
+- electromagnetic injection,
+- laser fault injection,
+- temperature manipulation,
+- memory corruption,
+- rowhammer-style effects in appropriate settings,
+- naturally occurring hardware errors.
+
+The resulting fault model matters enormously.
+
+An attacker might cause:
+
+- a random branch result,
+- one skipped instruction,
+- one corrupted register,
+- one corrupted memory word,
+- one incorrect modular multiplication,
+- one branch of a redundant computation to fail.
+
+Our article uses the cleanest model:
+
+\[
+\boxed{
+\text{one CRT branch wrong, one CRT branch correct}
+}
+\]
+
+because it makes the underlying mathematics completely visible.
+
+Real fault analysis asks whether an attacker can create a fault close enough to this model reliably enough to exploit it.
+
+---
+
+## Mitigation: verify before releasing
+
+The most immediate defense follows directly from the attack:
+
+> Do not release a faulty private RSA result.
+
+If a private operation computes
+
+\[
 S=M^d\bmod N,
-$$
+\]
 
-then check the public relation:
+the implementation can verify the public RSA relation before returning the value:
 
-$$
-S^e\bmod N\stackrel{?}=M.
-$$
+\[
+S^e\bmod N
+\stackrel{?}{=}
+M.
+\]
 
-If verification fails:
+Conceptually:
 
 ```text
-do not output the signature
+private CRT computation
+        ↓
+candidate signature S
+        ↓
+public verification
+        ↓
+S^e mod N == M ?
+        │
+     +--+--+
+     │     │
+    yes    no
+     │     │
+     ▼     ▼
+ return   abort
 ```
 
-That simple idea directly targets the attack we just built.
+Our faulty signature gives
 
-Real fault-resistant implementations can use additional techniques as well:
+\[
+81^7\bmod143=16,
+\]
 
-- redundant computations,
-- consistency checks between CRT branches,
+while
+
+\[
+M=42.
+\]
+
+So verification immediately detects the fault.
+
+The signature must not be released.
+
+### Why this directly stops our attack
+
+Both GCD attacks require the attacker to obtain
+
+\[
+\widetilde S.
+\]
+
+If the implementation detects the inconsistency internally and refuses to output the faulty result, the simple attack loses its crucial input.
+
+This leads to a broad implementation principle:
+
+\[
+\boxed{
+\text{check secret-dependent results before exposing them}
+}
+\]
+
+when the threat model requires such protection.
+
+### Other countermeasure families
+
+Fault-resistant implementations may also use:
+
+- redundant computation,
+- CRT consistency checks,
+- duplicated exponentiations,
+- checksum or residue techniques,
+- hardened CRT recombination,
 - infective countermeasures,
-- hardened recombination,
-- hardware-level fault detection,
-- temporal or spatial redundancy.
+- temporal redundancy,
+- spatial redundancy,
+- hardware-level fault sensors.
 
-But, as with side channels, there is no magical one-line universal defense.
+Some approaches attempt to **detect** a fault and abort.
 
-The countermeasure has to match the fault model.
+Others attempt to make a faulty computation unusable to the attacker.
 
-And the implementation has to be analysed under faults, not only under normal execution.
+The details matter.
+
+As with side-channel resistance, there is no universal one-line defense.
+
+The countermeasure must be evaluated against the relevant fault model.
+
+A defense against a single random transient error may not protect against an attacker who can inject multiple carefully timed faults.
 
 ---
 
-This attack also connects several posts in the series in a way I really like.
+## A connection back to the GCD
 
-We first learned the GCD as:
+This attack is also a nice example of why building cryptography from elementary mathematics is useful.
 
-$$
+We first encountered the GCD as something simple:
+
+\[
 \gcd(48,18)=6.
-$$
+\]
 
-Then we used it to decide whether inverses exist.
+Then we used it to determine whether an element is invertible modulo \(n\):
 
-Then we saw shared-prime RSA failures.
+\[
+\gcd(a,n)=1.
+\]
 
-Now the same operation becomes:
+Later we will use the extended Euclidean algorithm to construct modular inverses.
 
-$$
+In RSA, the same operation suddenly becomes:
+
+\[
 \gcd(S-\widetilde S,N)
-$$
+\]
 
-and extracts a secret prime from a faulted cryptographic computation.
+and extracts a secret prime from a faulty private-key computation.
 
-So the GCD never really disappeared.
+Or, in the single-fault version:
 
-We just kept changing the context around it.
-
-That is one of the main reasons I wanted to build this series from the foundations instead of beginning with finished APIs.
-
----
-
-A good toy experiment for the repository is:
-
-```text
-1. generate tiny RSA parameters
-2. compute a correct CRT-RSA result
-3. deliberately corrupt exactly one CRT branch
-4. recombine the faulty result
-5. confirm verification fails
-6. compute gcd(correct - faulty, N)
-7. recover one factor
-```
-
-Then repeat the experiment using only:
-
-```text
-message
-faulty signature
-public exponent
-N
-```
-
-and compute:
-
-$$
+\[
 \gcd(\widetilde S^e-M,N).
-$$
+\]
 
-The result should make the fault mechanism almost impossible to forget.
+The GCD never disappeared.
+
+The cryptographic context around it changed.
+
+That is one of the reasons for building this series from elementary number theory instead of beginning with high-level APIs.
+
+A simple operation can reappear much later as the core of a devastating attack.
 
 ---
 
-We have now seen two implementation-level failures with very different shapes:
+## Reproduce the attack
+
+A good exercise is to implement the entire sequence rather than hard-code the final faulty value.
+
+Start with:
+
+```python
+from math import gcd
+
+p = 11
+q = 13
+
+N = p * q
+
+e = 7
+d = 43
+
+M = 42
+```
+
+Compute the correct private operation:
+
+```python
+S = pow(M, d, N)
+
+assert S == 3
+assert pow(S, e, N) == M
+```
+
+Then compute the two CRT branches:
+
+```python
+S_p = pow(M, d, p)
+S_q = pow(M, d, q)
+
+assert S_p == 3
+assert S_q == 3
+```
+
+Now deliberately corrupt only one branch:
+
+```python
+faulty_S_p = 4
+faulty_S_q = S_q
+```
+
+For this tiny example, search for the unique CRT recombination:
+
+```python
+faulty = None
+
+for candidate in range(N):
+    if (
+        candidate % p == faulty_S_p
+        and candidate % q == faulty_S_q
+    ):
+        faulty = candidate
+        break
+
+assert faulty == 81
+```
+
+Confirm that verification fails:
+
+```python
+assert pow(faulty, e, N) != M
+```
+
+### Attack 1 — correct and faulty outputs
+
+```python
+factor_1 = gcd(S - faulty, N)
+
+print(factor_1)
+
+assert factor_1 in (p, q)
+```
+
+Output:
 
 ```text
-side channel:
-correct output
-+ observable execution behavior
-→ secret leakage
+13
+```
 
-fault attack:
+### Attack 2 — one faulty output only
+
+```python
+verification_value = pow(faulty, e, N)
+
+factor_2 = gcd(
+    verification_value - M,
+    N,
+)
+
+print(factor_2)
+
+assert factor_2 in (p, q)
+```
+
+Again:
+
+```text
+13
+```
+
+Finally:
+
+```python
+other_factor = N // factor_2
+
+print(other_factor)
+
+assert {factor_2, other_factor} == {p, q}
+```
+
+The complete factorization has been recovered.
+
+### Reader checkpoint
+
+Make sure you can explain:
+
+1. Why CRT-RSA uses two independent modular computations.
+2. Why the faulty result remains correct modulo \(q\).
+3. Why this implies
+   \[
+   q\mid(S-\widetilde S).
+   \]
+4. Why the GCD does not normally return all of \(N\).
+5. Why knowing one factor immediately reveals the other.
+6. Why the stronger variant does not need the correct signature.
+7. Why verifying the private result before release blocks this simple attack.
+8. Why CRT itself is not "broken."
+
+The essential structure is:
+
+\[
+\boxed{
+\text{partial correctness}
+\rightarrow
+\text{hidden divisibility relation}
+\rightarrow
+\gcd
+\rightarrow
+\text{factorization}
+}
+\]
+
+---
+
+## Papers and further reading
+
+### Boneh, DeMillo, and Lipton
+
+**Dan Boneh, Richard A. DeMillo, and Richard J. Lipton**,  
+*On the Importance of Checking Cryptographic Protocols for Faults*,  
+EUROCRYPT 1997.
+
+This work is one of the foundational references showing that faults in cryptographic computations can lead to catastrophic key recovery even when the underlying mathematical primitive remains secure.
+
+The CRT-RSA setting is the classic example.
+
+### Lenstra's RSA fault observation
+
+**Arjen K. Lenstra**,  
+*Memo on RSA Signature Generation in the Presence of Faults*, 1996.
+
+Lenstra observed the particularly strong form of the RSA fault attack in which the public verification equation can be combined with one faulty signature to recover a factor without needing the corresponding correct signature.
+
+### Bellcore terminology
+
+This family of attacks is often informally referred to as the **Bellcore attack**, reflecting the environment in which the early fault-attack work was developed.
+
+The important lesson is broader than the historical name:
+
+\[
+\boxed{
+\text{faults must be included in the implementation threat model}
+}
+\]
+
+for systems where an attacker may influence physical computation.
+
+---
+
+## What we have learned
+
+The previous article and this one expose two very different implementation failures.
+
+A side channel gives:
+
+```text
+correct computation
+        +
+observable implementation behavior
+        ↓
+information leakage
+```
+
+A fault attack gives:
+
+```text
 incorrect computation
-+ algebraic structure
-→ secret-key recovery
+        +
+remaining algebraic structure
+        ↓
+key recovery
 ```
 
-Both leave the underlying hard mathematical problem untouched.
+Neither attack requires breaking the underlying hard mathematical problem.
 
-That distinction matters.
+For timing attacks, RSA is not broken because modular exponentiation became mathematically easy.
 
-The cryptosystem is not merely:
+For the CRT fault attack, factoring is not solved generically.
+
+Instead, the implementation accidentally gives the attacker a value containing a hidden factorization relation.
+
+This leads to an increasingly important view of cryptography:
 
 ```text
-the theorem
+cryptographic security
+        ≠
+only the theorem
+
+cryptographic security
+        =
+mathematics
++
+protocol
++
+parameters
++
+implementation
++
+attacker model
 ```
 
-or:
+The machine executing the formula is part of the cryptographic system.
 
-```text
-the formula
-```
+---
 
-It is the formula running on a real machine under an attacker model.
+## Next
 
-For the next post, I want to step back from attacks for a moment and build another foundational tool that has already appeared implicitly several times:
+We have already used the Chinese Remainder Theorem several times without stopping to build it carefully.
 
-**the Chinese Remainder Theorem itself.**
+It appeared here because CRT allows RSA to perform two smaller private computations and reconstruct one result.
 
-We used CRT inside RSA.
+It appeared earlier when several small-subgroup leaks revealed:
 
-We used CRT to combine subgroup leakage residues.
+\[
+d\bmod3,
+\qquad
+d\bmod4,
+\qquad
+d\bmod5,
+\]
 
-Now it is time to understand why reconstruction from several modular views works at all.
+and CRT combined those modular views into one value.
 
-**Next:** *The Chinese Remainder Theorem: Reconstructing One Secret From Several Modular Worlds.*
+So before continuing deeper into RSA and cryptanalysis, it is worth understanding the theorem itself.
+
+Why can several congruences describe one unique number modulo a product?
+
+How do we reconstruct that number?
+
+And why does coprimality matter?
+
+**Next: The Chinese Remainder Theorem — Reconstructing One Value From Several Modular Worlds.**

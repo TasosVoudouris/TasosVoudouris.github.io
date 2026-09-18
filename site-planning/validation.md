@@ -1,6 +1,6 @@
-# Validation notes — CryptoCave canonical master v6.11
+# Validation notes — CryptoCave canonical master v6.12
 
-Validated on 2026-09-14 after the Secret Sharing/MPC consolidation and the Ross-course / historical SageMath audit batch.
+Validated on 2026-09-18 after the Secret Sharing/MPC consolidation, Ross-course / historical SageMath audit batch, and the Randomness + Discrete Logarithm series refresh.
 
 ## Secret Sharing source accounting
 
@@ -38,7 +38,10 @@ The human-readable summary is `site-planning/secret-sharing-cleanup.md`.
 - Duplicate series positions: **0**.
 - Zero-based/gapped series positions: **0**.
 - Missing `sourcePath` targets: **0**.
-- Missing local `/images/...` assets: **0**.
+- Missing local `/images/...` assets: **0** across **120** Markdown/HTML image references.
+- Broken internal `/blog/.../` article links: **0**.
+- Broken rendered local heading/TOC anchors: **0**.
+- Duplicate article titles: **0**.
 - Unbalanced Markdown code fences: **0**.
 
 Canonical content preflight:
@@ -200,6 +203,42 @@ After the Ross/Sage integration, the following established suites were rerun fro
 
 All four newly introduced executable companions also pass their self-tests.
 
+## v6.12 pre-push repair pass
+
+The 2026-09-18 release pass repaired integration defects introduced by the large mathematics/cryptography refresh without weakening the content schema:
+
+- normalized malformed YAML frontmatter in **20** elliptic-curve/lattice articles;
+- removed the stale nonexistent `experiments/ready-material/modes` source path;
+- rebuilt clean H2-only tables of contents in **78** long-form articles using Astro's generated heading IDs;
+- removed redundant hand-written Previous/Next article links from the refreshed Randomness and DLOG series, leaving `BlogPost.astro` as the canonical automatic series navigator;
+- expanded `check-content.mjs` to validate raw-HTML local images, internal `/blog/.../` links, duplicate titles, and rendered local anchors;
+- aligned the Astro content schema with the one-based series convention by requiring positive `seriesOrder` values;
+- repaired two mojibake experiment filenames with ASCII-safe names;
+- removed the undeclared `pycryptodome` dependency from the BSGS/Pohlig–Hellman teaching scripts and revalidated both scripts.
+
+Release-pass checks:
+
+```text
+CryptoCave content preflight: OK (208 articles, 24 series, 30 topics).
+Rendered local-anchor validation: 0 broken anchors.
+Local image validation: 120/120 references resolve.
+Python syntax compilation under experiments/: PASS.
+Randomness companion scripts: 4/4 PASS.
+BSGS standalone companion: PASS.
+Pohlig–Hellman standalone companion: PASS, exhaustive x=0..335.
+Pollard-rho / BSGS / brute-force EC comparison scripts: PASS.
+Hash Functions & MACs: 9/9 PASS.
+Kasiski/Vigenère: 17/17 PASS.
+Matsui linear cryptanalysis: 14/14 PASS.
+RSA Håstad/Wiener/Coppersmith: 7/7, 8/8, 10/10 PASS.
+MPC dependency-free run_all: PASS.
+Threshold/FROST v0.5: 141/141 + 29 subtests PASS.
+Oblivious Transfer run_all: PASS.
+Zero-Knowledge companion run_all: PASS.
+```
+
+The native Astro production build remains a local release gate because this review environment contains a Windows `node_modules` snapshot while running Linux, and its Node version is below the repository's declared `>=22.19.0` engine. Run the clean-install gate with Node 24 before push.
+
 ## Compact-source policy
 
 The release archive is prepared with:
@@ -228,4 +267,4 @@ npm run build
 npm run preview
 ```
 
-Do not overlay v6.11 onto an older CryptoCave folder.
+Do not overlay v6.12 onto an older CryptoCave folder.

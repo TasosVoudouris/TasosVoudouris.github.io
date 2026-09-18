@@ -25,18 +25,18 @@ Think of this as your personal Python Cheatsheet—a quick reference guide that 
 ## Table of Contents  
 
 - [Strings & byte strings](#strings--byte-strings)
-- [Understanding `[0]` in Indexing](##Understanding-`[0]`-in-Indexing)
-- [String concatenation](#string-concatenation)
-- [Lists / Dictionaries](#lists--dictionaries)
-- [List Comprehension](#list-comprehension)
-- [File Read/Write](#file-readwrite)
+- [Working with ASCII, Hexadecimal, and Bytes in Python](#working-with-ascii-hexadecimal-and-bytes-in-python)
 - [ASCII <==> Unicode (ord() & chr())](#ascii--unicode-ord--chr)
 - [Hexadecimal <==> Decimal (0x & hex())](#hexadecimal--decimal-0x--hex)
-- [Integer ==> Bytes (bytes([...]))](#integer--bytes-bytes)
+- [Integer ==> Bytes (bytes(\[…\]))](#integer--bytes-bytes)
 - [Hexadecimal <==> Bytes (bytes.fromhex() & hex())](#hexadecimal--bytes-bytesfromhex--hex)
 - [bytes_to_long() & long_to_bytes()](#bytes_to_long--long_to_bytes)
-
-
+- [How Can We Transmit the “Backspace” Character?](#how-can-we-transmit-the-backspace-character)
+- [Lists / Dictionaries](#lists--dictionaries)
+- [List Comprehension](#list-comprehension)
+- [Lists and the zip() Function](#lists-and-the-zip-function)
+- [String Concatenation](#string-concatenation)
+- [File Read/Write](#file-readwrite)
 
 ## Strings & byte strings  
 

@@ -1,67 +1,69 @@
 ---
-title: 'Prime Numbers for Cryptographers: From Trial Division to Miller-Rabin'
-description: Why cryptography needs large primes, why trial division stops scaling, how Fermat pseudoprimes fool naive tests, and how Miller-Rabin turns modular structure into a practical probable-prime test.
-pubDate: '2026-09-08'
+title: "Prime Numbers for Cryptographers: From Trial Division to Miller-Rabin"
+description: "Why cryptography needs large primes, why trial division stops scaling, how Fermat pseudoprimes fool naive tests, and how Miller-Rabin turns modular structure into a practical probable-prime test."
+pubDate: "2026-09-08"
+updatedDate: "2026-09-14"
 topics:
-- Number Theory
-- Public-Key Cryptography
+  - "Number Theory"
+  - "Public-Key Cryptography"
 tags:
-- primes
-- primality-testing
-- fermat
-- miller-rabin
-- rsa
-- cryptography-from-zero
-difficulty: Introductory
-series: Cryptography From Zero
+  - "primes"
+  - "primality-testing"
+  - "fermat"
+  - "miller-rabin"
+  - "rsa"
+  - "cryptography-from-zero"
+difficulty: "Introductory"
+series: "Cryptography From Zero"
 seriesOrder: 12
 draft: false
 ---
+
 We have been using prime numbers almost from the beginning of this series.
 
-Modulo a prime, every non-zero residue has an inverse.
+Modulo a prime, every nonzero residue has an inverse.
 
-Diffie-Hellman likes prime-order groups.
+Diffie-Hellman often works inside groups of large prime order.
 
-RSA starts by generating two large primes.
+RSA begins by generating large primes.
 
-And later, finite fields will depend on primes again.
+Later, finite fields, elliptic curves, and several post-quantum constructions will make us think carefully about primes again.
 
-So at some point the obvious question becomes unavoidable:
+So eventually one question becomes unavoidable:
 
-> If the prime is hundreds or thousands of bits long, how do we know it is actually prime?
+> If a candidate prime contains hundreds or thousands of bits, how do we know that it is actually prime?
 
-For a small number, I can try divisors.
+For a small number, we can simply try divisors.
 
-For a cryptographic number, that idea falls apart very quickly.
+For a cryptographic-size number, that strategy quickly becomes useless.
 
-This is where primality testing becomes its own computational problem.
+Primality testing therefore becomes its own computational problem.
 
-And one thing I find especially interesting is that the practical solution does not begin by trying harder to factor the number.
+And the practical solution is interesting because it does not begin by trying harder to factor the number.
 
-It asks a different question:
+Instead, it asks:
 
-> Does this number behave the way a prime is forced to behave?
+> **Does this number behave in a way that every prime is forced to behave?**
 
-That takes us from Fermat's little theorem to pseudoprimes and finally to Miller-Rabin.
+That takes us from trial division to Fermat's little theorem, pseudoprimes, Carmichael numbers, and finally the Miller-Rabin primality test.
 
 ![Fermat versus Miller-Rabin on the Carmichael number 561](/images/blog/11-miller-rabin-561.svg)
 
-*The composite number $561$ passes the simple Fermat test to base $2$, but its Miller-Rabin squaring chain exposes behavior that cannot occur modulo a prime.*
+*The composite number \(561\) passes the simple Fermat test to base \(2\), but its Miller-Rabin squaring chain reveals behavior that cannot occur modulo a prime.*
 
 ---
 
-## Why trial division stops being a serious plan
+## Why trial division stops scaling
 
-An integer $n>1$ is prime if its only positive divisors are:
+An integer \(n>1\) is prime if its only positive divisors are
 
-$$
+\[
 1
-\quad\text{and}\quad
+\qquad\text{and}\qquad
 n.
-$$
+\]
 
-A direct test is therefore:
+So the most direct primality test is to search for a divisor:
 
 ```python
 def is_prime_naive(n):
@@ -79,322 +81,418 @@ def is_prime_naive(n):
     return True
 ```
 
-Why stop at:
+Why do we stop once
 
-$$
-d\le\sqrt n?
-$$
+\[
+d>\sqrt n?
+\]
 
-Because if:
+Suppose \(n\) is composite:
 
-$$
-n=ab
-$$
+\[
+n=ab.
+\]
 
-and both factors were larger than $\sqrt n$, then:
+If both \(a\) and \(b\) were larger than \(\sqrt n\), then
 
-$$
+\[
 ab>n,
-$$
+\]
 
 which is impossible.
 
-For small examples, this is perfectly fine.
+Therefore, any composite \(n\) must have at least one factor satisfying
 
-But now think in terms of **bit length**.
+\[
+d\le\sqrt n.
+\]
 
-A $k$-bit integer is roughly the size of:
+For small numbers, trial division is perfectly reasonable.
 
-$$
+The problem becomes obvious when we think in terms of **bit length**.
+
+A \(k\)-bit integer has magnitude roughly
+
+\[
 2^k.
-$$
+\]
 
-Its square root is roughly:
+Its square root therefore has magnitude roughly
 
-$$
+\[
 2^{k/2}.
-$$
+\]
 
-So trial division up to $\sqrt n$ is exponential in the bit length.
+So a method that may need to test divisors up to \(\sqrt n\) requires work exponential in the bit length of the input.
 
-For cryptographic-size inputs, we need a completely different idea.
+For a cryptographic-size candidate, we need a fundamentally different approach.
 
 ---
 
 ## Fermat gives a test — but not a proof
 
-If $p$ is prime and:
+Let \(p\) be prime.
 
-$$
+If
+
+\[
 \gcd(a,p)=1,
-$$
+\]
 
-then Fermat's little theorem tells us:
+then Fermat's little theorem tells us that
 
-$$
+\[
 a^{p-1}\equiv1\pmod p.
-$$
+\]
 
-That suggests an algorithm.
+That immediately suggests a primality test.
 
-Given an odd candidate $n$, choose a base $a$ and test:
+Given an odd candidate \(n\), choose a base \(a\) and compute
 
-$$
-a^{n-1}\stackrel{?}\equiv1\pmod n.
-$$
+\[
+a^{n-1}\bmod n.
+\]
 
-If the answer is **not** $1$, then:
+If
 
-$$
-\boxed{n\text{ is definitely composite}.}
-$$
+\[
+a^{n-1}\not\equiv1\pmod n,
+\]
 
-That part is excellent.
+then we know something definitive:
 
-The problem is the other direction.
+\[
+\boxed{
+n\text{ is composite.}
+}
+\]
 
-If:
+So a failure of the Fermat congruence is a **certificate of compositeness**.
 
-$$
+The problem is the opposite direction.
+
+If
+
+\[
 a^{n-1}\equiv1\pmod n,
-$$
+\]
 
-we cannot conclude that $n$ is prime.
+we cannot conclude that \(n\) is prime.
 
-Some composite numbers imitate prime behavior.
+Some composite integers behave like primes for particular bases.
 
-They are **pseudoprimes**.
+These are called **Fermat pseudoprimes**.
 
-And one of the best examples is:
+A classic example is
 
-$$
+\[
 561=3\cdot11\cdot17.
-$$
+\]
 
 It is obviously composite.
 
-Yet:
+Yet
 
-$$
+\[
 2^{560}\equiv1\pmod{561}.
-$$
+\]
 
-So a base-$2$ Fermat test says:
-
-```text
-looks prime
-```
-
-even though:
+So the base-\(2\) Fermat test says, in effect:
 
 ```text
-561 = 3 * 11 * 17
+no compositeness detected
 ```
 
-is sitting right in front of us.
+even though
 
-It gets worse.
+```text
+561 = 3 × 11 × 17
+```
 
-$561$ is the smallest **Carmichael number**.
+is composite.
 
-For every base $a$ coprime to $561$:
+And \(561\) is even more interesting than an ordinary pseudoprime.
 
-$$
+It is the smallest **Carmichael number**.
+
+For every integer \(a\) satisfying
+
+\[
+\gcd(a,561)=1,
+\]
+
+we have
+
+\[
 a^{560}\equiv1\pmod{561}.
-$$
+\]
 
-So simply repeating Fermat's test with many coprime bases does not fix the fundamental problem.
+So simply repeating the basic Fermat test using many coprime bases does not repair the fundamental weakness.
 
-This is the first lesson:
+The lesson is important:
 
-> Passing a necessary condition for primality is not the same thing as proving primality.
+> **Passing a necessary condition for primality is not the same thing as proving primality.**
+
+We need a test that checks more structure.
 
 ---
 
 ## Miller-Rabin looks inside the exponentiation
 
-This is where Miller-Rabin becomes much more interesting than "Fermat, repeated."
+The Miller-Rabin test begins from the same general world as Fermat's theorem but examines the modular exponentiation much more carefully.
 
-Take an odd candidate $n$ and factor the powers of $2$ out of:
+Take an odd candidate \(n>2\).
 
-$$
-n-1.
-$$
+Factor all powers of two out of \(n-1\):
 
-Write:
-
-$$
+\[
 n-1=2^s d,
-$$
+\]
 
-where $d$ is odd.
+where \(d\) is odd.
 
-For:
+For
 
-$$
+\[
 n=561,
-$$
+\]
 
-we have:
+we have
 
-$$
+\[
 560=2^4\cdot35.
-$$
+\]
 
-So:
+Therefore,
 
-$$
+\[
 s=4,
 \qquad
 d=35.
-$$
+\]
 
-Now choose base:
+Now choose the base
 
-$$
+\[
 a=2.
-$$
+\]
 
-Instead of computing only:
+The simple Fermat test asks only whether
 
-$$
-2^{560}\bmod561,
-$$
+\[
+2^{560}\equiv1\pmod{561}.
+\]
 
-Miller-Rabin starts earlier:
+Miller-Rabin starts much earlier.
 
-$$
-x_0=2^{35}\bmod561.
-$$
+First compute
 
-This gives:
+\[
+x_0
+=
+2^{35}\bmod561.
+\]
 
-$$
+This gives
+
+\[
 x_0=263.
-$$
+\]
 
-Now square repeatedly:
+Then repeatedly square:
 
-$$
-x_1=263^2\bmod561=166,
-$$
+\[
+x_1
+=
+263^2\bmod561
+=
+166,
+\]
 
-$$
-x_2=166^2\bmod561=67,
-$$
+\[
+x_2
+=
+166^2\bmod561
+=
+67,
+\]
 
-$$
-x_3=67^2\bmod561=1.
-$$
+and
+
+\[
+x_3
+=
+67^2\bmod561
+=
+1.
+\]
 
 So the chain is:
 
-```text
-263 → 166 → 67 → 1
-```
+| Step | Value modulo \(561\) |
+| ---: | ---: |
+| \(2^{35}\) | \(263\) |
+| \(263^2\) | \(166\) |
+| \(166^2\) | \(67\) |
+| \(67^2\) | \(1\) |
 
-Notice what never appeared:
+The interesting value that never appears is
 
-$$
+\[
 -1\equiv560\pmod{561}.
-$$
+\]
 
-That is the witness.
+That is what exposes the compositeness.
 
-Miller-Rabin declares:
+Miller-Rabin therefore rejects \(561\) for base \(2\), even though the ordinary Fermat test accepts it.
 
-$$
-\boxed{561\text{ composite}.}
-$$
-
-Even though the simpler Fermat test passed.
+\[
+\boxed{
+561\text{ is composite.}
+}
+\]
 
 ---
 
-### Why is reaching $1$ this way suspicious?
+## Why is reaching \(1\) this way suspicious?
 
-This is where Blog 03 comes back.
+This is where our earlier study of modular arithmetic becomes useful.
 
-Modulo a prime $p$, we are working in a field.
+If \(p\) is prime, then
 
-Suppose:
+\[
+\mathbb Z_p
+\]
 
-$$
+is a field.
+
+Suppose some nonzero value \(x\) satisfies
+
+\[
 x^2\equiv1\pmod p.
-$$
+\]
 
-Then:
+Then
 
-$$
+\[
 x^2-1\equiv0\pmod p.
-$$
+\]
 
 Factor:
 
-$$
+\[
 (x-1)(x+1)\equiv0\pmod p.
-$$
+\]
 
-Because a field has no non-zero zero divisors, one of those factors must vanish:
+A field has no nonzero zero divisors.
 
-$$
+Therefore at least one factor must vanish:
+
+\[
+x-1\equiv0\pmod p
+\]
+
+or
+
+\[
+x+1\equiv0\pmod p.
+\]
+
+Thus,
+
+\[
 x\equiv1\pmod p
-$$
+\]
 
-or:
+or
 
-$$
+\[
 x\equiv-1\pmod p.
-$$
+\]
 
-So modulo a prime, the only square roots of $1$ are:
+So modulo a prime,
 
-$$
-\boxed{\pm1}.
-$$
+\[
+\boxed{
+x^2\equiv1\pmod p
+\quad\Longrightarrow\quad
+x\equiv\pm1\pmod p.
+}
+\]
 
-That is the structural fact Miller-Rabin exploits.
+These are the only square roots of \(1\) modulo a prime.
 
-For a prime candidate, the repeated-squaring chain must behave in a very restricted way.
+That structural fact is exactly what Miller-Rabin exploits.
 
-Either the initial value is already:
+For a prime candidate, the repeated-squaring chain must behave in a restricted way.
 
-$$
+Starting from
+
+\[
+x_0=a^d\bmod n,
+\]
+
+a Miller-Rabin round accepts the base if either
+
+\[
+x_0=1,
+\]
+
+or
+
+\[
+x_0=-1\pmod n,
+\]
+
+or one of the later squarings reaches
+
+\[
+-1\pmod n.
+\]
+
+If instead the chain reaches
+
+\[
 1
-$$
+\]
 
-or:
+from some residue other than
 
-$$
--1,
-$$
+\[
+\pm1,
+\]
 
-or one of the later squarings reaches:
+then we have found a **nontrivial square root of \(1\)**.
 
-$$
--1
-$$
+That cannot happen modulo a prime.
 
-before the final $1$.
+So the candidate must be composite.
 
-If instead we reach $1$ through some other residue without encountering $-1$, we have exposed behavior incompatible with a prime modulus.
-
-This is exactly why I like building the foundations first.
-
-The fact that:
+This gives a useful chain of reasoning:
 
 ```text
 prime modulus
-→ field
-→ no zero divisors
-→ only ±1 square to 1
+      ↓
+field
+      ↓
+no zero divisors
+      ↓
+only ±1 can square to 1
+      ↓
+restricted squaring chain
+      ↓
+Miller-Rabin witness
 ```
 
-has now turned into a primality test.
+This is exactly why learning the algebra first pays off.
+
+A basic structural property of fields has become a practical primality test.
 
 ---
 
-A compact implementation is:
+## Implementing Miller-Rabin
+
+A compact randomized implementation is:
 
 ```python
 from math import gcd
@@ -438,148 +536,271 @@ def is_probable_prime(n, rounds=16):
     return True
 ```
 
-The output is deliberately asymmetric:
+The algorithm deliberately has asymmetric conclusions.
+
+If it returns
 
 ```text
 False
 ```
 
-means:
+then the number is definitely composite.
 
-> definitely composite.
-
-But:
+If it returns
 
 ```text
 True
 ```
 
-means:
+the correct interpretation is:
 
-> passed the tested Miller-Rabin rounds; probable prime.
+```text
+the candidate passed all tested Miller-Rabin rounds
+```
 
-That distinction is important.
+or, more compactly,
+
+```text
+probable prime
+```
+
+—not:
+
+```text
+mathematically proven prime
+```
+
+That distinction is part of the algorithm.
+
+### One round conceptually
+
+For each chosen base \(a\):
+
+1. write
+   \[
+   n-1=2^s d
+   \]
+   with \(d\) odd;
+
+2. compute
+   \[
+   x=a^d\bmod n;
+   \]
+
+3. accept the round immediately if
+   \[
+   x=1
+   \]
+   or
+   \[
+   x=n-1;
+   \]
+
+4. otherwise repeatedly square \(x\);
+
+5. if one of those squarings produces
+   \[
+   n-1,
+   \]
+   the round passes;
+
+6. if not, \(a\) is a witness that \(n\) is composite.
+
+So Miller-Rabin does not merely ask whether the final Fermat equation holds.
+
+It inspects the route toward that final value.
 
 ---
 
 ## How much confidence do repeated rounds give us?
 
-For an odd composite $n$, at most one quarter of the relevant bases can be strong Miller-Rabin liars.
+For any fixed odd composite integer \(n\), at most one quarter of the possible Miller-Rabin bases are strong liars.
 
-So if we independently choose random bases, a fixed composite number survives $k$ rounds with probability at most:
+Therefore, if bases are selected independently and appropriately, the probability that the same fixed composite survives \(k\) independent rounds is bounded by
 
-$$
+\[
 \left(\frac14\right)^k.
-$$
+\]
 
-That is the familiar bound.
+For example:
 
-But I want to be careful with the wording.
+\[
+k=1
+\quad\Rightarrow\quad
+\le\frac14,
+\]
 
-It does **not** automatically mean:
+\[
+k=8
+\quad\Rightarrow\quad
+\le2^{-16},
+\]
 
-> "After $k$ rounds, the probability that my candidate is composite is exactly $4^{-k}$."
+and
+
+\[
+k=16
+\quad\Rightarrow\quad
+\le2^{-32}.
+\]
+
+But the wording matters.
+
+The statement
+
+\[
+\Pr[
+\text{a fixed composite survives }k\text{ rounds}
+]
+\le4^{-k}
+\]
+
+is **not automatically the same statement** as
+
+\[
+\Pr[
+n\text{ is composite}
+\mid
+n\text{ survived }k\text{ rounds}
+].
+\]
 
 Those are different conditional probabilities.
 
-The standards literature is careful about this distinction too.
+The second quantity also depends on how candidate integers were generated and on the prior distribution of primes and composites in that candidate population.
 
-NIST FIPS 186-5 explicitly warns that:
+For ordinary learning, the \(4^{-k}\) bound is the important algorithmic result.
 
-```text
-probability a composite survives t rounds
-```
-
-is not the same quantity as:
-
-```text
-probability that a candidate which survived t rounds is composite
-```
-
-when analysing RSA prime generation.
-
-That may sound like probability-theory bookkeeping, but it matters when standards choose concrete round counts.
+For cryptographic key generation and standards, the probability analysis is handled more carefully.
 
 ---
 
-> **Standards connection — this is not only a textbook algorithm.**  
-> NIST FIPS 186-5 includes Miller-Rabin as a probabilistic primality test for RSA prime generation. It permits optional trial division first, followed by either repeated Miller-Rabin testing or Miller-Rabin followed by a Lucas test, with round counts chosen according to candidate size and the target error analysis.
->
-> [NIST FIPS 186-5 — Digital Signature Standard](https://doi.org/10.6028/NIST.FIPS.186-5)
+## Standards and research connection
 
-And historically, the algorithm has an interesting lineage.
+Miller-Rabin is not merely a textbook algorithm.
 
-Gary Miller's 1976 work gave a deterministic polynomial-time primality test under the Extended Riemann Hypothesis.
+### NIST and RSA prime generation
 
-Michael Rabin's 1980 paper turned the core idea into the unconditional probabilistic test that became the practical Miller-Rabin algorithm.
+**NIST FIPS 186-5**, the Digital Signature Standard, includes probabilistic primality testing as part of RSA prime generation.
 
-**Michael O. Rabin, "Probabilistic Algorithm for Testing Primality," Journal of Number Theory, 12(1), 1980.**
+Its procedures use Miller-Rabin testing and specify how primality testing fits into the larger process of generating acceptable RSA primes.
 
-[DOI: 10.1016/0022-314X(80)90084-0](https://doi.org/10.1016/0022-314X(80)90084-0)
+This is a useful reminder that generating an RSA key is not simply:
+
+```text
+pick a large odd number
+        ↓
+run one prime test
+        ↓
+done
+```
+
+Prime generation is an engineering pipeline containing candidate generation, filtering, probabilistic testing, and additional RSA-specific requirements.
+
+### Miller and Rabin
+
+The historical development is also interesting.
+
+**Gary L. Miller**, in 1976, gave a deterministic polynomial-time primality test under an unproven number-theoretic assumption.
+
+**Michael O. Rabin**, in 1980, transformed the central idea into the unconditional probabilistic algorithm that became the practical Miller-Rabin test.
+
+A classic reference is:
+
+**Michael O. Rabin**,  
+*Probabilistic Algorithm for Testing Primality*,  
+Journal of Number Theory, 12(1), 1980.
+
+This is a good example of an algorithm that deliberately exchanges absolute deterministic certainty in one execution for extraordinary practical efficiency and a controllably tiny error probability.
 
 ---
 
-There is another distinction worth keeping.
+## Primality testing is not factorization
 
-Testing whether:
+There is another distinction worth making explicit.
 
-$$
+Testing whether
+
+\[
 n
-$$
+\]
 
-is prime is not the same problem as factoring:
+is prime is not the same computational problem as factoring
 
-$$
+\[
 n.
-$$
+\]
 
-Miller-Rabin may tell us quickly:
+Miller-Rabin may quickly tell us:
 
 ```text
 composite
 ```
 
-without telling us the factors.
+without revealing any useful factor.
 
-For example, a compositeness witness does not necessarily hand us:
+For example, a Miller-Rabin witness can prove that \(561\) is composite without directly handing us
 
-$$
+\[
 561=3\cdot11\cdot17.
-$$
+\]
 
-This is important cryptographically because RSA depends on the difficulty of factoring a carefully generated composite modulus, not on primality testing itself being difficult.
+This distinction matters enormously in cryptography.
 
-In fact, deterministic polynomial-time primality testing exists.
+RSA relies on the presumed difficulty of factoring a carefully generated composite modulus
 
-The famous AKS result showed that:
+\[
+N=pq.
+\]
 
-$$
-\text{PRIMES}\in\mathbf P.
-$$
+It does **not** rely on primality testing being difficult.
 
-Practical cryptographic implementations still often prefer highly efficient probable-prime generation pipelines rather than using AKS.
+In fact, primality testing is known to be solvable in deterministic polynomial time.
 
-So:
+The AKS result established that
+
+\[
+\boxed{
+\mathrm{PRIMES}\in\mathbf P.
+}
+\]
+
+That does not imply that integer factorization is known to be efficiently solvable on classical computers.
+
+So we should keep the two problems separate:
 
 ```text
-primality testing
-≠
-integer factorization
+PRIMALITY TESTING
+
+"Is n prime?"
 ```
 
-Again, two nearby-looking number-theory problems with very different computational status.
+versus:
+
+```text
+INTEGER FACTORIZATION
+
+"If n is composite,
+what are its factors?"
+```
+
+They live close together in elementary number theory but have very different roles in cryptography.
 
 ---
 
-A good experiment for the repository is to compare three layers:
+## A small experiment
+
+A useful experiment is to compare three levels of primality testing:
 
 ```text
 trial division
+      ↓
 Fermat test
+      ↓
 Miller-Rabin
 ```
 
-Try:
+Try the following values:
 
 ```text
 17
@@ -591,40 +812,92 @@ Try:
 1729
 ```
 
-For each number record:
+For each number, record:
 
-```text
-actual factorization for the toy experiment
-Fermat base-2 result
-Miller-Rabin base-2 trace
-```
+| Value | Actual status | Fermat base 2 | Miller-Rabin base 2 |
+| ---: | --- | --- | --- |
+| \(17\) | prime | ? | ? |
+| \(19\) | prime | ? | ? |
+| \(21\) | composite | ? | ? |
+| \(341\) | composite | ? | ? |
+| \(561\) | composite | ? | ? |
+| \(1105\) | composite | ? | ? |
+| \(1729\) | composite | ? | ? |
 
-Especially inspect $561$.
+For these tiny educational examples, you may also factor the composites separately so that you know the ground truth.
 
-The point is not to memorize a list of pseudoprimes.
+Especially inspect \(561\).
 
-The point is to see why each stronger algorithm checks more mathematical structure than the previous one.
+The purpose is not to memorize lists of pseudoprimes or Carmichael numbers.
+
+The point is to see that each stronger test examines more mathematical structure.
+
+### Reader checkpoint
+
+You should now be able to explain:
+
+1. Why trial division only needs to test up to \(\sqrt n\).
+2. Why that still becomes infeasible for cryptographic-size integers.
+3. What Fermat's little theorem guarantees for primes.
+4. Why passing a Fermat test does not prove primality.
+5. What a pseudoprime is.
+6. Why Carmichael numbers are particularly troublesome for naive Fermat testing.
+7. Why Miller-Rabin writes
+   \[
+   n-1=2^s d.
+   \]
+8. Why nontrivial square roots of \(1\) reveal compositeness.
+9. Why `False` means definitely composite while `True` means probable prime in our randomized implementation.
+10. Why primality testing and integer factorization are different computational problems.
+
+If those distinctions are clear, then the algorithm is much easier to remember than if we treat Miller-Rabin as a block of mysterious code.
 
 ---
 
-We now understand how to test candidate primes.
+## Where we are going
 
-That finally lets us ask the next cryptographic question properly:
+We now know how to take a large candidate integer and test whether it behaves like a prime with extremely high confidence.
 
-> How do we actually generate the primes used inside RSA?
+That finally allows us to ask the RSA question properly:
 
-Not just "pick two primes."
+> How do we actually generate the primes used inside an RSA key?
 
-How large?
+Not merely:
 
-How random?
+```text
+pick p
+pick q
+multiply them
+```
 
-What checks must hold?
+but:
 
-Why should $p$ and $q$ not be too close?
+- How large should \(p\) and \(q\) be?
+- How are prime candidates sampled?
+- Why are candidates usually forced to be odd?
+- Which primality tests are applied?
+- What restrictions should hold relative to the public exponent \(e\)?
+- How do we construct the private exponent \(d\)?
+- Why do implementations store CRT parameters?
+- What happens if randomness fails?
+- What happens if two independent RSA keys accidentally share a prime?
 
-What happens if random-number generation fails and two devices accidentally share a prime?
+At that point all of the pieces we have built separately begin to meet:
+
+\[
+\text{randomness}
+\rightarrow
+\text{prime generation}
+\rightarrow
+\gcd
+\rightarrow
+\text{modular inverse}
+\rightarrow
+\text{RSA modulus}
+\rightarrow
+\text{private exponent}.
+\]
 
 That takes us from primality testing to **RSA key generation itself**.
 
-**Next:** *RSA Key Generation From Zero: Choosing $p$, $q$, $e$, and Building the Private Exponent.*
+**Next: RSA Key Generation From Zero — Choosing \(p\), \(q\), \(e\), and Building the Private Exponent.**

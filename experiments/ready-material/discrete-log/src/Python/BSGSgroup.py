@@ -1,91 +1,75 @@
-from Crypto.Util.number import inverse
+"""Educational Baby-Step Giant-Step implementation for multiplicative DLPs.
 
-# Integer square root function using Newton's method
-def isqrt(n):
-    x = n
-    y = (x + 1) // 2
-    while y < x:
-        x = y
-        y = (x + n // x) // 2
-    return x
+This companion script is dependency-free and mirrors the CryptoCave article.
+It is intended for small/teaching examples, not cryptographic-scale attacks.
+"""
 
-# Compute the multiplicative order of g modulo p
-def order_of_elem(g: int, p: int):
+from math import gcd, isqrt
+
+
+def ceil_sqrt(n: int) -> int:
+    if n < 0:
+        raise ValueError("n must be non-negative")
+    m = isqrt(n)
+    return m if m * m == n else m + 1
+
+
+def order_of_elem(g: int, p: int) -> int:
+    """Return the multiplicative order of g modulo p by direct search.
+
+    This is deliberately simple and appropriate only for small examples.
     """
-    Parameters:
-    -----------
-    g: int
-        Generator element of a group G
-    p: int 
-        Prime modulus
+    if gcd(g, p) != 1:
+        raise ValueError("g must be invertible modulo p")
 
-    Returns:
-    --------
-    int
-        Order of g such that g^n ≡ 1 mod p
-    """
-    N = 1
-    temp = 1
-    while True:
-        temp = (temp * g) % p
-        if temp == 1:
-            break
-        N += 1
-    return N
+    value = 1
+    for order in range(1, p + 1):
+        value = (value * g) % p
+        if value == 1:
+            return order
 
-# Example values
-p = 17389              # Prime modulus
-g = 2                  # Generator
-h = 13896              # Target value such that g^x ≡ h mod p
-N = order_of_elem(g, p)  # Compute the order of g modulo p
-print(N)                 # Print the order
-print(pow(g, N, p))      # Sanity check: g^N mod p should be 1
+    raise RuntimeError("multiplicative order not found")
 
-# Baby-Step Giant-Step algorithm to solve discrete log: find x such that g^x ≡ h mod p
-def bsgs(g: int, h: int, p: int, N: int = None):
-    """
-    Parameters:
-    -----------
-    g: int
-        Generator
-    h: int
-        h = g^x mod p
-    p: int
-        Prime modulus
-    N: int, default = None
-        Order of g. Computed if not provided
 
-    Returns: 
-    --------
-    int
-        x such that g^x ≡ h mod p, or None if no such x was found
-    """
-    # Compute the order of g if not provided
-    if N is None:
-        N = order_of_elem(g, p)
-        
-    n = isqrt(N) + 1  # Set baby-step/giant-step bound (⌈√N⌉)
+def bsgs(g: int, h: int, p: int, order: int | None = None) -> int | None:
+    """Solve g^x = h (mod p) for the canonical x in [0, order-1]."""
+    if order is None:
+        order = order_of_elem(g, p)
 
-    # Precompute and store all baby steps: g^j for j in [0, n]
-    lookup_table = {pow(g, j, p): j for j in range(n + 1)}
+    m = ceil_sqrt(order)
 
-    # Compute g^(-n) mod p for use in the giant steps
-    c = inverse(pow(g, n, p), p)
+    baby: dict[int, int] = {}
+    value = 1
+    for j in range(m):
+        baby.setdefault(value, j)
+        value = (value * g) % p
 
-    # Initialize value for giant steps
-    temp = h
-    for i in range(n + 1):
-        # Compute h * (g^(-n))^i mod p
-        temp = h * pow(c, i, p) % p
+    g_m = pow(g, m, p)
+    factor = pow(g_m, -1, p)
+    gamma = h % p
 
-        # If collision with baby step found, return x = i*n + j
-        if temp in lookup_table:
-            return i * n + lookup_table[temp]
+    for i in range(m):
+        if gamma in baby:
+            x = i * m + baby[gamma]
+            if x < order and pow(g, x, p) == h % p:
+                return x
+        gamma = (gamma * factor) % p
 
-    # If no solution found, return None
     return None
 
-# Run the algorithm to solve g^x ≡ h mod p
-x = bsgs(g, h, p)
-print(x)                     # The discrete log x
-print(pow(g, x, p) == h)     # Verify the solution
+
+def main() -> None:
+    p = 17389
+    g = 2
+    h = 13896
+
+    order = order_of_elem(g, p)
+    x = bsgs(g, h, p, order)
+
+    print(f"order(g) = {order}")
+    print(f"x = {x}")
+    print(f"verified = {x is not None and pow(g, x, p) == h}")
+
+
+if __name__ == "__main__":
+    main()

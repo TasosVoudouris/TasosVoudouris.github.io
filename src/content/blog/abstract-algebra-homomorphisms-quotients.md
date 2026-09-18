@@ -1,18 +1,18 @@
 ---
 title: "Abstract Algebra II: Homomorphisms, Kernels, Cosets, Normal Subgroups, and Quotient Groups"
-description: "How structure-preserving maps lead to kernels, images, cosets, normality, quotient groups, and the first isomorphism theorem."
+description: "How structure-preserving maps lead naturally to kernels, images, cosets, normal subgroups, quotient groups, and the First Isomorphism Theorem."
 pubDate: "2025-03-19"
-updatedDate: '2026-09-13'
+updatedDate: "2026-09-16"
 topics:
-- "Mathematical Foundations"
-- "Abstract Algebra"
+  - "Mathematical Foundations"
+  - "Abstract Algebra"
 tags:
-- "homomorphisms"
-- "kernels"
-- "cosets"
-- "normal-subgroups"
-- "quotient-groups"
-- "isomorphism-theorems"
+  - "homomorphisms"
+  - "kernels"
+  - "cosets"
+  - "normal-subgroups"
+  - "quotient-groups"
+  - "isomorphism-theorems"
 difficulty: "Intermediate"
 status: "Reference"
 series: "Abstract Algebra Foundations"
@@ -20,109 +20,3090 @@ seriesOrder: 2
 sourcePath: "experiments/mathematics/abstract-algebra"
 draft: false
 ---
-Once a group has been defined, the natural question is how two groups can be compared. A **homomorphism** is a map that preserves the group operation, and its kernel and image reveal exactly what structure is collapsed and what survives.
+
+In the first article, we studied the internal structure of a group:
+
+\[
+G,
+\]
+
+its subgroups,
+
+\[
+H\le G,
+\]
+
+its generated cyclic subgroups,
+
+\[
+\langle g\rangle,
+\]
+
+and the orders of its elements.
+
+We now ask a different question:
+
+> How can two groups be compared while preserving their algebraic structure?
+
+The answer begins with a **group homomorphism**.
+
+A homomorphism does not necessarily preserve individual elements. In fact, several elements of the source group may collapse to the same element of the target.
+
+The elements that collapse to the identity form the **kernel**.
+
+The elements that survive as actual outputs form the **image**.
+
+Those two constructions lead naturally to normal subgroups and quotient groups, and eventually to one of the central structural statements of algebra:
+
+\[
+\boxed{
+G/\ker\varphi
+\cong
+\operatorname{im}\varphi.
+}
+\]
+
+This is the First Isomorphism Theorem.
+
+The conceptual progression is:
+
+\[
+\boxed{
+\text{homomorphism}
+\rightarrow
+\text{kernel and image}
+\rightarrow
+\text{cosets}
+\rightarrow
+\text{normal subgroup}
+\rightarrow
+\text{quotient}
+\rightarrow
+\text{isomorphism}.
+}
+\]
+
+---
 
 ## 1. Group homomorphisms
 
-A map $\varphi:G\to H$ is a homomorphism if
-$$
-\varphi(xy)=\varphi(x)\varphi(y)
-$$
-for all $x,y\in G$.
+Let:
 
-It follows automatically that
-$$
+\[
+(G,\cdot)
+\]
+
+and:
+
+\[
+(H,\star)
+\]
+
+be groups.
+
+A map:
+
+\[
+\varphi:G\rightarrow H
+\]
+
+is a **group homomorphism** if:
+
+\[
+\boxed{
+\varphi(xy)
+=
+\varphi(x)\star\varphi(y)
+}
+\]
+
+for every:
+
+\[
+x,y\in G.
+\]
+
+When the operations are clear from context, we usually write simply:
+
+\[
+\varphi(xy)
+=
+\varphi(x)\varphi(y).
+\]
+
+The defining property says that it does not matter whether we:
+
+1. combine elements first and then apply \(\varphi\), or
+2. apply \(\varphi\) first and then combine their images.
+
+Diagrammatically:
+
+```text
+x, y in G
+   |
+   | multiply
+   v
+   xy
+   |
+   | φ
+   v
+ φ(xy)
+
+must equal
+
+x --------> φ(x)
+              |
+              | multiply in H
+y --------> φ(y)
+              |
+              v
+        φ(x)φ(y)
+```
+
+A homomorphism therefore preserves the **operation**.
+
+---
+
+## 2. Homomorphisms preserve the identity
+
+Let:
+
+\[
+e_G
+\]
+
+and:
+
+\[
+e_H
+\]
+
+denote the identity elements of \(G\) and \(H\).
+
+Since:
+
+\[
+e_Ge_G=e_G,
+\]
+
+apply \(\varphi\):
+
+\[
+\varphi(e_G)
+=
+\varphi(e_Ge_G).
+\]
+
+Using the homomorphism property:
+
+\[
+\varphi(e_G)
+=
+\varphi(e_G)\varphi(e_G).
+\]
+
+Multiply by:
+
+\[
+\varphi(e_G)^{-1}.
+\]
+
+Then:
+
+\[
+\boxed{
+\varphi(e_G)=e_H.
+}
+\]
+
+So preserving the identity does not need to be included separately in the definition.
+
+It follows automatically.
+
+---
+
+## 3. Homomorphisms preserve inverses
+
+Take:
+
+\[
+g\in G.
+\]
+
+Since:
+
+\[
+gg^{-1}=e_G,
+\]
+
+we have:
+
+\[
+\varphi(gg^{-1})
+=
+\varphi(e_G).
+\]
+
+Therefore:
+
+\[
+\varphi(g)\varphi(g^{-1})
+=
+e_H.
+\]
+
+Thus:
+
+\[
+\varphi(g^{-1})
+\]
+
+is the inverse of:
+
+\[
+\varphi(g).
+\]
+
+Hence:
+
+\[
+\boxed{
+\varphi(g^{-1})
+=
+\varphi(g)^{-1}.
+}
+\]
+
+More generally:
+
+\[
+\boxed{
+\varphi(g^n)
+=
+\varphi(g)^n
+}
+\]
+
+for every:
+
+\[
+n\in\mathbb Z.
+\]
+
+So homomorphisms preserve repeated group operations as well.
+
+---
+
+## 4. Examples of homomorphisms
+
+### Reduction modulo \(n\)
+
+Consider:
+
+\[
+\pi:\mathbb Z\rightarrow\mathbb Z_n
+\]
+
+defined by:
+
+\[
+\pi(k)
+=
+[k]_n.
+\]
+
+Since:
+
+\[
+[a+b]_n
+=
+[a]_n+[b]_n,
+\]
+
+we have:
+
+\[
+\pi(a+b)
+=
+\pi(a)+\pi(b).
+\]
+
+Therefore \(\pi\) is a homomorphism of additive groups.
+
+---
+
+### Doubling on the integers
+
+Define:
+
+\[
+\varphi:\mathbb Z\rightarrow\mathbb Z
+\]
+
+by:
+
+\[
+\varphi(n)=2n.
+\]
+
+Then:
+
+\[
+\varphi(a+b)
+=
+2(a+b)
+=
+2a+2b
+=
+\varphi(a)+\varphi(b).
+\]
+
+So \(\varphi\) is a group homomorphism.
+
+It is injective but not surjective onto \(\mathbb Z\), because odd integers never occur in its image.
+
+---
+
+### Exponentiation from an additive group
+
+Let \(G\) be a group and choose:
+
+\[
+g\in G.
+\]
+
+Define:
+
+\[
+\varphi:\mathbb Z\rightarrow G
+\]
+
+by:
+
+\[
+\varphi(k)=g^k.
+\]
+
+Then:
+
+\[
+\varphi(a+b)
+=
+g^{a+b}
+=
+g^ag^b
+=
+\varphi(a)\varphi(b).
+\]
+
+Thus:
+
+\[
+\boxed{
+k\mapsto g^k
+}
+\]
+
+is a homomorphism from the additive integers into the subgroup generated by \(g\).
+
+Its image is exactly:
+
+\[
+\langle g\rangle.
+\]
+
+This simple map will later connect kernels with element order.
+
+---
+
+## 5. Isomorphisms
+
+A homomorphism:
+
+\[
+\varphi:G\rightarrow H
+\]
+
+that is also bijective is called an **isomorphism**.
+
+If an isomorphism exists, we write:
+
+\[
+\boxed{
+G\cong H.
+}
+\]
+
+The two groups may contain completely different kinds of objects, but from the viewpoint of group structure they behave identically.
+
+An isomorphism preserves properties such as:
+
+- group order,
+- element order,
+- cyclicity,
+- subgroup structure.
+
+For example, the cyclic additive group:
+
+\[
+\mathbb Z_6
+\]
+
+is isomorphic to any cyclic group containing exactly six elements.
+
+The names of the elements are irrelevant.
+
+The operation structure is what matters.
+
+---
+
+## 6. Kernel
+
+Let:
+
+\[
+\varphi:G\rightarrow H
+\]
+
+be a homomorphism.
+
+The **kernel** is:
+
+\[
+\boxed{
+\ker\varphi
+=
+\{
+g\in G:
+\varphi(g)=e_H
+\}.
+}
+\]
+
+The kernel contains exactly the elements of \(G\) that become invisible under the map.
+
+They are all sent to the identity.
+
+Since:
+
+\[
 \varphi(e_G)=e_H,
+\]
+
+we always have:
+
+\[
+e_G\in\ker\varphi.
+\]
+
+So the kernel is never empty.
+
+---
+
+## 7. The kernel is a subgroup
+
+Take:
+
+\[
+x,y\in\ker\varphi.
+\]
+
+Then:
+
+\[
+\varphi(x)=e_H
+\]
+
+and:
+
+\[
+\varphi(y)=e_H.
+\]
+
+Now:
+
+\[
+\begin{aligned}
+\varphi(xy^{-1})
+&=
+\varphi(x)
+\varphi(y^{-1})\\
+&=
+\varphi(x)
+\varphi(y)^{-1}\\
+&=
+e_H e_H^{-1}\\
+&=
+e_H.
+\end{aligned}
+\]
+
+Therefore:
+
+\[
+xy^{-1}\in\ker\varphi.
+\]
+
+By the subgroup test:
+
+\[
+\boxed{
+\ker\varphi\le G.
+}
+\]
+
+Later we will prove something stronger:
+
+\[
+\ker\varphi
+\trianglelefteq
+G.
+\]
+
+Every kernel is normal.
+
+---
+
+## 8. Image
+
+The **image** of a homomorphism is:
+
+\[
+\boxed{
+\operatorname{im}\varphi
+=
+\{
+\varphi(g):
+g\in G
+\}.
+}
+\]
+
+It consists of the elements of \(H\) that actually occur as outputs.
+
+Clearly:
+
+\[
+\operatorname{im}\varphi
+\subseteq H.
+\]
+
+In fact:
+
+\[
+\boxed{
+\operatorname{im}\varphi
+\le H.
+}
+\]
+
+### Proof
+
+Take:
+
+\[
+a,b\in\operatorname{im}\varphi.
+\]
+
+Then there exist:
+
+\[
+x,y\in G
+\]
+
+such that:
+
+\[
+a=\varphi(x),
 \qquad
-\varphi(x^{-1})=\varphi(x)^{-1}.
-$$
+b=\varphi(y).
+\]
 
-A bijective homomorphism is an **isomorphism**. If one exists, the groups are structurally the same even if their elements have very different descriptions.
+Now:
 
-## 2. Kernel and image
+\[
+ab^{-1}
+=
+\varphi(x)\varphi(y)^{-1}.
+\]
 
-The kernel is
-$$
-\ker\varphi=\{g\in G:\varphi(g)=e_H\},
-$$
-and the image is
-$$
-\operatorname{im}\varphi=\{\varphi(g):g\in G\}.
-$$
+Since:
 
-The kernel measures non-injectivity:
-$$
-\varphi\text{ is injective}\iff \ker\varphi=\{e_G\}.
-$$
+\[
+\varphi(y)^{-1}
+=
+\varphi(y^{-1}),
+\]
 
-The image is always a subgroup of $H$, while the kernel is a special kind of subgroup of $G$: it is **normal**.
+we have:
 
-## 3. Cosets
+\[
+ab^{-1}
+=
+\varphi(xy^{-1}).
+\]
 
-For $H\le G$ and $g\in G$, the left and right cosets are
-$$
-gH=\{gh:h\in H\},\qquad Hg=\{hg:h\in H\}.
-$$
+Therefore:
 
-Cosets partition $G$. Every coset has the same cardinality as $H$, which yields Lagrange's theorem for finite groups:
-$$
-|G|=[G:H]\,|H|.
-$$
-The integer $[G:H]$ is the **index** of $H$ in $G$.
+\[
+ab^{-1}
+\in
+\operatorname{im}\varphi.
+\]
 
-## 4. Normal subgroups
+By the subgroup test:
 
-A subgroup $N\le G$ is **normal**, written $N\trianglelefteq G$, if
-$$
-gN=Ng\qquad\text{for all }g\in G.
-$$
-Equivalently,
-$$
-gNg^{-1}=N.
-$$
+\[
+\operatorname{im}\varphi\le H.
+\]
 
-Normality is exactly what is required for multiplication of cosets to be well-defined.
+---
 
-## 5. Quotient groups
+## 9. Kernel and injectivity
 
-If $N\trianglelefteq G$, define
-$$
-G/N=\{gN:g\in G\}
-$$
-with
-$$
-(gN)(hN)=(gh)N.
-$$
+The kernel measures exactly whether a homomorphism loses information.
 
-A quotient group deliberately identifies every element of $N$ with the identity. The construction is not merely notation: it is the universal way to collapse a normal subgroup while preserving a group operation.
+A homomorphism:
 
-## 6. First isomorphism theorem
+\[
+\varphi:G\rightarrow H
+\]
 
-For a homomorphism $\varphi:G\to H$,
-$$
-G/\ker\varphi\cong\operatorname{im}\varphi.
-$$
+is injective if and only if:
 
-This theorem is one of the most reusable structural statements in algebra. It says that once the information lost by $\varphi$ has been factored out, what remains is precisely the image.
+\[
+\boxed{
+\ker\varphi
+=
+\{e_G\}.
+}
+\]
 
-## 7. A modular example
+### If \(\varphi\) is injective
 
-Consider
-$$
-\varphi:\mathbb Z\to\mathbb Z/n\mathbb Z,
+Suppose:
+
+\[
+g\in\ker\varphi.
+\]
+
+Then:
+
+\[
+\varphi(g)=e_H.
+\]
+
+But:
+
+\[
+e_H=\varphi(e_G).
+\]
+
+Therefore:
+
+\[
+\varphi(g)
+=
+\varphi(e_G).
+\]
+
+Injectivity implies:
+
+\[
+g=e_G.
+\]
+
+Hence:
+
+\[
+\ker\varphi
+=
+\{e_G\}.
+\]
+
+### Conversely
+
+Suppose:
+
+\[
+\ker\varphi
+=
+\{e_G\}.
+\]
+
+Assume:
+
+\[
+\varphi(x)
+=
+\varphi(y).
+\]
+
+Then:
+
+\[
+\varphi(x)\varphi(y)^{-1}
+=
+e_H.
+\]
+
+So:
+
+\[
+\varphi(xy^{-1})
+=
+e_H.
+\]
+
+Therefore:
+
+\[
+xy^{-1}
+\in\ker\varphi.
+\]
+
+Hence:
+
+\[
+xy^{-1}=e_G,
+\]
+
+and therefore:
+
+\[
+x=y.
+\]
+
+Thus \(\varphi\) is injective.
+
+---
+
+## 10. Surjectivity and the image
+
+A homomorphism:
+
+\[
+\varphi:G\rightarrow H
+\]
+
+is surjective precisely when:
+
+\[
+\boxed{
+\operatorname{im}\varphi=H.
+}
+\]
+
+So kernel and image answer two different structural questions:
+
+```text
+kernel
+   ↓
+what information disappears?
+```
+
+```text
+image
+   ↓
+how much of the target is reached?
+```
+
+These two objects are the natural invariants attached to a homomorphism.
+
+---
+
+## 11. Cosets
+
+Let:
+
+\[
+H\le G.
+\]
+
+For:
+
+\[
+g\in G,
+\]
+
+the **left coset** of \(H\) determined by \(g\) is:
+
+\[
+\boxed{
+gH
+=
+\{
+gh:
+h\in H
+\}.
+}
+\]
+
+The corresponding **right coset** is:
+
+\[
+\boxed{
+Hg
+=
+\{
+hg:
+h\in H
+\}.
+}
+\]
+
+If \(G\) is abelian, then:
+
+\[
+gH=Hg.
+\]
+
+In a nonabelian group, left and right cosets may differ.
+
+---
+
+## 12. Cosets are translated copies of a subgroup
+
+Consider:
+
+\[
+H=3\mathbb Z
+\]
+
+inside:
+
+\[
+(\mathbb Z,+).
+\]
+
+Its cosets are:
+
+\[
+0+3\mathbb Z,
+\]
+
+\[
+1+3\mathbb Z,
+\]
+
+and:
+
+\[
+2+3\mathbb Z.
+\]
+
+Explicitly:
+
+\[
+3\mathbb Z
+=
+\{\ldots,-6,-3,0,3,6,\ldots\},
+\]
+
+\[
+1+3\mathbb Z
+=
+\{\ldots,-5,-2,1,4,7,\ldots\},
+\]
+
+\[
+2+3\mathbb Z
+=
+\{\ldots,-4,-1,2,5,8,\ldots\}.
+\]
+
+These three sets partition:
+
+\[
+\mathbb Z.
+\]
+
+They are precisely the congruence classes modulo \(3\).
+
+So familiar modular arithmetic is already an example of coset decomposition.
+
+---
+
+## 13. When are two cosets equal?
+
+Two left cosets:
+
+\[
+gH
+\]
+
+and:
+
+\[
+kH
+\]
+
+are equal exactly when:
+
+\[
+\boxed{
+g^{-1}k\in H.
+}
+\]
+
+Equivalently:
+
+\[
+k\in gH.
+\]
+
+Thus any two left cosets are either:
+
+\[
+\boxed{
+\text{identical}
+}
+\]
+
+or:
+
+\[
+\boxed{
+\text{disjoint}.
+}
+\]
+
+There is no partial overlap.
+
+This is why cosets partition the group.
+
+---
+
+## 14. Every coset has the same size
+
+Fix:
+
+\[
+g\in G.
+\]
+
+Define:
+
+\[
+L_g:H\rightarrow gH
+\]
+
+by:
+
+\[
+L_g(h)=gh.
+\]
+
+This map is bijective.
+
+Its inverse is multiplication by:
+
+\[
+g^{-1}.
+\]
+
+Therefore:
+
+\[
+\boxed{
+|gH|=|H|
+}
+\]
+
+whenever the cardinalities are finite.
+
+So every coset is a translated copy of the subgroup.
+
+---
+
+## 15. Index of a subgroup
+
+The number of distinct left cosets of \(H\) in \(G\) is called the **index** of \(H\) in \(G\).
+
+We write:
+
+\[
+\boxed{
+[G:H].
+}
+\]
+
+For finite groups, the group is partitioned into:
+
+\[
+[G:H]
+\]
+
+cosets, each containing:
+
+\[
+|H|
+\]
+
+elements.
+
+Therefore:
+
+\[
+\boxed{
+|G|
+=
+[G:H]|H|.
+}
+\]
+
+This is Lagrange's theorem.
+
+---
+
+## 16. Lagrange's theorem
+
+If:
+
+\[
+G
+\]
+
+is finite and:
+
+\[
+H\le G,
+\]
+
+then:
+
+\[
+\boxed{
+|H|\mid|G|.
+}
+\]
+
+More precisely:
+
+\[
+\boxed{
+|G|
+=
+[G:H]|H|.
+}
+\]
+
+Now we can see why the theorem from Part I is true.
+
+The subgroup \(H\) does not somehow numerically happen to divide \(G\).
+
+Rather, \(G\) decomposes into equally sized copies of \(H\).
+
+That structural decomposition forces the divisibility.
+
+---
+
+## 17. Consequences of Lagrange's theorem
+
+Take:
+
+\[
+g\in G.
+\]
+
+The cyclic subgroup:
+
+\[
+\langle g\rangle
+\]
+
+has size:
+
+\[
+\operatorname{ord}(g).
+\]
+
+Since:
+
+\[
+\langle g\rangle\le G,
+\]
+
+Lagrange gives:
+
+\[
+\boxed{
+\operatorname{ord}(g)
+\mid
+|G|.
+}
+\]
+
+Therefore:
+
+\[
+g^{|G|}
+=
+e
+\]
+
+for every element of a finite group.
+
+Indeed, write:
+
+\[
+|G|
+=
+k\operatorname{ord}(g).
+\]
+
+Then:
+
+\[
+g^{|G|}
+=
+\left(
+g^{\operatorname{ord}(g)}
+\right)^k
+=
+e.
+\]
+
+This is the group-theoretic mechanism behind results such as Euler's theorem and Fermat's little theorem.
+
+---
+
+## 18. Normal subgroups
+
+Cosets exist for every subgroup.
+
+But arbitrary cosets do **not** automatically form a group.
+
+The extra condition we need is **normality**.
+
+A subgroup:
+
+\[
+N\le G
+\]
+
+is **normal**, written:
+
+\[
+\boxed{
+N\trianglelefteq G,
+}
+\]
+
+if:
+
+\[
+\boxed{
+gN=Ng
+}
+\]
+
+for every:
+
+\[
+g\in G.
+\]
+
+An equivalent condition is:
+
+\[
+\boxed{
+gNg^{-1}=N
+}
+\]
+
+for every \(g\in G\).
+
+Equivalently:
+
+\[
+gng^{-1}\in N
+\]
+
+for every:
+
+\[
+g\in G
+\]
+
+and:
+
+\[
+n\in N.
+\]
+
+---
+
+## 19. Why conjugation appears
+
+The expression:
+
+\[
+gng^{-1}
+\]
+
+is called a **conjugate** of \(n\) by \(g\).
+
+Normality says that conjugating elements of \(N\) by arbitrary elements of the ambient group never takes us outside \(N\).
+
+So a normal subgroup is stable under the internal symmetries generated by conjugation.
+
+This is stronger than merely being a subgroup.
+
+---
+
+## 20. Every subgroup of an abelian group is normal
+
+Suppose \(G\) is abelian and:
+
+\[
+H\le G.
+\]
+
+Then:
+
+\[
+gh
+=
+hg
+\]
+
+for all \(g\in G\) and \(h\in H\).
+
+Therefore:
+
+\[
+gH
+=
+Hg.
+\]
+
+Hence:
+
+\[
+\boxed{
+H\trianglelefteq G.
+}
+\]
+
+So normality becomes interesting primarily when the ambient group is nonabelian.
+
+---
+
+## 21. A non-normal subgroup of \(S_3\)
+
+Consider:
+
+\[
+S_3.
+\]
+
+Let:
+
+\[
+H
+=
+\{
+e,(12)
+\}.
+\]
+
+This is a subgroup.
+
+Now conjugate:
+
+\[
+(12)
+\]
+
+by:
+
+\[
+(123).
+\]
+
+We obtain another transposition:
+
+\[
+(123)(12)(123)^{-1}
+=
+(23).
+\]
+
+But:
+
+\[
+(23)\notin H.
+\]
+
+Therefore:
+
+\[
+\boxed{
+H\not\trianglelefteq S_3.
+}
+\]
+
+So not every subgroup is normal.
+
+---
+
+## 22. A normal subgroup of \(S_3\)
+
+Consider:
+
+\[
+A_3
+=
+\{
+e,
+(123),
+(132)
+\}.
+\]
+
+This subgroup has order:
+
+\[
+3.
+\]
+
+Since:
+
+\[
+|S_3|=6,
+\]
+
+its index is:
+
+\[
+[S_3:A_3]=2.
+\]
+
+Every subgroup of index \(2\) is normal.
+
+Therefore:
+
+\[
+\boxed{
+A_3
+\trianglelefteq
+S_3.
+}
+\]
+
+We will shortly see another reason: \(A_3\) is the kernel of the sign homomorphism.
+
+---
+
+## 23. Every kernel is normal
+
+Let:
+
+\[
+\varphi:G\rightarrow H
+\]
+
+be a homomorphism.
+
+We already know:
+
+\[
+\ker\varphi\le G.
+\]
+
+Now take:
+
+\[
+k\in\ker\varphi
+\]
+
+and:
+
+\[
+g\in G.
+\]
+
+Consider:
+
+\[
+gkg^{-1}.
+\]
+
+Apply \(\varphi\):
+
+\[
+\begin{aligned}
+\varphi(gkg^{-1})
+&=
+\varphi(g)
+\varphi(k)
+\varphi(g^{-1})\\
+&=
+\varphi(g)
+e_H
+\varphi(g)^{-1}\\
+&=
+e_H.
+\end{aligned}
+\]
+
+Therefore:
+
+\[
+gkg^{-1}
+\in
+\ker\varphi.
+\]
+
+Hence:
+
+\[
+\boxed{
+\ker\varphi
+\trianglelefteq
+G.
+}
+\]
+
+This is one of the fundamental links between homomorphisms and quotient groups.
+
+---
+
+## 24. Quotient groups
+
+Suppose:
+
+\[
+N\trianglelefteq G.
+\]
+
+The set of cosets of \(N\) is:
+
+\[
+\boxed{
+G/N
+=
+\{
+gN:
+g\in G
+\}.
+}
+\]
+
+We want to define multiplication by:
+
+\[
+\boxed{
+(gN)(hN)
+=
+(gh)N.
+}
+\]
+
+If this operation is well-defined, then:
+
+\[
+G/N
+\]
+
+becomes a group.
+
+This is the **quotient group**.
+
+Its identity is:
+
+\[
+N=eN,
+\]
+
+and:
+
+\[
+(gN)^{-1}
+=
+g^{-1}N.
+\]
+
+---
+
+## 25. Why normality is required
+
+A coset can have many representatives.
+
+Suppose:
+
+\[
+gN=g'N
+\]
+
+and:
+
+\[
+hN=h'N.
+\]
+
+If we define:
+
+\[
+(gN)(hN)
+=
+ghN,
+\]
+
+we must ensure that choosing the alternative representatives \(g'\) and \(h'\) produces the same coset.
+
+That is:
+
+\[
+g'h'N
+=
+ghN.
+\]
+
+Normality is exactly the condition that makes this independent of the chosen representatives.
+
+Without:
+
+\[
+N\trianglelefteq G,
+\]
+
+coset multiplication may fail to be well-defined.
+
+So normality is not arbitrary terminology.
+
+It is precisely the structural condition required for:
+
+\[
+\boxed{
+\text{cosets}
+\longrightarrow
+\text{group}.
+}
+\]
+
+---
+
+## 26. Quotients collapse a subgroup to the identity
+
+Inside:
+
+\[
+G/N,
+\]
+
+every element of \(N\) belongs to the identity coset:
+
+\[
+N.
+\]
+
+So all elements of \(N\) become indistinguishable from the identity.
+
+More generally:
+
+\[
+gN=hN
+\]
+
+exactly when:
+
+\[
+g^{-1}h\in N.
+\]
+
+Thus \(g\) and \(h\) become the same element of the quotient precisely when they differ by something inside \(N\).
+
+This gives the central intuition:
+
+\[
+\boxed{
+G/N
+=
+G
+\text{ with the elements of }N
+\text{ collapsed to the identity}.
+}
+\]
+
+---
+
+## 27. The canonical quotient map
+
+Whenever:
+
+\[
+N\trianglelefteq G,
+\]
+
+there is a natural homomorphism:
+
+\[
+\pi:G\rightarrow G/N
+\]
+
+defined by:
+
+\[
+\boxed{
+\pi(g)=gN.
+}
+\]
+
+This is called the **canonical projection**.
+
+It is surjective because every coset has the form:
+
+\[
+gN.
+\]
+
+Its kernel is:
+
+\[
+\ker\pi
+=
+N.
+\]
+
+Indeed:
+
+\[
+\pi(g)=N
+\]
+
+exactly when:
+
+\[
+g\in N.
+\]
+
+So every quotient group arrives with a natural homomorphism whose kernel is exactly the subgroup that was collapsed.
+
+---
+
+## 28. First Isomorphism Theorem
+
+Let:
+
+\[
+\varphi:G\rightarrow H
+\]
+
+be a group homomorphism.
+
+Then:
+
+\[
+\boxed{
+G/\ker\varphi
+\cong
+\operatorname{im}\varphi.
+}
+\]
+
+This is the **First Isomorphism Theorem**.
+
+It says:
+
+> Once we identify elements of \(G\) that differ only by something invisible to \(\varphi\), the remaining structure is exactly the image of \(\varphi\).
+
+This is one of the central reusable patterns of algebra.
+
+---
+
+## 29. Why the theorem is true
+
+Let:
+
+\[
+K=\ker\varphi.
+\]
+
+Define:
+
+\[
+\overline{\varphi}:
+G/K
+\rightarrow
+\operatorname{im}\varphi
+\]
+
+by:
+
+\[
+\boxed{
+\overline{\varphi}(gK)
+=
+\varphi(g).
+}
+\]
+
+We need to verify several things.
+
+### Well-definedness
+
+Suppose:
+
+\[
+gK=hK.
+\]
+
+Then:
+
+\[
+g^{-1}h\in K.
+\]
+
+Therefore:
+
+\[
+\varphi(g^{-1}h)=e_H.
+\]
+
+So:
+
+\[
+\varphi(g)^{-1}\varphi(h)
+=
+e_H.
+\]
+
+Hence:
+
+\[
+\varphi(g)=\varphi(h).
+\]
+
+Thus the value of:
+
+\[
+\overline{\varphi}(gK)
+\]
+
+does not depend on the chosen representative.
+
+### Homomorphism property
+
+\[
+\begin{aligned}
+\overline{\varphi}
+\left(
+(gK)(hK)
+\right)
+&=
+\overline{\varphi}(ghK)\\
+&=
+\varphi(gh)\\
+&=
+\varphi(g)\varphi(h)\\
+&=
+\overline{\varphi}(gK)
+\overline{\varphi}(hK).
+\end{aligned}
+\]
+
+### Surjectivity
+
+Every element of:
+
+\[
+\operatorname{im}\varphi
+\]
+
+has the form:
+
+\[
+\varphi(g).
+\]
+
+But:
+
+\[
+\varphi(g)
+=
+\overline{\varphi}(gK).
+\]
+
+So the induced map is surjective.
+
+### Injectivity
+
+If:
+
+\[
+\overline{\varphi}(gK)
+=
+e_H,
+\]
+
+then:
+
+\[
+\varphi(g)=e_H.
+\]
+
+Therefore:
+
+\[
+g\in K.
+\]
+
+So:
+
+\[
+gK=K,
+\]
+
+the identity coset.
+
+Hence the induced map has trivial kernel and is injective.
+
+Therefore:
+
+\[
+\boxed{
+G/K
+\cong
+\operatorname{im}\varphi.
+}
+\]
+
+---
+
+## 30. The familiar modular example
+
+Consider the canonical reduction map:
+
+\[
+\pi:
+\mathbb Z
+\rightarrow
+\mathbb Z_n
+\]
+
+defined by:
+
+\[
+\pi(k)
+=
+[k]_n.
+\]
+
+The kernel contains the integers that reduce to zero:
+
+\[
+\ker\pi
+=
+\{
+k\in\mathbb Z:
+k\equiv0\pmod n
+\}.
+\]
+
+Therefore:
+
+\[
+\boxed{
+\ker\pi=n\mathbb Z.
+}
+\]
+
+The map is surjective:
+
+\[
+\operatorname{im}\pi
+=
+\mathbb Z_n.
+\]
+
+The First Isomorphism Theorem gives:
+
+\[
+\boxed{
+\mathbb Z/n\mathbb Z
+\cong
+\mathbb Z_n.
+}
+\]
+
+This familiar modular structure is therefore literally a quotient group.
+
+Two integers:
+
+\[
+a,b\in\mathbb Z
+\]
+
+represent the same quotient element precisely when:
+
+\[
+a-b\in n\mathbb Z,
+\]
+
+which means:
+
+\[
+a\equiv b\pmod n.
+\]
+
+So ordinary congruence classes are cosets.
+
+---
+
+## 31. Element order from a kernel
+
+The homomorphism:
+
+\[
+\varphi:\mathbb Z\rightarrow G
+\]
+
+defined by:
+
+\[
+\varphi(k)=g^k
+\]
+
+gives another useful example.
+
+Its image is:
+
+\[
+\operatorname{im}\varphi
+=
+\langle g\rangle.
+\]
+
+Suppose \(g\) has finite order:
+
+\[
+m.
+\]
+
+Then:
+
+\[
+g^k=e
+\]
+
+exactly when:
+
+\[
+m\mid k.
+\]
+
+Therefore:
+
+\[
+\ker\varphi
+=
+m\mathbb Z.
+\]
+
+The First Isomorphism Theorem gives:
+
+\[
+\boxed{
+\mathbb Z/m\mathbb Z
+\cong
+\langle g\rangle.
+}
+\]
+
+This proves an important structural fact:
+
+> Every finite cyclic group of order \(m\) is isomorphic to \(\mathbb Z_m\).
+
+Thus all finite cyclic groups of the same order are structurally identical.
+
+---
+
+## 32. The sign homomorphism
+
+A useful nonabelian example comes from permutation groups.
+
+There is a homomorphism:
+
+\[
+\operatorname{sgn}:
+S_n
+\rightarrow
+\{1,-1\}
+\]
+
+called the **sign homomorphism**.
+
+Even permutations map to:
+
+\[
+1,
+\]
+
+and odd permutations map to:
+
+\[
+-1.
+\]
+
+Its kernel is the alternating group:
+
+\[
+\boxed{
+\ker(\operatorname{sgn})
+=
+A_n.
+}
+\]
+
+Therefore:
+
+\[
+A_n
+\trianglelefteq
+S_n.
+\]
+
+For \(n\ge2\), the map is surjective, so:
+
+\[
+\operatorname{im}(\operatorname{sgn})
+=
+\{1,-1\}.
+\]
+
+The First Isomorphism Theorem gives:
+
+\[
+\boxed{
+S_n/A_n
+\cong
+\{1,-1\}
+\cong
+\mathbb Z_2.
+}
+\]
+
+For \(S_3\), this says:
+
+\[
+\boxed{
+S_3/A_3
+\cong
+\mathbb Z_2.
+}
+\]
+
+The quotient remembers only the parity of a permutation.
+
+All finer information is collapsed.
+
+---
+
+## 33. Index-two subgroups are normal
+
+The previous example illustrates a useful theorem.
+
+Suppose:
+
+\[
+H\le G
+\]
+
+and:
+
+\[
+[G:H]=2.
+\]
+
+There are only two left cosets:
+
+\[
+H
+\]
+
+and its complement.
+
+Likewise there are only two right cosets.
+
+For any:
+
+\[
+g\notin H,
+\]
+
+both:
+
+\[
+gH
+\]
+
+and:
+
+\[
+Hg
+\]
+
+must equal the unique coset different from \(H\).
+
+Therefore:
+
+\[
+gH=Hg.
+\]
+
+For:
+
+\[
+g\in H,
+\]
+
+we obviously have:
+
+\[
+gH=H=Hg.
+\]
+
+Hence:
+
+\[
+\boxed{
+[G:H]=2
+\Longrightarrow
+H\trianglelefteq G.
+}
+\]
+
+This explains immediately why:
+
+\[
+A_3
+\trianglelefteq
+S_3.
+\]
+
+---
+
+## 34. Kernel classes are exactly cosets
+
+There is another important way to understand the First Isomorphism Theorem.
+
+Suppose:
+
+\[
+\varphi:G\rightarrow H.
+\]
+
+When do two elements \(x,y\in G\) have the same image?
+
+We have:
+
+\[
+\varphi(x)=\varphi(y)
+\]
+
+if and only if:
+
+\[
+\varphi(x)^{-1}\varphi(y)=e_H.
+\]
+
+Therefore:
+
+\[
+\varphi(x^{-1}y)=e_H.
+\]
+
+So:
+
+\[
+x^{-1}y\in\ker\varphi.
+\]
+
+Equivalently:
+
+\[
+\boxed{
+\varphi(x)=\varphi(y)
+\iff
+x\ker\varphi
+=
+y\ker\varphi.
+}
+\]
+
+Thus the cosets of the kernel are precisely the equivalence classes of elements that the homomorphism cannot distinguish.
+
+That is arguably the deepest intuition behind the theorem.
+
+---
+
+## 35. Finite groups and counting
+
+Suppose \(G\) is finite.
+
+The First Isomorphism Theorem gives:
+
+\[
+G/\ker\varphi
+\cong
+\operatorname{im}\varphi.
+\]
+
+Taking orders:
+
+\[
+|G/\ker\varphi|
+=
+|\operatorname{im}\varphi|.
+\]
+
+By Lagrange:
+
+\[
+|G/\ker\varphi|
+=
+\frac{|G|}
+{|\ker\varphi|}.
+\]
+
+Therefore:
+
+\[
+\boxed{
+|G|
+=
+|\ker\varphi|
+\,
+|\operatorname{im}\varphi|.
+}
+\]
+
+This is a powerful counting identity.
+
+A homomorphism decomposes the size of a finite group into:
+
+```text
+information lost
+      ×
+information retained
+```
+
+or mathematically:
+
+\[
+\boxed{
+|\ker\varphi|
+\times
+|\operatorname{im}\varphi|.
+}
+\]
+
+---
+
+## 36. Quotients are not ordinary division
+
+The notation:
+
+\[
+G/N
+\]
+
+looks like numerical division.
+
+That can be misleading.
+
+A quotient group is not obtained by dividing elements of \(G\) by elements of \(N\).
+
+Instead, we partition \(G\) into cosets:
+
+\[
+gN,
+\]
+
+and each coset becomes a single element of the new group.
+
+So:
+
+\[
+\boxed{
+G/N
+=
+\text{a group of equivalence classes}.
+}
+\]
+
+This idea will recur repeatedly:
+
+\[
+\mathbb Z/n\mathbb Z,
+\]
+
+\[
+R/I
+\]
+
+for quotient rings,
+
+\[
+V/W
+\]
+
+for quotient vector spaces,
+
+and many other constructions across algebra.
+
+---
+
+## 37. Why normality and kernels are inseparable
+
+We now have two complementary facts.
+
+Every homomorphism gives a normal subgroup:
+
+\[
+\boxed{
+\ker\varphi
+\trianglelefteq G.
+}
+\]
+
+Conversely, every normal subgroup:
+
+\[
+N\trianglelefteq G
+\]
+
+is the kernel of the canonical projection:
+
+\[
+\pi:G\rightarrow G/N.
+\]
+
+Therefore:
+
+\[
+\boxed{
+N\trianglelefteq G
+\iff
+N
+\text{ is the kernel of some group homomorphism}.
+}
+\]
+
+This gives normal subgroups a fundamental structural meaning.
+
+They are exactly the subgroups that can be collapsed consistently by a homomorphism.
+
+---
+
+## 38. Why this matters in algebra
+
+The pattern developed here appears everywhere.
+
+### Quotient rings
+
+Later, a ring homomorphism:
+
+\[
+\varphi:R\rightarrow S
+\]
+
+will have a kernel that is not merely a subgroup but an **ideal**.
+
+The corresponding theorem becomes:
+
+\[
+R/\ker\varphi
+\cong
+\operatorname{im}\varphi.
+\]
+
+So ideals play for rings roughly the role that normal subgroups play for groups.
+
+---
+
+### Finite fields
+
+Finite fields are often constructed as quotient rings:
+
+\[
+\mathbb F_p[x]/(f(x)),
+\]
+
+where \(f(x)\) is irreducible.
+
+Without quotient structures, this construction would be difficult even to state precisely.
+
+---
+
+### Vector spaces and modules
+
+The same idea appears as:
+
+\[
+V/W
+\]
+
+for a subspace \(W\).
+
+Again, elements differing by something inside \(W\) become equivalent.
+
+---
+
+### Elliptic curves
+
+Morphisms between elliptic curves preserve their group structure.
+
+Important maps such as isogenies have kernels, and their kernels control substantial parts of their algebraic structure.
+
+The setting is richer than ordinary abstract groups because elliptic curves also carry geometric structure, but the group-theoretic kernel/image language remains fundamental.
+
+---
+
+## 39. Why this matters in cryptography
+
+The concepts here appear in cryptography in increasingly sophisticated forms.
+
+### Cyclic-group representations
+
+The homomorphism:
+
+\[
+k\mapsto g^k
+\]
+
+maps the additive exponent space into a multiplicative cyclic subgroup.
+
+This is one reason exponent arithmetic naturally occurs modulo:
+
+\[
+\operatorname{ord}(g).
+\]
+
+If:
+
+\[
+\operatorname{ord}(g)=q,
+\]
+
+then:
+
+\[
+g^{a+q}
+=
+g^a.
+\]
+
+The kernel of:
+
+\[
+\mathbb Z\rightarrow\langle g\rangle
+\]
+
+is:
+
+\[
+q\mathbb Z.
+\]
+
+Thus:
+
+\[
+\langle g\rangle
+\cong
+\mathbb Z/q\mathbb Z.
+\]
+
+---
+
+### Group quotients and equivalence
+
+Cryptographic constructions frequently identify objects that differ by an algebraically irrelevant transformation.
+
+Quotients give the precise mathematical language for making such identifications.
+
+---
+
+### Homomorphic structure
+
+More generally, many cryptographic maps preserve some operation:
+
+\[
+\varphi(x\star y)
+=
+\varphi(x)\diamond\varphi(y).
+\]
+
+Understanding what such maps preserve, what they collapse, and what remains visible is fundamentally a homomorphism question.
+
+---
+
+### Isogenies
+
+In elliptic-curve and isogeny theory, kernels of suitable morphisms can determine quotient structures and corresponding isogenies.
+
+The full theory requires substantially more algebraic geometry than we have developed here, but the basic vocabulary:
+
+\[
+\text{kernel},
+\quad
+\text{image},
+\quad
+\text{quotient}
+\]
+
+already begins at the level of group theory.
+
+---
+
+## 40. A computational perspective
+
+For finite groups represented explicitly, a homomorphism can be tested by checking:
+
+\[
+\varphi(xy)
+=
+\varphi(x)\varphi(y)
+\]
+
+for every pair:
+
+\[
+x,y\in G.
+\]
+
+For a small group:
+
+```python
+def is_homomorphism(
+    G,
+    H,
+    op_G,
+    op_H,
+    phi,
+):
+    for x in G:
+        for y in G:
+            lhs = phi(
+                op_G(x, y)
+            )
+
+            rhs = op_H(
+                phi(x),
+                phi(y),
+            )
+
+            if lhs != rhs:
+                return False
+
+    return True
+```
+
+This brute-force procedure is useful educationally.
+
+For large or implicitly represented groups, however, algebraic proofs and structural representations replace exhaustive testing.
+
+---
+
+## 41. Computing a kernel
+
+For a finite explicit group:
+
+```python
+def kernel(
+    G,
+    phi,
+    identity_H,
+):
+    return {
+        g
+        for g in G
+        if phi(g) == identity_H
+    }
+```
+
+Likewise:
+
+```python
+def image(G, phi):
+    return {
+        phi(g)
+        for g in G
+    }
+```
+
+The code mirrors the mathematical definitions:
+
+\[
+\ker\varphi
+=
+\{
+g:
+\varphi(g)=e_H
+\},
+\]
+
+and:
+
+\[
+\operatorname{im}\varphi
+=
+\{
+\varphi(g):
+g\in G
+\}.
+\]
+
+For educational algebra, this definition-to-code correspondence is extremely useful.
+
+---
+
+## 42. The structural picture
+
+At this point, the entire article can be summarized by one diagram:
+
+\[
+\begin{array}{ccccc}
+G
+&\xrightarrow{\varphi}&
+H\\[4pt]
+\downarrow
+&&
+\uparrow\\[4pt]
+G/\ker\varphi
+&\xrightarrow{\cong}&
+\operatorname{im}\varphi
+\end{array}
+\]
+
+The original map:
+
+\[
+\varphi:G\rightarrow H
+\]
+
+may fail to be injective.
+
+The kernel records exactly why.
+
+Once we quotient by the kernel:
+
+\[
+G/\ker\varphi,
+\]
+
+that ambiguity disappears.
+
+What remains is exactly:
+
+\[
+\operatorname{im}\varphi.
+\]
+
+So the First Isomorphism Theorem can be read as:
+
+\[
+\boxed{
+\text{source}
+-
+\text{information lost}
+=
+\text{information that survives}.
+}
+\]
+
+Not numerically, but structurally.
+
+---
+
+## Practice and checkpoint
+
+### Exercise 1 — Homomorphism
+
+Consider:
+
+\[
+\varphi:\mathbb Z\rightarrow\mathbb Z_{12}
+\]
+
+defined by:
+
+\[
+\varphi(k)=[k]_{12}.
+\]
+
+Show that \(\varphi\) is a homomorphism.
+
+Find:
+
+\[
+\ker\varphi
+\]
+
+and:
+
+\[
+\operatorname{im}\varphi.
+\]
+
+---
+
+### Exercise 2 — Doubling map
+
+Consider:
+
+\[
+\varphi:\mathbb Z\rightarrow\mathbb Z
+\]
+
+with:
+
+\[
+\varphi(n)=2n.
+\]
+
+Determine:
+
+- whether \(\varphi\) is injective;
+- whether it is surjective;
+- its kernel;
+- its image.
+
+---
+
+### Exercise 3 — Kernel and injectivity
+
+Prove directly that:
+
+\[
+\ker\varphi=\{e_G\}
+\]
+
+implies that \(\varphi\) is injective.
+
+Do not cite the theorem.
+
+Reconstruct the argument using:
+
+\[
+\varphi(x)=\varphi(y).
+\]
+
+---
+
+### Exercise 4 — Cosets
+
+Let:
+
+\[
+H=4\mathbb Z
+\]
+
+inside:
+
+\[
+\mathbb Z.
+\]
+
+List all distinct cosets of \(H\).
+
+How many are there?
+
+What is:
+
+\[
+[\mathbb Z:4\mathbb Z]?
+\]
+
+---
+
+### Exercise 5 — Lagrange
+
+Suppose:
+
+\[
+|G|=60.
+\]
+
+Which of the following could be subgroup orders?
+
+\[
+7,\quad
+10,\quad
+12,\quad
+15,\quad
+20,\quad
+24,\quad
+30.
+\]
+
+Lagrange tells us which are impossible.
+
+Does it guarantee that every divisor actually occurs as a subgroup order?
+
+---
+
+### Exercise 6 — Normality
+
+Inside:
+
+\[
+S_3,
+\]
+
+study:
+
+\[
+H=\{e,(12)\}.
+\]
+
+Conjugate \((12)\) by \((123)\).
+
+Explain why \(H\) is not normal.
+
+---
+
+### Exercise 7 — Index two
+
+Prove that every subgroup of index \(2\) is normal.
+
+Apply the result to:
+
+\[
+A_3\le S_3.
+\]
+
+---
+
+### Exercise 8 — Quotient
+
+Consider:
+
+\[
+\mathbb Z/5\mathbb Z.
+\]
+
+Write its five cosets explicitly.
+
+Compute:
+
+\[
+(2+5\mathbb Z)
++
+(4+5\mathbb Z).
+\]
+
+Verify that choosing different integer representatives gives the same coset.
+
+---
+
+### Exercise 9 — Cyclic group from a quotient
+
+Let \(g\) have order:
+
+\[
+8.
+\]
+
+Consider:
+
+\[
+\varphi:\mathbb Z\rightarrow\langle g\rangle,
 \qquad
-\varphi(k)=k\bmod n.
-$$
-Then
-$$
-\ker\varphi=n\mathbb Z,
-$$
-and therefore
-$$
-\mathbb Z/n\mathbb Z\cong \mathbb Z/(n\mathbb Z).
-$$
-This simple example contains the entire quotient-group idea in a familiar setting.
+\varphi(k)=g^k.
+\]
 
-## 8. Why this matters later
+Find the kernel and use the First Isomorphism Theorem to show:
 
-Quotients and homomorphisms reappear in polynomial quotient rings, finite-field construction, elliptic-curve isogenies, module theory, and many cryptographic protocols. They are not optional abstraction: they are the language that makes those constructions precise.
+\[
+\langle g\rangle
+\cong
+\mathbb Z_8.
+\]
+
+---
+
+### Exercise 10 — Sign map
+
+For:
+
+\[
+S_3,
+\]
+
+list the even and odd permutations.
+
+Verify that:
+
+\[
+\ker(\operatorname{sgn})
+=
+A_3.
+\]
+
+Then explain why:
+
+\[
+S_3/A_3
+\cong
+\mathbb Z_2.
+\]
+
+---
+
+## Reader checkpoint
+
+You should now be able to explain:
+
+1. What a group homomorphism preserves.
+2. Why
+   \[
+   \varphi(e_G)=e_H.
+   \]
+3. Why
+   \[
+   \varphi(g^{-1})
+   =
+   \varphi(g)^{-1}.
+   \]
+4. What an isomorphism means structurally.
+5. What the kernel of a homomorphism measures.
+6. What the image measures.
+7. Why the kernel is a subgroup.
+8. Why the image is a subgroup.
+9. Why
+   \[
+   \varphi
+   \text{ is injective}
+   \iff
+   \ker\varphi=\{e_G\}.
+   \]
+10. What a left and right coset are.
+11. Why cosets partition a group.
+12. Why all cosets have the same cardinality.
+13. What
+   \[
+   [G:H]
+   \]
+   means.
+14. How cosets prove Lagrange's theorem.
+15. What makes a subgroup normal.
+16. Why every subgroup of an abelian group is normal.
+17. Why every kernel is normal.
+18. Why every index-two subgroup is normal.
+19. Why normality is required for quotient-group multiplication.
+20. What it means conceptually to collapse \(N\) inside \(G/N\).
+21. What the canonical projection
+   \[
+   G\rightarrow G/N
+   \]
+   does.
+22. Why
+   \[
+   G/\ker\varphi
+   \cong
+   \operatorname{im}\varphi.
+   \]
+23. Why finite homomorphisms satisfy
+   \[
+   |G|
+   =
+   |\ker\varphi|
+   |\operatorname{im}\varphi|.
+   \]
+24. Why finite cyclic groups of the same order are isomorphic.
+
+At this point, we have moved beyond studying isolated groups.
+
+We can now compare groups, collapse structure systematically, and identify when two apparently different constructions contain the same algebra.
+
+---
+
+## References and further reading
+
+**Joseph A. Gallian**,  
+*Contemporary Abstract Algebra.*
+
+A particularly accessible introduction to homomorphisms, cosets, normal subgroups, quotient groups, and isomorphism theorems.
+
+**David S. Dummit and Richard M. Foote**,  
+*Abstract Algebra.*
+
+A comprehensive treatment of group homomorphisms, quotient structures, and the isomorphism theorems.
+
+**Michael Artin**,  
+*Algebra.*
+
+Provides a highly structural perspective on homomorphisms, quotient groups, symmetries, and algebraic equivalence.
+
+**I. N. Herstein**,  
+*Topics in Algebra.*
+
+A classical and concise treatment of foundational group and ring theory.
+
+**Victor Shoup**,  
+*A Computational Introduction to Number Theory and Algebra.*
+
+Useful for connecting abstract homomorphism structure with computational groups and number-theoretic algebra.
+
+---
+
+## Where this leads
+
+Part I developed:
+
+\[
+\boxed{
+\text{elements and internal group structure}.
+}
+\]
+
+This article developed:
+
+\[
+\boxed{
+\text{maps and quotient structure}.
+}
+\]
+
+We can now understand the basic architecture:
+
+\[
+G
+\xrightarrow{\varphi}
+H,
+\]
+
+\[
+\ker\varphi
+\trianglelefteq
+G,
+\]
+
+\[
+G/\ker\varphi
+\cong
+\operatorname{im}\varphi.
+\]
+
+The next stage of abstract algebra can move beyond groups and ask what happens when a set carries **two compatible operations** rather than one.
+
+That transition leads naturally from:
+
+\[
+\boxed{
+\text{groups}
+}
+\]
+
+to:
+
+\[
+\boxed{
+\text{rings}.
+}
+\]
+
+There, normal subgroups will be replaced by a stronger object — **ideals** — and quotient groups will evolve into quotient rings.

@@ -8,7 +8,7 @@ GitHub repository: `https://github.com/TasosVoudouris/TasosVoudouris.github.io`
 
 ## One canonical master
 
-Use this repository as the single working CryptoCave tree. The current v6.11 master contains **208 published articles**, **24 ordered series**, and **30 topic areas**.
+Use this repository as the single working CryptoCave tree. The current v6.12 master contains **208 published articles**, **24 ordered series**, and **30 topic areas**.
 
 The consolidation process does not copy every source file into the active site. Incoming batches are deduplicated and classified; only the strongest canonical prose, useful figures, selected companion implementations, and provenance records survive in the working repository.
 
@@ -229,11 +229,13 @@ For each upgrade, extract into a new/empty folder (or rename the old one first).
 npm run check:content
 ```
 
-A clean v6.11 master reports:
+A clean v6.12 master reports:
 
 ```text
 CryptoCave content preflight: OK (208 articles, 24 series, 30 topics).
 ```
+
+The preflight validates frontmatter/schema values, series ordering, `sourcePath` targets, Markdown and raw-HTML local images, internal `/blog/.../` links, duplicate titles, code-fence balance, and rendered local heading/TOC anchors.
 
 ## Local development
 

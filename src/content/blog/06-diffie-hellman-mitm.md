@@ -1,30 +1,32 @@
 ---
-title: 'Breaking Diffie-Hellman Without Solving the Discrete Log: The Man-in-the-Middle Attack'
-description: Bare Diffie-Hellman can be mathematically correct and still connect you to the wrong person. A step-by-step man-in-the-middle attack shows why key agreement needs authentication.
-pubDate: '2026-09-08'
+title: "Breaking Diffie-Hellman Without Solving the Discrete Log: The Man-in-the-Middle Attack"
+description: "Bare Diffie-Hellman can be mathematically correct and still connect you to the wrong person. A step-by-step man-in-the-middle attack shows why key agreement needs authentication."
+pubDate: "2026-09-08"
+updatedDate: "2026-09-14"
 topics:
-- Public-Key Cryptography
-- Key Exchange
-- Discrete Logarithms
-- Cryptanalysis
+  - "Public-Key Cryptography"
+  - "Key Exchange"
+  - "Discrete Logarithms"
+  - "Cryptanalysis"
 tags:
-- diffie-hellman
-- man-in-the-middle
-- authenticated-key-exchange
-- protocol-security
-- cryptography-from-zero
-difficulty: Introductory
-series: Cryptography From Zero
+  - "diffie-hellman"
+  - "man-in-the-middle"
+  - "authenticated-key-exchange"
+  - "protocol-security"
+  - "cryptography-from-zero"
+difficulty: "Introductory"
+series: "Cryptography From Zero"
 seriesOrder: 7
 draft: false
 ---
-In the previous post, Eve broke our toy Diffie-Hellman exchange by brute-forcing the secret exponent.
 
-That was useful because it showed something basic:
+In the previous article, Eve broke our toy Diffie-Hellman exchange by recovering Alice's secret exponent with brute force.
 
-> correct mathematics does not rescue bad parameters.
+That attack worked because the group was tiny.
 
-But there is a much more interesting attack.
+The mathematics of Diffie-Hellman remained perfectly correct, but the supposedly hard discrete-logarithm problem was easy at that scale.
+
+Now we consider a much more interesting failure.
 
 This time Eve does **not** solve a discrete logarithm.
 
@@ -32,11 +34,11 @@ She does not recover Alice's secret exponent.
 
 She does not recover Bob's secret exponent.
 
-She does not break modular exponentiation.
+She does not defeat modular exponentiation.
 
-She simply makes Alice and Bob perform two perfectly valid Diffie-Hellman exchanges — both with the wrong person.
+Instead, she makes Alice and Bob perform two perfectly valid Diffie-Hellman exchanges — each with Eve rather than with one another.
 
-This is the point where I had to separate two ideas that are very easy to merge mentally:
+The distinction is fundamental:
 
 ```text
 Do we share a secret?
@@ -44,198 +46,321 @@ Do we share a secret?
 Do I know who I share it with?
 ```
 
-Diffie-Hellman answers the first question.
+Diffie-Hellman can solve the first problem.
 
-Bare Diffie-Hellman does not answer the second.
+Bare Diffie-Hellman does not solve the second.
 
 ![Man-in-the-middle attack against bare Diffie-Hellman](/images/blog/06-dh-mitm.svg)
 
-*Eve does not need to defeat the group mathematics. She replaces the public values and creates two independent, valid shared secrets.*
+*Eve does not need to defeat the group mathematics. She replaces the public Diffie-Hellman values and establishes two independent shared secrets.*
 
 ---
 
-## The protocol still works — just not between Alice and Bob
+## The attack
 
-Let us reuse the same tiny public parameters:
+Reuse the same toy parameters:
 
-$$
-p=23,\qquad g=5.
-$$
+\[
+p=23,
+\qquad
+g=5.
+\]
 
-Alice chooses:
+Alice chooses
 
-$$
+\[
 a=6
-$$
+\]
 
-and computes:
+and computes
 
-$$
-A=5^6\bmod23=8.
-$$
+\[
+A=g^a
+=
+5^6\bmod 23
+=
+8.
+\]
 
-Bob chooses:
+Bob chooses
 
-$$
+\[
 b=15
-$$
+\]
 
-and computes:
+and computes
 
-$$
-B=5^{15}\bmod23=19.
-$$
+\[
+B=g^b
+=
+5^{15}\bmod 23
+=
+19.
+\]
 
-Without an attacker, Alice and Bob would exchange $A$ and $B$ and derive:
+Without an attacker, Alice would compute
 
-$$
-Z=g^{ab}=2.
-$$
+\[
+B^a
+=
+19^6\bmod 23
+=
+2,
+\]
+
+while Bob would compute
+
+\[
+A^b
+=
+8^{15}\bmod 23
+=
+2.
+\]
+
+Thus the honest execution gives
+
+\[
+\boxed{
+g^{ab}=2
+}
+\]
+
+to both participants.
 
 Now place Eve between them.
 
-Alice tries to send:
+Alice attempts to send
 
-$$
+\[
 A=8
-$$
+\]
 
 to Bob.
 
 Eve intercepts it.
 
-Bob never receives $A$.
+Bob never receives Alice's real Diffie-Hellman share.
 
-Instead, Eve chooses her own secret exponent for the Bob-facing session:
+Instead, Eve chooses her own secret exponent for the session with Bob:
 
-$$
-e_B=7,
-$$
+\[
+e_B=7.
+\]
 
-computes:
+She computes
 
-$$
-E_B=5^7\bmod23=17,
-$$
+\[
+E_B
+=
+g^{e_B}
+=
+5^7\bmod 23
+=
+17
+\]
 
-and sends $17$ to Bob while pretending it came from Alice.
+and sends \(E_B\) to Bob while pretending that it came from Alice.
 
-At the same time, Bob tries to send:
+At the same time, Bob attempts to send
 
-$$
+\[
 B=19
-$$
+\]
 
 to Alice.
 
-Eve intercepts that too.
+Again Eve intercepts the message.
 
-For the Alice-facing session, Eve chooses:
+For her session with Alice, Eve chooses a second secret exponent:
 
-$$
+\[
 e_A=3,
-$$
+\]
 
-computes:
+and computes
 
-$$
-E_A=5^3\bmod23=10,
-$$
+\[
+E_A
+=
+g^{e_A}
+=
+5^3\bmod 23
+=
+10.
+\]
 
-and sends $10$ to Alice while pretending it came from Bob.
+She sends \(E_A\) to Alice while pretending that it came from Bob.
 
-Now look at what happens.
-
-Alice computes:
-
-$$
-K_{AE}=E_A^a=10^6\bmod23=6.
-$$
-
-Eve can compute the same value from Alice's real public value:
-
-$$
-A^{e_A}=8^3\bmod23=6.
-$$
-
-So Alice and Eve share:
-
-$$
-\boxed{K_{AE}=6}.
-$$
-
-Bob computes:
-
-$$
-K_{BE}=E_B^b=17^{15}\bmod23=15.
-$$
-
-Eve computes:
-
-$$
-B^{e_B}=19^7\bmod23=15.
-$$
-
-So Bob and Eve share:
-
-$$
-\boxed{K_{BE}=15}.
-$$
-
-Alice believes she shares a secret with Bob.
-
-Bob believes he shares a secret with Alice.
-
-But the real picture is:
+The network now looks like this:
 
 ```text
-Alice  ←→  Eve  ←→  Bob
-  K=6       K=15
+Alice             Eve              Bob
+
+  A = g^a  ----X
+
+             E_B = g^eB --------->
+
+             <--------- B = g^b
+
+  <--------- E_A = g^eA
 ```
 
-There is **no Alice–Bob shared secret at all**.
+The important point is that Alice and Bob have no authenticated way to distinguish Eve's substituted values from genuine Diffie-Hellman shares.
 
-And every Diffie-Hellman computation above is mathematically valid.
+### Alice's session
 
-That is what makes this attack so useful pedagogically.
+Alice receives
 
-The cryptographic primitive did not malfunction.
+\[
+E_A=10
+\]
 
-The protocol failed to authenticate the peer.
+and computes
+
+\[
+K_{AE}
+=
+E_A^a
+=
+10^6\bmod 23
+=
+6.
+\]
+
+Eve knows \(e_A=3\), so using Alice's genuine public value \(A=8\), she computes
+
+\[
+A^{e_A}
+=
+8^3\bmod 23
+=
+6.
+\]
+
+Therefore,
+
+\[
+\boxed{
+K_{AE}=6
+}
+\]
+
+is shared between Alice and Eve.
+
+### Bob's session
+
+Bob receives
+
+\[
+E_B=17
+\]
+
+and computes
+
+\[
+K_{BE}
+=
+E_B^b
+=
+17^{15}\bmod 23
+=
+15.
+\]
+
+Eve knows \(e_B=7\), so using Bob's genuine public value \(B=19\), she computes
+
+\[
+B^{e_B}
+=
+19^7\bmod 23
+=
+15.
+\]
+
+Therefore,
+
+\[
+\boxed{
+K_{BE}=15
+}
+\]
+
+is shared between Bob and Eve.
+
+The actual situation is:
+
+```text
+Alice  ←────────→  Eve  ←────────→  Bob
+
+       KAE = 6        KBE = 15
+```
+
+Alice thinks the peer is Bob.
+
+Bob thinks the peer is Alice.
+
+But Alice and Bob do not share a secret with each other at all.
+
+Every Diffie-Hellman equation executed successfully.
+
+The failure is not algebraic.
+
+It is a failure of **authentication**.
 
 ---
 
-If we wrote the attack as a tiny simulation, it would look roughly like this:
+## Reproducing the attack in Python
+
+The entire attack can be reproduced directly:
 
 ```python
 p = 23
 g = 5
 
+# Alice and Bob
 alice_secret = 6
 bob_secret = 15
 
 A = pow(g, alice_secret, p)
 B = pow(g, bob_secret, p)
 
+# Eve creates one DH secret for each side
 eve_for_alice = 3
 eve_for_bob = 7
 
 E_A = pow(g, eve_for_alice, p)
 E_B = pow(g, eve_for_bob, p)
 
+# Alice believes E_A came from Bob
 alice_key = pow(E_A, alice_secret, p)
+
+# Eve derives the same key using Alice's genuine public value
 eve_with_alice = pow(A, eve_for_alice, p)
 
+# Bob believes E_B came from Alice
 bob_key = pow(E_B, bob_secret, p)
+
+# Eve derives Bob's key using Bob's genuine public value
 eve_with_bob = pow(B, eve_for_bob, p)
 
 assert alice_key == eve_with_alice
 assert bob_key == eve_with_bob
 
 assert alice_key != bob_key
+
+print("Alice ↔ Eve:", alice_key)
+print("Eve ↔ Bob:  ", bob_key)
 ```
 
-The final line is the important one:
+Output:
+
+```text
+Alice ↔ Eve: 6
+Eve ↔ Bob:   15
+```
+
+The most important test is:
 
 ```python
 assert alice_key != bob_key
@@ -243,245 +368,659 @@ assert alice_key != bob_key
 
 Alice and Bob do not agree with each other.
 
-Yet each one has successfully completed a valid Diffie-Hellman computation.
+Yet neither participant sees a mathematical failure.
+
+Each has completed a valid Diffie-Hellman computation.
+
+That is precisely why this attack is conceptually more interesting than simply brute-forcing the toy discrete logarithm.
 
 ---
 
-## Why Eve can now read and modify traffic
+## Why Eve can read and modify the communication
 
-Suppose we later derive encryption keys from these two shared values.
+Suppose Alice and Bob now derive symmetric encryption keys from the values they believe came from their Diffie-Hellman exchange.
 
-Alice encrypts a message using the key derived from:
+Alice derives a key from
 
-$$
+\[
 K_{AE}=6.
-$$
+\]
 
-Eve knows that keying material too.
+Eve knows exactly the same value.
 
-So Eve can:
+Bob derives a different key from
 
-```text
-decrypt Alice's message
-        ↓
-read it
-        ↓
-modify it if she wants
-        ↓
-encrypt a new version using Bob's key
-        ↓
-forward it to Bob
-```
-
-Bob decrypts using the key derived from:
-
-$$
+\[
 K_{BE}=15.
-$$
+\]
 
-Everything may look perfectly normal from Bob's perspective.
+Again, Eve knows exactly the same value.
 
-The network can still be encrypted.
+Suppose Alice sends:
 
-The problem is that it is encrypted in **two separate attacker-controlled sessions**.
+```text
+"meet at 18:00"
+```
 
-This is one of the places where the phrase "encrypted connection" can be dangerously incomplete.
+The traffic can flow like this:
 
-The real question is:
+```text
+Alice
+  │
+  │ Encrypt with key derived from KAE
+  ▼
+ciphertext
+  │
+  ▼
+Eve
+  │
+  ├── decrypt with Alice-facing key
+  │
+  ├── read plaintext
+  │
+  ├── optionally modify plaintext
+  │
+  └── encrypt with Bob-facing key
+  ▼
+new ciphertext
+  │
+  ▼
+Bob
+```
 
-> Encrypted to whom?
+Bob successfully decrypts the message with his own session key.
+
+If the protocol contains no mechanism authenticating the peer or the handshake transcript, neither side necessarily realizes that the encrypted communication has been terminated and re-created by Eve.
+
+This gives us an important lesson:
+
+\[
+\boxed{
+\text{encrypted}
+\neq
+\text{authenticated}
+}
+\]
+
+An encrypted channel answers:
+
+> Who can understand these ciphertexts?
+
+Authentication answers a different question:
+
+> Who am I actually communicating with?
+
+The phrase *secure connection* usually requires both questions to be addressed.
 
 ---
 
-This also explains the difference between a **passive** and an **active** attacker.
+## Passive and active attackers
 
-A passive Eve only listens:
+The previous toy discrete-log attack can be viewed as a passive attack.
+
+Eve observes:
+
+\[
+g,\qquad g^a,\qquad g^b
+\]
+
+and tries to infer the secret.
+
+Conceptually:
 
 ```text
-Alice  --------  Bob
-          ↑
-        listens
+Alice ------------------------ Bob
+               ↑
+              Eve
+            observes
 ```
 
-For properly chosen Diffie-Hellman parameters, passive observation should not reveal the shared secret.
+A properly parameterized Diffie-Hellman group should make the relevant computational problem infeasible for such an observer.
 
-But an active Eve controls the channel:
+The man-in-the-middle attacker is stronger.
+
+Eve controls the communication channel:
 
 ```text
-Alice  ←→  Eve  ←→  Bob
+Alice  ←────────→  Eve  ←────────→  Bob
 ```
 
-She can:
+She may:
 
-- intercept,
-- replace,
-- delay,
-- inject,
-- reorder.
+- intercept messages,
+- replace values,
+- inject new messages,
+- delay messages,
+- reorder messages,
+- replay previous messages.
 
-Bare Diffie-Hellman was never enough to stop this attacker.
+This is an **active attacker**.
 
-The missing property is **authentication**.
+Bare Diffie-Hellman does not authenticate the exchanged public values, so nothing prevents Eve from substituting her own.
+
+This is also why increasing the modulus does not solve the problem.
+
+Suppose instead of our tiny group we use an enormous group where solving the discrete logarithm would require an infeasible amount of computation.
+
+Eve still does not need to solve it.
+
+She chooses her own values:
+
+\[
+E_A=g^{e_A},
+\qquad
+E_B=g^{e_B}
+\]
+
+and substitutes them exactly as before.
+
+Moving from finite-field DH to elliptic-curve Diffie-Hellman does not automatically solve the problem either.
+
+Instead of
+
+\[
+A=g^a,
+\]
+
+an elliptic-curve protocol may use
+
+\[
+A=aG.
+\]
+
+Eve can still replace \(A\) with
+
+\[
+E=eG
+\]
+
+unless the protocol authenticates the public values.
+
+So the problem is not:
+
+```text
+our Diffie-Hellman group was too weak
+```
+
+but rather:
+
+```text
+Alice cannot prove that the value she received belongs to Bob
+
+Bob cannot prove that the value he received belongs to Alice
+```
 
 ---
 
-## The mitigation is not "stronger Diffie-Hellman"
+## From key agreement to authenticated key agreement
 
-This is another distinction I find important.
+The mitigation is therefore not simply **stronger Diffie-Hellman**.
 
-Making $p$ larger does not solve this attack.
+We need to connect the ephemeral key agreement to some authenticated information.
 
-Using a harder discrete-log group does not solve this attack.
-
-Switching from finite-field DH to elliptic-curve DH does not automatically solve this attack.
-
-Why?
-
-Because Eve never tried to solve the hard problem.
-
-The problem is not:
+Conceptually:
 
 ```text
-the discrete log was too easy
-```
-
-It is:
-
-```text
-Alice has no authenticated evidence that B came from Bob
-Bob has no authenticated evidence that A came from Alice
-```
-
-So we need to bind the key exchange to identity and session context.
-
-At a high level:
-
-```text
-ephemeral key exchange values
+Diffie-Hellman values
         +
-identity / credentials
+participant identity
         +
-authenticated transcript
+credentials / authentication key
+        +
+handshake transcript
         ↓
 authenticated key exchange
 ```
 
-Digital signatures are one way to do this when the protocol has authenticated public keys or certificates.
+One possibility is to use digital signatures.
 
-But I want to phrase the lesson carefully.
+Suppose Bob possesses a long-term signing key
 
-It is not enough to think:
+\[
+sk_B
+\]
 
-> "Just sign some public number."
+whose corresponding public key
 
-A real protocol must define **exactly what is authenticated**.
+\[
+pk_B
+\]
 
-Typically that includes enough handshake context to stop values from being copied, substituted, or replayed into another session.
+Alice already trusts through some authenticated mechanism.
 
-This is why modern protocols talk about **transcript binding**.
+Bob could authenticate his ephemeral Diffie-Hellman contribution.
+
+But even here, the simple statement
+
+> "Sign the DH public key"
+
+is not enough as a general protocol-design rule.
+
+A real protocol must specify **exactly what is signed or otherwise authenticated**.
+
+For example, we may want the authentication to cover:
+
+\[
+\text{protocol identifier},
+\]
+
+\[
+\text{Alice identity},
+\]
+
+\[
+\text{Bob identity},
+\]
+
+\[
+A,
+\]
+
+\[
+B,
+\]
+
+and additional handshake information.
+
+Conceptually:
+
+\[
+\sigma_B
+=
+\operatorname{Sign}_{sk_B}
+\left(
+H(
+\text{context}
+\parallel
+A
+\parallel
+B
+\parallel
+\text{transcript}
+)
+\right).
+\]
+
+Alice verifies:
+
+\[
+\operatorname{Verify}_{pk_B}(\sigma_B,\ldots).
+\]
+
+Now Eve cannot simply replace Bob's contribution with
+
+\[
+E_A
+\]
+
+unless she can also produce a valid authentication value corresponding to Bob's trusted credentials.
+
+This is the beginning of **authenticated key exchange**, or AKE.
+
+The important idea is not merely that a signature appears somewhere.
+
+It is that the authentication mechanism is cryptographically bound to the **specific handshake being executed**.
+
+This is often called **transcript binding**.
 
 ---
 
-### A modern connection: TLS 1.3
+## Why the transcript matters
 
-TLS 1.3 is a useful example because the pieces are visible.
+Imagine a protocol that authenticates only one isolated public value without binding enough surrounding context.
 
-Conceptually, it separates:
+Values from one execution might potentially be:
+
+- copied into another session,
+- replayed,
+- reflected,
+- associated with the wrong identity,
+- interpreted under different protocol parameters.
+
+A transcript gives structure to the session.
+
+For example:
+
+\[
+T
+=
+H(
+\text{protocol}
+\parallel
+\text{Alice}
+\parallel
+\text{Bob}
+\parallel
+A
+\parallel
+B
+\parallel
+\text{parameters}
+).
+\]
+
+Authentication can then bind the parties to
+
+\[
+T
+\]
+
+rather than to an isolated number.
+
+This is a recurring design principle in modern cryptography:
+
+\[
+\boxed{
+\text{authenticate the context, not merely a value}
+}
+\]
+
+We will encounter the same principle again in:
+
+- digital-signature protocols,
+- TLS,
+- zero-knowledge proofs,
+- Fiat-Shamir transforms,
+- threshold signatures,
+- domain separation,
+- distributed key generation.
+
+---
+
+## A modern example: TLS 1.3
+
+TLS 1.3 gives us a useful architectural example.
+
+We are **not** going to study the entire TLS handshake here, but its structure shows how real protocols separate several jobs that our toy exchange merged together.
+
+Very approximately:
 
 ```text
 (EC)DHE
-    ↓
+   ↓
 establish shared secret material
 
-CertificateVerify / PSK authentication
-    ↓
-authenticate the peer and handshake context
+authentication
+   ↓
+authenticate the peer and handshake
 
-Finished
-    ↓
-confirm handshake integrity / key possession
+transcript
+   ↓
+bind messages to this session
+
+Finished messages
+   ↓
+confirm the completed handshake
 
 HKDF key schedule
-    ↓
+   ↓
 derive traffic keys
 ```
 
-The TLS 1.3 specification describes its handshake as an **Authenticated Key Exchange (AKE)** protocol.
+The Diffie-Hellman component contributes ephemeral shared secret material.
 
-It also authenticates the handshake transcript rather than treating the Diffie-Hellman public value as an isolated object.
+Authentication mechanisms bind credentials to the handshake.
 
-**Reference:** [RFC 8446 — The Transport Layer Security (TLS) Protocol Version 1.3](https://www.rfc-editor.org/rfc/rfc8446)
+The transcript binds the exchanged messages together.
 
-We are not implementing TLS here.
+A key schedule derives separate cryptographic keys for specific purposes.
 
-The point is only to see how the missing property from our toy protocol appears in a real architecture:
+This is very different from the toy model:
 
-> key agreement and authentication are separate jobs that must be composed correctly.
+```text
+compute g^(ab)
+       ↓
+call it "the key"
+       ↓
+done
+```
+
+Real protocol security comes from composing several cryptographic mechanisms correctly.
+
+That is why **protocol design is not simply a collection of secure primitives**.
+
+A protocol may contain perfectly secure primitives and still be insecure if those primitives are connected incorrectly.
 
 ---
 
-Run the companion attack demo when we add it to the repository:
+## What exactly failed?
 
-```powershell
-python chapters/06_dh_mitm/demo.py
-```
+It is useful to compare this attack with the previous one.
 
-A good experiment is to print all three views:
+### Previous article: weak parameters
+
+The adversary observes:
+
+\[
+A=g^a
+\]
+
+and recovers:
+
+\[
+a.
+\]
+
+The failure is:
+
+\[
+\boxed{
+\text{the computational problem is too easy}
+}
+\]
+
+because the group is tiny.
+
+### This article: missing authentication
+
+The adversary does not recover:
+
+\[
+a
+\]
+
+or
+
+\[
+b.
+\]
+
+Instead she substitutes:
+
+\[
+A\rightarrow E_B
+\]
+
+and
+
+\[
+B\rightarrow E_A.
+\]
+
+The failure is:
+
+\[
+\boxed{
+\text{the protocol does not authenticate the peer}
+}
+\]
+
+These are fundamentally different classes of failure.
+
+We can summarize them as:
 
 ```text
-ALICE THINKS:
-peer = Bob
-shared = 6
+mathematical correctness
+        ↓
+not enough
 
-EVE KNOWS:
+hard computational problem
+        ↓
+not enough
+
+secure parameters
+        ↓
+not enough
+
+authentication and protocol context
+        ↓
+required for authenticated communication
+```
+
+This is one of the most important transitions in learning cryptography.
+
+At first it is natural to think:
+
+> If the underlying mathematical problem is hard, the protocol must be secure.
+
+But protocol security asks more questions:
+
+- Who generated this value?
+- Which session does it belong to?
+- Has it been modified?
+- Has it been replayed?
+- Are the parties using the same transcript?
+- Are the keys bound to the intended identities?
+- Has the peer actually demonstrated possession of the corresponding secret?
+
+Those questions cannot be answered by the discrete-logarithm assumption alone.
+
+---
+
+## Reproduce the attack
+
+Run the experiment and print the different views explicitly:
+
+```text
+ALICE THINKS
+
+peer   = Bob
+shared = 6
+```
+
+```text
+EVE KNOWS
+
 with Alice = 6
 with Bob   = 15
+```
 
-BOB THINKS:
-peer = Alice
+```text
+BOB THINKS
+
+peer   = Alice
 shared = 15
 ```
 
-Then ask:
+Then answer these questions:
 
 1. Did Eve solve a discrete logarithm?
-2. Did any Diffie-Hellman equality fail?
-3. Do Alice and Bob actually share the same key?
-4. What piece of information did neither side authenticate?
-5. Why would a larger prime not fix this attack?
+2. Did any Diffie-Hellman equation fail?
+3. Do Alice and Bob actually share the same value?
+4. Why does Alice accept Eve's public value?
+5. Why does Bob accept Eve's public value?
+6. Why would using a much larger prime not prevent this attack?
+7. Would switching to elliptic-curve Diffie-Hellman alone prevent it?
+8. What additional property is missing from the protocol?
 
-If those five answers are clear, then the protocol-level lesson has landed.
+If those answers are clear, the important lesson has landed.
 
 ---
 
-At this point we have broken Diffie-Hellman in two completely different ways:
+## Papers and standards
+
+### Diffie and Hellman — the original key-agreement paper
+
+**Whitfield Diffie and Martin E. Hellman**,  
+*New Directions in Cryptography*,  
+IEEE Transactions on Information Theory, 22(6), 1976.
+
+The original paper is worth revisiting after seeing the difference between the mathematical key-agreement mechanism and the larger authentication problem.
+
+### Station-to-Station protocol
+
+**Whitfield Diffie, Paul C. van Oorschot, and Michael J. Wiener**,  
+*Authentication and Authenticated Key Exchanges*,  
+Designs, Codes and Cryptography, 2, 1992.
+
+This is particularly relevant after this article because the Station-to-Station protocol was designed specifically to combine Diffie-Hellman-style key establishment with authentication.
+
+### Bellare and Rogaway — formal key-exchange analysis
+
+**Mihir Bellare and Phillip Rogaway**,  
+*Entity Authentication and Key Distribution*,  
+CRYPTO 1993.
+
+This work is part of the development of formal models for reasoning about authentication and key establishment rather than relying only on informal protocol intuition.
+
+### Canetti and Krawczyk — authenticated key exchange
+
+**Ran Canetti and Hugo Krawczyk**,  
+*Analysis of Key-Exchange Protocols and Their Use for Building Secure Channels*,  
+EUROCRYPT 2001.
+
+This is a useful bridge toward modern formal reasoning about authenticated key exchange and secure channels.
+
+### SIGMA protocols
+
+**Hugo Krawczyk**,  
+*SIGMA: The 'SIGn-and-MAc' Approach to Authenticated Diffie-Hellman and Its Use in the IKE Protocols*,  
+CRYPTO 2003.
+
+SIGMA is particularly relevant to the design problem we have just encountered: how to authenticate Diffie-Hellman exchanges while correctly binding identities and session information.
+
+### TLS 1.3
+
+**Eric Rescorla**,  
+*The Transport Layer Security (TLS) Protocol Version 1.3*,  
+RFC 8446, 2018.
+
+TLS 1.3 is an important real-world example of ephemeral key agreement, transcript authentication, key derivation, and handshake confirmation being composed into an authenticated secure channel.
+
+---
+
+## Next
+
+We have now broken our Diffie-Hellman experiments in two completely different ways.
+
+First:
 
 ```text
-Blog 05:
 tiny group
     ↓
-hard problem becomes easy
+discrete logarithm becomes easy
     ↓
-recover secret exponent
-
-Blog 06:
-no authentication
-    ↓
-hard problem never attacked
-    ↓
-replace public values
+recover the secret exponent
 ```
 
-Those are fundamentally different failure modes.
+Then:
 
-And that distinction is exactly what I want this project to teach.
+```text
+no authentication
+    ↓
+do not attack the discrete logarithm at all
+    ↓
+replace the public values
+    ↓
+create two independent sessions
+```
 
-The next question is more subtle.
+Now suppose we fix both problems.
 
-Even if the peer is authenticated, what if we accidentally accept a public value that lives in the wrong subgroup?
+Assume:
 
-Could an attacker force the computation into a tiny set and learn information about the secret a few bits at a time?
+- the discrete logarithm is hard,
+- the peer is authenticated,
+- the attacker cannot simply replace the handshake.
 
-That takes us to our first structural parameter-validation attack.
+Can accepting the **wrong kind of group element** still leak information?
 
-**Next:** *Small-Subgroup Attacks: When the Group Is Large but the Secret Leaks Through a Tiny Subgroup.*
+Yes.
+
+If an implementation accepts a value from a small subgroup, the resulting shared value may lie in a tiny set.
+
+Repeated interactions can then reveal information about a secret exponent.
+
+That takes us from protocol authentication back into the internal structure of the group itself.
+
+**Next: Small-Subgroup Attacks — When the Group Is Large but the Secret Leaks Through a Tiny Subgroup.**

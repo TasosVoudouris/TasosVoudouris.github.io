@@ -1,4 +1,4 @@
-# CryptoCave canonical content map — v6.11
+# CryptoCave canonical content map — v6.12
 
 This is the current architecture after the v6 consolidation and the dedicated Secret Sharing / MPC cleanup and the Ross-PQC / historical SageMath audit. Historical planning maps remain under `site-planning/history/` for provenance only.
 
