@@ -25,7 +25,7 @@ draft: false
 - [From Brute Force to a Square-Root Search](#from-brute-force-to-a-square-root-search)
 - [Baby-Step Giant-Step in a Multiplicative Group](#baby-step-giant-step-in-a-multiplicative-group)
 - [Baby-Step Giant-Step for the ECDLP](#baby-step-giant-step-for-the-ecdlp)
-- [Worked Example on (E/\mathbb F_${17})](#worked-example-on-emathbb-f_17)
+- [Worked Example on $E/\mathbb F_{17}$](#worked-example-on-ef17emathbb-f_17ef17)
 - [Correct Implementation, Edge Cases, and Validation](#correct-implementation-edge-cases-and-validation)
 - [Time-Memory Tradeoff and Practical Limits](#time-memory-tradeoff-and-practical-limits)
 - [Executable Experiments](#executable-experiments)
@@ -38,103 +38,103 @@ draft: false
 
 The first article defined the discrete logarithm problem in a cyclic group:
 
-\[
+$$
 G=\langle g\rangle,
-\]
+$$
 
 with:
 
-\[
+$$
 N=\operatorname{ord}(g).
-\]
+$$
 
 Given:
 
-\[
+$$
 h=g^x,
-\]
+$$
 
 the goal is to recover:
 
-\[
+$$
 x\in\{0,\ldots,N-1\}.
-\]
+$$
 
 The most direct algorithm is brute force:
 
-\[
+$$
 1,g,g^2,g^3,\ldots
-\]
+$$
 
-until the target \(h\) appears.
+until the target $h$ appears.
 
 In the worst case this requires:
 
-\[
+$$
 O(N)
-\]
+$$
 
 group operations.
 
 For an elliptic-curve group the analogous brute-force search is:
 
-\[
+$$
 \mathcal O,\ P,\ [2]P,\ [3]P,\ldots
-\]
+$$
 
 until:
 
-\[
+$$
 [x]P=Q.
-\]
+$$
 
 Again, the cost is linear in the subgroup order.
 
 Baby-Step Giant-Step changes the structure of the search.
 
-Instead of scanning one long list of \(N\) candidates, it writes the unknown exponent as the sum of two smaller pieces.
+Instead of scanning one long list of $N$ candidates, it writes the unknown exponent as the sum of two smaller pieces.
 
 Choose:
 
-\[
+$$
 m=\left\lceil\sqrt N\right\rceil.
-\]
+$$
 
 Because:
 
-\[
+$$
 N\le m^2,
-\]
+$$
 
 every:
 
-\[
+$$
 0\le x<N
-\]
+$$
 
 can be written as:
 
-\[
+$$
 \boxed{
 x=im+j
 }
-\]
+$$
 
 with:
 
-\[
+$$
 0\le i<m,
-\]
+$$
 
-\[
+$$
 0\le j<m.
-\]
+$$
 
-The DLP is therefore transformed from one search over roughly \(N\) exponents into a collision between two sets of roughly:
+The DLP is therefore transformed from one search over roughly $N$ exponents into a collision between two sets of roughly:
 
-\[
+$$
 \sqrt N
-\]
+$$
 
 group elements.
 
@@ -144,15 +144,15 @@ That is the entire conceptual idea behind Shanks's **Baby-Step Giant-Step (BSGS)
 
 BSGS requires approximately:
 
-\[
+$$
 O(\sqrt N)
-\]
+$$
 
 group operations and:
 
-\[
+$$
 O(\sqrt N)
-\]
+$$
 
 stored group elements.
 
@@ -160,33 +160,33 @@ It is therefore a **square-root algorithm** in the group order.
 
 If the subgroup order has bit length:
 
-\[
+$$
 \lambda=\log_2N,
-\]
+$$
 
 then brute force costs approximately:
 
-\[
+$$
 2^\lambda,
-\]
+$$
 
 while BSGS costs approximately:
 
-\[
+$$
 2^{\lambda/2}.
-\]
+$$
 
 So it is reasonable to say that BSGS halves the exponent relative to brute force when complexity is measured in the bit length of the group order.
 
 But the clean group-operation statement is:
 
-\[
+$$
 \boxed{
 O(N)
 \longrightarrow
 O(\sqrt N).
 }
-\]
+$$
 
 This distinction becomes important when comparing algorithms later in the series.
 
@@ -196,73 +196,73 @@ This distinction becomes important when comparing algorithms later in the series
 
 Let:
 
-\[
+$$
 G=\langle g\rangle
-\]
+$$
 
 be a cyclic group of order:
 
-\[
+$$
 N.
-\]
+$$
 
 Suppose:
 
-\[
+$$
 h=g^x.
-\]
+$$
 
 Choose:
 
-\[
+$$
 m=\lceil\sqrt N\rceil.
-\]
+$$
 
 Write:
 
-\[
+$$
 x=im+j,
-\]
+$$
 
 with:
 
-\[
+$$
 0\le i,j<m.
-\]
+$$
 
 Then:
 
-\[
+$$
 h
 =
 g^{im+j}.
-\]
+$$
 
 Split the exponent:
 
-\[
+$$
 h
 =
 g^{im}g^j.
-\]
+$$
 
 Multiply by:
 
-\[
+$$
 g^{-im}.
-\]
+$$
 
 We obtain:
 
-\[
+$$
 \boxed{
 hg^{-im}=g^j.
 }
-\]
+$$
 
-The left side depends on \(i\).
+The left side depends on $i$.
 
-The right side depends on \(j\).
+The right side depends on $j$.
 
 So BSGS searches for a collision between these two expressions.
 
@@ -270,15 +270,15 @@ So BSGS searches for a collision between these two expressions.
 
 Precompute:
 
-\[
+$$
 g^0,g^1,\ldots,g^{m-1}.
-\]
+$$
 
 Store them in a dictionary:
 
-\[
+$$
 g^j\mapsto j.
-\]
+$$
 
 Conceptually:
 
@@ -296,81 +296,81 @@ A hash table gives expected constant-time lookup.
 
 Compute:
 
-\[
+$$
 g^{-m}.
-\]
+$$
 
 One way is:
 
-\[
+$$
 g^{-m}
 =
 (g^m)^{-1}.
-\]
+$$
 
 Initialize:
 
-\[
+$$
 \gamma=h.
-\]
+$$
 
-At giant step \(i\):
+At giant step $i$:
 
-\[
+$$
 \gamma
 =
 hg^{-im}.
-\]
+$$
 
 If:
 
-\[
+$$
 \gamma
-\]
+$$
 
 appears in the baby-step table as:
 
-\[
+$$
 g^j,
-\]
+$$
 
 then:
 
-\[
+$$
 hg^{-im}=g^j.
-\]
+$$
 
-Multiply by \(g^{im}\):
+Multiply by $g^{im}$:
 
-\[
+$$
 h=g^{im+j}.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 x=im+j.
 }
-\]
+$$
 
 ### Iterative giant steps
 
 It would be wasteful to recompute:
 
-\[
+$$
 g^{-im}
-\]
+$$
 
-from scratch for each \(i\).
+from scratch for each $i$.
 
 Instead, update:
 
-\[
+$$
 \gamma
 \leftarrow
 \gamma g^{-m}.
-\]
+$$
 
 Thus the giant-step phase uses one group multiplication per iteration.
 
@@ -410,15 +410,15 @@ The same structure works in any cyclic multiplicative group as long as we can:
 
 For:
 
-\[
+$$
 g^x\equiv h\pmod p,
-\]
+$$
 
 the giant-step factor is:
 
-\[
+$$
 g^{-m}\pmod p.
-\]
+$$
 
 In Python:
 
@@ -442,44 +442,44 @@ gamma = (
 
 Because:
 
-\[
+$$
 0\le x<N\le m^2,
-\]
+$$
 
-Euclidean division by \(m\) gives:
+Euclidean division by $m$ gives:
 
-\[
+$$
 x=im+j
-\]
+$$
 
 for some:
 
-\[
+$$
 0\le j<m
-\]
+$$
 
 and:
 
-\[
+$$
 0\le i<m.
-\]
+$$
 
 Therefore one of the giant-step values is:
 
-\[
+$$
 hg^{-im}
 =
 g^j,
-\]
+$$
 
-and \(g^j\) is present in the baby-step table.
+and $g^j$ is present in the baby-step table.
 
 So if:
 
-- \(h\in\langle g\rangle\);
-- \(N=\operatorname{ord}(g)\) is known;
+- $h\in\langle g\rangle$;
+- $N=\operatorname{ord}(g)$ is known;
 
-the algorithm will find a representative of the discrete logarithm modulo \(N\).
+the algorithm will find a representative of the discrete logarithm modulo $N$.
 
 ---
 
@@ -489,109 +489,109 @@ Now move from multiplicative notation to elliptic-curve point addition.
 
 Let:
 
-\[
+$$
 P\in E(\mathbb F_q)
-\]
+$$
 
 have order:
 
-\[
+$$
 N.
-\]
+$$
 
 Suppose:
 
-\[
+$$
 Q=[x]P.
-\]
+$$
 
 The ECDLP asks us to recover:
 
-\[
+$$
 x\in\{0,\ldots,N-1\}.
-\]
+$$
 
 Again choose:
 
-\[
+$$
 m=\lceil\sqrt N\rceil
-\]
+$$
 
 and write:
 
-\[
+$$
 x=im+j.
-\]
+$$
 
 Then:
 
-\[
+$$
 Q
 =
 [im+j]P.
-\]
+$$
 
 Using distributivity of scalar multiplication:
 
-\[
+$$
 Q
 =
 [i m]P+[j]P.
-\]
+$$
 
 Rearrange:
 
-\[
+$$
 \boxed{
 Q-[i m]P=[j]P.
 }
-\]
+$$
 
 This is exactly the additive analogue of:
 
-\[
+$$
 hg^{-im}=g^j.
-\]
+$$
 
 ### Baby steps
 
 Precompute:
 
-\[
+$$
 [0]P,
 [P],
 [2]P,
 \ldots,
 [m-1]P.
-\]
+$$
 
 More explicitly:
 
-\[
+$$
 \mathcal O,
 P,
 [2]P,
 \ldots,
 [m-1]P.
-\]
+$$
 
 Store:
 
-\[
+$$
 [j]P\mapsto j.
-\]
+$$
 
 The identity element:
 
-\[
+$$
 \mathcal O
-\]
+$$
 
 must be included because:
 
-\[
+$$
 j=0
-\]
+$$
 
 is a valid baby step.
 
@@ -599,79 +599,79 @@ is a valid baby step.
 
 Compute:
 
-\[
+$$
 [m]P.
-\]
+$$
 
 Then define:
 
-\[
+$$
 G=-[m]P.
-\]
+$$
 
 Initialize:
 
-\[
+$$
 \gamma=Q.
-\]
+$$
 
-At giant-step index \(i\):
+At giant-step index $i$:
 
-\[
+$$
 \gamma
 =
 Q-[im]P.
-\]
+$$
 
 If:
 
-\[
+$$
 \gamma=[j]P
-\]
+$$
 
 appears in the baby-step table, then:
 
-\[
+$$
 Q=[im+j]P,
-\]
+$$
 
 and:
 
-\[
+$$
 \boxed{
 x=im+j.
 }
-\]
+$$
 
 ### Efficient iterative version
 
 Do not compute:
 
-\[
+$$
 [i m]P
-\]
+$$
 
-from scratch for every \(i\).
+from scratch for every $i$.
 
 Instead:
 
-\[
+$$
 \gamma_0=Q
-\]
+$$
 
 and:
 
-\[
+$$
 \gamma_{i+1}
 =
 \gamma_i-[m]P.
-\]
+$$
 
 So once:
 
-\[
+$$
 [m]P
-\]
+$$
 
 has been computed, each giant step requires only one point addition.
 
@@ -687,9 +687,9 @@ That version is mathematically correct, but it may perform a scalar multiplicati
 
 The iterative form exposes the intended:
 
-\[
+$$
 O(\sqrt N)
-\]
+$$
 
 group-operation structure more directly.
 
@@ -739,35 +739,35 @@ In custom Python code, affine tuples are simple for educational curves.
 
 ---
 
-## Worked Example on \(E/\mathbb F_{17}\)
+## Worked Example on $E/\mathbb F_{17}$
 
 The original experiment uses:
 
-\[
+$$
 E:
 y^2=x^3+2x+2
 \pmod{17}.
-\]
+$$
 
 Take:
 
-\[
+$$
 P=(5,1).
-\]
+$$
 
 The point has order:
 
-\[
+$$
 \boxed{
 N=19.
 }
-\]
+$$
 
 So:
 
-\[
+$$
 \langle P\rangle
-\]
+$$
 
 contains 19 points including the point at infinity.
 
@@ -777,67 +777,67 @@ Because 19 is prime, every non-identity point in this subgroup is also a generat
 
 Take:
 
-\[
+$$
 x=16.
-\]
+$$
 
 Then:
 
-\[
+$$
 Q=[16]P.
-\]
+$$
 
 Direct scalar multiplication gives:
 
-\[
+$$
 \boxed{
 Q=(10,11).
 }
-\]
+$$
 
 We now recover 16 using BSGS.
 
-### Step 1: choose \(m\)
+### Step 1: choose $m$
 
-\[
+$$
 m
 =
 \lceil\sqrt{19}\rceil
 =
 5.
-\]
+$$
 
 Every:
 
-\[
+$$
 x\in\{0,\ldots,18\}
-\]
+$$
 
 can be written:
 
-\[
+$$
 x=5i+j
-\]
+$$
 
 with:
 
-\[
+$$
 0\le i,j<5.
-\]
+$$
 
 For:
 
-\[
+$$
 x=16,
-\]
+$$
 
 the hidden decomposition is:
 
-\[
+$$
 16
 =
 3\cdot5+1.
-\]
+$$
 
 The algorithm does not know this in advance.
 
@@ -845,111 +845,111 @@ The algorithm does not know this in advance.
 
 Compute:
 
-\[
+$$
 [0]P=\mathcal O,
-\]
+$$
 
-\[
+$$
 [1]P=(5,1),
-\]
+$$
 
-\[
+$$
 [2]P=(6,3),
-\]
+$$
 
-\[
+$$
 [3]P=(10,6),
-\]
+$$
 
-\[
+$$
 [4]P=(3,1).
-\]
+$$
 
 Store:
 
-| \(j\) | \([j]P\) |
+| $j$ | $[j]P$ |
 |---:|---|
-| 0 | \(\mathcal O\) |
-| 1 | \((5,1)\) |
-| 2 | \((6,3)\) |
-| 3 | \((10,6)\) |
-| 4 | \((3,1)\) |
+| 0 | $\mathcal O$ |
+| 1 | $(5,1)$ |
+| 2 | $(6,3)$ |
+| 3 | $(10,6)$ |
+| 4 | $(3,1)$ |
 
 ### Step 3: giant step
 
 First compute:
 
-\[
+$$
 [5]P=(9,16).
-\]
+$$
 
 So:
 
-\[
+$$
 -[5]P=(9,1).
-\]
+$$
 
 Start with:
 
-\[
+$$
 \gamma_0=Q=(10,11).
-\]
+$$
 
 The giant-step values are:
 
-\[
+$$
 \gamma_0
 =
 Q
 =
 (10,11),
-\]
+$$
 
-\[
+$$
 \gamma_1
 =
 Q-[5]P
 =
 (13,10),
-\]
+$$
 
-\[
+$$
 \gamma_2
 =
 Q-[10]P
 =
 (16,13),
-\]
+$$
 
-\[
+$$
 \gamma_3
 =
 Q-[15]P
 =
 (5,1).
-\]
+$$
 
 But:
 
-\[
+$$
 (5,1)=P=[1]P.
-\]
+$$
 
 So at:
 
-\[
+$$
 i=3
-\]
+$$
 
 we obtain:
 
-\[
+$$
 j=1.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 x
 =
 im+j
@@ -957,27 +957,27 @@ im+j
 3\cdot5+1
 =
 \boxed{16}.
-\]
+$$
 
 ### Why the collision proves the answer
 
 The collision is:
 
-\[
+$$
 Q-[15]P=P.
-\]
+$$
 
 Add:
 
-\[
+$$
 [15]P
-\]
+$$
 
 to both sides:
 
-\[
+$$
 Q=[16]P.
-\]
+$$
 
 So this is not a heuristic match.
 
@@ -989,49 +989,49 @@ It is an exact group identity.
 
 The original SageMath notes had the right central BSGS idea, but several details deserve correction.
 
-### Identity target should return \(0\), not \(N\)
+### Identity target should return $0$, not $N$
 
 If:
 
-\[
+$$
 Q=\mathcal O,
-\]
+$$
 
 then:
 
-\[
+$$
 Q=[0]P.
-\]
+$$
 
 Also:
 
-\[
+$$
 Q=[N]P,
-\]
+$$
 
-\[
+$$
 Q=[2N]P,
-\]
+$$
 
 and so on.
 
 But when the DLP is represented canonically as:
 
-\[
+$$
 x\in\{0,\ldots,N-1\},
-\]
+$$
 
 the correct answer is:
 
-\[
+$$
 \boxed{x=0}.
-\]
+$$
 
 Returning:
 
-\[
+$$
 P.\operatorname{order}()
-\]
+$$
 
 for the identity gives an equivalent exponent but not the canonical residue.
 
@@ -1055,9 +1055,9 @@ x = 19
 
 the target became:
 
-\[
+$$
 Q=[19]P=\mathcal O.
-\]
+$$
 
 The function then returned 19, allowing:
 
@@ -1069,9 +1069,9 @@ to pass.
 
 But mathematically:
 
-\[
+$$
 19\equiv0\pmod{19}.
-\]
+$$
 
 A cleaner test samples canonical exponents:
 
@@ -1089,37 +1089,37 @@ Q = O -> x = 0
 
 BSGS solves the DLP in:
 
-\[
+$$
 \langle P\rangle.
-\]
+$$
 
 If:
 
-\[
+$$
 Q\notin\langle P\rangle,
-\]
+$$
 
 no solution exists.
 
-When \(P\) has order \(N\), a useful necessary membership check is:
+When $P$ has order $N$, a useful necessary membership check is:
 
-\[
+$$
 [N]Q=\mathcal O.
-\]
+$$
 
-For a prime-order subgroup inside a larger curve group, this confirms that \(Q\) lies in the \(N\)-torsion subgroup, though library-level validation still matters.
+For a prime-order subgroup inside a larger curve group, this confirms that $Q$ lies in the $N$-torsion subgroup, though library-level validation still matters.
 
 For the tiny curve used here:
 
-\[
+$$
 P
-\]
+$$
 
 has order 19 and the entire curve happens to contain 19 points, so:
 
-\[
+$$
 \langle P\rangle=E(\mathbb F_{17}).
-\]
+$$
 
 Every curve point is in the subgroup.
 
@@ -1129,15 +1129,15 @@ That special property should not be generalized to arbitrary curves.
 
 After recovering a candidate:
 
-\[
+$$
 x,
-\]
+$$
 
 always verify:
 
-\[
+$$
 [x]P=Q.
-\]
+$$
 
 This costs one scalar multiplication and catches:
 
@@ -1173,9 +1173,9 @@ if m * m < N:
 
 This computes:
 
-\[
+$$
 \lceil\sqrt N\rceil
-\]
+$$
 
 exactly for arbitrarily large integers.
 
@@ -1187,15 +1187,15 @@ They should supplement, not replace, deterministic known cases.
 
 For the curve:
 
-\[
+$$
 E/\mathbb F_{17},
-\]
+$$
 
 we can test **every** canonical exponent:
 
-\[
+$$
 x=0,1,\ldots,18.
-\]
+$$
 
 There are only 19.
 
@@ -1216,9 +1216,9 @@ for x in range(P.order()):
 If all 19 pass, the implementation covers:
 
 - identity;
-- \(P\);
+- $P$;
 - all intermediate multiples;
-- \(-P=[18]P\).
+- $-P=[18]P$.
 
 ---
 
@@ -1228,67 +1228,67 @@ BSGS is dramatically better than brute force, but its memory cost is substantial
 
 For subgroup order:
 
-\[
+$$
 N,
-\]
+$$
 
 the baby table stores approximately:
 
-\[
+$$
 \sqrt N
-\]
+$$
 
 group elements.
 
 So:
 
-\[
+$$
 \boxed{
 T=O(\sqrt N),
 \qquad
 M=O(\sqrt N).
 }
-\]
+$$
 
 ### A 256-bit prime-order elliptic-curve group
 
 Suppose:
 
-\[
+$$
 N\approx2^{256}.
-\]
+$$
 
 Then:
 
-\[
+$$
 \sqrt N
 \approx
 2^{128}.
-\]
+$$
 
 BSGS would require roughly:
 
-\[
+$$
 2^{128}
-\]
+$$
 
 baby steps.
 
 Even if each stored entry used an unrealistically compact 32 bytes, storage alone would be:
 
-\[
+$$
 2^{128}\cdot32
 =
 2^{133}
-\]
+$$
 
 bytes.
 
 That is approximately:
 
-\[
+$$
 1.09\times10^{40}
-\]
+$$
 
 bytes.
 
@@ -1300,15 +1300,15 @@ It explains the generic square-root security level.
 
 A prime-order elliptic-curve subgroup of size near:
 
-\[
+$$
 2^{256}
-\]
+$$
 
 faces generic attacks near:
 
-\[
+$$
 2^{128}
-\]
+$$
 
 group operations.
 
@@ -1316,9 +1316,9 @@ That is the origin of the rough classical 128-bit security interpretation of sta
 
 The mapping is not because:
 
-\[
+$$
 256/2=128
-\]
+$$
 
 by convention.
 
@@ -1328,9 +1328,9 @@ It follows from square-root generic attacks.
 
 Pollard rho for discrete logarithms has approximately the same expected square-root time:
 
-\[
+$$
 O(\sqrt N),
-\]
+$$
 
 but its memory usage can be essentially constant or very small.
 
@@ -1355,9 +1355,9 @@ Square-root algorithms are not merely accidents of BSGS and Pollard rho.
 
 In the generic-group model, discrete logarithms have lower bounds showing that generic algorithms require on the order of:
 
-\[
+$$
 \sqrt N
-\]
+$$
 
 group operations.
 
@@ -1457,37 +1457,37 @@ def bsgs_mod(
 
 For the earlier example:
 
-\[
+$$
 2^x\equiv5\pmod{11},
-\]
+$$
 
 with:
 
-\[
+$$
 \operatorname{ord}(2)=10,
-\]
+$$
 
 the algorithm returns:
 
-\[
+$$
 \boxed{x=4}.
-\]
+$$
 
 ### Minimal educational elliptic curve
 
 For a dependency-free lab, define the curve:
 
-\[
+$$
 E:
 y^2=x^3+2x+2
 \pmod{17}.
-\]
+$$
 
 Represent:
 
-\[
+$$
 \mathcal O
-\]
+$$
 
 as:
 
@@ -1573,11 +1573,11 @@ def bsgs_ecdlp(
 
 For:
 
-\[
+$$
 P=(5,1),
 \qquad
 \operatorname{ord}(P)=19,
-\]
+$$
 
 test:
 
@@ -1608,73 +1608,73 @@ The original notes included several outputs.
 
 They are all consistent with the curve and point:
 
-\[
+$$
 E:
 y^2=x^3+2x+2
 \pmod{17},
-\]
+$$
 
-\[
+$$
 P=(5,1).
-\]
+$$
 
 For example:
 
-\[
+$$
 [8]P=(13,7),
-\]
+$$
 
-\[
+$$
 [9]P=(7,6),
-\]
+$$
 
-\[
+$$
 [10]P=(7,11),
-\]
+$$
 
-\[
+$$
 [13]P=(16,4),
-\]
+$$
 
-\[
+$$
 [15]P=(3,16),
-\]
+$$
 
-\[
+$$
 [16]P=(10,11),
-\]
+$$
 
-\[
+$$
 [17]P=(6,14).
-\]
+$$
 
 And:
 
-\[
+$$
 [19]P=\mathcal O.
-\]
+$$
 
 The only conceptual correction is that:
 
-\[
+$$
 19
-\]
+$$
 
 and:
 
-\[
+$$
 0
-\]
+$$
 
 represent the same scalar modulo the point order.
 
 For a canonical DLP solver:
 
-\[
+$$
 \mathcal O
 \longmapsto
 0.
-\]
+$$
 
 ---
 
@@ -1684,91 +1684,91 @@ Baby-Step Giant-Step is the first major algorithmic improvement over direct exha
 
 Let:
 
-\[
+$$
 G=\langle g\rangle
-\]
+$$
 
 have order:
 
-\[
+$$
 N.
-\]
+$$
 
 Choose:
 
-\[
+$$
 m=\lceil\sqrt N\rceil.
-\]
+$$
 
 Every logarithm:
 
-\[
+$$
 0\le x<N
-\]
+$$
 
 can be decomposed as:
 
-\[
+$$
 x=im+j
-\]
+$$
 
 with:
 
-\[
+$$
 0\le i,j<m.
-\]
+$$
 
 In a multiplicative group:
 
-\[
+$$
 h=g^x
-\]
+$$
 
 becomes:
 
-\[
+$$
 \boxed{
 hg^{-im}=g^j.
 }
-\]
+$$
 
 In an elliptic-curve group:
 
-\[
+$$
 Q=[x]P
-\]
+$$
 
 becomes:
 
-\[
+$$
 \boxed{
 Q-[im]P=[j]P.
 }
-\]
+$$
 
-That transforms one search over \(N\) possibilities into a collision search involving roughly:
+That transforms one search over $N$ possibilities into a collision search involving roughly:
 
-\[
+$$
 \sqrt N
-\]
+$$
 
 baby steps and:
 
-\[
+$$
 \sqrt N
-\]
+$$
 
 giant steps.
 
 The result is:
 
-\[
+$$
 \boxed{
 T=O(\sqrt N),
 \qquad
 M=O(\sqrt N).
 }
-\]
+$$
 
 The algorithm is exact, deterministic, and generic.
 
@@ -1776,85 +1776,85 @@ It does not exploit special finite-field or elliptic-curve structure beyond the 
 
 The worked curve:
 
-\[
+$$
 E:
 y^2=x^3+2x+2
 \pmod{17}
-\]
+$$
 
 with:
 
-\[
+$$
 P=(5,1)
-\]
+$$
 
 has:
 
-\[
+$$
 \operatorname{ord}(P)=19.
-\]
+$$
 
 For:
 
-\[
+$$
 Q=[16]P=(10,11),
-\]
+$$
 
 we choose:
 
-\[
+$$
 m=5.
-\]
+$$
 
 The giant step:
 
-\[
+$$
 Q-[15]P
-\]
+$$
 
 collides with baby step:
 
-\[
+$$
 P=[1]P.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 x
 =
 3\cdot5+1
 =
 16.
-\]
+$$
 
 The implementation also teaches several important engineering details:
 
-- use the order of \(P\), not an unrelated curve-size value;
-- return \(0\) for the identity in the canonical range;
+- use the order of $P$, not an unrelated curve-size value;
+- return $0$ for the identity in the canonical range;
 - use exact integer square roots;
-- include \(\mathcal O\) in the baby table;
+- include $\mathcal O$ in the baby table;
 - iterate giant steps instead of repeatedly recomputing scalar multiples;
 - validate the returned logarithm;
 - test all values when the toy group is small enough.
 
 Most importantly, BSGS explains why a 256-bit prime-order elliptic-curve group provides only about a 128-bit generic security level:
 
-\[
+$$
 \sqrt{2^{256}}
 =
 2^{128}.
-\]
+$$
 
 But BSGS pays for that speed with enormous memory.
 
 That leads directly to the next algorithm:
 
-\[
+$$
 \boxed{
 \text{Pollard rho for discrete logarithms}.
 }
-\]
+$$
 
 Pollard rho keeps essentially the same square-root expected running time while replacing the huge lookup table with a low-memory collision search.
 

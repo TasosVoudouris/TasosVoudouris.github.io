@@ -38,11 +38,11 @@ The central observation is remarkably simple:
 
 > If an attacker can make your secret exponent act on an element of small order, the resulting value depends only on a small residue of your secret exponent.
 
-If an attacker sends an element \(T\) of order \(s\), then instead of learning something about the entire secret \(d\), the resulting computation depends only on
+If an attacker sends an element $T$ of order $s$, then instead of learning something about the entire secret $d$, the resulting computation depends only on
 
-\[
+$$
 d \bmod s.
-\]
+$$
 
 That single fact is the foundation of the small-subgroup attack.
 
@@ -70,117 +70,117 @@ That single fact is the foundation of the small-subgroup attack.
 
 Suppose a protocol is designed to operate inside a cyclic subgroup
 
-\[
+$$
 G=\langle g\rangle
-\]
+$$
 
 of prime order
 
-\[
+$$
 q.
-\]
+$$
 
 A participant owns a secret exponent
 
-\[
+$$
 d\in\mathbb Z_q.
-\]
+$$
 
 When the peer provides a legitimate public value
 
-\[
+$$
 Y\in G,
-\]
+$$
 
 the participant computes a Diffie-Hellman-style value such as
 
-\[
+$$
 Y^d.
-\]
+$$
 
 The security analysis assumes that the input really belongs to the intended subgroup.
 
-But suppose the implementation accepts an arbitrary attacker-controlled nonzero value modulo \(p\) and performs the exponentiation before checking subgroup membership.
+But suppose the implementation accepts an arbitrary attacker-controlled nonzero value modulo $p$ and performs the exponentiation before checking subgroup membership.
 
-The attacker chooses an element \(T\) with small order
+The attacker chooses an element $T$ with small order
 
-\[
+$$
 \operatorname{ord}(T)=s.
-\]
+$$
 
 By definition,
 
-\[
+$$
 T^s=1.
-\]
+$$
 
-Now write the victim's secret exponent using Euclidean division by \(s\):
+Now write the victim's secret exponent using Euclidean division by $s$:
 
-\[
+$$
 d=ks+r,
 \qquad
 0\le r<s.
-\]
+$$
 
 Then
 
-\[
+$$
 T^d
 =
 T^{ks+r}.
-\]
+$$
 
 Using the exponent law,
 
-\[
+$$
 T^{ks+r}
 =
 (T^s)^kT^r.
-\]
+$$
 
-Since \(T^s=1\),
+Since $T^s=1$,
 
-\[
+$$
 T^d
 =
 1^kT^r
 =
 T^r.
-\]
+$$
 
 Therefore,
 
-\[
+$$
 \boxed{
 T^d=T^{d\bmod s}
 }
-\]
+$$
 
-and the victim's supposedly large secret exponent has been compressed into only \(s\) possible outcomes.
+and the victim's supposedly large secret exponent has been compressed into only $s$ possible outcomes.
 
 If
 
-\[
+$$
 s=3,
-\]
+$$
 
 then the result can reveal only one of:
 
-\[
+$$
 d\bmod3\in\{0,1,2\}.
-\]
+$$
 
 If
 
-\[
+$$
 s=5,
-\]
+$$
 
 there are only five possibilities:
 
-\[
+$$
 d\bmod5\in\{0,1,2,3,4\}.
-\]
+$$
 
 This is the whole leakage mechanism.
 
@@ -216,300 +216,300 @@ Let us construct an example where the entire secret can be recovered.
 
 Take
 
-\[
+$$
 p=3181.
-\]
+$$
 
-Because \(p\) is prime,
+Because $p$ is prime,
 
-\[
+$$
 \left|\mathbb F_{3181}^{\times}\right|
 =
 p-1
 =
 3180.
-\]
+$$
 
 Factor the group order:
 
-\[
+$$
 3180=60\cdot53.
-\]
+$$
 
 Suppose the protocol is intended to use a prime-order subgroup
 
-\[
+$$
 G
 \subset
 \mathbb F_{3181}^{\times}
-\]
+$$
 
 with
 
-\[
+$$
 |G|=53.
-\]
+$$
 
 One generator of this subgroup is
 
-\[
+$$
 g=2280,
-\]
+$$
 
 and indeed
 
-\[
+$$
 \operatorname{ord}(2280)=53.
-\]
+$$
 
 Let the victim reuse a secret exponent
 
-\[
+$$
 d=47.
-\]
+$$
 
-Because the legitimate subgroup has order \(53\), the valid secret range is
+Because the legitimate subgroup has order $53$, the valid secret range is
 
-\[
+$$
 1\le d<53.
-\]
+$$
 
 The full multiplicative group, however, contains other subgroups because its order is
 
-\[
+$$
 3180=2^2\cdot3\cdot5\cdot53.
-\]
+$$
 
 In particular, we can find elements of orders
 
-\[
+$$
 3,\qquad4,\qquad5.
-\]
+$$
 
 For this toy example, choose:
 
-\[
+$$
 T_3=440,
-\]
+$$
 
-\[
+$$
 T_4=2899,
-\]
+$$
 
 and
 
-\[
+$$
 T_5=425.
-\]
+$$
 
 They satisfy
 
-\[
+$$
 \operatorname{ord}(T_3)=3,
-\]
+$$
 
-\[
+$$
 \operatorname{ord}(T_4)=4,
-\]
+$$
 
 and
 
-\[
+$$
 \operatorname{ord}(T_5)=5.
-\]
+$$
 
-Now imagine that the victim accepts these elements without validation and exponentiates each one using the same secret \(d=47\).
+Now imagine that the victim accepts these elements without validation and exponentiates each one using the same secret $d=47$.
 
 ### Query 1: an element of order 3
 
 The attacker submits
 
-\[
+$$
 T_3=440.
-\]
+$$
 
 The victim computes
 
-\[
+$$
 R_3
 =
 T_3^{47}\bmod3181
 =
 2740.
-\]
+$$
 
-But because \(T_3\) has order \(3\), there are only three possible outputs:
+But because $T_3$ has order $3$, there are only three possible outputs:
 
-\[
+$$
 T_3^0,\qquad
 T_3^1,\qquad
 T_3^2.
-\]
+$$
 
 Testing those three candidates shows
 
-\[
+$$
 2740=T_3^2.
-\]
+$$
 
 Therefore,
 
-\[
+$$
 \boxed{
 d\equiv2\pmod3
 }
-\]
+$$
 
 because
 
-\[
+$$
 47\bmod3=2.
-\]
+$$
 
 ### Query 2: an element of order 4
 
 Now the attacker sends
 
-\[
+$$
 T_4=2899.
-\]
+$$
 
 The victim computes
 
-\[
+$$
 R_4
 =
 T_4^{47}\bmod3181
 =
 282.
-\]
+$$
 
-Since \(T_4\) has order \(4\), the attacker tests:
+Since $T_4$ has order $4$, the attacker tests:
 
-\[
+$$
 T_4^0,
 T_4^1,
 T_4^2,
 T_4^3.
-\]
+$$
 
 The response is
 
-\[
+$$
 282=T_4^3,
-\]
+$$
 
 so
 
-\[
+$$
 \boxed{
 d\equiv3\pmod4
 }
-\]
+$$
 
 because
 
-\[
+$$
 47\bmod4=3.
-\]
+$$
 
 ### Query 3: an element of order 5
 
 Finally, the attacker sends
 
-\[
+$$
 T_5=425.
-\]
+$$
 
 The victim computes
 
-\[
+$$
 R_5
 =
 T_5^{47}\bmod3181
 =
 2489.
-\]
+$$
 
 The attacker has only five candidates to test.
 
 The response satisfies
 
-\[
+$$
 2489=T_5^2,
-\]
+$$
 
 so
 
-\[
+$$
 \boxed{
 d\equiv2\pmod5
 }
-\]
+$$
 
 because
 
-\[
+$$
 47\bmod5=2.
-\]
+$$
 
 We now know:
 
-\[
+$$
 d\equiv2\pmod3,
-\]
+$$
 
-\[
+$$
 d\equiv3\pmod4,
-\]
+$$
 
 and
 
-\[
+$$
 d\equiv2\pmod5.
-\]
+$$
 
 Because
 
-\[
+$$
 \gcd(3,4)=
 \gcd(3,5)=
 \gcd(4,5)=1,
-\]
+$$
 
 the moduli are pairwise coprime.
 
 The Chinese Remainder Theorem therefore determines a unique residue modulo
 
-\[
+$$
 3\cdot4\cdot5=60.
-\]
+$$
 
 Combining the three observations gives
 
-\[
+$$
 \boxed{
 d\equiv47\pmod{60}
 }
-\]
+$$
 
 but the legitimate secret satisfies
 
-\[
+$$
 1\le d<53.
-\]
+$$
 
-Only one integer in that range is congruent to \(47\) modulo \(60\):
+Only one integer in that range is congruent to $47$ modulo $60$:
 
-\[
+$$
 \boxed{
 d=47.
 }
-\]
+$$
 
 The complete secret has been recovered.
 
-And at no point did the attacker solve a discrete logarithm in the intended order-\(53\) subgroup.
+And at no point did the attacker solve a discrete logarithm in the intended order-$53$ subgroup.
 
 ---
 
@@ -517,9 +517,9 @@ And at no point did the attacker solve a discrete logarithm in the intended orde
 
 Our mathematical description appears to assume that the victim gives the attacker
 
-\[
+$$
 T^d
-\]
+$$
 
 directly.
 
@@ -531,22 +531,22 @@ So how does an attacker determine which of the few possible values occurred?
 
 The important concept is an **oracle**.
 
-Suppose \(T\) has order \(s\).
+Suppose $T$ has order $s$.
 
 Then the attacker knows that the shared value is one of only
 
-\[
+$$
 s
-\]
+$$
 
 possibilities:
 
-\[
+$$
 T^0,
 T^1,
 \ldots,
 T^{s-1}.
-\]
+$$
 
 For each candidate, the attacker may be able to derive the corresponding downstream key material and test it against observable protocol behavior.
 
@@ -598,63 +598,63 @@ It only needs to answer some observable question whose answer depends on the sec
 
 This attack is particularly instructive because it breaks a common intuition:
 
-> "If the prime \(p\) is huge, Diffie-Hellman must be safe."
+> "If the prime $p$ is huge, Diffie-Hellman must be safe."
 
 A large modulus is necessary for many finite-field constructions, but it is not sufficient.
 
 The relevant structure is not only
 
-\[
+$$
 p.
-\]
+$$
 
 We must also understand
 
-\[
+$$
 |\mathbb F_p^\times|=p-1,
-\]
+$$
 
 the intended subgroup order
 
-\[
+$$
 q,
-\]
+$$
 
-the subgroup generated by the protocol generator \(g\),
+the subgroup generated by the protocol generator $g$,
 
 and the order of every attacker-controlled element that reaches a secret computation.
 
 In our toy example,
 
-\[
+$$
 p=3181
-\]
+$$
 
 and
 
-\[
+$$
 p-1=60\cdot53.
-\]
+$$
 
 The intended group has prime order
 
-\[
+$$
 q=53.
-\]
+$$
 
 The quotient
 
-\[
+$$
 h=\frac{p-1}{q}=60
-\]
+$$
 
 is often called the **cofactor** of the subgroup inside the full multiplicative group.
 
 The attacker's small subgroup orders
 
-\[
+$$
 3,\quad4,\quad5
-\]
+$$
 
 all divide that cofactor.
 
@@ -708,57 +708,57 @@ There is one subtle condition in our complete key-recovery example that is easy 
 
 We sent elements of orders
 
-\[
+$$
 3,\qquad4,\qquad5
-\]
+$$
 
 and then combined the resulting residues with the Chinese Remainder Theorem.
 
 That works only because every observation refers to the **same secret exponent**
 
-\[
+$$
 d.
-\]
+$$
 
 We learned:
 
-\[
+$$
 d\bmod3,
-\]
+$$
 
 then
 
-\[
+$$
 d\bmod4,
-\]
+$$
 
 then
 
-\[
+$$
 d\bmod5.
-\]
+$$
 
 Those residues belong to one unknown integer.
 
 If the implementation instead generated a completely fresh independent exponent for every interaction,
 
-\[
+$$
 d_1,\quad d_2,\quad d_3,
-\]
+$$
 
 then the attacker would obtain something like:
 
-\[
+$$
 d_1\bmod3,
-\]
+$$
 
-\[
+$$
 d_2\bmod4,
-\]
+$$
 
-\[
+$$
 d_3\bmod5.
-\]
+$$
 
 Those residues cannot simply be combined with CRT to recover one secret because they describe three different secrets.
 
@@ -789,7 +789,7 @@ Our CRT reconstruction is specifically a **repeated leakage attack against the s
 
 ## Mitigation: enforce the group boundary
 
-For a traditional finite-field Diffie-Hellman construction using a known prime-order subgroup \(G\) of order \(q\), the receiver can validate that an incoming public value lies in the intended domain before performing secret-dependent computation.
+For a traditional finite-field Diffie-Hellman construction using a known prime-order subgroup $G$ of order $q$, the receiver can validate that an incoming public value lies in the intended domain before performing secret-dependent computation.
 
 Conceptually:
 
@@ -807,19 +807,19 @@ only then use the secret exponent
 
 For the kind of subgroup used in this article, validation can include conditions such as:
 
-\[
+$$
 1<Y<p-1
-\]
+$$
 
 and
 
-\[
+$$
 Y^q\equiv1\pmod p.
-\]
+$$
 
-The second check asks whether \(Y\) lies in the subgroup whose order divides \(q\).
+The second check asks whether $Y$ lies in the subgroup whose order divides $q$.
 
-When \(q\) is prime and trivial elements are excluded appropriately, this gives the intended prime-order subgroup membership property.
+When $q$ is prime and trivial elements are excluded appropriately, this gives the intended prime-order subgroup membership property.
 
 The exact validation rules must come from the protocol or standard being implemented.
 
@@ -843,12 +843,12 @@ For elliptic curves, the analogous questions also depend strongly on the constru
 
 So the general principle is broader:
 
-\[
+$$
 \boxed{
 \text{validate attacker-controlled group elements
 according to the exact protocol specification}
 }
-\]
+$$
 
 rather than memorizing one validation formula and applying it everywhere.
 
@@ -993,7 +993,7 @@ Output:
 [47]
 ```
 
-The point is not that brute-forcing \(53\) possible secrets is impressive.
+The point is not that brute-forcing $53$ possible secrets is impressive.
 
 The point is to expose the structure of the attack:
 
@@ -1029,7 +1029,7 @@ You should be able to say:
 Then ask the more subtle questions:
 
 - Why must the residues correspond to the same reused secret for CRT key recovery?
-- Why does making \(p\) larger not automatically solve the input-validation problem?
+- Why does making $p$ larger not automatically solve the input-validation problem?
 - Why should validation happen before secret exponentiation?
 - Why is "`Y != 0`" nowhere near enough validation?
 - Why might another protocol use cofactor handling instead of this exact membership test?
@@ -1081,7 +1081,7 @@ The details differ substantially between curve models and protocols, so we will 
 
 But the security mindset is already the same:
 
-\[
+$$
 \boxed{
 \text{untrusted group element}
 +
@@ -1089,7 +1089,7 @@ But the security mindset is already the same:
 =
 \text{validation boundary}
 }
-\]
+$$
 
 ---
 
@@ -1153,7 +1153,7 @@ We need to ask:
 
 The next topic begins from what looks like a purely computational question:
 
-> How do we actually compute enormous powers such as \(g^d\) efficiently?
+> How do we actually compute enormous powers such as $g^d$ efficiently?
 
 The answer is **square-and-multiply**.
 

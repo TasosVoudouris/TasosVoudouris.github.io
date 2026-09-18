@@ -84,7 +84,7 @@ So what looks like a different curve equation may actually be another computatio
 - [9. Twisted Edwards curves](#9-twisted-edwards-curves)
 - [10. Twisted Edwards group law](#10-twisted-edwards-group-law)
 - [11. Completeness for twisted Edwards curves](#11-completeness-for-twisted-edwards-curves)
-- [12. The twisted Edwards (j)-invariant](#12-the-twisted-edwards-j-invariant)
+- [12. The twisted Edwards $j$-invariant](#12-the-twisted-edwards-jjj-invariant)
 - [13. Projective and extended coordinates](#13-projective-and-extended-coordinates)
 - [14. Why extended coordinates are useful](#14-why-extended-coordinates-are-useful)
 - [15. Edwards to Montgomery](#15-edwards-to-montgomery)
@@ -99,8 +99,6 @@ So what looks like a different curve equation may actually be another computatio
 - [Further reading](#further-reading)
 
 ---
-
-<a id="unit-circle"></a>
 
 ## 1. The unit circle as motivation
 
@@ -201,7 +199,7 @@ x^2+y^2
 c^2(1+x^2y^2),
 $$
 
-with suitable nonzero \(c\).
+with suitable nonzero $c$.
 
 After rescaling coordinates, this motivates the more familiar normalized form
 
@@ -241,7 +239,7 @@ d\neq0,1.
 }
 $$
 
-The case \(d=1\) is singular.
+The case $d=1$ is singular.
 
 ---
 
@@ -249,7 +247,7 @@ The case \(d=1\) is singular.
 
 ## 3. Standard Edwards curves
 
-Let \(K\) be a field satisfying
+Let $K$ be a field satisfying
 
 $$
 \operatorname{char}(K)\neq2.
@@ -274,7 +272,7 @@ d\in K\setminus\{0,1\}.
 }
 $$
 
-The equation is strikingly symmetric in \(x\) and \(y\).
+The equation is strikingly symmetric in $x$ and $y$.
 
 If
 
@@ -348,7 +346,7 @@ $$
 (0,-1)
 $$
 
-has order \(2\).
+has order $2$.
 
 Indeed,
 
@@ -368,7 +366,7 @@ $$
 (-1,0)
 $$
 
-have order \(4\).
+have order $4$.
 
 For example,
 
@@ -395,9 +393,9 @@ $$
 }
 $$
 
-forms a cyclic subgroup of order \(4\).
+forms a cyclic subgroup of order $4$.
 
-This built-in \(4\)-torsion is a characteristic feature of standard Edwards form.
+This built-in $4$-torsion is a characteristic feature of standard Edwards form.
 
 ---
 
@@ -471,7 +469,7 @@ Compare this with short Weierstrass addition.
 
 There is:
 
-* no secant slope \(\lambda\);
+* no secant slope $\lambda$;
 * no separate doubling slope;
 * much more symmetry between the inputs.
 
@@ -539,7 +537,7 @@ $$
 -(x,y)=(x,-y).
 $$
 
-Substituting \(P\) and \(-P\) into the addition formulas gives
+Substituting $P$ and $-P$ into the addition formulas gives
 
 $$
 P+(-P)=(0,1).
@@ -591,7 +589,7 @@ So the key question is:
 
 > Can these denominators vanish for valid curve points?
 
-For standard Edwards curves over a field of characteristic not \(2\), a particularly important condition is:
+For standard Edwards curves over a field of characteristic not $2$, a particularly important condition is:
 
 $$
 \boxed{
@@ -600,9 +598,9 @@ d
 }
 $$
 
-Under this condition, the Edwards addition law is complete on \(K\)-rational points.
+Under this condition, the Edwards addition law is complete on $K$-rational points.
 
-That means the same formulas work for every pair of \(K\)-rational points.
+That means the same formulas work for every pair of $K$-rational points.
 
 No exceptional addition case is required.
 
@@ -642,10 +640,10 @@ This distinction matters greatly in implementation.
 
 Traditional affine Weierstrass arithmetic has exceptional situations:
 
-* \(P=Q\);
-* \(P=-Q\);
+* $P=Q$;
+* $P=-Q$;
 * vertical lines;
-* \(y=0\);
+* $y=0$;
 * the identity point.
 
 A software implementation must detect or structurally avoid such cases.
@@ -716,9 +714,9 @@ $$
 
 Twisted Edwards curves enlarge the family of elliptic curves that can be represented in Edwards-like coordinates.
 
-In particular, the rational \(4\)-torsion requirement associated with standard Edwards form is relaxed.
+In particular, the rational $4$-torsion requirement associated with standard Edwards form is relaxed.
 
-The connection is instead closely tied to Montgomery models and rational \(2\)-torsion.
+The connection is instead closely tied to Montgomery models and rational $2$-torsion.
 
 ---
 
@@ -822,7 +820,7 @@ d
 }
 $$
 
-Under these conditions, the standard twisted-Edwards addition formulas are complete for \(K\)-rational points.
+Under these conditions, the standard twisted-Edwards addition formulas are complete for $K$-rational points.
 
 This is the parameter shape used by edwards25519.
 
@@ -848,7 +846,7 @@ The parameter choice is aligned with the arithmetic properties needed for effici
 
 <a id="twisted-j"></a>
 
-## 12. The twisted Edwards \(j\)-invariant
+## 12. The twisted Edwards $j$-invariant
 
 For
 
@@ -857,7 +855,7 @@ E_{a,d}:
 ax^2+y^2=1+dx^2y^2,
 $$
 
-the \(j\)-invariant is
+the $j$-invariant is
 
 $$
 \boxed{
@@ -910,7 +908,7 @@ x=\frac XZ,
 y=\frac YZ.
 $$
 
-For twisted Edwards arithmetic, an especially useful representation introduces an additional coordinate \(T\):
+For twisted Edwards arithmetic, an especially useful representation introduces an additional coordinate $T$:
 
 $$
 \boxed{
@@ -970,7 +968,7 @@ $$
 xy.
 $$
 
-By maintaining \(T\), that product does not have to be recomputed from scratch during every operation.
+By maintaining $T$, that product does not have to be recomputed from scratch during every operation.
 
 This enables very efficient addition formulas.
 
@@ -991,7 +989,7 @@ No field inversion is required inside the main group operation.
 
 The final affine recovery is postponed until needed.
 
-This is analogous in spirit to the \(X:Z\) strategy from Montgomery arithmetic:
+This is analogous in spirit to the $X:Z$ strategy from Montgomery arithmetic:
 
 $$
 \boxed{
@@ -1192,7 +1190,7 @@ But the existence of these models over the **same base field** depends on arithm
 
 ## 18. Which curves admit Edwards form?
 
-Not every elliptic curve over a field \(K\) can be written in standard Edwards form over \(K\).
+Not every elliptic curve over a field $K$ can be written in standard Edwards form over $K$.
 
 Standard Edwards form naturally contains the rational point
 
@@ -1200,13 +1198,13 @@ $$
 (1,0)
 $$
 
-of order \(4\).
+of order $4$.
 
-Thus a curve birationally equivalent over \(K\) to a standard Edwards curve must support the required rational \(4\)-torsion structure.
+Thus a curve birationally equivalent over $K$ to a standard Edwards curve must support the required rational $4$-torsion structure.
 
 Twisted Edwards form is more general.
 
-Its relationship with Montgomery form means that the important structural requirement is closer to the existence of suitable rational \(2\)-torsion and the corresponding Montgomery representation.
+Its relationship with Montgomery form means that the important structural requirement is closer to the existence of suitable rational $2$-torsion and the corresponding Montgomery representation.
 
 So the progression is:
 
@@ -1220,7 +1218,7 @@ $$
 
 at the level of representable elliptic curves over a fixed field.
 
-Twisting the Edwards coefficient \(a\) enlarges the class of curves that admit an Edwards-style model.
+Twisting the Edwards coefficient $a$ enlarges the class of curves that admit an Edwards-style model.
 
 ---
 
@@ -1301,7 +1299,7 @@ y=\frac45
 }
 $$
 
-in \(\mathbb F_p\), together with the specified corresponding \(x\)-coordinate.
+in $\mathbb F_p$, together with the specified corresponding $x$-coordinate.
 
 These are the parameters underlying Ed25519.
 
@@ -1427,14 +1425,14 @@ We can now compare the two models directly.
 
 | Property                  | Montgomery                   | Twisted Edwards                             |
 | ------------------------- | ---------------------------- | ------------------------------------------- |
-| Typical equation          | \(By^2=x^3+Ax^2+x\)          | \(ax^2+y^2=1+dx^2y^2\)                      |
-| Identity                  | \(\mathcal O\)               | \((0,1)\)                                   |
-| Negation                  | \((x,-y)\)                   | \((-x,y)\)                                  |
+| Typical equation          | $By^2=x^3+Ax^2+x$          | $ax^2+y^2=1+dx^2y^2$                      |
+| Identity                  | $\mathcal O$               | $(0,1)$                                   |
+| Negation                  | $(x,-y)$                   | $(-x,y)$                                  |
 | Main strength             | x-only scalar multiplication | full-point addition                         |
 | Differential addition     | Excellent                    | not the main design goal                    |
 | Unified addition/doubling | Not the principal feature    | Yes                                         |
-| Complete formulas         | Model-dependent formulas     | Available under suitable \(a,d\) conditions |
-| Common coordinates        | \(X:Z\)                      | \(X:Y:Z:T\)                                 |
+| Complete formulas         | Model-dependent formulas     | Available under suitable $a,d$ conditions |
+| Common coordinates        | $X:Z$                      | $X:Y:Z:T$                                 |
 | Typical modern example    | X25519                       | Ed25519                                     |
 
 Neither model is simply “better”.
@@ -1497,7 +1495,7 @@ Useful questions to check while studying the code include:
    (-x,y)?
    $$
 4. Does the implementation use affine or projective coordinates?
-5. Are the completeness assumptions on \(d\), or on \(a,d\), documented?
+5. Are the completeness assumptions on $d$, or on $a,d$, documented?
 6. Is doubling implemented separately or through the unified addition law?
 7. Are denominators explicitly inverted?
 8. Does the code check curve membership?
@@ -1574,7 +1572,7 @@ $$
 }
 $$
 
-The \(j\)-invariant classified geometric isomorphism classes.
+The $j$-invariant classified geometric isomorphism classes.
 
 ---
 

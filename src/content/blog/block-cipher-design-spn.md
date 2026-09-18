@@ -91,27 +91,27 @@ Modern standardized block ciphers commonly use 128-bit blocks. AES, for example,
 
 Let
 
-\[
+$$
 \mathcal{K}
-\]
+$$
 
-be the key space and let the block size be \(n\) bits. Encryption is a function
+be the key space and let the block size be $n$ bits. Encryption is a function
 
-\[
+$$
 E : \mathcal{K} \times \{0,1\}^{n} \rightarrow \{0,1\}^{n}.
-\]
+$$
 
-For a fixed key \(K\), define
+For a fixed key $K$, define
 
-\[
+$$
 E_K(x) = E(K,x).
-\]
+$$
 
-A valid block cipher requires \(E_K\) to be a **permutation** of the \(2^n\) possible blocks. In other words, for every fixed key:
+A valid block cipher requires $E_K$ to be a **permutation** of the $2^n$ possible blocks. In other words, for every fixed key:
 
-\[
+$$
 E_K : \{0,1\}^{n} \rightarrow \{0,1\}^{n}
-\]
+$$
 
 must be bijective.
 
@@ -119,17 +119,17 @@ Why?
 
 Because decryption must exist. There must be a unique inverse transformation
 
-\[
+$$
 D_K = E_K^{-1}
-\]
+$$
 
 such that
 
-\[
+$$
 D_K(E_K(x)) = x
-\]
+$$
 
-for every plaintext block \(x\).
+for every plaintext block $x$.
 
 This permutation viewpoint is fundamental. A block cipher is not merely a complicated function. It is a **key-selected permutation** over the block space.
 
@@ -137,32 +137,32 @@ This permutation viewpoint is fundamental. A block cipher is not merely a compli
 
 Two sizes characterize a block cipher:
 
-- **block size \(n\)** — how many bits are transformed at one time,
-- **key size \(k\)** — how many bits determine the secret key.
+- **block size $n$** — how many bits are transformed at one time,
+- **key size $k$** — how many bits determine the secret key.
 
 These parameters play different roles.
 
-If the key is uniformly sampled from a \(k\)-bit space, exhaustive key search can require up to
+If the key is uniformly sampled from a $k$-bit space, exhaustive key search can require up to
 
-\[
+$$
 2^k
-\]
+$$
 
 candidate keys, with about
 
-\[
+$$
 2^{k-1}
-\]
+$$
 
 trials on average if the correct key is equally likely to appear anywhere in the search order.
 
-The block size controls a different phenomenon: the cipher only has \(2^n\) possible inputs and outputs. In many modes and protocols, collision-style effects become relevant around the birthday scale
+The block size controls a different phenomenon: the cipher only has $2^n$ possible inputs and outputs. In many modes and protocols, collision-style effects become relevant around the birthday scale
 
-\[
+$$
 2^{n/2}.
-\]
+$$
 
-This is one reason a tiny educational block size such as \(n=16\) is useful for experiments but completely inappropriate for deployment.
+This is one reason a tiny educational block size such as $n=16$ is useful for experiments but completely inappropriate for deployment.
 
 ---
 
@@ -178,7 +178,7 @@ Confusion aims to make the relationship between the secret key and the ciphertex
 
 In an SPN, the main source of this complexity is the **nonlinear S-box layer**.
 
-If every operation in a cipher were linear or affine over \(\mathbb{F}_2\), then the complete cipher would remain linear or affine. The attacker could then represent encryption using systems of linear equations and recover structure that a secure cipher must hide.
+If every operation in a cipher were linear or affine over $\mathbb{F}_2$, then the complete cipher would remain linear or affine. The attacker could then represent encryption using systems of linear equations and recover structure that a secure cipher must hide.
 
 The S-box breaks this linearity.
 
@@ -202,9 +202,9 @@ That is not an accurate model of block-cipher design.
 
 Key addition is essential because it makes the transformation depend on secret material. However, XOR with a fixed key is only an affine transformation:
 
-\[
+$$
 x \mapsto x \oplus K.
-\]
+$$
 
 By itself, it provides no nonlinear complexity.
 
@@ -212,7 +212,7 @@ Likewise, a public S-box and a public diffusion layer are not supposed to be sec
 
 The intended strength comes from the **composition**
 
-\[
+$$
 \text{key mixing}
 \;\rightarrow\;
 \text{nonlinearity}
@@ -220,7 +220,7 @@ The intended strength comes from the **composition**
 \text{diffusion}
 \;\rightarrow\;
 \text{repetition}.
-\]
+$$
 
 This is a direct application of Kerckhoffs-style design thinking: the mechanism may be public; only the key needs to remain secret.
 
@@ -268,21 +268,21 @@ Two major iterative structures appear repeatedly in classical block-cipher desig
 
 A Feistel network divides the state into two parts, often written
 
-\[
+$$
 (L_r,R_r).
-\]
+$$
 
 A typical round has the form
 
-\[
+$$
 L_{r+1} = R_r,
-\]
+$$
 
-\[
+$$
 R_{r+1} = L_r \oplus F(R_r,K_r).
-\]
+$$
 
-The important structural property is that the round function \(F\) itself does **not** need to be invertible. The Feistel structure guarantees invertibility of the complete round.
+The important structural property is that the round function $F$ itself does **not** need to be invertible. The Feistel structure guarantees invertibility of the complete round.
 
 DES is the classical example.
 
@@ -315,15 +315,15 @@ Two components deserve separate attention:
 
 Let the master key be
 
-\[
+$$
 K.
-\]
+$$
 
 A key schedule derives round keys
 
-\[
+$$
 K^1,K^2,\ldots,K^t.
-\]
+$$
 
 ![Key Schedule Overview](/images/ready/block-cipher-design-spn/keyschedule.PNG)
 
@@ -341,15 +341,15 @@ Our toy cipher uses a deliberately simple overlapping-window schedule because it
 
 ### 6.2 The round function
 
-Let \(w^{r-1}\) be the state entering round \(r\). A generic keyed round can be written as
+Let $w^{r-1}$ be the state entering round $r$. A generic keyed round can be written as
 
-\[
+$$
 w^r = g(w^{r-1},K^r).
-\]
+$$
 
 Repeated rounds produce
 
-\[
+$$
 w^0
 \xrightarrow{K^1}
 w^1
@@ -359,19 +359,19 @@ w^2
 \cdots
 \xrightarrow{K^t}
 w^t.
-\]
+$$
 
-The design objective is not merely to make \(g\) look complicated. We want repeated rounds to destroy exploitable local structure while remaining efficiently invertible for legitimate decryption.
+The design objective is not merely to make $g$ look complicated. We want repeated rounds to destroy exploitable local structure while remaining efficiently invertible for legitimate decryption.
 
 ### 6.3 Reversibility
 
 For an SPN, each state transformation must be invertible if we want to reverse the round directly.
 
-For a round transformation \(g\), we require an inverse \(g^{-1}\) such that
+For a round transformation $g$, we require an inverse $g^{-1}$ such that
 
-\[
+$$
 g^{-1}(g(w,K),K)=w.
-\]
+$$
 
 That implies, for our construction:
 
@@ -379,11 +379,11 @@ That implies, for our construction:
 - the bit permutation must be bijective,
 - XOR with a round key is automatically invertible because
 
-\[
+$$
 (x\oplus K)\oplus K=x.
-\]
+$$
 
-A Feistel network is different: its internal \(F\) function can be non-invertible because the Feistel wiring itself remains reversible.
+A Feistel network is different: its internal $F$ function can be non-invertible because the Feistel wiring itself remains reversible.
 
 ---
 
@@ -395,34 +395,34 @@ We now formalize the structure used throughout the rest of the article.
 
 Let
 
-\[
+$$
 l,m\in\mathbb{Z}_{>0}
-\]
+$$
 
 and define the block size
 
-\[
+$$
 n=lm.
-\]
+$$
 
 The plaintext and ciphertext spaces are
 
-\[
+$$
 \mathcal{M}=\mathcal{C}=\{0,1\}^{n}.
-\]
+$$
 
-We split the state into \(m\) chunks of \(l\) bits:
+We split the state into $m$ chunks of $l$ bits:
 
-\[
+$$
 x=x_0\|x_1\|\cdots\|x_{m-1},
 \qquad x_i\in\{0,1\}^{l}.
-\]
+$$
 
 For the toy cipher:
 
-\[
+$$
 l=4,\qquad m=4,\qquad n=16.
-\]
+$$
 
 So each 16-bit state is interpreted as four 4-bit nibbles.
 
@@ -430,49 +430,49 @@ So each 16-bit state is interpreted as four 4-bit nibbles.
 
 Let
 
-\[
+$$
 \pi_S:\{0,1\}^{l}\rightarrow\{0,1\}^{l}
-\]
+$$
 
 be a bijective nonlinear S-box.
 
 The parallel substitution layer is
 
-\[
+$$
 S(x_0\|x_1\|\cdots\|x_{m-1})
 =
 \pi_S(x_0)\|\pi_S(x_1)\|\cdots\|\pi_S(x_{m-1}).
-\]
+$$
 
-Each S-box is local, but all \(m\) copies operate in parallel.
+Each S-box is local, but all $m$ copies operate in parallel.
 
 ### 7.3 Permutation layer
 
 Let
 
-\[
+$$
 P:\{0,1\}^{n}\rightarrow\{0,1\}^{n}
-\]
+$$
 
 be a permutation of bit positions.
 
-The P-layer is linear over \(\mathbb{F}_2\), but it rearranges where S-box outputs travel before the next round.
+The P-layer is linear over $\mathbb{F}_2$, but it rearranges where S-box outputs travel before the next round.
 
 This is what connects otherwise local S-box computations into a network.
 
 ### 7.4 Key addition
 
-For a round key \(K^r\in\{0,1\}^{n}\), define
+For a round key $K^r\in\{0,1\}^{n}$, define
 
-\[
+$$
 A_{K^r}(x)=x\oplus K^r.
-\]
+$$
 
 Since XOR is its own inverse,
 
-\[
+$$
 A_{K^r}^{-1}=A_{K^r}.
-\]
+$$
 
 ### 7.5 The round ordering used in this article
 
@@ -480,35 +480,35 @@ There are several equivalent-looking diagram conventions in textbooks, so the ex
 
 The implementation in this article uses, for the first three rounds,
 
-\[
+$$
 u^r=w^{r-1}\oplus K^r,
-\]
+$$
 
-\[
+$$
 v^r=S(u^r),
-\]
+$$
 
-\[
+$$
 w^r=P(v^r).
-\]
+$$
 
 The final round omits the P-layer:
 
-\[
+$$
 u^4=w^3\oplus K^4,
-\]
+$$
 
-\[
+$$
 v^4=S(u^4),
-\]
+$$
 
-\[
+$$
 y=v^4\oplus K^5.
-\]
+$$
 
 So the complete toy cipher is
 
-\[
+$$
 E_K
 =
 A_{K^5}
@@ -523,7 +523,7 @@ A_{K^5}
 \circ P
 \circ S
 \circ A_{K^1}.
-\]
+$$
 
 This ordering is chosen to match the executable code exactly.
 
@@ -565,31 +565,31 @@ K = 0b0011_1010_1001_0100_1101_0110_0011_1111
 
 In hexadecimal,
 
-\[
+$$
 K=\texttt{0x3A94D63F}.
-\]
+$$
 
 We derive five 16-bit round keys by sliding a 16-bit window four bits at a time across the 32-bit master key:
 
-\[
+$$
 K^1=\texttt{0x3A94},
-\]
+$$
 
-\[
+$$
 K^2=\texttt{0xA94D},
-\]
+$$
 
-\[
+$$
 K^3=\texttt{0x94D6},
-\]
+$$
 
-\[
+$$
 K^4=\texttt{0x4D63},
-\]
+$$
 
-\[
+$$
 K^5=\texttt{0xD63F}.
-\]
+$$
 
 In binary:
 
@@ -620,9 +620,9 @@ m = 0b0010_0110_1011_0111
 
 or
 
-\[
+$$
 m=\texttt{0x26B7}.
-\]
+$$
 
 This same plaintext will be traced through every round.
 
@@ -634,9 +634,9 @@ This same plaintext will be traced through every round.
 
 The 4-bit S-box is:
 
-| \(z\) | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | A | B | C | D | E | F |
+| $z$ | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | A | B | C | D | E | F |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| \(\pi_S(z)\) | E | 4 | D | 1 | 2 | F | B | 8 | 3 | A | 6 | C | 5 | 9 | 0 | 7 |
+| $\pi_S(z)$ | E | 4 | D | 1 | 2 | F | B | 8 | 3 | A | 6 | C | 5 | 9 | 0 | 7 |
 
 In Python:
 
@@ -647,23 +647,23 @@ S = [14, 4, 13, 1, 2, 15, 11, 8,
 
 For example,
 
-\[
+$$
 \pi_S(0)=E,
 \qquad
 \pi_S(1)=4,
 \qquad
 \pi_S(F)=7.
-\]
+$$
 
 For the 16-bit value
 
-\[
+$$
 \texttt{0x0123},
-\]
+$$
 
 parallel substitution gives
 
-\[
+$$
 0\mapsto E,
 \quad
 1\mapsto 4,
@@ -671,35 +671,35 @@ parallel substitution gives
 2\mapsto D,
 \quad
 3\mapsto 1,
-\]
+$$
 
 therefore
 
-\[
+$$
 S(\texttt{0x0123})=\texttt{0xE4D1}.
-\]
+$$
 
 ### 9.2 Why the S-box must be nonlinear
 
 Suppose instead that the S-box were an affine map
 
-\[
+$$
 S(x)=Ax\oplus b
-\]
+$$
 
-over \(\mathbb{F}_2\).
+over $\mathbb{F}_2$.
 
 The P-box is linear, and key XOR is affine. A composition of affine maps is still affine. Therefore a multi-round cipher made only from affine operations would collapse into one global affine transformation:
 
-\[
+$$
 E_K(x)=Mx\oplus c_K.
-\]
+$$
 
 That would expose enormous algebraic structure.
 
 The S-box exists specifically to prevent that collapse.
 
-For an invertible SPN, it must also be a permutation of the 16 possible nibble values. Our S-box contains every value from \(0\) to \(15\) exactly once, so its inverse exists.
+For an invertible SPN, it must also be a permutation of the 16 possible nibble values. Our S-box contains every value from $0$ to $15$ exactly once, so its inverse exists.
 
 ### 9.3 First quantitative look: DDT and LAT
 
@@ -710,44 +710,44 @@ Two central cryptanalytic tools are:
 - the **Difference Distribution Table (DDT)**,
 - the **Linear Approximation Table (LAT)**.
 
-For an input difference \(\Delta x\) and output difference \(\Delta y\), the DDT entry is
+For an input difference $\Delta x$ and output difference $\Delta y$, the DDT entry is
 
-\[
+$$
 \operatorname{DDT}[\Delta x,\Delta y]
 =
 \#\left\{
  x:\pi_S(x)\oplus\pi_S(x\oplus\Delta x)=\Delta y
 \right\}.
-\]
+$$
 
 For this S-box, the largest nontrivial DDT entry is
 
-\[
+$$
 8.
-\]
+$$
 
 Thus its maximum single-S-box differential probability is
 
-\[
+$$
 \frac{8}{16}=\frac12.
-\]
+$$
 
 That is intentionally weak by modern design standards, but useful for teaching differential cryptanalysis because high-probability trails are easy to observe.
 
 For linear cryptanalysis, define
 
-\[
+$$
 \operatorname{LAT}[a,b]
 =
 \sum_{x\in\{0,1\}^4}
 (-1)^{\langle a,x\rangle\oplus\langle b,\pi_S(x)\rangle}.
-\]
+$$
 
 For nonzero input and output masks, this S-box reaches
 
-\[
+$$
 |\operatorname{LAT}[a,b]|=12.
-\]
+$$
 
 Since there are 16 inputs, that corresponds to a strong linear bias for some mask pairs. Again, this is valuable for pedagogy but not evidence of a modern secure S-box.
 
@@ -761,7 +761,7 @@ We will derive and visualize complete DDT and LAT tables later in the cryptanaly
 
 The 16-bit permutation is
 
-| output position \(i\) | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 |
+| output position $i$ | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | source position | 0 | 4 | 8 | 12 | 1 | 5 | 9 | 13 | 2 | 6 | 10 | 14 | 3 | 7 | 11 | 15 |
 
@@ -807,8 +807,8 @@ A permutation alone does not increase the number of changed bits. It only **move
 
 There are two common ways to write a permutation table:
 
-1. **source-to-destination:** input bit \(i\) moves to position \(P(i)\),
-2. **destination-to-source:** output bit \(i\) is read from input position \(P[i]\).
+1. **source-to-destination:** input bit $i$ moves to position $P(i)$,
+2. **destination-to-source:** output bit $i$ is read from input position $P[i]$.
 
 Our `permute()` function uses the second convention.
 
@@ -816,9 +816,9 @@ That distinction often causes silent bugs.
 
 For this particular P-box, however,
 
-\[
+$$
 P^{-1}=P.
-\]
+$$
 
 The permutation is an **involution**. This means the same table can be used in both directions, which is why a mistaken assumption about inverse permutation can remain hidden in a toy implementation.
 
@@ -866,11 +866,11 @@ def set_bit(x: int, i: int, n: int, b: int) -> int:
 
 The parity function is not needed by encryption itself. We deliberately keep it because linear cryptanalysis repeatedly evaluates mask parities such as
 
-\[
+$$
 \langle a,x\rangle
 =
 \operatorname{parity}(a\land x).
-\]
+$$
 
 Basic checks:
 
@@ -889,11 +889,11 @@ assert set_bit(0b1010, 2, 4, 0) == 0b1000
 
 The earlier version of `substitute()` implicitly assumed that
 
-\[
+$$
 \text{block size}=2^l.
-\]
+$$
 
-For \(l=4\), this happens to give 16 and therefore works for our toy cipher. But the S-box width and block size are conceptually independent parameters.
+For $l=4$, this happens to give 16 and therefore works for our toy cipher. But the S-box width and block size are conceptually independent parameters.
 
 We correct that here.
 
@@ -1006,15 +1006,15 @@ assert inverse_pbox(P) == P
 
 Now we encrypt
 
-\[
+$$
 m=\texttt{0x26B7}
-\]
+$$
 
 under
 
-\[
+$$
 K=\texttt{0x3A94D63F}.
-\]
+$$
 
 The derived round keys are
 
@@ -1030,15 +1030,15 @@ K5 = D63F
 
 The input state is
 
-\[
+$$
 w^0=\texttt{0x26B7}.
-\]
+$$
 
 #### Step 1: Add the first round key
 
-\[
+$$
 u^1=w^0\oplus K^1.
-\]
+$$
 
 So
 
@@ -1051,26 +1051,27 @@ So
 
 Hence
 
-\[
+$$
 u^1=\texttt{0x1C23}.
-\]
+$$
 
 #### Step 2: Substitute each nibble
 
 Split
 
-\[
+$$
 \texttt{1C23}
+$$
 
 to
 
-\[
+$$
 1\|C\|2\|3.
-\]
+$$
 
 Apply the S-box:
 
-\[
+$$
 1\mapsto4,
 \quad
 C\mapsto5,
@@ -1078,21 +1079,21 @@ C\mapsto5,
 2\mapsto D,
 \quad
 3\mapsto1.
-\]
+$$
 
 Therefore
 
-\[
+$$
 v^1=\texttt{0x45D1}.
-\]
+$$
 
 #### Step 3: Permute the 16 output bits
 
 Apply the P-box:
 
-\[
+$$
 w^1=P(v^1)=\texttt{0x2E07}.
-\]
+$$
 
 That state enters round 2.
 
@@ -1100,7 +1101,7 @@ That state enters round 2.
 
 The complete execution is:
 
-| Round | Input \(w^{r-1}\) | Round key | After XOR \(u^r\) | After S-box \(v^r\) | After P / Final output |
+| Round | Input $w^{r-1}$ | Round key | After XOR $u^r$ | After S-box $v^r$ | After P / Final output |
 |---:|---:|---:|---:|---:|---:|
 | 1 | `26B7` | `3A94` | `1C23` | `45D1` | `2E07` |
 | 2 | `2E07` | `A94D` | `874A` | `3826` | `41B8` |
@@ -1109,15 +1110,15 @@ The complete execution is:
 
 Thus the ciphertext is
 
-\[
+$$
 \boxed{\texttt{0xBCD6}}.
-\]
+$$
 
 In binary:
 
-\[
+$$
 \boxed{1011\;1100\;1101\;0110}.
-\]
+$$
 
 This gives us a useful **known-answer test** for every future refactoring of the implementation.
 
@@ -1129,27 +1130,27 @@ Encryption is a composition of invertible functions, so decryption applies their
 
 From
 
-\[
+$$
 y=v^4\oplus K^5,
-\]
+$$
 
 we recover
 
-\[
+$$
 v^4=y\oplus K^5.
-\]
+$$
 
 Then
 
-\[
+$$
 u^4=S^{-1}(v^4),
-\]
+$$
 
 and
 
-\[
+$$
 w^3=u^4\oplus K^4.
-\]
+$$
 
 For each earlier full round we undo:
 
@@ -1157,19 +1158,19 @@ For each earlier full round we undo:
 2. the substitution,
 3. the round-key XOR.
 
-So for round \(r\), in reverse:
+So for round $r$, in reverse:
 
-\[
+$$
 v^r=P^{-1}(w^r),
-\]
+$$
 
-\[
+$$
 u^r=S^{-1}(v^r),
-\]
+$$
 
-\[
+$$
 w^{r-1}=u^r\oplus K^r.
-\]
+$$
 
 The inverse S-box is computed mechanically:
 
@@ -1628,23 +1629,23 @@ It does **not** prove cryptographic security. Correct invertibility and security
 
 It is common to say that a multi-round SPN has an “avalanche effect.” A more scientific approach is to measure what actually happens.
 
-For a fixed key \(K\), take a plaintext \(x\) and flip one input bit:
+For a fixed key $K$, take a plaintext $x$ and flip one input bit:
 
-\[
+$$
 x' = x\oplus 2^i.
-\]
+$$
 
 Encrypt both values and measure the output Hamming distance:
 
-\[
+$$
 d_H(E_K(x),E_K(x')).
-\]
+$$
 
-For an idealized 16-bit output in which each output bit changes independently with probability \(1/2\), the expected Hamming distance is
+For an idealized 16-bit output in which each output bit changes independently with probability $1/2$, the expected Hamming distance is
 
-\[
+$$
 16\cdot\frac12=8.
-\]
+$$
 
 We can measure this exhaustively for our tiny cipher:
 
@@ -1682,9 +1683,9 @@ print(average_plaintext_avalanche(K))
 
 For the fixed key used in this article, the exhaustive average is approximately
 
-\[
+$$
 7.9352
-\]
+$$
 
 changed ciphertext bits out of 16.
 
@@ -1717,9 +1718,9 @@ However, it is not secure enough for real use.
 
 A 32-bit key space has only
 
-\[
+$$
 2^{32}
-\]
+$$
 
 possible keys.
 
@@ -1729,9 +1730,9 @@ That is completely inadequate against modern exhaustive search.
 
 A 16-bit block contains only
 
-\[
+$$
 2^{16}=65,536
-\]
+$$
 
 possible values.
 
@@ -1739,7 +1740,7 @@ Repeated use would very quickly reveal collisions and structural behavior.
 
 ### The S-box is pedagogical
 
-Its maximum differential probability is \(1/2\), and it has strong linear correlations. These properties make cryptanalysis visible in small experiments, which is exactly why the S-box is useful here.
+Its maximum differential probability is $1/2$, and it has strong linear correlations. These properties make cryptanalysis visible in small experiments, which is exactly why the S-box is useful here.
 
 ### The key schedule is pedagogical
 
@@ -1834,17 +1835,17 @@ The cipher uses:
 
 For the fixed test vector
 
-\[
+$$
 m=\texttt{0x26B7},
 \qquad
 K=\texttt{0x3A94D63F},
-\]
+$$
 
 we obtain
 
-\[
+$$
 \boxed{E_K(m)=\texttt{0xBCD6}}.
-\]
+$$
 
 The implementation now makes all inverse operations explicit, removes dependence on global S-box state, separates block size from S-box width, validates substitution and permutation tables, and provides both known-answer and exhaustive round-trip tests.
 

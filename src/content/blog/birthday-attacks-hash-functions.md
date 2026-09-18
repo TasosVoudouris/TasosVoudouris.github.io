@@ -26,14 +26,6 @@ draft: false
 
 - [Why the Birthday Bound Matters](#why-the-birthday-bound-matters)
 - [Exact Collision Probability and Its Approximations](#exact-collision-probability-and-its-approximations)
-- [\[
-\ln
-\Pr\[\text${no collision}\]
-\approx](#lnprtextno-collisionapprox)
-- [\[
-\ln
-\Pr\[\text${no collision}\]
-\approx](#lnprtextno-collisionapprox-1)
 - [From Probability to a Generic Collision Attack](#from-probability-to-a-generic-collision-attack)
 - [Truncation, Multi-Target Settings, and System-Wide Risk](#truncation-multi-target-settings-and-system-wide-risk)
 - [Reproducible Python Laboratory](#reproducible-python-laboratory)
@@ -59,63 +51,63 @@ The birthday question is:
 
 Every new person can match every previous person, so the number of candidate pairs grows quadratically.
 
-With \(q\) people, the number of unordered pairs is
+With $q$ people, the number of unordered pairs is
 
-\[
+$$
 \binom{q}{2}
 =
 \frac{q(q-1)}{2}.
-\]
+$$
 
 Hash collisions behave the same way.
 
-For an \(n\)-bit digest, there are
+For an $n$-bit digest, there are
 
-\[
+$$
 N=2^n
-\]
+$$
 
 possible outputs.
 
 A preimage attacker must hit one prescribed digest:
 
-\[
+$$
 H(x)=y.
-\]
+$$
 
 A collision attacker may accept **any** pair
 
-\[
+$$
 x\neq x'
-\]
+$$
 
 for which
 
-\[
+$$
 H(x)=H(x').
-\]
+$$
 
 That additional freedom changes the generic work factor from approximately
 
-\[
+$$
 2^n
-\]
+$$
 
 to approximately
 
-\[
+$$
 2^{n/2}.
-\]
+$$
 
 This is the origin of the familiar statement:
 
-\[
+$$
 \boxed{
 n\text{-bit hash}
 \;\Rightarrow\;
 \text{about }n/2\text{ bits of generic collision security}
 }
-\]
+$$
 
 provided the hash behaves ideally and no structural cryptanalysis does better.
 
@@ -148,9 +140,9 @@ Now every new digest can collide with every previous digest.
 
 The number of opportunities grows like
 
-\[
+$$
 q^2.
-\]
+$$
 
 That is why the square root appears.
 
@@ -162,9 +154,9 @@ The surprising part is not that 23 is close to 365.
 
 It is that:
 
-\[
+$$
 \binom{23}{2}=253
-\]
+$$
 
 different pairs are being tested simultaneously.
 
@@ -174,37 +166,37 @@ Hash collision search exploits exactly this combinatorial growth.
 
 ## Exact Collision Probability and Its Approximations
 
-Suppose we sample \(q\) values independently and uniformly with replacement from an output set of size \(N\).
+Suppose we sample $q$ values independently and uniformly with replacement from an output set of size $N$.
 
 For a cryptographic hash model:
 
-\[
+$$
 N=2^n.
-\]
+$$
 
 We first calculate the probability that **no collision occurs**.
 
 The first sample can be anything:
 
-\[
+$$
 \frac{N}{N}=1.
-\]
+$$
 
 The second must avoid the first value:
 
-\[
+$$
 \frac{N-1}{N}.
-\]
+$$
 
 The third must avoid two already-used values:
 
-\[
+$$
 \frac{N-2}{N}.
-\]
+$$
 
 Continuing:
 
-\[
+$$
 \Pr[\text{no collision}]
 =
 \frac{N}{N}
@@ -212,22 +204,22 @@ Continuing:
 \frac{N-2}{N}
 \cdots
 \frac{N-q+1}{N}.
-\]
+$$
 
 Equivalently,
 
-\[
+$$
 \Pr[\text{no collision}]
 =
 \prod_{i=0}^{q-1}
 \left(
 1-\frac{i}{N}
 \right).
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 \Pr[\text{collision}]
 =
@@ -237,19 +229,19 @@ Therefore:
 1-\frac{i}{N}
 \right)
 }
-\]
+$$
 
 for
 
-\[
+$$
 0\le q\le N.
-\]
+$$
 
 If
 
-\[
+$$
 q>N,
-\]
+$$
 
 then the collision probability is exactly one by the pigeonhole principle.
 
@@ -257,17 +249,17 @@ then the collision probability is exactly one by the pigeonhole principle.
 
 For:
 
-\[
+$$
 N=365,
 \qquad
 q=23,
-\]
+$$
 
 the idealized probability is approximately:
 
-\[
+$$
 0.5073.
-\]
+$$
 
 So 23 people already give just over a 50% chance of at least one shared birthday.
 
@@ -277,27 +269,27 @@ Human birthdays are not perfectly uniform in reality, but the model is an excell
 
 When:
 
-\[
+$$
 q\ll N,
-\]
+$$
 
 the ratios
 
-\[
+$$
 \frac{i}{N}
-\]
+$$
 
 are small.
 
 Using:
 
-\[
+$$
 \ln(1-x)\approx -x,
-\]
+$$
 
 we obtain:
 
-\[
+$$
 \ln
 \Pr[\text{no collision}]
 =
@@ -306,51 +298,51 @@ we obtain:
 \left(
 1-\frac{i}{N}
 \right).
-\]
+$$
 
 Approximate each term:
 
-\[
+$$
 \ln
 \Pr[\text{no collision}]
 \approx
 -
 \sum_{i=0}^{q-1}
 \frac{i}{N}.
-\]
+$$
 
 Since:
 
-\[
+$$
 \sum_{i=0}^{q-1} i
 =
 \frac{q(q-1)}{2},
-\]
+$$
 
 we get:
 
-\[
+$$
 \ln
 \Pr[\text{no collision}]
 \approx
 -
 \frac{q(q-1)}{2N}.
-\]
+$$
 
 Exponentiating:
 
-\[
+$$
 \Pr[\text{no collision}]
 \approx
 \exp
 \left(
 -\frac{q(q-1)}{2N}
 \right).
-\]
+$$
 
 Hence:
 
-\[
+$$
 \boxed{
 \Pr[\text{collision}]
 \approx
@@ -360,7 +352,7 @@ Hence:
 -\frac{q(q-1)}{2N}
 \right)
 }
-\]
+$$
 
 This approximation is extremely useful because it can be inverted analytically.
 
@@ -368,13 +360,13 @@ This approximation is extremely useful because it can be inverted analytically.
 
 Let the desired collision probability be:
 
-\[
+$$
 p.
-\]
+$$
 
 Then:
 
-\[
+$$
 p
 \approx
 1-
@@ -382,30 +374,30 @@ p
 \left(
 -\frac{q(q-1)}{2N}
 \right).
-\]
+$$
 
-Ignoring the small distinction between \(q^2\) and \(q(q-1)\) for large \(q\), solve:
+Ignoring the small distinction between $q^2$ and $q(q-1)$ for large $q$, solve:
 
-\[
+$$
 1-p
 \approx
 \exp
 \left(
 -\frac{q^2}{2N}
 \right).
-\]
+$$
 
 Taking logarithms:
 
-\[
+$$
 \ln(1-p)
 \approx
 -\frac{q^2}{2N}.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 q
 \approx
@@ -415,41 +407,41 @@ q
 \frac{1}{1-p}
 }
 }
-\]
+$$
 
 For:
 
-\[
+$$
 p=\frac12,
-\]
+$$
 
 we obtain:
 
-\[
+$$
 q_{50}
 \approx
 \sqrt{
 2N\ln2
 }.
-\]
+$$
 
 Thus:
 
-\[
+$$
 q_{50}
 \approx
 1.1774\sqrt{N}.
-\]
+$$
 
-For an \(n\)-bit hash:
+For an $n$-bit hash:
 
-\[
+$$
 \boxed{
 q_{50}
 \approx
 1.1774\cdot2^{n/2}
 }
-\]
+$$
 
 ### Three similar constants that should not be confused
 
@@ -457,15 +449,15 @@ There are three related but different quantities.
 
 | Quantity | Approximate samples |
 |---|---:|
-| Collision probability at \(q=\sqrt N\) | \(1-e^{-1/2}\approx39.35\%\) |
-| 50% collision probability | \(1.1774\sqrt N\) |
-| Expected samples until first collision | \(\sqrt{\pi N/2}\approx1.2533\sqrt N\) |
+| Collision probability at $q=\sqrt N$ | $1-e^{-1/2}\approx39.35\%$ |
+| 50% collision probability | $1.1774\sqrt N$ |
+| Expected samples until first collision | $\sqrt{\pi N/2}\approx1.2533\sqrt N$ |
 
 All scale as:
 
-\[
+$$
 \Theta(\sqrt N),
-\]
+$$
 
 but they are not numerically identical.
 
@@ -473,63 +465,63 @@ but they are not numerically identical.
 
 Define:
 
-\[
+$$
 I_{ij}
 =
 \begin{cases}
 1,& X_i=X_j\\
 0,& X_i\neq X_j
 \end{cases}
-\]
+$$
 
 for every pair
 
-\[
+$$
 i<j.
-\]
+$$
 
 Since:
 
-\[
+$$
 \Pr[X_i=X_j]
 =
 \frac1N,
-\]
+$$
 
 we have:
 
-\[
+$$
 \mathbb{E}[I_{ij}]
 =
 \frac1N.
-\]
+$$
 
 There are:
 
-\[
+$$
 \binom q2
-\]
+$$
 
 pairs, so by linearity of expectation:
 
-\[
+$$
 \mathbb{E}
 \left[
 \sum_{i<j}I_{ij}
 \right]
 =
 \binom q2\frac1N.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 \mathbb{E}[\text{colliding pairs}]
 =
 \frac{q(q-1)}{2N}
 }
-\]
+$$
 
 When this number is much smaller than one, it is numerically close to the probability of at least one collision.
 
@@ -541,22 +533,22 @@ A "370% collision probability" is not.
 
 That is why the exponential formula is the more appropriate approximation for the event:
 
-\[
+$$
 \text{"at least one collision"}.
-\]
+$$
 
 ### Numerically stable computation
 
 Directly multiplying:
 
-\[
+$$
 \prod_i
 \left(
 1-\frac{i}{N}
 \right)
-\]
+$$
 
-can lose precision when \(N\) is large.
+can lose precision when $N$ is large.
 
 A stable implementation accumulates logarithms:
 
@@ -580,15 +572,15 @@ def exact_collision_probability(q, N):
 
 `log1p(x)` accurately evaluates:
 
-\[
+$$
 \ln(1+x)
-\]
+$$
 
-for small \(x\), and `expm1(x)` accurately evaluates:
+for small $x$, and `expm1(x)` accurately evaluates:
 
-\[
+$$
 e^x-1.
-\]
+$$
 
 These details matter when a numerical experiment is intended to validate cryptographic probability estimates rather than merely illustrate syntax.
 
@@ -612,39 +604,39 @@ for each candidate message m:
     seen[y] = m
 ```
 
-For an ideal \(n\)-bit digest, the expected scale is:
+For an ideal $n$-bit digest, the expected scale is:
 
-\[
+$$
 O(2^{n/2})
-\]
+$$
 
 hash computations and approximately the same number of stored table entries.
 
 ### Why a hash table works
 
-Suppose we have already stored \(q\) distinct digest values.
+Suppose we have already stored $q$ distinct digest values.
 
 The next candidate collides with one of them with probability approximately:
 
-\[
+$$
 \frac{q}{N}.
-\]
+$$
 
-As \(q\) grows, the chance of a match on each new trial grows.
+As $q$ grows, the chance of a match on each new trial grows.
 
 At:
 
-\[
+$$
 q\approx\sqrt N,
-\]
+$$
 
 we have accumulated roughly:
 
-\[
+$$
 \frac{q(q-1)}{2}
 \approx
 \frac N2
-\]
+$$
 
 pairwise comparisons implicitly through the table.
 
@@ -667,15 +659,15 @@ This tests only **one independent pair** per loop.
 
 Each pair matches with probability:
 
-\[
+$$
 2^{-n}.
-\]
+$$
 
 So the expected number of loops is:
 
-\[
+$$
 2^n.
-\]
+$$
 
 That is not a birthday attack.
 
@@ -729,35 +721,35 @@ This is a true birthday-table collision search.
 
 A direct hash-table attack uses:
 
-\[
+$$
 O(q)
-\]
+$$
 
 memory and roughly:
 
-\[
+$$
 O(q)
-\]
+$$
 
 expected lookup work.
 
 At the birthday scale:
 
-\[
+$$
 q\approx2^{n/2}.
-\]
+$$
 
 So the idealized attack uses:
 
-\[
+$$
 O(2^{n/2})
-\]
+$$
 
 time and:
 
-\[
+$$
 O(2^{n/2})
-\]
+$$
 
 memory.
 
@@ -765,15 +757,15 @@ memory.
 
 An alternative is:
 
-1. generate \(q\) `(digest, message)` pairs;
+1. generate $q$ `(digest, message)` pairs;
 2. sort them by digest;
 3. scan adjacent entries for equal digests.
 
 This uses:
 
-\[
+$$
 O(q\log q)
-\]
+$$
 
 comparison work for sorting.
 
@@ -789,9 +781,9 @@ Pollard-rho-style cycle finding can reduce memory substantially when the hash se
 
 The generic idea is to define a function:
 
-\[
+$$
 f:\{0,1\}^n\rightarrow\{0,1\}^n
-\]
+$$
 
 derived from the hash and search for repeated states in the resulting functional graph.
 
@@ -803,13 +795,13 @@ The exact reduction from a hash collision problem to a functional graph must pre
 
 The important theoretical point is:
 
-> the birthday bound is primarily a **time/work** phenomenon; the naive \(2^{n/2}\) memory requirement is not fundamental.
+> the birthday bound is primarily a **time/work** phenomenon; the naive $2^{n/2}$ memory requirement is not fundamental.
 
 ### Parallelism
 
 Birthday search parallelizes, but the security discussion should count more than one machine's loop counter.
 
-With \(P\) workers, wall-clock time may decrease, but practical performance depends on:
+With $P$ workers, wall-clock time may decrease, but practical performance depends on:
 
 - how candidate spaces are partitioned,
 - how collisions across workers are detected,
@@ -825,59 +817,59 @@ Cryptographic security strength is generally about **total attacker resources**,
 
 Digest truncation is where the birthday bound becomes an immediate engineering concern.
 
-Suppose a secure \(n\)-bit hash is truncated to:
+Suppose a secure $n$-bit hash is truncated to:
 
-\[
+$$
 t<n
-\]
+$$
 
 bits.
 
 The effective collision space now contains only:
 
-\[
+$$
 2^t
-\]
+$$
 
 values.
 
 Therefore the generic collision scale becomes:
 
-\[
+$$
 2^{t/2}.
-\]
+$$
 
 ### 50% collision scale
 
 Using:
 
-\[
+$$
 q_{50}
 \approx
 1.1774\cdot2^{t/2},
-\]
+$$
 
 we obtain:
 
-| Output bits \(t\) | Approximate \(q_{50}\) | Generic collision strength |
+| Output bits $t$ | Approximate $q_{50}$ | Generic collision strength |
 |---:|---:|---:|
-| 16 | \(3.01\times10^2\) | about 8 bits |
-| 32 | \(7.72\times10^4\) | about 16 bits |
-| 64 | \(5.06\times10^9\) | about 32 bits |
-| 96 | \(3.31\times10^{14}\) | about 48 bits |
-| 128 | \(2.17\times10^{19}\) | about 64 bits |
-| 160 | \(1.42\times10^{24}\) | about 80 bits |
-| 256 | \(4.01\times10^{38}\) | about 128 bits |
+| 16 | $3.01\times10^2$ | about 8 bits |
+| 32 | $7.72\times10^4$ | about 16 bits |
+| 64 | $5.06\times10^9$ | about 32 bits |
+| 96 | $3.31\times10^{14}$ | about 48 bits |
+| 128 | $2.17\times10^{19}$ | about 64 bits |
+| 160 | $1.42\times10^{24}$ | about 80 bits |
+| 256 | $4.01\times10^{38}$ | about 128 bits |
 
 The important rule is:
 
-\[
+$$
 \boxed{
 t\text{-bit digest}
 \Rightarrow
 \text{at most }t/2\text{ bits of generic collision security}
 }
-\]
+$$
 
 ### Truncating SHA-256
 
@@ -891,15 +883,15 @@ where only 8 bytes are retained.
 
 That is a:
 
-\[
+$$
 64\text{-bit digest}.
-\]
+$$
 
 Its ideal generic collision strength is therefore only:
 
-\[
+$$
 32\text{ bits}.
-\]
+$$
 
 The underlying SHA-256 primitive may still be perfectly healthy.
 
@@ -915,9 +907,9 @@ Records receive random-looking identifiers or digests and nobody is maliciously 
 
 The question is:
 
-\[
+$$
 \Pr[\text{some accidental duplicate among }q\text{ records}].
-\]
+$$
 
 **Adversarial collision.**
 
@@ -927,15 +919,15 @@ The mathematical birthday scale may be similar, but the operational risk is diff
 
 Therefore:
 
-> randomly generated identifiers and adversarially chosen hash commitments should not automatically use the same security policy simply because both involve \(n\)-bit strings.
+> randomly generated identifiers and adversarially chosen hash commitments should not automatically use the same security policy simply because both involve $n$-bit strings.
 
 ### System-wide collision risk
 
-Suppose a system stores \(q\) independent \(t\)-bit identifiers.
+Suppose a system stores $q$ independent $t$-bit identifiers.
 
 The approximate accidental collision probability is:
 
-\[
+$$
 p
 \approx
 1-
@@ -943,7 +935,7 @@ p
 \left(
 -\frac{q(q-1)}{2^{t+1}}
 \right).
-\]
+$$
 
 This should be computed over the **lifetime system population**, not merely one process or one day.
 
@@ -954,7 +946,7 @@ If a system has:
 - replicated databases,
 - long operational lifetime,
 
-then the relevant \(q\) may be much larger than expected from a local component's perspective.
+then the relevant $q$ may be much larger than expected from a local component's perspective.
 
 ### Multi-user and multi-target effects
 
@@ -1148,11 +1140,11 @@ def approximate_collision_probability(q, bits):
 
 For:
 
-\[
+$$
 q=301,
 \qquad
 n=16,
-\]
+$$
 
 both values are close to one half.
 
@@ -1199,29 +1191,29 @@ evaluations.
 
 That run happened to hit earlier than the ideal expectation:
 
-\[
+$$
 2^{16}=65536.
-\]
+$$
 
 But it still illustrates the large gap from the collision experiment, which found a match after only a few hundred candidates.
 
 The real comparison is asymptotic:
 
-\[
+$$
 \boxed{
 \text{collision}\sim2^{n/2}
 }
-\]
+$$
 
 versus:
 
-\[
+$$
 \boxed{
 \text{fixed-target preimage}\sim2^n
 }
-\]
+$$
 
-for the same \(n\)-bit output.
+for the same $n$-bit output.
 
 ### Do not over-interpret one run
 
@@ -1240,7 +1232,7 @@ Then record:
 - mean evaluations,
 - quantiles,
 - variance,
-- empirical collision probability at fixed \(q\).
+- empirical collision probability at fixed $q$.
 
 That lets the experiment test the predicted distribution rather than merely produce one anecdotal collision.
 
@@ -1256,19 +1248,19 @@ The scope of the result must remain precise.
 
 A birthday collision attack solves:
 
-\[
+$$
 H(x)=H(x')
-\]
+$$
 
-for attacker-chosen \(x,x'\).
+for attacker-chosen $x,x'$.
 
 It does not solve:
 
-\[
+$$
 H(x)=y
-\]
+$$
 
-for a prescribed \(y\).
+for a prescribed $y$.
 
 The latter remains a preimage problem.
 
@@ -1276,7 +1268,7 @@ The latter remains a preimage problem.
 
 Suppose:
 
-\[
+$$
 \operatorname{Trunc}_{16}
 (
 \operatorname{SHA256}(M)
@@ -1286,7 +1278,7 @@ Suppose:
 (
 \operatorname{SHA256}(M')
 ).
-\]
+$$
 
 This only proves equality of the first 16 bits.
 
@@ -1347,9 +1339,9 @@ HMAC is a keyed MAC construction.
 
 An attacker cannot generally turn:
 
-\[
+$$
 H(M_1)=H(M_2)
-\]
+$$
 
 for an unkeyed toy hash experiment into an HMAC forgery.
 
@@ -1370,9 +1362,9 @@ It treats the hash as a black box.
 
 If cryptanalysts exploit the internal structure of a named hash and produce collisions significantly faster than:
 
-\[
+$$
 2^{n/2},
-\]
+$$
 
 that is a stronger algorithm-specific result.
 
@@ -1394,41 +1386,41 @@ The birthday bound is more than a probability curiosity.
 
 It directly constrains cryptographic parameter selection.
 
-For an ideal \(n\)-bit hash:
+For an ideal $n$-bit hash:
 
-\[
+$$
 \text{generic collision work}
 \sim
 2^{n/2}.
-\]
+$$
 
-Therefore, if an application needs approximately \(s\) bits of classical collision security, a first-order requirement is:
+Therefore, if an application needs approximately $s$ bits of classical collision security, a first-order requirement is:
 
-\[
+$$
 n\ge2s.
-\]
+$$
 
 For example:
 
-\[
+$$
 s=128
-\]
+$$
 
 suggests at least:
 
-\[
+$$
 n=256
-\]
+$$
 
 digest bits before considering truncation, multi-user effects, protocol structure, or algorithm-specific cryptanalysis.
 
 The main engineering lessons are:
 
 1. **Do not quote digest length as collision security.**  
-   An \(n\)-bit output offers only about \(n/2\) bits of ideal generic collision strength.
+   An $n$-bit output offers only about $n/2$ bits of ideal generic collision strength.
 
 2. **Do not truncate blindly.**  
-   Retaining \(t\) bits reduces generic collision strength to about \(t/2\) bits.
+   Retaining $t$ bits reduces generic collision strength to about $t/2$ bits.
 
 3. **Count system-wide population.**  
    Accidental collision probability depends on the total number of relevant objects over the system lifetime.
@@ -1447,15 +1439,15 @@ The main engineering lessons are:
 
 The square-root phenomenon can be summarized in one line:
 
-\[
+$$
 \boxed{
 \binom{q}{2}
 \approx
 \frac{q^2}{2}
 }
-\]
+$$
 
-candidate pairs are created from only \(q\) sampled hash outputs.
+candidate pairs are created from only $q$ sampled hash outputs.
 
 That quadratic growth is the entire source of the birthday advantage.
 

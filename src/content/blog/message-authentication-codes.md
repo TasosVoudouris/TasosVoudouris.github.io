@@ -60,21 +60,21 @@ A **message authentication code (MAC)** introduces a shared secret key and gives
 
 A MAC scheme consists conceptually of three algorithms:
 
-\[
+$$
 \mathsf{KeyGen}(1^\lambda)\rightarrow K,
-\]
+$$
 
-\[
+$$
 \mathsf{Tag}_K(M)\rightarrow T,
-\]
+$$
 
-\[
+$$
 \mathsf{Verify}_K(M,T)\rightarrow\{0,1\}.
-\]
+$$
 
 Correctness requires that honestly generated tags verify:
 
-\[
+$$
 \Pr[
 \mathsf{Verify}_K(
 M,
@@ -83,7 +83,7 @@ M,
 ]
 =
 1,
-\]
+$$
 
 apart from any explicitly modeled failure probability in a randomized construction.
 
@@ -95,19 +95,19 @@ For a deterministic MAC such as HMAC-SHA-256, the same message under the same ke
 
 Without a key:
 
-\[
+$$
 T=H(M)
-\]
+$$
 
 is computable by everyone.
 
 With a MAC:
 
-\[
+$$
 T=\operatorname{MAC}_K(M),
-\]
+$$
 
-an attacker who does not know \(K\) should not be able to produce a valid tag for a fresh message except with negligible probability.
+an attacker who does not know $K$ should not be able to produce a valid tag for a fresh message except with negligible probability.
 
 The security goal is therefore not:
 
@@ -125,7 +125,7 @@ Therefore every party capable of verifying a MAC can normally also generate one.
 
 A MAC does **not** provide non-repudiation.
 
-If Alice and Bob both know \(K\), then a valid tag cannot prove to a third party that Alice rather than Bob generated it.
+If Alice and Bob both know $K$, then a valid tag cannot prove to a third party that Alice rather than Bob generated it.
 
 For public verifiability, use a digital signature or another asymmetric authentication mechanism.
 
@@ -163,9 +163,9 @@ The protocol must define what those bytes mean.
 
 The standard baseline security goal is **existential unforgeability under chosen-message attack**, abbreviated:
 
-\[
+$$
 \text{EUF-CMA}.
-\]
+$$
 
 ### The EUF-CMA game
 
@@ -173,37 +173,37 @@ A simplified game is:
 
 1. The challenger samples:
 
-   \[
+   $$
    K\leftarrow\mathsf{KeyGen}(1^\lambda).
-   \]
+   $$
 
 2. The adversary may adaptively request tags:
 
-   \[
+   $$
    T_i=\mathsf{Tag}_K(M_i)
-   \]
+   $$
 
    for messages of its choice.
 
 3. Eventually it outputs:
 
-   \[
+   $$
    (M^*,T^*).
-   \]
+   $$
 
 4. It wins if:
 
-   \[
+   $$
    \mathsf{Verify}_K(M^*,T^*)=1
-   \]
+   $$
 
    and:
 
-   \[
+   $$
    M^*
    \notin
    \{M_1,\ldots,M_q\}.
-   \]
+   $$
 
 ![MAC unforgeability game](/images/hash-functions/message-authentication-codes/macgame.png)
 
@@ -217,9 +217,9 @@ That is why a construction that survives chosen-message analysis gives a much st
 
 A successful MAC attack need not recover:
 
-\[
+$$
 K.
-\]
+$$
 
 It is enough to produce one fresh accepted pair.
 
@@ -265,43 +265,43 @@ When evaluating tag truncation or online guessing, the total number of observabl
 
 Suppose:
 
-\[
+$$
 F_K:\mathcal{M}\rightarrow\{0,1\}^{t}
-\]
+$$
 
 behaves like a secure pseudorandom function over the allowed message domain.
 
 Define:
 
-\[
+$$
 \mathsf{Tag}_K(M)=F_K(M).
-\]
+$$
 
-For a fresh message \(M^*\), the tag should look approximately like an independent random \(t\)-bit string to an attacker.
+For a fresh message $M^*$, the tag should look approximately like an independent random $t$-bit string to an attacker.
 
 So a blind guess succeeds with probability:
 
-\[
+$$
 2^{-t}.
-\]
+$$
 
-After \(v\) independent attempts, the exact blind-guess success probability is:
+After $v$ independent attempts, the exact blind-guess success probability is:
 
-\[
+$$
 1-(1-2^{-t})^v.
-\]
+$$
 
 When:
 
-\[
+$$
 v\ll 2^t,
-\]
+$$
 
 this is approximately:
 
-\[
+$$
 \frac{v}{2^t}.
-\]
+$$
 
 This is the origin of the familiar forgery term.
 
@@ -313,9 +313,9 @@ For an unkeyed collision search, the attacker wins if **any two** digests collid
 
 That gives the birthday scale:
 
-\[
+$$
 2^{t/2}.
-\]
+$$
 
 For tag forgery, the attacker is normally trying to match the correct tag for a particular fresh message.
 
@@ -323,15 +323,15 @@ That is a fixed-target problem.
 
 The simple guessing scale is:
 
-\[
+$$
 2^t,
-\]
+$$
 
 not:
 
-\[
+$$
 2^{t/2}.
-\]
+$$
 
 This distinction is crucial when deciding whether a truncated tag is acceptable.
 
@@ -339,29 +339,29 @@ This distinction is crucial when deciding whether a truncated tag is acceptable.
 
 Suppose a full HMAC-SHA-256 output is truncated to:
 
-\[
+$$
 t
-\]
+$$
 
 bits.
 
-The verifier must define exactly which \(t\) bits are accepted and require exactly that tag length.
+The verifier must define exactly which $t$ bits are accepted and require exactly that tag length.
 
 For blind guessing:
 
-\[
+$$
 \Pr[\text{success after }v\text{ attempts}]
 \approx
 \frac{v}{2^t}.
-\]
+$$
 
 For example, a 64-bit tag does not provide "128-bit collision strength" in the MAC game.
 
 Its blind online forgery barrier is approximately:
 
-\[
+$$
 2^{64}
-\]
+$$
 
 per fresh target under the idealized model, before accounting for query volume and construction-specific bounds.
 
@@ -402,37 +402,37 @@ CBC-MAC is valuable pedagogically because it shows how a construction can be sec
 
 Let:
 
-\[
+$$
 E_K:\{0,1\}^n\rightarrow\{0,1\}^n
-\]
+$$
 
 be a block cipher.
 
-For a message of \(\ell\) blocks:
+For a message of $\ell$ blocks:
 
-\[
+$$
 M=M_1\|M_2\|\cdots\|M_\ell,
-\]
+$$
 
 define:
 
-\[
+$$
 C_0=0^n,
-\]
+$$
 
-\[
+$$
 C_i
 =
 E_K(
 C_{i-1}\oplus M_i
 ),
-\]
+$$
 
 and:
 
-\[
+$$
 T=C_\ell.
-\]
+$$
 
 ![CBC-MAC chaining](/images/hash-functions/message-authentication-codes/cbcconstruction.png)
 
@@ -444,9 +444,9 @@ That intuition must **not** be copied into basic CBC-MAC.
 
 The classical CBC-MAC construction starts from a fixed public value, conventionally:
 
-\[
+$$
 IV=0^n.
-\]
+$$
 
 A random attacker-controllable IV creates additional malleability and does not define the standard fixed-IV security theorem.
 
@@ -476,31 +476,31 @@ If the application begins accepting arbitrary lengths without modifying the cons
 
 Suppose the adversary requests tags for two block-aligned messages:
 
-\[
+$$
 M=M_1\|\cdots\|M_\ell
-\]
+$$
 
 and:
 
-\[
+$$
 N=N_1\|\cdots\|N_k.
-\]
+$$
 
 Let:
 
-\[
+$$
 T=\operatorname{CBCMAC}_K(M)
-\]
+$$
 
 and:
 
-\[
+$$
 U=\operatorname{CBCMAC}_K(N).
-\]
+$$
 
 Now construct:
 
-\[
+$$
 F
 =
 M_1\|\cdots\|M_\ell
@@ -508,55 +508,55 @@ M_1\|\cdots\|M_\ell
 (N_1\oplus T)
 \|
 N_2\|\cdots\|N_k.
-\]
+$$
 
-After processing \(M\), the CBC-MAC chaining state is exactly:
+After processing $M$, the CBC-MAC chaining state is exactly:
 
-\[
+$$
 T.
-\]
+$$
 
 The next compression input becomes:
 
-\[
+$$
 T\oplus(N_1\oplus T)
 =
 N_1.
-\]
+$$
 
 So the state after that block is:
 
-\[
+$$
 E_K(N_1),
-\]
+$$
 
-which is exactly the state reached after the first block of \(N\) when CBC-MAC starts from zero.
+which is exactly the state reached after the first block of $N$ when CBC-MAC starts from zero.
 
-The remainder then follows the same chain as \(N\).
+The remainder then follows the same chain as $N$.
 
 Therefore:
 
-\[
+$$
 \boxed{
 \operatorname{CBCMAC}_K(F)=U
 }
-\]
+$$
 
-even though the attacker never asked the oracle to authenticate \(F\).
+even though the attacker never asked the oracle to authenticate $F$.
 
 That is an existential forgery.
 
 ### Why the attack disappears in the fixed-length domain
 
-The forged message \(F\) is longer than \(M\).
+The forged message $F$ is longer than $M$.
 
-If the MAC is defined only for exactly \(\ell\)-block messages, the forged string is outside the allowed message domain and therefore is not a valid attack against that restricted scheme.
+If the MAC is defined only for exactly $\ell$-block messages, the forged string is outside the allowed message domain and therefore is not a valid attack against that restricted scheme.
 
 Once variable lengths are admitted, it becomes valid.
 
 This illustrates a recurring cryptographic principle:
 
-\[
+$$
 \boxed{
 \text{security theorem}
 +
@@ -564,7 +564,7 @@ This illustrates a recurring cryptographic principle:
 \neq
 \text{same security theorem}
 }
-\]
+$$
 
 ### Do not patch CBC-MAC casually
 
@@ -596,11 +596,11 @@ At a high level:
 
 1. compute:
 
-   \[
+   $$
    L=E_K(0^n);
-   \]
+   $$
 
-2. derive subkeys \(K_1,K_2\) by finite-field doubling;
+2. derive subkeys $K_1,K_2$ by finite-field doubling;
 3. use one subkey if the last message block is complete;
 4. use another subkey with a defined padding rule if the last block is partial;
 5. process the resulting blocks under the standardized CBC-MAC-style chain.
@@ -629,17 +629,17 @@ Use protocol-defined key separation.
 
 A KDF can derive distinct subkeys:
 
-\[
+$$
 K_{\text{enc}}
 =
 \operatorname{KDF}(K_{\text{master}},\texttt{"enc"}),
-\]
+$$
 
-\[
+$$
 K_{\text{mac}}
 =
 \operatorname{KDF}(K_{\text{master}},\texttt{"mac"}).
-\]
+$$
 
 Purpose separation reduces cross-protocol and cross-mode interactions.
 
@@ -649,19 +649,19 @@ Purpose separation reduces cross-protocol and cross-mode interactions.
 
 The previous length-extension article showed why:
 
-\[
+$$
 H(K\|M)
-\]
+$$
 
-is a poor ad-hoc MAC when \(H\) is an exposed-state Merkle–Damgård hash such as SHA-256.
+is a poor ad-hoc MAC when $H$ is an exposed-state Merkle–Damgård hash such as SHA-256.
 
 HMAC uses a carefully designed nested construction instead.
 
-For a hash \(H\) with internal block size \(B\), define a normalized block-sized key \(K_0\).
+For a hash $H$ with internal block size $B$, define a normalized block-sized key $K_0$.
 
 Then:
 
-\[
+$$
 \operatorname{HMAC}_K(M)
 =
 H
@@ -674,7 +674,7 @@ H(
 M
 )
 \right).
-\]
+$$
 
 The pad bytes are:
 
@@ -689,39 +689,39 @@ opad = 0x5c repeated B times
 
 If:
 
-\[
+$$
 |K|>B,
-\]
+$$
 
 first compute:
 
-\[
+$$
 K'=H(K).
-\]
+$$
 
 Otherwise:
 
-\[
+$$
 K'=K.
-\]
+$$
 
 Then append zeros until:
 
-\[
+$$
 |K_0|=B.
-\]
+$$
 
 For SHA-256:
 
-\[
+$$
 B=64\text{ bytes},
-\]
+$$
 
 while the digest size is:
 
-\[
+$$
 32\text{ bytes}.
-\]
+$$
 
 Those two values are not interchangeable.
 
@@ -729,15 +729,15 @@ Those two values are not interchangeable.
 
 The inner and outer computations operate in two separated keyed domains:
 
-\[
+$$
 K_0\oplus\operatorname{ipad}
-\]
+$$
 
 and:
 
-\[
+$$
 K_0\oplus\operatorname{opad}.
-\]
+$$
 
 They should not be described as two independently random keys.
 
@@ -749,17 +749,17 @@ Their role is structural separation inside the HMAC construction.
 
 The attacker observes the **outer** digest:
 
-\[
+$$
 H(
 (K_0\oplus opad)
 \|
 \text{inner digest}
 ).
-\]
+$$
 
 Extending that outer hash would produce something like:
 
-\[
+$$
 H(
 (K_0\oplus opad)
 \|
@@ -769,11 +769,11 @@ H(
 \|
 X
 ).
-\]
+$$
 
-But a legitimate HMAC of an extended message \(M'\) must be:
+But a legitimate HMAC of an extended message $M'$ must be:
 
-\[
+$$
 H
 \left(
 (K_0\oplus opad)
@@ -784,15 +784,15 @@ H(
 M'
 )
 \right).
-\]
+$$
 
 Those are different structures.
 
 The published HMAC tag is not the exposed inner chaining state needed to continue:
 
-\[
+$$
 (K_0\oplus ipad)\|M.
-\]
+$$
 
 So the direct secret-prefix continuation trick does not transfer.
 
@@ -916,16 +916,16 @@ This makes domain separation an explicit interface rather than something an appl
 
 Conceptually:
 
-\[
+$$
 \operatorname{KMAC}(K,M,L,S),
-\]
+$$
 
 where:
 
-- \(K\) is the key,
-- \(M\) is the message,
-- \(L\) is the requested output length,
-- \(S\) is an optional customization string.
+- $K$ is the key,
+- $M$ is the message,
+- $L$ is the requested output length,
+- $S$ is an optional customization string.
 
 ### CMAC
 
@@ -951,9 +951,9 @@ Poly1305 is a universal-hash-based authenticator designed around a one-time key.
 
 In modern protocols it is commonly used inside:
 
-\[
+$$
 \text{ChaCha20-Poly1305}
-\]
+$$
 
 with the one-time Poly1305 key derived correctly for each nonce.
 
@@ -1123,11 +1123,11 @@ unless the receiver remembers that sequence 42 has already been accepted.
 
 Therefore:
 
-\[
+$$
 \text{authenticated sequence number}
 +
 \text{replay state}
-\]
+$$
 
 provides freshness.
 
@@ -1216,13 +1216,13 @@ Use distinct keys for distinct cryptographic roles.
 
 For example:
 
-\[
+$$
 K_{\text{client-mac}}
 \neq
 K_{\text{server-mac}}
 \neq
 K_{\text{encryption}}.
-\]
+$$
 
 A KDF with explicit context can derive these from one master secret.
 
@@ -1345,17 +1345,17 @@ N = two 16-byte blocks
 
 and obtain:
 
-\[
+$$
 T=\operatorname{CBCMAC}_K(M),
-\]
+$$
 
-\[
+$$
 U=\operatorname{CBCMAC}_K(N).
-\]
+$$
 
 Construct:
 
-\[
+$$
 F
 =
 M
@@ -1363,13 +1363,13 @@ M
 (N_1\oplus T)
 \|
 N_2.
-\]
+$$
 
 Then:
 
-\[
+$$
 \operatorname{CBCMAC}_K(F)=U.
-\]
+$$
 
 The forged message is three blocks long and was never queried.
 
@@ -1537,29 +1537,29 @@ The defining MAC security question is not:
 
 It is:
 
-\[
+$$
 \boxed{
 \text{Can the attacker create a fresh accepted message-tag pair?}
 }
-\]
+$$
 
 EUF-CMA captures that goal while allowing the attacker to request tags on chosen messages.
 
 The PRF viewpoint explains the first-order forgery intuition:
 
-\[
+$$
 t\text{-bit tag}
 \Rightarrow
 \text{blind guess probability }2^{-t}.
-\]
+$$
 
-After \(v\) attempts:
+After $v$ attempts:
 
-\[
+$$
 \Pr[\text{success}]
 \approx
 \frac{v}{2^t}
-\]
+$$
 
 when the ratio is small, plus construction-specific terms.
 
@@ -1567,25 +1567,25 @@ CBC-MAC then demonstrates why the message domain matters.
 
 For fixed-length messages:
 
-\[
+$$
 C_i
 =
 E_K(
 C_{i-1}\oplus M_i
 )
-\]
+$$
 
 can form a secure MAC under the appropriate assumptions.
 
 For arbitrary lengths, the simple construction permits splicing:
 
-\[
+$$
 M
 \|
 (N_1\oplus T)
 \|
 N_2\|\cdots
-\]
+$$
 
 that inherits another valid tag.
 
@@ -1597,13 +1597,13 @@ HMAC solves a different composition problem.
 
 Instead of:
 
-\[
+$$
 H(K\|M),
-\]
+$$
 
 it uses:
 
-\[
+$$
 H
 \left(
 (K_0\oplus opad)
@@ -1614,7 +1614,7 @@ H(
 M
 )
 \right).
-\]
+$$
 
 The published outer digest does not expose the inner secret-prefixed state needed by the classical length-extension attack.
 
@@ -1640,11 +1640,11 @@ A secure MAC over the wrong bytes can still authenticate the wrong meaning.
 
 That is why the final engineering rule is:
 
-\[
+$$
 \boxed{
 \text{authenticate an unambiguous protocol transcript, not an informal message description}
 }
-\]
+$$
 
 The next article moves into a more specialized direction: **Griffin and algebraic hash functions**, where the design target is not only conventional software efficiency but also efficient evaluation inside arithmetic proof systems.
 

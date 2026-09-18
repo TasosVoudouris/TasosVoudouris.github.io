@@ -60,71 +60,71 @@ Bare Diffie-Hellman does not solve the second.
 
 Reuse the same toy parameters:
 
-\[
+$$
 p=23,
 \qquad
 g=5.
-\]
+$$
 
 Alice chooses
 
-\[
+$$
 a=6
-\]
+$$
 
 and computes
 
-\[
+$$
 A=g^a
 =
 5^6\bmod 23
 =
 8.
-\]
+$$
 
 Bob chooses
 
-\[
+$$
 b=15
-\]
+$$
 
 and computes
 
-\[
+$$
 B=g^b
 =
 5^{15}\bmod 23
 =
 19.
-\]
+$$
 
 Without an attacker, Alice would compute
 
-\[
+$$
 B^a
 =
 19^6\bmod 23
 =
 2,
-\]
+$$
 
 while Bob would compute
 
-\[
+$$
 A^b
 =
 8^{15}\bmod 23
 =
 2.
-\]
+$$
 
 Thus the honest execution gives
 
-\[
+$$
 \boxed{
 g^{ab}=2
 }
-\]
+$$
 
 to both participants.
 
@@ -132,9 +132,9 @@ Now place Eve between them.
 
 Alice attempts to send
 
-\[
+$$
 A=8
-\]
+$$
 
 to Bob.
 
@@ -144,13 +144,13 @@ Bob never receives Alice's real Diffie-Hellman share.
 
 Instead, Eve chooses her own secret exponent for the session with Bob:
 
-\[
+$$
 e_B=7.
-\]
+$$
 
 She computes
 
-\[
+$$
 E_B
 =
 g^{e_B}
@@ -158,15 +158,15 @@ g^{e_B}
 5^7\bmod 23
 =
 17
-\]
+$$
 
-and sends \(E_B\) to Bob while pretending that it came from Alice.
+and sends $E_B$ to Bob while pretending that it came from Alice.
 
 At the same time, Bob attempts to send
 
-\[
+$$
 B=19
-\]
+$$
 
 to Alice.
 
@@ -174,13 +174,13 @@ Again Eve intercepts the message.
 
 For her session with Alice, Eve chooses a second secret exponent:
 
-\[
+$$
 e_A=3,
-\]
+$$
 
 and computes
 
-\[
+$$
 E_A
 =
 g^{e_A}
@@ -188,9 +188,9 @@ g^{e_A}
 5^3\bmod 23
 =
 10.
-\]
+$$
 
-She sends \(E_A\) to Alice while pretending that it came from Bob.
+She sends $E_A$ to Alice while pretending that it came from Bob.
 
 The network now looks like this:
 
@@ -212,13 +212,13 @@ The important point is that Alice and Bob have no authenticated way to distingui
 
 Alice receives
 
-\[
+$$
 E_A=10
-\]
+$$
 
 and computes
 
-\[
+$$
 K_{AE}
 =
 E_A^a
@@ -226,25 +226,25 @@ E_A^a
 10^6\bmod 23
 =
 6.
-\]
+$$
 
-Eve knows \(e_A=3\), so using Alice's genuine public value \(A=8\), she computes
+Eve knows $e_A=3$, so using Alice's genuine public value $A=8$, she computes
 
-\[
+$$
 A^{e_A}
 =
 8^3\bmod 23
 =
 6.
-\]
+$$
 
 Therefore,
 
-\[
+$$
 \boxed{
 K_{AE}=6
 }
-\]
+$$
 
 is shared between Alice and Eve.
 
@@ -252,13 +252,13 @@ is shared between Alice and Eve.
 
 Bob receives
 
-\[
+$$
 E_B=17
-\]
+$$
 
 and computes
 
-\[
+$$
 K_{BE}
 =
 E_B^b
@@ -266,25 +266,25 @@ E_B^b
 17^{15}\bmod 23
 =
 15.
-\]
+$$
 
-Eve knows \(e_B=7\), so using Bob's genuine public value \(B=19\), she computes
+Eve knows $e_B=7$, so using Bob's genuine public value $B=19$, she computes
 
-\[
+$$
 B^{e_B}
 =
 19^7\bmod 23
 =
 15.
-\]
+$$
 
 Therefore,
 
-\[
+$$
 \boxed{
 K_{BE}=15
 }
-\]
+$$
 
 is shared between Bob and Eve.
 
@@ -382,17 +382,17 @@ Suppose Alice and Bob now derive symmetric encryption keys from the values they 
 
 Alice derives a key from
 
-\[
+$$
 K_{AE}=6.
-\]
+$$
 
 Eve knows exactly the same value.
 
 Bob derives a different key from
 
-\[
+$$
 K_{BE}=15.
-\]
+$$
 
 Again, Eve knows exactly the same value.
 
@@ -434,13 +434,13 @@ If the protocol contains no mechanism authenticating the peer or the handshake t
 
 This gives us an important lesson:
 
-\[
+$$
 \boxed{
 \text{encrypted}
 \neq
 \text{authenticated}
 }
-\]
+$$
 
 An encrypted channel answers:
 
@@ -460,9 +460,9 @@ The previous toy discrete-log attack can be viewed as a passive attack.
 
 Eve observes:
 
-\[
+$$
 g,\qquad g^a,\qquad g^b
-\]
+$$
 
 and tries to infer the secret.
 
@@ -506,11 +506,11 @@ Eve still does not need to solve it.
 
 She chooses her own values:
 
-\[
+$$
 E_A=g^{e_A},
 \qquad
 E_B=g^{e_B}
-\]
+$$
 
 and substitutes them exactly as before.
 
@@ -518,21 +518,21 @@ Moving from finite-field DH to elliptic-curve Diffie-Hellman does not automatica
 
 Instead of
 
-\[
+$$
 A=g^a,
-\]
+$$
 
 an elliptic-curve protocol may use
 
-\[
+$$
 A=aG.
-\]
+$$
 
-Eve can still replace \(A\) with
+Eve can still replace $A$ with
 
-\[
+$$
 E=eG
-\]
+$$
 
 unless the protocol authenticates the public values.
 
@@ -576,15 +576,15 @@ One possibility is to use digital signatures.
 
 Suppose Bob possesses a long-term signing key
 
-\[
+$$
 sk_B
-\]
+$$
 
 whose corresponding public key
 
-\[
+$$
 pk_B
-\]
+$$
 
 Alice already trusts through some authenticated mechanism.
 
@@ -600,31 +600,31 @@ A real protocol must specify **exactly what is signed or otherwise authenticated
 
 For example, we may want the authentication to cover:
 
-\[
+$$
 \text{protocol identifier},
-\]
+$$
 
-\[
+$$
 \text{Alice identity},
-\]
+$$
 
-\[
+$$
 \text{Bob identity},
-\]
+$$
 
-\[
+$$
 A,
-\]
+$$
 
-\[
+$$
 B,
-\]
+$$
 
 and additional handshake information.
 
 Conceptually:
 
-\[
+$$
 \sigma_B
 =
 \operatorname{Sign}_{sk_B}
@@ -639,19 +639,19 @@ B
 \text{transcript}
 )
 \right).
-\]
+$$
 
 Alice verifies:
 
-\[
+$$
 \operatorname{Verify}_{pk_B}(\sigma_B,\ldots).
-\]
+$$
 
 Now Eve cannot simply replace Bob's contribution with
 
-\[
+$$
 E_A
-\]
+$$
 
 unless she can also produce a valid authentication value corresponding to Bob's trusted credentials.
 
@@ -681,7 +681,7 @@ A transcript gives structure to the session.
 
 For example:
 
-\[
+$$
 T
 =
 H(
@@ -697,23 +697,23 @@ B
 \parallel
 \text{parameters}
 ).
-\]
+$$
 
 Authentication can then bind the parties to
 
-\[
+$$
 T
-\]
+$$
 
 rather than to an isolated number.
 
 This is a recurring design principle in modern cryptography:
 
-\[
+$$
 \boxed{
 \text{authenticate the context, not merely a value}
 }
-\]
+$$
 
 We will encounter the same principle again in:
 
@@ -791,23 +791,23 @@ It is useful to compare this attack with the previous one.
 
 The adversary observes:
 
-\[
+$$
 A=g^a
-\]
+$$
 
 and recovers:
 
-\[
+$$
 a.
-\]
+$$
 
 The failure is:
 
-\[
+$$
 \boxed{
 \text{the computational problem is too easy}
 }
-\]
+$$
 
 because the group is tiny.
 
@@ -815,35 +815,35 @@ because the group is tiny.
 
 The adversary does not recover:
 
-\[
+$$
 a
-\]
+$$
 
 or
 
-\[
+$$
 b.
-\]
+$$
 
 Instead she substitutes:
 
-\[
+$$
 A\rightarrow E_B
-\]
+$$
 
 and
 
-\[
+$$
 B\rightarrow E_A.
-\]
+$$
 
 The failure is:
 
-\[
+$$
 \boxed{
 \text{the protocol does not authenticate the peer}
 }
-\]
+$$
 
 These are fundamentally different classes of failure.
 

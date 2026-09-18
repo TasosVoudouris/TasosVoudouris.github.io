@@ -54,7 +54,7 @@ Later, when a cryptographic construction requires a new programming concept, we 
 - [5. Text, bytes, and encodings](#5-text-bytes-and-encodings)
 - [6. Bits and bitwise operations](#6-bits-and-bitwise-operations)
 - [7. Modular arithmetic in Python](#7-modular-arithmetic-in-python)
-- [8. Randomness: random versus secrets](#8-randomness-random-versus-secrets)
+- [8. Randomness: `random` versus `secrets`](#8-randomness-random-versus-secrets)
 - [9. Assertions and executable invariants](#9-assertions-and-executable-invariants)
 - [10. Two small cryptographic experiments](#10-two-small-cryptographic-experiments)
 - [11. Common beginner mistakes](#11-common-beginner-mistakes)
@@ -70,9 +70,9 @@ Later, when a cryptographic construction requires a new programming concept, we 
 
 Suppose a textbook gives us
 
-\[
+$$
 p=17,\qquad g=3,\qquad x=7.
-\]
+$$
 
 On paper, these are mathematical objects.
 
@@ -234,9 +234,9 @@ Thus:
 
 means
 
-\[
+$$
 3^4=81.
-\]
+$$
 
 Two additional operators appear constantly in number theory:
 
@@ -267,9 +267,9 @@ gives:
 
 because
 
-\[
+$$
 17=3\cdot5+2.
-\]
+$$
 
 We can immediately turn that mathematical identity into an executable check:
 
@@ -279,13 +279,13 @@ assert 17 == 5 * (17 // 5) + (17 % 5)
 
 This is one of the habits we will repeatedly develop:
 
-\[
+$$
 \boxed{
 \text{mathematical statement}
 \longrightarrow
 \text{executable invariant}
 }
-\]
+$$
 
 ---
 
@@ -297,9 +297,9 @@ Python functions let us convert mathematical maps directly into executable objec
 
 Suppose
 
-\[
+$$
 f(x)=x^2.
-\]
+$$
 
 We can write:
 
@@ -341,9 +341,9 @@ returns:
 
 because
 
-\[
+$$
 11+9=20\equiv3\pmod{17}.
-\]
+$$
 
 ### Type hints
 
@@ -474,11 +474,11 @@ for exponent in range(16):
 
 This computes
 
-\[
+$$
 3^0,3^1,3^2,\ldots
-\]
+$$
 
-modulo \(17\).
+modulo $17$.
 
 The same tiny experiment will later help us understand:
 
@@ -544,9 +544,9 @@ Lists are particularly useful for introducing polynomials.
 
 Consider
 
-\[
+$$
 f(x)=3+x+4x^2.
-\]
+$$
 
 We can represent it as:
 
@@ -554,7 +554,7 @@ We can represent it as:
 coefficients = [3, 1, 4]
 ```
 
-where position \(i\) stores the coefficient of \(x^i\):
+where position $i$ stores the coefficient of $x^i$:
 
 ```text
 index 0 → coefficient of x^0
@@ -576,9 +576,9 @@ P = (5, 1)
 
 This can represent the point
 
-\[
+$$
 P=(5,1).
-\]
+$$
 
 When we reach elliptic curves we will eventually need a more sophisticated point object, including:
 
@@ -650,7 +650,7 @@ Output:
 
 A Python `str` represents Unicode text.
 
-A Python `bytes` object represents a sequence of byte values between \(0\) and \(255\).
+A Python `bytes` object represents a sequence of byte values between $0$ and $255$.
 
 Cryptographic algorithms ultimately operate on representations such as:
 
@@ -691,11 +691,11 @@ print(recovered)
 
 The important lesson is:
 
-\[
+$$
 \boxed{
 \text{encoding is a representation rule}
 }
-\]
+$$
 
 UTF-8 specifies how Unicode characters become bytes.
 
@@ -731,9 +731,9 @@ A useful precision is that `ord()` and `chr()` operate on **Unicode code points*
 
 ASCII occupies the familiar low portion of Unicode, which is why:
 
-\[
+$$
 A=65=0x41
-\]
+$$
 
 works as expected.
 
@@ -764,9 +764,9 @@ Why?
 
 For ASCII:
 
-\[
+$$
 A=65=0x41.
-\]
+$$
 
 This becomes very useful when inspecting cryptographic messages byte by byte.
 
@@ -794,15 +794,15 @@ Hexadecimal uses sixteen symbols:
 0 1 2 3 4 5 6 7 8 9 a b c d e f
 ```
 
-One byte contains \(8\) bits.
+One byte contains $8$ bits.
 
-One hexadecimal digit represents \(4\) bits.
+One hexadecimal digit represents $4$ bits.
 
 Therefore,
 
-\[
+$$
 1\text{ byte}=2\text{ hexadecimal digits}.
-\]
+$$
 
 This is why keys, hashes, signatures, ciphertexts, nonces, and test vectors are commonly displayed in hexadecimal.
 
@@ -862,13 +862,13 @@ Later, protocol specifications will make byte order extremely important.
 
 For now, remember the bridge:
 
-\[
+$$
 \boxed{
 \text{bytes}
 \longleftrightarrow
 \text{integer}
 }
-\]
+$$
 
 ### Base64
 
@@ -984,9 +984,9 @@ XOR appears throughout cryptography:
 
 One fundamental identity is:
 
-\[
+$$
 x\oplus y\oplus y=x.
-\]
+$$
 
 In Python:
 
@@ -1071,41 +1071,41 @@ The result is:
 
 because
 
-\[
+$$
 20\equiv3\pmod{17}.
-\]
+$$
 
 Later we will repeatedly compute expressions such as:
 
-\[
+$$
 a+b\pmod n,
-\]
+$$
 
-\[
+$$
 ab\pmod n,
-\]
+$$
 
 and
 
-\[
+$$
 a^e\pmod n.
-\]
+$$
 
 The `%` operator is therefore not merely a programming convenience.
 
 It is our first computational entrance into arithmetic in
 
-\[
+$$
 \mathbb Z_n.
-\]
+$$
 
 ### Efficient modular exponentiation
 
 Suppose we want to compute:
 
-\[
+$$
 3^{100}\pmod{17}.
-\]
+$$
 
 We could write:
 
@@ -1125,7 +1125,7 @@ The three-argument form:
 pow(base, exponent, modulus)
 ```
 
-performs modular exponentiation efficiently without first constructing the complete enormous integer \(3^{100}\).
+performs modular exponentiation efficiently without first constructing the complete enormous integer $3^{100}$.
 
 This pattern will later appear everywhere:
 
@@ -1246,37 +1246,37 @@ Then we encode that property as a test.
 
 Examples we will encounter later include:
 
-\[
+$$
 \gcd(a,b)
 =
 \gcd(b,a\bmod b),
-\]
+$$
 
-\[
+$$
 a\cdot a^{-1}
 \equiv
 1
 \pmod n,
-\]
+$$
 
-\[
+$$
 D_K(E_K(m))=m,
-\]
+$$
 
-\[
+$$
 \operatorname{INTT}
 (
 \operatorname{NTT}(a)
 )
 =
 a,
-\]
+$$
 
 and eventually for a KEM:
 
-\[
+$$
 \operatorname{Decaps}(dk,c)=K.
-\]
+$$
 
 Cryptographic code should never be trusted merely because it "looks mathematically reasonable."
 
@@ -1310,17 +1310,17 @@ for exponent in range(16):
 
 We begin from:
 
-\[
+$$
 3^0=1.
-\]
+$$
 
 At each step:
 
-\[
+$$
 3^{k+1}=3^k\cdot3,
-\]
+$$
 
-and then reduce the result modulo \(17\).
+and then reduce the result modulo $17$.
 
 This tiny experiment will later help us understand:
 
@@ -1350,9 +1350,9 @@ That pattern will repeat throughout CryptoCave.
 
 Take:
 
-\[
+$$
 f(x)=3+x+4x^2.
-\]
+$$
 
 Represent the coefficients as:
 
@@ -1468,9 +1468,9 @@ are different operations.
 
 When working inside
 
-\[
+$$
 \mathbb Z_q,
-\]
+$$
 
 the reduction is part of the operation.
 
@@ -1506,23 +1506,23 @@ The distinction is important in number-theoretic algorithms.
 
 Later we will encounter expressions such as:
 
-\[
+$$
 \frac{a}{b}\pmod n.
-\]
+$$
 
 This does not mean ordinary real-number division.
 
-When \(b\) is invertible modulo \(n\), it means:
+When $b$ is invertible modulo $n$, it means:
 
-\[
+$$
 a\cdot b^{-1}\pmod n.
-\]
+$$
 
 And the inverse:
 
-\[
+$$
 b^{-1}
-\]
+$$
 
 may not exist.
 
@@ -1578,7 +1578,7 @@ def is_even(n):
     ...
 ```
 
-It should return `True` exactly when \(n\) is even.
+It should return `True` exactly when $n$ is even.
 
 Hint:
 
@@ -1586,7 +1586,7 @@ Hint:
 n % 2
 ```
 
-Ask yourself what the remainder must be when \(n\) is divisible by two.
+Ask yourself what the remainder must be when $n$ is divisible by two.
 
 #### Exercise 2 — Modular subtraction
 
@@ -1599,19 +1599,19 @@ def mod_sub(a, b, modulus):
 
 and verify:
 
-\[
+$$
 3-5\equiv5\pmod7.
-\]
+$$
 
-Your function should work not only when \(a>b\), but also when ordinary subtraction produces a negative number.
+Your function should work not only when $a>b$, but also when ordinary subtraction produces a negative number.
 
 #### Exercise 3 — Modular exponentiation
 
 Compute:
 
-\[
+$$
 7^{12345}\pmod{65537}
-\]
+$$
 
 using:
 
@@ -1619,7 +1619,7 @@ using:
 pow(...)
 ```
 
-Do not first construct the complete value \(7^{12345}\).
+Do not first construct the complete value $7^{12345}$.
 
 Then compare:
 
@@ -1660,13 +1660,13 @@ returns:
 
 This exercise should make the representation chain explicit:
 
-\[
+$$
 \text{text}
 \rightarrow
 \text{bytes}
 \rightarrow
 \text{integers}.
-\]
+$$
 
 #### Exercise 5 — XOR
 
@@ -1742,7 +1742,7 @@ You should, however, be comfortable answering the following questions.
 
 **Cryptographic thinking**
 
-- Why do we repeatedly reduce values modulo \(n\)?
+- Why do we repeatedly reduce values modulo $n$?
 - Why can brute force still be useful in a teaching implementation?
 - Why are bytes more fundamental to cryptographic code than human-readable text?
 - Why are hexadecimal and Base64 representations rather than cryptography?
@@ -1767,7 +1767,7 @@ We now have enough Python to begin turning basic number theory into executable m
 
 The next step is:
 
-\[
+$$
 \boxed{
 \text{integers}
 \rightarrow
@@ -1777,11 +1777,11 @@ The next step is:
 \rightarrow
 \gcd
 }
-\]
+$$
 
 Then:
 
-\[
+$$
 \gcd
 \rightarrow
 \text{Extended Euclidean Algorithm}
@@ -1789,7 +1789,7 @@ Then:
 \text{Bézout coefficients}
 \rightarrow
 \text{modular inverses}.
-\]
+$$
 
 From there, the path expands dramatically:
 

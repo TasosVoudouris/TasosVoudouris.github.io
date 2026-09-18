@@ -34,11 +34,11 @@ We now focus on the third one.
 
 Given an integer
 
-\[
+$$
 n,
-\]
+$$
 
-how do we determine whether \(n\) is prime?
+how do we determine whether $n$ is prime?
 
 For a tiny integer, we can try possible divisors.
 
@@ -46,17 +46,17 @@ For a cryptographic candidate containing hundreds or thousands of bits, exhausti
 
 The key conceptual transition is therefore:
 
-\[
+$$
 \boxed{
 \text{search for factors}
 \longrightarrow
 \text{test structural properties forced by primality}.
 }
-\]
+$$
 
 This leads to several increasingly powerful approaches:
 
-\[
+$$
 \text{trial division}
 \rightarrow
 \text{Fermat}
@@ -64,7 +64,7 @@ This leads to several increasingly powerful approaches:
 \text{Euler/Jacobi}
 \rightarrow
 \text{Miller-Rabin}.
-\]
+$$
 
 The progression is important.
 
@@ -78,17 +78,17 @@ Each one examines **more mathematical structure** than the previous one.
 
 - [What does a primality test need to decide?](#what-does-a-primality-test-need-to-decide)
 - [Trial division](#trial-division)
-- [Why checking up to (\sqrt n) is enough](#why-checking-up-to-sqrt-n-is-enough)
+- [Why checking up to $\sqrt n$ is enough](#why-checking-up-to-nsqrt-nn-is-enough)
 - [The Sieve of Eratosthenes](#the-sieve-of-eratosthenes)
 - [Sieve versus primality test](#sieve-versus-primality-test)
 - [Probable-prime tests](#probable-prime-tests)
-- [Fermat’s primality test](#fermats-primality-test)
+- [Fermat's primality test](#fermats-primality-test)
 - [Pseudoprimes and Carmichael numbers](#pseudoprimes-and-carmichael-numbers)
 - [Why a stronger test is possible](#why-a-stronger-test-is-possible)
 - [Solovay-Strassen](#solovay-strassen)
 - [Miller-Rabin](#miller-rabin)
 - [Why Miller-Rabin works](#why-miller-rabin-works)
-- [The (561) example](#the-561-example)
+- [The $561$ example](#the-561561561-example)
 - [A compact Miller-Rabin implementation](#a-compact-miller-rabin-implementation)
 - [Why Miller-Rabin is stronger](#why-miller-rabin-is-stronger)
 - [Error probability](#error-probability)
@@ -115,13 +115,13 @@ Each one examines **more mathematical structure** than the previous one.
 
 ## What does a primality test need to decide?
 
-A primality test receives an integer \(n\) and asks:
+A primality test receives an integer $n$ and asks:
 
-\[
+$$
 \boxed{
 n\text{ prime?}
 }
-\]
+$$
 
 There are two possible mathematical realities:
 
@@ -195,17 +195,17 @@ The most direct primality test follows immediately from the definition.
 
 If
 
-\[
+$$
 n>1
-\]
+$$
 
 is composite, then:
 
-\[
+$$
 n=ab
-\]
+$$
 
-for some nontrivial integers \(a,b\).
+for some nontrivial integers $a,b$.
 
 Therefore, we can search for a divisor.
 
@@ -227,51 +227,51 @@ This is mathematically correct.
 
 Computationally, it is terrible.
 
-If \(n\) is prime, the loop checks almost every integer below \(n\).
+If $n$ is prime, the loop checks almost every integer below $n$.
 
 ---
 
-## Why checking up to \(\sqrt n\) is enough
+## Why checking up to $\sqrt n$ is enough
 
 Suppose:
 
-\[
+$$
 n=ab
-\]
+$$
 
 is composite.
 
 If both:
 
-\[
+$$
 a>\sqrt n
-\]
+$$
 
 and:
 
-\[
+$$
 b>\sqrt n,
-\]
+$$
 
 then:
 
-\[
+$$
 ab>n,
-\]
+$$
 
 contradicting:
 
-\[
+$$
 ab=n.
-\]
+$$
 
 Therefore every composite integer has at least one factor satisfying:
 
-\[
+$$
 \boxed{
 d\le\sqrt n.
 }
-\]
+$$
 
 So trial division only needs to search up to the square root.
 
@@ -303,37 +303,37 @@ We first eliminate even numbers and then test only odd divisors.
 
 ### Complexity perspective
 
-Let \(n\) be approximately a \(k\)-bit integer:
+Let $n$ be approximately a $k$-bit integer:
 
-\[
+$$
 n\approx2^k.
-\]
+$$
 
 Then:
 
-\[
+$$
 \sqrt n
 \approx
 2^{k/2}.
-\]
+$$
 
-So trial division still requires work exponential in the bit length \(k\).
+So trial division still requires work exponential in the bit length $k$.
 
 That is why:
 
-\[
+$$
 \boxed{
 \text{trial division is useful for small factors,}
 }
-\]
+$$
 
 but:
 
-\[
+$$
 \boxed{
 \text{it is not a cryptographic-size primality strategy.}
 }
-\]
+$$
 
 ---
 
@@ -345,13 +345,13 @@ Trial division answers:
 
 The Sieve of Eratosthenes solves a different problem:
 
-> What are all the primes up to some bound \(N\)?
+> What are all the primes up to some bound $N$?
 
 Start with:
 
-\[
+$$
 2,3,4,\ldots,N.
-\]
+$$
 
 Then repeatedly remove multiples of each prime:
 
@@ -365,9 +365,9 @@ remove multiples of 7
 
 Once the sieving prime exceeds:
 
-\[
+$$
 \sqrt N,
-\]
+$$
 
 every remaining unmarked number is prime.
 
@@ -416,35 +416,35 @@ returns:
  23, 29, 31, 37, 41, 43, 47]
 ```
 
-### Why start at \(p^2\)?
+### Why start at $p^2$?
 
-When processing a prime \(p\), the smaller multiples:
+When processing a prime $p$, the smaller multiples:
 
-\[
+$$
 2p,3p,\ldots,(p-1)p
-\]
+$$
 
 have already been removed by smaller prime factors.
 
 So the first new composite that needs to be marked is:
 
-\[
+$$
 p^2.
-\]
+$$
 
 ### Complexity
 
 The classical sieve runs in roughly:
 
-\[
+$$
 O(N\log\log N)
-\]
+$$
 
 time with:
 
-\[
+$$
 O(N)
-\]
+$$
 
 logical storage.
 
@@ -483,7 +483,7 @@ classify one potentially huge integer
 
 If we need every prime below one million, sieving is excellent.
 
-If we need to determine whether one random \(2048\)-bit candidate is prime, constructing a sieve up to its square root would be absurd.
+If we need to determine whether one random $2048$-bit candidate is prime, constructing a sieve up to its square root would be absurd.
 
 Different computational problem.
 
@@ -495,29 +495,29 @@ Different algorithm.
 
 Instead of searching for factors, modern probable-prime tests exploit identities that every prime must satisfy.
 
-A chosen value \(a\) is called a **witness** when it demonstrates that \(n\) cannot be prime.
+A chosen value $a$ is called a **witness** when it demonstrates that $n$ cannot be prime.
 
 If no witness is found, the candidate survives that round.
 
 The crucial logical pattern is:
 
-\[
+$$
 \boxed{
 \text{witness found}
 \Longrightarrow
 \text{definitely composite}.
 }
-\]
+$$
 
 But:
 
-\[
+$$
 \boxed{
 \text{no witness found}
 \not\Longrightarrow
 \text{proved prime}.
 }
-\]
+$$
 
 Different tests define different kinds of witnesses and have very different liar sets.
 
@@ -527,56 +527,56 @@ That distinction matters enormously.
 
 ## Fermat's primality test
 
-Fermat's little theorem states that if \(p\) is prime and:
+Fermat's little theorem states that if $p$ is prime and:
 
-\[
+$$
 \gcd(a,p)=1,
-\]
+$$
 
 then:
 
-\[
+$$
 \boxed{
 a^{p-1}\equiv1\pmod p.
 }
-\]
+$$
 
-Therefore, if for some candidate \(n\) and some \(a\) we obtain:
+Therefore, if for some candidate $n$ and some $a$ we obtain:
 
-\[
+$$
 a^{n-1}\not\equiv1\pmod n,
-\]
+$$
 
-then \(n\) cannot be prime.
+then $n$ cannot be prime.
 
-The base \(a\) is a **Fermat witness**.
+The base $a$ is a **Fermat witness**.
 
 ### Algorithm
 
-For odd \(n>3\):
+For odd $n>3$:
 
 1. choose:
-   \[
+   $$
    2\le a\le n-2;
-   \]
+   $$
 
 2. compute:
-   \[
+   $$
    g=\gcd(a,n);
-   \]
+   $$
 
 3. if:
-   \[
+   $$
    g>1,
-   \]
+   $$
    return composite;
 
 4. compute:
-   \[
+   $$
    a^{n-1}\bmod n;
-   \]
+   $$
 
-5. if the result is not \(1\), return composite;
+5. if the result is not $1$, return composite;
 
 6. otherwise, the candidate passes this Fermat round.
 
@@ -636,48 +636,48 @@ The weakness of Fermat testing is that some composite numbers imitate prime beha
 
 For example:
 
-\[
+$$
 341=11\cdot31
-\]
+$$
 
 satisfies:
 
-\[
+$$
 2^{340}\equiv1\pmod{341}.
-\]
+$$
 
-So \(341\) is a **Fermat pseudoprime to base \(2\)**.
+So $341$ is a **Fermat pseudoprime to base $2$**.
 
 Even worse are Carmichael numbers.
 
-A Carmichael number is a composite integer \(n\) satisfying:
+A Carmichael number is a composite integer $n$ satisfying:
 
-\[
+$$
 \boxed{
 a^{n-1}\equiv1\pmod n
 }
-\]
+$$
 
 for every:
 
-\[
+$$
 \gcd(a,n)=1.
-\]
+$$
 
 The smallest is:
 
-\[
+$$
 561
 =
 3\cdot11\cdot17.
-\]
+$$
 
-For every base coprime to \(561\):
+For every base coprime to $561$:
 
-\[
+$$
 a^{560}
 \equiv1\pmod{561}.
-\]
+$$
 
 Thus, repeated Fermat testing with coprime bases cannot rescue the algorithm.
 
@@ -691,9 +691,9 @@ That is the key limitation of Fermat testing.
 
 Fermat only checks the final equality:
 
-\[
+$$
 a^{n-1}\stackrel{?}{\equiv}1\pmod n.
-\]
+$$
 
 But there is more information hidden inside the exponentiation.
 
@@ -707,39 +707,39 @@ That observation gives us stronger tests.
 
 Solovay-Strassen strengthens Fermat testing by combining modular exponentiation with quadratic-residue information.
 
-For an odd prime \(p\), Euler's criterion states:
+For an odd prime $p$, Euler's criterion states:
 
-\[
+$$
 \boxed{
 a^{(p-1)/2}
 \equiv
 \left(\frac ap\right)
 \pmod p,
 }
-\]
+$$
 
 where:
 
-\[
+$$
 \left(\frac ap\right)
-\]
+$$
 
 is the Legendre symbol.
 
-For an odd candidate \(n\), Solovay-Strassen replaces the Legendre symbol with the Jacobi symbol:
+For an odd candidate $n$, Solovay-Strassen replaces the Legendre symbol with the Jacobi symbol:
 
-\[
+$$
 \left(\frac an\right).
-\]
+$$
 
-If \(n\) is prime, then:
+If $n$ is prime, then:
 
-\[
+$$
 a^{(n-1)/2}
 \equiv
 \left(\frac an\right)
 \pmod n.
-\]
+$$
 
 Therefore, a mismatch proves compositeness.
 
@@ -747,57 +747,57 @@ Therefore, a mismatch proves compositeness.
 
 Choose:
 
-\[
+$$
 2\le a\le n-2.
-\]
+$$
 
 If:
 
-\[
+$$
 \gcd(a,n)>1,
-\]
+$$
 
-then \(n\) is composite.
+then $n$ is composite.
 
 Otherwise compute:
 
-\[
+$$
 r
 =
 a^{(n-1)/2}\bmod n
-\]
+$$
 
 and:
 
-\[
+$$
 J
 =
 \left(\frac an\right).
-\]
+$$
 
-Because \(J\in\{-1,0,1\}\), compare:
+Because $J\in\{-1,0,1\}$, compare:
 
-\[
+$$
 r
-\]
+$$
 
 with:
 
-\[
+$$
 J\bmod n.
-\]
+$$
 
-If they differ, \(a\) is an Euler-Jacobi witness and \(n\) is composite.
+If they differ, $a$ is an Euler-Jacobi witness and $n$ is composite.
 
 ### Why it is better than Fermat
 
-For every odd composite \(n\), at least half of the admissible bases expose compositeness under the Solovay-Strassen criterion.
+For every odd composite $n$, at least half of the admissible bases expose compositeness under the Solovay-Strassen criterion.
 
-So after \(k\) independent random rounds, the survival probability of a fixed composite is at most:
+So after $k$ independent random rounds, the survival probability of a fixed composite is at most:
 
-\[
+$$
 \left(\frac12\right)^k.
-\]
+$$
 
 That is already a much stronger universal guarantee than Fermat's test provides.
 
@@ -813,77 +813,77 @@ Miller-Rabin examines the structure of repeated squaring much more closely.
 
 Let:
 
-\[
+$$
 n>2
-\]
+$$
 
 be odd.
 
 Write:
 
-\[
+$$
 \boxed{
 n-1
 =
 2^s d,
 }
-\]
+$$
 
-where \(d\) is odd.
+where $d$ is odd.
 
 For a chosen base:
 
-\[
+$$
 2\le a\le n-2,
-\]
+$$
 
 compute:
 
-\[
+$$
 x
 =
 a^d\bmod n.
-\]
+$$
 
-If \(n\) is prime, the structure of square roots of \(1\) forces a restricted pattern.
+If $n$ is prime, the structure of square roots of $1$ forces a restricted pattern.
 
 A Miller-Rabin round passes if:
 
-\[
+$$
 x=1
-\]
+$$
 
 or:
 
-\[
+$$
 x=n-1.
-\]
+$$
 
 Otherwise square repeatedly:
 
-\[
+$$
 x
 \leftarrow
 x^2\bmod n.
-\]
+$$
 
 Do this at most:
 
-\[
+$$
 s-1
-\]
+$$
 
 times.
 
 If at any point:
 
-\[
+$$
 x=n-1,
-\]
+$$
 
 the base passes.
 
-If not, the base is a **strong witness** proving that \(n\) is composite.
+If not, the base is a **strong witness** proving that $n$ is composite.
 
 ---
 
@@ -891,183 +891,183 @@ If not, the base is a **strong witness** proving that \(n\) is composite.
 
 The central fact is extremely simple.
 
-Let \(p\) be prime.
+Let $p$ be prime.
 
 Suppose:
 
-\[
+$$
 x^2\equiv1\pmod p.
-\]
+$$
 
 Then:
 
-\[
+$$
 x^2-1
 \equiv0\pmod p.
-\]
+$$
 
 Factor:
 
-\[
+$$
 (x-1)(x+1)
 \equiv0\pmod p.
-\]
+$$
 
 Because:
 
-\[
+$$
 \mathbb Z_p
-\]
+$$
 
 is a field, it has no nonzero zero divisors.
 
 Therefore:
 
-\[
+$$
 x\equiv1\pmod p
-\]
+$$
 
 or:
 
-\[
+$$
 x\equiv-1\pmod p.
-\]
+$$
 
 Thus:
 
-\[
+$$
 \boxed{
 \text{the only square roots of }1
 \text{ modulo a prime are }\pm1.
 }
-\]
+$$
 
 This is the structural property Miller-Rabin exploits.
 
 ---
 
-## The \(561\) example
+## The $561$ example
 
 Consider:
 
-\[
+$$
 n=561.
-\]
+$$
 
 We know:
 
-\[
+$$
 561
 =
 3\cdot11\cdot17.
-\]
+$$
 
 But suppose we do not know the factors.
 
 Write:
 
-\[
+$$
 560
 =
 2^4\cdot35.
-\]
+$$
 
 So:
 
-\[
+$$
 s=4,
 \qquad
 d=35.
-\]
+$$
 
 Choose:
 
-\[
+$$
 a=2.
-\]
+$$
 
 Compute:
 
-\[
+$$
 x_0
 =
 2^{35}\bmod561
 =
 263.
-\]
+$$
 
 Now square:
 
-\[
+$$
 x_1
 =
 263^2\bmod561
 =
 166,
-\]
+$$
 
-\[
+$$
 x_2
 =
 166^2\bmod561
 =
 67,
-\]
+$$
 
-\[
+$$
 x_3
 =
 67^2\bmod561
 =
 1.
-\]
+$$
 
 The chain is:
 
 | Step | Value |
 | ---: | ---: |
-| \(2^{35}\) | \(263\) |
-| square | \(166\) |
-| square | \(67\) |
-| square | \(1\) |
+| $2^{35}$ | $263$ |
+| square | $166$ |
+| square | $67$ |
+| square | $1$ |
 
 Notice what happened.
 
 We reached:
 
-\[
+$$
 1
-\]
+$$
 
 from:
 
-\[
+$$
 67,
-\]
+$$
 
 but:
 
-\[
+$$
 67\not\equiv\pm1\pmod{561}.
-\]
+$$
 
-So \(67\) behaves like a nontrivial square root of \(1\).
+So $67$ behaves like a nontrivial square root of $1$.
 
 That cannot happen modulo a prime.
 
 Therefore:
 
-\[
+$$
 \boxed{
 561\text{ is composite}.
 }
-\]
+$$
 
 Fermat testing looked only at:
 
-\[
+$$
 2^{560}\equiv1\pmod{561}
-\]
+$$
 
 and missed the problem.
 
@@ -1186,12 +1186,12 @@ We can think of the three tests as examining progressively more structure.
 
 Checks:
 
-\[
+$$
 a^{n-1}
 \stackrel{?}{\equiv}
 1
 \pmod n.
-\]
+$$
 
 It inspects only the final exponentiation result.
 
@@ -1199,15 +1199,15 @@ It inspects only the final exponentiation result.
 
 Checks:
 
-\[
+$$
 a^{(n-1)/2}
-\]
+$$
 
 against:
 
-\[
+$$
 \left(\frac an\right).
-\]
+$$
 
 So it also examines quadratic-residue structure.
 
@@ -1215,13 +1215,13 @@ So it also examines quadratic-residue structure.
 
 Factors:
 
-\[
+$$
 n-1=2^s d
-\]
+$$
 
 and examines the full repeated-squaring chain:
 
-\[
+$$
 a^d,
 \quad
 a^{2d},
@@ -1229,7 +1229,7 @@ a^{2d},
 a^{4d},
 \quad
 \ldots
-\]
+$$
 
 looking for behavior incompatible with a prime modulus.
 
@@ -1255,52 +1255,52 @@ This explains why the liar sets shrink as the tests become stronger.
 
 ## Error probability
 
-For any fixed odd composite \(n\), Miller-Rabin has a powerful universal bound:
+For any fixed odd composite $n$, Miller-Rabin has a powerful universal bound:
 
-\[
+$$
 \boxed{
 \text{at most one quarter of the bases
 can be strong liars}.
 }
-\]
+$$
 
-Therefore, if independent random bases are chosen, the probability that the same fixed composite survives \(k\) rounds is at most:
+Therefore, if independent random bases are chosen, the probability that the same fixed composite survives $k$ rounds is at most:
 
-\[
+$$
 \boxed{
 \left(\frac14\right)^k.
 }
-\]
+$$
 
 For example:
 
-| Rounds \(k\) | Upper bound |
+| Rounds $k$ | Upper bound |
 | ---: | ---: |
-| \(1\) | \(2^{-2}\) |
-| \(8\) | \(2^{-16}\) |
-| \(16\) | \(2^{-32}\) |
-| \(32\) | \(2^{-64}\) |
-| \(64\) | \(2^{-128}\) |
+| $1$ | $2^{-2}$ |
+| $8$ | $2^{-16}$ |
+| $16$ | $2^{-32}$ |
+| $32$ | $2^{-64}$ |
+| $64$ | $2^{-128}$ |
 
 This is a bound on:
 
-\[
+$$
 \Pr[
 \text{survives }k\text{ rounds}
 \mid
 \text{candidate is composite}
 ].
-\]
+$$
 
 It is **not** automatically:
 
-\[
+$$
 \Pr[
 \text{candidate is composite}
 \mid
 \text{candidate survived}
 ].
-\]
+$$
 
 Those are different conditional probabilities.
 
@@ -1312,7 +1312,7 @@ This distinction matters when formal standards assign concrete confidence levels
 
 ## Witnesses and liars
 
-For a composite \(n\), a Miller-Rabin base \(a\) is a **strong witness** when it exposes compositeness.
+For a composite $n$, a Miller-Rabin base $a$ is a **strong witness** when it exposes compositeness.
 
 A base that allows the composite to pass one round is called a **strong liar**.
 
@@ -1340,7 +1340,7 @@ Miller-Rabin is probabilistic in the general unbounded setting.
 
 But if the input range is bounded, carefully chosen fixed bases can make it deterministic over that entire range.
 
-For unsigned \(64\)-bit integers, one well-known sufficient base set is:
+For unsigned $64$-bit integers, one well-known sufficient base set is:
 
 ```text
 2
@@ -1354,13 +1354,13 @@ For unsigned \(64\)-bit integers, one well-known sufficient base set is:
 
 Using those bases, Miller-Rabin correctly classifies every integer below:
 
-\[
+$$
 2^{64}.
-\]
+$$
 
 The bases need not themselves be prime.
 
-Each one is simply reduced modulo \(n\) during testing.
+Each one is simply reduced modulo $n$ during testing.
 
 A bounded deterministic implementation can therefore use:
 
@@ -1380,13 +1380,13 @@ and test every relevant base instead of sampling randomly.
 
 The important lesson is:
 
-\[
+$$
 \boxed{
 \text{deterministic for a bounded domain}
 \neq
 \text{universally deterministic}.
 }
-\]
+$$
 
 The correctness guarantee depends on the proven input range and chosen base set.
 
@@ -1414,11 +1414,11 @@ The point is not that Miller-Rabin magically proves arbitrary primes.
 
 The point is that:
 
-\[
+$$
 \boxed{
 \text{its one-sided error can be made negligibly small}
 }
-\]
+$$
 
 with very little computational work.
 
@@ -1428,9 +1428,9 @@ with very little computational work.
 
 Miller-Rabin depends heavily on computing expressions such as:
 
-\[
+$$
 a^d\bmod n
-\]
+$$
 
 efficiently.
 
@@ -1465,15 +1465,15 @@ def powmod_binary(base, exponent, modulus):
 
 Its operation count is:
 
-\[
+$$
 O(\log e)
-\]
+$$
 
 rather than:
 
-\[
+$$
 O(e).
-\]
+$$
 
 In normal Python code:
 
@@ -1558,7 +1558,7 @@ Assume a `jacobi(a, n)` function returning:
 -1, 0, or 1
 ```
 
-for odd positive \(n\).
+for odd positive $n$.
 
 ```python
 from math import gcd
@@ -1583,18 +1583,18 @@ The `% n` on the Jacobi result matters.
 
 If:
 
-\[
+$$
 \left(\frac an\right)=-1,
-\]
+$$
 
 then modular comparison means:
 
-\[
+$$
 -1
 \equiv
 n-1
 \pmod n.
-\]
+$$
 
 This is a good example of the difference between an integer-valued symbol and its residue-class interpretation.
 
@@ -1610,28 +1610,28 @@ But that does **not** mean it defeats Miller-Rabin for every base.
 
 For example:
 
-\[
+$$
 561
-\]
+$$
 
-passes Fermat base \(2\):
+passes Fermat base $2$:
 
-\[
+$$
 2^{560}
 \equiv1\pmod{561},
-\]
+$$
 
-yet Miller-Rabin base \(2\) exposes compositeness immediately.
+yet Miller-Rabin base $2$ exposes compositeness immediately.
 
 Thus:
 
-\[
+$$
 \boxed{
 \text{Fermat pseudoprime}
 \not\Rightarrow
 \text{strong pseudoprime}.
 }
-\]
+$$
 
 This is exactly why the stronger test exists.
 
@@ -1639,7 +1639,7 @@ This is exactly why the stronger test exists.
 
 ## Strong pseudoprimes
 
-A composite integer \(n\) that passes Miller-Rabin for a particular base \(a\) is called a **strong pseudoprime to base \(a\)**.
+A composite integer $n$ that passes Miller-Rabin for a particular base $a$ is called a **strong pseudoprime to base $a$**.
 
 This does not contradict the correctness of Miller-Rabin.
 
@@ -1675,31 +1675,31 @@ At this stage, it is useful to distinguish three levels.
 
 A single witness may prove:
 
-\[
+$$
 \boxed{
 n\text{ composite}.
 }
-\]
+$$
 
 ### Probable prime
 
 Repeated Miller-Rabin tests may establish overwhelming practical confidence:
 
-\[
+$$
 \boxed{
 n\text{ is a probable prime}.
 }
-\]
+$$
 
 ### Primality proof
 
 Some algorithms produce or support a proof that:
 
-\[
+$$
 \boxed{
 n\text{ is definitely prime}.
 }
-\]
+$$
 
 Examples of the broader landscape include:
 
@@ -1724,11 +1724,11 @@ A major theoretical breakthrough established that primality testing belongs to d
 
 The AKS algorithm showed:
 
-\[
+$$
 \boxed{
 \mathrm{PRIMES}\in\mathbf P.
 }
-\]
+$$
 
 This result is conceptually important because it proves that primality testing is not inherently a hard problem in the classical complexity-theoretic sense.
 
@@ -1784,23 +1784,23 @@ using values such as:
 
 For each number, record:
 
-| \(n\) | Actual status | Fermat base 2 | Solovay-Strassen base 2 | Miller-Rabin base 2 |
+| $n$ | Actual status | Fermat base 2 | Solovay-Strassen base 2 | Miller-Rabin base 2 |
 | ---: | --- | --- | --- | --- |
-| \(17\) | prime | ? | ? | ? |
-| \(341\) | composite | ? | ? | ? |
-| \(561\) | composite | ? | ? | ? |
-| \(1105\) | composite | ? | ? | ? |
-| \(1729\) | composite | ? | ? | ? |
+| $17$ | prime | ? | ? | ? |
+| $341$ | composite | ? | ? | ? |
+| $561$ | composite | ? | ? | ? |
+| $1105$ | composite | ? | ? | ? |
+| $1729$ | composite | ? | ? | ? |
 
 The purpose is not to memorize pseudoprimes.
 
 The point is to observe:
 
-\[
+$$
 \boxed{
 \text{each stronger test examines more structure}.
 }
-\]
+$$
 
 ---
 
@@ -1810,15 +1810,15 @@ Prime distribution contains many interesting statistical phenomena that are sepa
 
 For example, among odd primes we may compare:
 
-\[
+$$
 p\equiv1\pmod4
-\]
+$$
 
 with:
 
-\[
+$$
 p\equiv3\pmod4.
-\]
+$$
 
 Dirichlet's theorem implies that asymptotically the two residue classes receive equal prime density.
 
@@ -1856,15 +1856,15 @@ probable prime accepted
 
 For RSA, we repeat this process independently to generate:
 
-\[
+$$
 p
-\]
+$$
 
 and:
 
-\[
+$$
 q.
-\]
+$$
 
 The primality test is therefore only one component of secure key generation.
 
@@ -1898,13 +1898,13 @@ Production implementations also need to consider:
 
 That distinction should remain explicit throughout this reference series:
 
-\[
+$$
 \boxed{
 \text{educational implementation}
 \neq
 \text{production cryptographic implementation}.
 }
-\]
+$$
 
 ---
 
@@ -1926,83 +1926,83 @@ sqrt(n)
 
 Verify it on:
 
-\[
+$$
 2,3,4,17,21,97,121.
-\]
+$$
 
 ### Exercise 2 — Sieve
 
 Generate every prime below:
 
-\[
+$$
 1000.
-\]
+$$
 
 Verify that there are:
 
-\[
+$$
 168
-\]
+$$
 
 primes satisfying:
 
-\[
+$$
 p\le1000.
-\]
+$$
 
 ### Exercise 3 — Fermat pseudoprime
 
 Verify:
 
-\[
+$$
 341=11\cdot31
-\]
+$$
 
 and:
 
-\[
+$$
 2^{340}
 \equiv1\pmod{341}.
-\]
+$$
 
-Explain why base-\(2\) Fermat testing fails.
+Explain why base-$2$ Fermat testing fails.
 
 ### Exercise 4 — Carmichael number
 
 Verify that:
 
-\[
+$$
 561
 =
 3\cdot11\cdot17.
-\]
+$$
 
-Test several bases coprime to \(561\) and confirm:
+Test several bases coprime to $561$ and confirm:
 
-\[
+$$
 a^{560}
 \equiv1\pmod{561}.
-\]
+$$
 
 ### Exercise 5 — Miller-Rabin trace
 
 For:
 
-\[
+$$
 n=561,
 \qquad
 a=2,
-\]
+$$
 
 derive:
 
-\[
+$$
 560=2^4\cdot35
-\]
+$$
 
 and reproduce:
 
-\[
+$$
 263
 \rightarrow
 166
@@ -2010,9 +2010,9 @@ and reproduce:
 67
 \rightarrow
 1.
-\]
+$$
 
-Explain exactly why \(67\) proves compositeness.
+Explain exactly why $67$ proves compositeness.
 
 ### Exercise 6 — Strong pseudoprimes
 
@@ -2038,45 +2038,45 @@ for a single round.
 
 Compute:
 
-\[
+$$
 4^{-10},
-\]
+$$
 
-\[
+$$
 4^{-20},
-\]
+$$
 
 and:
 
-\[
+$$
 4^{-64}.
-\]
+$$
 
-Express the results approximately as powers of \(2\).
+Express the results approximately as powers of $2$.
 
 ### Exercise 8 — Conditional probability
 
 Explain why:
 
-\[
+$$
 \Pr(
 \text{passes}\mid\text{composite}
 )
-\]
+$$
 
 is not the same as:
 
-\[
+$$
 \Pr(
 \text{composite}\mid\text{passes}
 ).
-\]
+$$
 
 What additional information is needed for the second quantity?
 
 ### Exercise 9 — Bounded deterministic testing
 
-Implement the \(64\)-bit Miller-Rabin base set:
+Implement the $64$-bit Miller-Rabin base set:
 
 ```python
 (
@@ -2092,15 +2092,15 @@ Implement the \(64\)-bit Miller-Rabin base set:
 
 and compare the results against a trusted library for randomly sampled values below:
 
-\[
+$$
 2^{64}.
-\]
+$$
 
 ### Reader checkpoint
 
 You should now be able to explain:
 
-1. Why trial division only needs to search up to \(\sqrt n\).
+1. Why trial division only needs to search up to $\sqrt n$.
 2. Why that is still exponential in the bit length.
 3. The difference between a sieve and a primality test.
 4. What a compositeness witness is.
@@ -2109,21 +2109,21 @@ You should now be able to explain:
 7. Why Carmichael numbers fundamentally defeat naive repeated Fermat testing.
 8. What additional structure Solovay-Strassen tests.
 9. Why Miller-Rabin factors
-   \[
+   $$
    n-1=2^s d.
-   \]
+   $$
 10. Why a prime modulus has only the square roots
-    \[
+    $$
     \pm1
-    \]
-    of \(1\).
+    $$
+    of $1$.
 11. What a strong witness is.
 12. What a strong liar is.
-13. Why Miller-Rabin has a worst-case \(1/4\) liar bound per random round.
+13. Why Miller-Rabin has a worst-case $1/4$ liar bound per random round.
 14. Why
-    \[
+    $$
     4^{-k}
-    \]
+    $$
     is not automatically the posterior probability that a surviving candidate is composite.
 15. Why bounded fixed-base Miller-Rabin can be deterministic.
 16. Why deterministic bounded testing does not imply a universal fixed finite base set.
@@ -2203,15 +2203,15 @@ The next step changes the question.
 
 Instead of deciding whether an integer is prime, we begin solving equations inside modular arithmetic itself:
 
-\[
+$$
 f(x)\equiv0\pmod m.
-\]
+$$
 
 We will start with linear congruences and their connection to Bézout identities and Diophantine equations, then move to higher-degree polynomial congruences, prime-power moduli, Hensel lifting, and reconstruction through the Chinese Remainder Theorem.
 
 This brings together several tools developed throughout the series:
 
-\[
+$$
 \text{GCD}
 \rightarrow
 \text{modular inverses}
@@ -2221,6 +2221,6 @@ This brings together several tools developed throughout the series:
 \text{prime powers}
 \rightarrow
 \text{polynomial congruences}.
-\]
+$$
 
 **Next: Solving Polynomial Congruences I.**

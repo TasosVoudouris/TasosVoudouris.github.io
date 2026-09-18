@@ -47,7 +47,7 @@ $$
 [n]P=\mathcal O
 $$
 
-for some positive integer \(n\), then \(P\) has finite order.
+for some positive integer $n$, then $P$ has finite order.
 
 Torsion appears throughout elliptic-curve mathematics:
 
@@ -72,25 +72,25 @@ $$
 
 The first is naturally defined over an algebraic closure.
 
-The second contains only the torsion points whose coordinates already lie in the base field \(K\).
+The second contains only the torsion points whose coordinates already lie in the base field $K$.
 
 ---
 
 ## Table of Contents
 
 - [1. Finite-order points](#1-finite-order-points)
-- [2. The multiplication-by-(n) map](#2-the-multiplication-by-n-map)
-- [3. The geometric (n)-torsion subgroup](#3-the-geometric-n-torsion-subgroup)
+- [2. The multiplication-by-$n$ map](#2-the-multiplication-by-nnn-map)
+- [3. The geometric $n$-torsion subgroup](#3-the-geometric-nnn-torsion-subgroup)
 - [4. Rational torsion versus geometric torsion](#4-rational-torsion-versus-geometric-torsion)
-- [5. Why (E\[n\]\cong(\mathbb Z/n\mathbb Z)^2)](#5-why-encongmathbb-znmathbb-z2)
-- [6. Division by (n)](#6-division-by-n)
+- [5. Why $E\[n\]\cong(\mathbb Z/n\mathbb Z)^2$](#5-why-enznz2encongmathbb-znmathbb-z2enznz2)
+- [6. Division by $n$](#6-division-by-nnn)
 - [Division polynomials](#division-polynomials)
-- [8. What changes in characteristic (p)](#8-what-changes-in-characteristic-p)
-- [9. Ordinary and supersingular (p)-torsion](#9-ordinary-and-supersingular-p-torsion)
-- [10. Rational torsion over (\mathbb Q)](#10-rational-torsion-over-mathbb-q)
+- [8. What changes in characteristic $p$](#8-what-changes-in-characteristic-ppp)
+- [9. Ordinary and supersingular $p$-torsion](#9-ordinary-and-supersingular-ppp-torsion)
+- [10. Rational torsion over $\mathbb Q$](#10-rational-torsion-over-qmathbb-qq)
 - [11. The Nagell–Lutz theorem](#11-the-nagelllutz-theorem)
 - [12. A worked Nagell–Lutz example](#12-a-worked-nagelllutz-example)
-- [13. Mazur’s theorem](#13-mazurs-theorem)
+- [13. Mazur's theorem](#13-mazurs-theorem)
 - [14. Galois action on torsion](#14-galois-action-on-torsion)
 - [15. Why torsion matters computationally](#15-why-torsion-matters-computationally)
 - [16. The bigger picture](#16-the-bigger-picture)
@@ -98,11 +98,9 @@ The second contains only the torsion points whose coordinates already lie in the
 
 ---
 
-<a id="finite-order-points"></a>
-
 ## 1. Finite-order points
 
-Let \(E/K\) be an elliptic curve.
+Let $E/K$ be an elliptic curve.
 
 A point
 
@@ -122,7 +120,7 @@ $$
 [n]P=\mathcal O.
 $$
 
-The smallest positive such \(n\) is called the **order** of \(P\).
+The smallest positive such $n$ is called the **order** of $P$.
 
 We write
 
@@ -144,7 +142,7 @@ $$
 P\neq\mathcal O,
 $$
 
-then \(P\) has order \(2\).
+then $P$ has order $2$.
 
 If
 
@@ -152,7 +150,7 @@ $$
 [5]P=\mathcal O
 $$
 
-but no smaller positive multiple vanishes, then \(P\) has order \(5\).
+but no smaller positive multiple vanishes, then $P$ has order $5$.
 
 The full torsion subgroup is
 
@@ -166,7 +164,7 @@ $$
 
 <a id="multiplication-by-n"></a>
 
-## 2. The multiplication-by-\(n\) map
+## 2. The multiplication-by-$n$ map
 
 Repeated addition defines a morphism
 
@@ -181,7 +179,7 @@ $$
 P\longmapsto[n]P.
 $$
 
-For positive \(n\),
+For positive $n$,
 
 $$
 [n]P
@@ -203,7 +201,7 @@ $$
 [0]P=\mathcal O.
 $$
 
-The \(n\)-torsion points are exactly the kernel:
+The $n$-torsion points are exactly the kernel:
 
 $$
 \boxed{
@@ -225,7 +223,7 @@ $$
 [n]P=\mathcal O.
 $$
 
-The map \([n]\) has degree
+The map $[n]$ has degree
 
 $$
 \boxed{
@@ -233,13 +231,13 @@ $$
 }
 $$
 
-This already hints that, when the map is separable, one should expect roughly \(n^2\) points in its kernel.
+This already hints that, when the map is separable, one should expect roughly $n^2$ points in its kernel.
 
 ---
 
 <a id="geometric-n-torsion"></a>
 
-## 3. The geometric \(n\)-torsion subgroup
+## 3. The geometric $n$-torsion subgroup
 
 The standard definition is
 
@@ -270,11 +268,11 @@ $$
 [n]P=\mathcal O
 $$
 
-may have solutions whose coordinates lie in an extension field rather than in \(K\) itself.
+may have solutions whose coordinates lie in an extension field rather than in $K$ itself.
 
-So \(E[n]\) describes the **geometric torsion**.
+So $E[n]$ describes the **geometric torsion**.
 
-The subgroup rational over \(K\) is instead
+The subgroup rational over $K$ is instead
 
 $$
 \boxed{
@@ -312,7 +310,7 @@ $$
 \overline{\mathbb Q},
 $$
 
-this does not mean that all \(25\) points are rational.
+this does not mean that all $25$ points are rational.
 
 Usually they are not.
 
@@ -322,7 +320,7 @@ $$
 E(\mathbb Q)[5]
 $$
 
-contains only those \(5\)-torsion points fixed by the arithmetic of the base field.
+contains only those $5$-torsion points fixed by the arithmetic of the base field.
 
 One may therefore have
 
@@ -356,7 +354,7 @@ This theme appears repeatedly in arithmetic geometry.
 
 <a id="torsion-structure"></a>
 
-## 5. Why \(E[n]\cong(\mathbb Z/n\mathbb Z)^2\)
+## 5. Why $E[n]\cong(\mathbb Z/n\mathbb Z)^2$
 
 Assume
 
@@ -386,7 +384,7 @@ $$
 
 geometric points.
 
-Moreover, every element of the kernel is killed by \(n\).
+Moreover, every element of the kernel is killed by $n$.
 
 The resulting abstract group is
 
@@ -404,7 +402,7 @@ $$
 P,Q
 $$
 
-such that every \(n\)-torsion point is uniquely expressible as
+such that every $n$-torsion point is uniquely expressible as
 
 $$
 [a]P+[b]Q,
@@ -416,9 +414,9 @@ $$
 a,b\in\mathbb Z/n\mathbb Z.
 $$
 
-Thus \(E[n]\) behaves like a two-dimensional vector space when \(n\) is prime.
+Thus $E[n]$ behaves like a two-dimensional vector space when $n$ is prime.
 
-For example, if \(\ell\) is prime and
+For example, if $\ell$ is prime and
 
 $$
 \ell\neq\operatorname{char}(K),
@@ -442,7 +440,7 @@ $$
 
 ---
 
-### Example: \(2\)-torsion
+### Example: $2$-torsion
 
 For
 
@@ -481,7 +479,7 @@ $$
 y=0.
 $$
 
-So nontrivial \(2\)-torsion points correspond to roots of
+So nontrivial $2$-torsion points correspond to roots of
 
 $$
 x^3+ax+b=0.
@@ -531,7 +529,7 @@ need not coincide.
 
 <a id="division-by-n"></a>
 
-## 6. Division by \(n\)
+## 6. Division by $n$
 
 The notation
 
@@ -539,17 +537,17 @@ $$
 [n]P
 $$
 
-means multiply the point by the integer \(n\).
+means multiply the point by the integer $n$.
 
 The inverse question is:
 
-> Given \(Q\), can we find \(P\) such that
+> Given $Q$, can we find $P$ such that
 >
 > $$
 > [n]P=Q?
 > $$
 
-This is called **division by \(n\)** on the elliptic curve.
+This is called **division by $n$** on the elliptic curve.
 
 Over an algebraically closed field, the map
 
@@ -601,9 +599,9 @@ $$
 \operatorname{char}(K)\nmid n,
 $$
 
-there are \(n^2\) geometric preimages.
+there are $n^2$ geometric preimages.
 
-So division by \(n\) naturally produces the \(n\)-torsion subgroup.
+So division by $n$ naturally produces the $n$-torsion subgroup.
 
 ---
 
@@ -619,9 +617,9 @@ $$
 \psi_n.
 $$
 
-They encode multiplication-by-\(n\).
+They encode multiplication-by-$n$.
 
-For a nontrivial affine point \(P\), under the usual hypotheses,
+For a nontrivial affine point $P$, under the usual hypotheses,
 
 $$
 \boxed{
@@ -631,7 +629,7 @@ $$
 }
 $$
 
-For odd \(n\), \(\psi_n\) is essentially a polynomial in \(x\) alone.
+For odd $n$, $\psi_n$ is essentially a polynomial in $x$ alone.
 
 Its degree is
 
@@ -643,9 +641,9 @@ $$
 }
 $$
 
-for odd \(n\).
+for odd $n$.
 
-For even \(n\), after separating the factor involving \(y\), the relevant \(x\)-polynomial has degree
+For even $n$, after separating the factor involving $y$, the relevant $x$-polynomial has degree
 
 $$
 \boxed{
@@ -679,13 +677,13 @@ $$
 
 for short Weierstrass form.
 
-So \(3\)-torsion points can be detected by solving
+So $3$-torsion points can be detected by solving
 
 $$
 \psi_3(x)=0
 $$
 
-and recovering corresponding \(y\)-coordinates.
+and recovering corresponding $y$-coordinates.
 
 Division polynomials therefore convert the abstract condition
 
@@ -699,7 +697,7 @@ into explicit algebra.
 
 <a id="characteristic-p"></a>
 
-## 8. What changes in characteristic \(p\)
+## 8. What changes in characteristic $p$
 
 Everything above assumed
 
@@ -707,7 +705,7 @@ $$
 \operatorname{char}(K)\nmid n.
 $$
 
-If the characteristic divides \(n\), the story changes.
+If the characteristic divides $n$, the story changes.
 
 Let
 
@@ -729,7 +727,7 @@ $$
 
 But it is no longer fully separable.
 
-Therefore one cannot conclude that its kernel contains \(p^2\) geometric points.
+Therefore one cannot conclude that its kernel contains $p^2$ geometric points.
 
 This is the essential reason the simple formula
 
@@ -751,9 +749,9 @@ For this series, however, we can first understand the ordinary geometric points.
 
 <a id="ordinary-supersingular"></a>
 
-## 9. Ordinary and supersingular \(p\)-torsion
+## 9. Ordinary and supersingular $p$-torsion
 
-Over an algebraic closure of a field of characteristic \(p\), elliptic curves split into two fundamentally different classes.
+Over an algebraic closure of a field of characteristic $p$, elliptic curves split into two fundamentally different classes.
 
 ### Ordinary elliptic curves
 
@@ -769,7 +767,7 @@ $$
 
 as a group of geometric points.
 
-So there are \(p\) geometric \(p\)-torsion points.
+So there are $p$ geometric $p$-torsion points.
 
 ---
 
@@ -785,7 +783,7 @@ E[p](\overline K)
 }
 $$
 
-There are no nontrivial geometric \(p\)-torsion points.
+There are no nontrivial geometric $p$-torsion points.
 
 Yet the multiplication map still has degree
 
@@ -797,7 +795,7 @@ Where did that degree go?
 
 The complete answer requires finite group schemes.
 
-Very roughly, the kernel of \([p]\) has scheme-theoretic size \(p^2\), even though the number of ordinary geometric points can be much smaller.
+Very roughly, the kernel of $[p]$ has scheme-theoretic size $p^2$, even though the number of ordinary geometric points can be much smaller.
 
 This distinction is one of the first places where the point-set view of algebraic geometry becomes insufficient.
 
@@ -814,15 +812,15 @@ This classification affects:
 * point counting;
 * cryptographic constructions.
 
-So the behavior of \(p\)-torsion is not a technical curiosity.
+So the behavior of $p$-torsion is not a technical curiosity.
 
-It reflects a deep structural difference between elliptic curves in characteristic \(p\).
+It reflects a deep structural difference between elliptic curves in characteristic $p$.
 
 ---
 
 <a id="rational-torsion-q"></a>
 
-## 10. Rational torsion over \(\mathbb Q\)
+## 10. Rational torsion over $\mathbb Q$
 
 Return now to
 
@@ -844,7 +842,7 @@ The torsion subgroup is finite.
 
 A natural computational question is:
 
-> Given an explicit elliptic curve over \(\mathbb Q\), how can we find its rational torsion points?
+> Given an explicit elliptic curve over $\mathbb Q$, how can we find its rational torsion points?
 
 One remarkably useful theorem is **Nagell–Lutz**.
 
@@ -919,7 +917,7 @@ $$
 -16(4A^3+27B^2),
 $$
 
-one may equivalently view the theorem as strongly constraining \(y\) using the discriminant.
+one may equivalently view the theorem as strongly constraining $y$ using the discriminant.
 
 This is striking.
 
@@ -931,7 +929,7 @@ Nagell–Lutz says that on such an integral short-Weierstrass model, its coordin
 
 ### Why this gives a finite search
 
-There are only finitely many integers \(y\) such that
+There are only finitely many integers $y$ such that
 
 $$
 y^2
@@ -939,13 +937,13 @@ y^2
 4A^3+27B^2.
 $$
 
-For each candidate \(y\), solve
+For each candidate $y$, solve
 
 $$
 x^3+Ax+B=y^2
 $$
 
-for integral \(x\).
+for integral $x$.
 
 This produces a finite list of torsion candidates.
 
@@ -1012,7 +1010,7 @@ $$
 x^3+1=y^2.
 $$
 
-### \(y=0\)
+### $y=0$
 
 $$
 x^3+1=0
@@ -1032,7 +1030,7 @@ $$
 
 is a candidate.
 
-Since its \(y\)-coordinate is zero,
+Since its $y$-coordinate is zero,
 
 $$
 -(-1,0)=(-1,0),
@@ -1044,11 +1042,11 @@ $$
 2(-1,0)=\mathcal O.
 $$
 
-It has order \(2\).
+It has order $2$.
 
 ---
 
-### \(y=\pm1\)
+### $y=\pm1$
 
 Then
 
@@ -1104,11 +1102,11 @@ $$
 (0,\pm1)
 $$
 
-are \(3\)-torsion points.
+are $3$-torsion points.
 
 ---
 
-### \(y=\pm3\)
+### $y=\pm3$
 
 Then
 
@@ -1142,7 +1140,7 @@ $$
 (2,3)
 $$
 
-has order \(6\).
+has order $6$.
 
 Thus
 
@@ -1183,7 +1181,7 @@ $$
 \mathbb Q.
 $$
 
-For every elliptic curve over \(\mathbb Q\),
+For every elliptic curve over $\mathbb Q$,
 
 $$
 E(\mathbb Q)_{\mathrm{tors}}
@@ -1251,7 +1249,7 @@ $$
 \mathbb Z/11\mathbb Z
 $$
 
-as the rational torsion subgroup of an elliptic curve over \(\mathbb Q\).
+as the rational torsion subgroup of an elliptic curve over $\mathbb Q$.
 
 This is an astonishing global restriction.
 
@@ -1279,7 +1277,7 @@ $$
 
 Nagell–Lutz is computational and curve-specific.
 
-Mazur's theorem is structural and universal over \(\mathbb Q\).
+Mazur's theorem is structural and universal over $\mathbb Q$.
 
 ---
 
@@ -1299,9 +1297,9 @@ $$
 
 be the absolute Galois group.
 
-Because the elliptic-curve equations are defined over \(K\), Galois automorphisms send torsion points to torsion points.
+Because the elliptic-curve equations are defined over $K$, Galois automorphisms send torsion points to torsion points.
 
-Thus \(G_K\) acts on
+Thus $G_K$ acts on
 
 $$
 E[n].
@@ -1332,7 +1330,7 @@ G_K
 }
 $$
 
-The \(K\)-rational \(n\)-torsion points are exactly the points fixed by this action:
+The $K$-rational $n$-torsion points are exactly the points fixed by this action:
 
 $$
 \boxed{
@@ -1361,7 +1359,7 @@ The Galois action determines which of those points descend to the base field.
 This viewpoint leads eventually to:
 
 * Tate modules;
-* \(\ell\)-adic Galois representations;
+* $\ell$-adic Galois representations;
 * the Weil pairing;
 * isogeny theory;
 * major results in arithmetic geometry.
@@ -1378,7 +1376,7 @@ It appears throughout elliptic-curve computation.
 
 ### Division polynomials
 
-The coordinates of \(n\)-torsion points are encoded by
+The coordinates of $n$-torsion points are encoded by
 
 $$
 \psi_n.
@@ -1416,7 +1414,7 @@ $$
 \phi:E\rightarrow E/C
 $$
 
-with kernel \(C\).
+with kernel $C$.
 
 So torsion subgroups naturally become isogeny kernels.
 
@@ -1551,7 +1549,7 @@ E[n]\cap E(K).
 }
 $$
 
-Over \(\mathbb Q\), rational torsion is extraordinarily constrained.
+Over $\mathbb Q$, rational torsion is extraordinarily constrained.
 
 Nagell–Lutz says that on an integral short-Weierstrass model, rational torsion points have integral coordinates and satisfy strong discriminant divisibility conditions.
 
@@ -1564,7 +1562,7 @@ E(\mathbb Q)_{\mathrm{tors}}
 }
 $$
 
-In characteristic \(p\), another layer appears:
+In characteristic $p$, another layer appears:
 
 $$
 \boxed{
@@ -1576,7 +1574,7 @@ causes the multiplication map to become inseparable.
 
 Then the simple rank-two picture breaks.
 
-For \(p\)-torsion:
+For $p$-torsion:
 
 $$
 \boxed{
@@ -1683,8 +1681,8 @@ There the entire group is finite.
 
 The central questions become:
 
-* How large is \(E(\mathbb F_q)\)?
-* Why is the answer close to \(q+1\)?
+* How large is $E(\mathbb F_q)$?
+* Why is the answer close to $q+1$?
 * What is the Frobenius endomorphism?
 * What does Hasse's bound mean?
 * How are point orders related to the full group order?

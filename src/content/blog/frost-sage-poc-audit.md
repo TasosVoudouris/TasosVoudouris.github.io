@@ -97,8 +97,8 @@ Kq = GF(q)
 
 So we have two different finite fields in play:
 
-- \(\mathbb F_p\) for **curve coordinates**; and
-- \(\mathbb F_q\) for **secret scalars**.
+- $\mathbb F_p$ for **curve coordinates**; and
+- $\mathbb F_q$ for **secret scalars**.
 
 That distinction should always remain explicit. In elliptic-curve signature
 code, confusing the coordinate field and scalar field is one of the easiest
@@ -115,18 +115,18 @@ a = n
 
 Conceptually:
 
-- \(t=4\) is the threshold;
-- \(n=5\) is the total number of parties;
-- \(\pi\) is the number of nonce pairs to preprocess; and
+- $t=4$ is the threshold;
+- $n=5$ is the total number of parties;
+- $\pi$ is the number of nonce pairs to preprocess; and
 - `a` is the number of parties selected for signing.
 
 Notice immediately that the demo sets:
 
-\[
+$$
 a=n=5.
-\]
+$$
 
-So although the key sharing has threshold \(4\), the actual demonstration
+So although the key sharing has threshold $4$, the actual demonstration
 always signs with **all five participants**. We will return to this because it
 is one of the most useful improvements we can make.
 
@@ -142,24 +142,24 @@ Each `Participant` samples a polynomial:
 self.poly = [Kq.random_element() for _ in range(t)]
 ```
 
-For threshold \(t\), this creates \(t\) coefficients:
+For threshold $t$, this creates $t$ coefficients:
 
-\[
+$$
 f_i(X)
 =
  a_{i,0}
  + a_{i,1}X
  + \cdots
  + a_{i,t-1}X^{t-1}.
-\]
+$$
 
-The degree is at most \(t-1\).
+The degree is at most $t-1$.
 
 Each participant's local constant term
 
-\[
+$$
 a_{i,0}=f_i(0)
-\]
+$$
 
 is that dealer's contribution to the eventual group secret.
 
@@ -170,14 +170,14 @@ This is the first major conceptual point:
 Instead, every party contributes secret entropy, and the effective group secret
 is the sum of all dealer contributions:
 
-\[
+$$
 x
 =
 \sum_{j=1}^{n} a_{j,0}
 \pmod q.
-\]
+$$
 
-No honest participant needs to reconstruct this \(x\).
+No honest participant needs to reconstruct this $x$.
 
 ---
 
@@ -192,58 +192,58 @@ def generate_share(self, x):
 
 computes a Shamir point:
 
-\[
+$$
 (x, f_i(x)).
-\]
+$$
 
-Dealer \(i\) sends Party \(j\):
+Dealer $i$ sends Party $j$:
 
-\[
+$$
 f_i(j).
-\]
+$$
 
-Once all dealers have distributed their values, Party \(j\) holds:
+Once all dealers have distributed their values, Party $j$ holds:
 
-\[
+$$
 f_1(j), f_2(j), \ldots, f_n(j).
-\]
+$$
 
 Its final private signing share becomes:
 
-\[
+$$
 s_j
 =
 \sum_{i=1}^{n} f_i(j)
 \pmod q.
-\]
+$$
 
 This is exactly the right distributed-key intuition.
 
 Define the aggregate polynomial:
 
-\[
+$$
 F(X)
 =
 \sum_{i=1}^{n}f_i(X).
-\]
+$$
 
 Then:
 
-\[
+$$
 s_j=F(j)
-\]
+$$
 
 and the hidden group secret is:
 
-\[
+$$
 x=F(0).
-\]
+$$
 
-Because every \(f_i\) has degree at most \(t-1\), so does \(F\). Therefore any
-set of at least \(t\) valid points \((j,s_j)\) can interpolate \(F(0)\).
+Because every $f_i$ has degree at most $t-1$, so does $F$. Therefore any
+set of at least $t$ valid points $(j,s_j)$ can interpolate $F(0)$.
 
 The important thing is that FROST uses that interpolation **inside the signature
-calculation**, rather than reconstructing \(x\) in one place.
+calculation**, rather than reconstructing $x$ in one place.
 
 ---
 
@@ -255,31 +255,31 @@ The code publishes:
 self.C = [G * int(coeff) for coeff in self.poly]
 ```
 
-so for dealer \(i\):
+so for dealer $i$:
 
-\[
+$$
 C_{i,k}=a_{i,k}G.
-\]
+$$
 
 These are Feldman-style polynomial commitments.
 
-If Party \(j\) receives share
+If Party $j$ receives share
 
-\[
+$$
 s_{i\to j}=f_i(j),
-\]
+$$
 
 it can verify:
 
-\[
+$$
 s_{i\to j}G
 \stackrel{?}{=}
 \sum_{k=0}^{t-1}j^k C_{i,k}.
-\]
+$$
 
 Why?
 
-\[
+$$
 \begin{aligned}
 \sum_{k=0}^{t-1}j^k C_{i,k}
 &=
@@ -289,7 +289,7 @@ Why?
 &=
 f_i(j)G.
 \end{aligned}
-\]
+$$
 
 The uploaded implementation contains exactly this equation:
 
@@ -312,54 +312,54 @@ That is mathematically correct.
 The script also gives each dealer a Schnorr-style proof that it knows the
 discrete logarithm of its first coefficient commitment.
 
-Dealer \(i\) has:
+Dealer $i$ has:
 
-\[
+$$
 C_{i,0}=a_{i,0}G.
-\]
+$$
 
-It samples \(k\), publishes:
+It samples $k$, publishes:
 
-\[
+$$
 R_i=kG,
-\]
+$$
 
 computes challenge:
 
-\[
+$$
 c_i=H(i\parallel \Phi\parallel C_{i,0}\parallel R_i),
-\]
+$$
 
 and response:
 
-\[
+$$
 \mu_i=k+a_{i,0}c_i.
-\]
+$$
 
 Verification checks:
 
-\[
+$$
 R_i
 \stackrel{?}{=}
 \mu_iG-c_iC_{i,0}.
-\]
+$$
 
 Indeed:
 
-\[
+$$
 \begin{aligned}
 \mu_iG-c_iC_{i,0}
 &=(k+a_{i,0}c_i)G-c_i(a_{i,0}G)\\
 &=kG\\
 &=R_i.
 \end{aligned}
-\]
+$$
 
 Again, the core algebra is correct.
 
 ### Why have this proof?
 
-It demonstrates that a participant publishing \(C_{i,0}\) actually knows its
+It demonstrates that a participant publishing $C_{i,0}$ actually knows its
 underlying scalar contribution. That is useful in distributed key-generation
 designs to prevent a participant from injecting an arbitrary public point
 without knowing the corresponding secret contribution.
@@ -379,7 +379,7 @@ self.groupY += party.C[0]
 
 so:
 
-\[
+$$
 Y
 =
 \sum_i C_{i,0}
@@ -388,7 +388,7 @@ Y
 =
 \left(\sum_i a_{i,0}\right)G
 =xG.
-\]
+$$
 
 This is exactly what we want.
 
@@ -400,12 +400,12 @@ self.Y = G * self.si
 
 or:
 
-\[
+$$
 Y_i=s_iG.
-\]
+$$
 
-Those \(Y_i\) values become essential later when the coordinator verifies each
-FROST signature share without learning \(s_i\).
+Those $Y_i$ values become essential later when the coordinator verifies each
+FROST signature share without learning $s_i$.
 
 ---
 
@@ -420,19 +420,19 @@ dj, ej = [sample() for _ in range(2)]
 Dj, Ej = G*dj, G*ej
 ```
 
-So signer \(i\) gets two secret scalars:
+So signer $i$ gets two secret scalars:
 
-\[
+$$
 d_i,e_i\in\mathbb Z_q
-\]
+$$
 
 and public commitments:
 
-\[
+$$
 D_i=d_iG,
 \qquad
 E_i=e_iG.
-\]
+$$
 
 The code stores both:
 
@@ -443,8 +443,8 @@ self.nonce_commitment_pairs.append(
 )
 ```
 
-The public pair \((D_i,E_i)\) can be announced in round one.
-The scalars \((d_i,e_i)\) remain private.
+The public pair $(D_i,E_i)$ can be announced in round one.
+The scalars $(d_i,e_i)$ remain private.
 
 ### Why two?
 
@@ -454,11 +454,11 @@ nonce contribution can be **bound to the entire signing transcript**.
 
 The effective nonce contribution is:
 
-\[
+$$
 R_i=D_i+\rho_iE_i,
-\]
+$$
 
-where \(\rho_i\) depends on the message and the complete commitment list.
+where $\rho_i$ depends on the message and the complete commitment list.
 
 This prevents a malicious coordinator or participant from freely rearranging
 nonce commitments across sessions without changing the effective nonce.
@@ -520,7 +520,7 @@ a = n
 
 that means all five parties.
 
-For a real \(t=4,n=5\) demonstration, we should explicitly sign with different
+For a real $t=4,n=5$ demonstration, we should explicitly sign with different
 four-party subsets such as:
 
 ```text
@@ -533,8 +533,8 @@ four-party subsets such as:
 This is not merely cosmetic. It demonstrates the exact threshold property we
 claim:
 
-- any \(4\) valid shares should work;
-- \(3\) shares should not.
+- any $4$ valid shares should work;
+- $3$ shares should not.
 
 The audited companion model now tests exactly that.
 
@@ -544,10 +544,10 @@ The audited companion model now tests exactly that.
 
 The selected signers publish:
 
-\[
+$$
 B=
 [(i,D_i,E_i)]_{i\in S}.
-\]
+$$
 
 The code constructs:
 
@@ -574,11 +574,11 @@ that in the audit section.
 
 ## 11. Binding factors
 
-For signer \(i\), the program computes a value we will denote:
+For signer $i$, the program computes a value we will denote:
 
-\[
+$$
 \rho_i.
-\]
+$$
 
 In the source:
 
@@ -591,12 +591,12 @@ self.binding_values = [
 
 The group commitment is then:
 
-\[
+$$
 R
 =
 \sum_{i\in S}
 \left(D_i+\rho_iE_i\right).
-\]
+$$
 
 This is recognizably the FROST group-commitment construction.
 
@@ -605,18 +605,18 @@ RFC 9591 transcript**.
 
 RFC 9591 derives binding factors from data equivalent to:
 
-\[
+$$
 \operatorname{enc}(Y)
 \parallel H_4(m)
 \parallel H_5(B)
 \parallel \operatorname{enc}(i).
-\]
+$$
 
 The Sage program instead hashes:
 
-\[
+$$
 i\parallel m\parallel B.
-\]
+$$
 
 That is sufficient for the internal algebra to be self-consistent, but it is a
 standards-conformance difference and loses some transcript/domain separation.
@@ -637,13 +637,13 @@ self.challenge = H2(
 
 Conceptually:
 
-\[
+$$
 c=H_2(\operatorname{enc}(R)\parallel\operatorname{enc}(Y)\parallel m).
-\]
+$$
 
 This is the right **structural** Schnorr challenge.
 
-The ciphersuite-level implementation of \(H_2\) is where the prototype differs
+The ciphersuite-level implementation of $H_2$ is where the prototype differs
 from RFC 9591.
 
 ---
@@ -656,32 +656,32 @@ The code computes:
 λ *= Kq(signer.id) / Kq(signer.id - self.id)
 ```
 
-For signer \(i\):
+For signer $i$:
 
-\[
+$$
 \lambda_i
 =
 \prod_{j\in S, j\neq i}
 \frac{j}{j-i}.
-\]
+$$
 
 This is exactly the interpolation coefficient for evaluating the Shamir
 polynomial at zero.
 
 Therefore:
 
-\[
+$$
 \boxed{
 \sum_{i\in S}\lambda_i s_i=x
 }
-\]
+$$
 
-for every valid signing set \(S\) with at least \(t\) members.
+for every valid signing set $S$ with at least $t$ members.
 
 This is the heart of threshold Schnorr.
 
-No signer reconstructs \(x\), but the signature equation behaves **as if** the
-group secret \(x\) had been used.
+No signer reconstructs $x$, but the signature equation behaves **as if** the
+group secret $x$ had been used.
 
 ---
 
@@ -699,32 +699,32 @@ self.z = (
 
 Mathematically:
 
-\[
+$$
 \boxed{
 z_i=d_i+\rho_i e_i+\lambda_i s_i c.}
-\]
+$$
 
 This is the FROST signature-share equation.
 
 Define:
 
-\[
+$$
 R_i=D_i+\rho_iE_i.
-\]
+$$
 
 Because:
 
-\[
+$$
 D_i=d_iG,
 \qquad
 E_i=e_iG,
 \qquad
 Y_i=s_iG,
-\]
+$$
 
 we obtain:
 
-\[
+$$
 \begin{aligned}
 z_iG
 &=
@@ -733,7 +733,7 @@ z_iG
 &=D_i+\rho_iE_i+\lambda_i cY_i\\
 &=R_i+\lambda_i cY_i.
 \end{aligned}
-\]
+$$
 
 That is exactly what the coordinator verifies:
 
@@ -754,14 +754,14 @@ assert G * signer.z == (
 
 The coordinator computes:
 
-\[
+$$
 z=
 \sum_{i\in S} z_i.
-\]
+$$
 
 Expand it:
 
-\[
+$$
 \begin{aligned}
 z
 &=
@@ -771,36 +771,36 @@ z
 \sum_i(d_i+\rho_i e_i)
 +c\sum_i\lambda_i s_i.
 \end{aligned}
-\]
+$$
 
 But:
 
-\[
+$$
 R
 =
 \sum_i(D_i+\rho_iE_i)
 =
 \left(\sum_i(d_i+\rho_i e_i)\right)G
-\]
+$$
 
 and:
 
-\[
+$$
 \sum_i\lambda_i s_i=x.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 zG=R+cY.}
-\]
+$$
 
 This is an ordinary Schnorr verification equation under the group public key:
 
-\[
+$$
 Y=xG.
-\]
+$$
 
 This is why FROST's final output can be verified as a single signature rather
 than as a bundle of participant signatures.
@@ -814,20 +814,20 @@ than as a bundle of participant signatures.
 | Area | Verdict | Why |
 |---|---|---|
 | Shamir threshold structure | **Correct core** | Aggregate polynomial and Lagrange interpolation are sound. |
-| Feldman share verification | **Correct core** | Checks \(f_i(j)G=\sum_kj^kC_{i,k}\). |
+| Feldman share verification | **Correct core** | Checks $f_i(j)G=\sum_kj^kC_{i,k}$. |
 | DKG PoK algebra | **Correct core** | Schnorr-style proof relation is valid. |
-| Group public key | **Correct core** | \(Y=\sum_iC_{i,0}\). |
-| Verification shares | **Correct core** | \(Y_i=s_iG\). |
+| Group public key | **Correct core** | $Y=\sum_iC_{i,0}$. |
+| Verification shares | **Correct core** | $Y_i=s_iG$. |
 | Two-nonce preprocessing | **Correct core** | Matches FROST's hiding/binding nonce structure. |
 | Lagrange coefficient | **Correct** | Correct interpolation at zero. |
 | Signature-share equation | **Correct** | Core FROST equation is implemented. |
 | Signature-share verification | **Correct** | Public verification relation is implemented. |
-| Aggregation | **Correct algebra** | \(z=\sum_i z_i\) is right. |
-| Final aggregate verification | **Missing** | Original returns \((R,z)\) without checking \(zG=R+cY\). |
-| Hash-to-scalar | **Needs correction** | Digest integers are not explicitly reduced to \(\mathbb Z_q\). |
+| Aggregation | **Correct algebra** | $z=\sum_i z_i$ is right. |
+| Final aggregate verification | **Missing** | Original returns $(R,z)$ without checking $zG=R+cY$. |
+| Hash-to-scalar | **Needs correction** | Digest integers are not explicitly reduced to $\mathbb Z_q$. |
 | Binding transcript | **Non-RFC** | Does not use RFC 9591's group-key/H4/H5 structure. |
 | DKG failure policy | **Real engineering bug** | Invalid proofs/shares print errors but protocol continues. |
-| Threshold demo | **Incomplete demonstration** | \(t=4,n=5\), but demo signs 5-of-5. |
+| Threshold demo | **Incomplete demonstration** | $t=4,n=5$, but demo signs 5-of-5. |
 | Configuration isolation | **Real engineering bug** | Class instance parameters coexist with hidden globals. |
 | Random scalar generation | **Educational only** | `randrange` / Sage RNG is not the RFC nonce-generation construction. |
 | Commitment encoding | **Needs hardening** | Decimal identifiers are not canonical scalar encodings. |
@@ -873,9 +873,9 @@ range.
 FROST requires the relevant transcript hashes to produce elements of the scalar
 field:
 
-\[
+$$
 \mathbb Z_q.
-\]
+$$
 
 The program's elliptic-curve multiplications effectively reduce large integers
 modulo the group order, which is one reason the equations still work.
@@ -888,7 +888,7 @@ For example:
 self.z = di + rho_i * ei + lambda_i * si * c
 ```
 
-is not explicitly reduced mod \(q\), and neither is:
+is not explicitly reduced mod $q$, and neither is:
 
 ```python
 z = sum(signer.z for signer in self.signers)
@@ -896,25 +896,25 @@ z = sum(signer.z for signer in self.signers)
 
 A standard implementation should instead maintain:
 
-\[
+$$
 z_i
 =
 (d_i+\rho_i e_i+\lambda_i s_i c)mod q
-\]
+$$
 
 and:
 
-\[
+$$
 z=\left(\sum_i z_i\right)\bmod q.
-\]
+$$
 
 ### Why did the original still work?
 
 Because group multiplication satisfies:
 
-\[
+$$
 (a+kq)G=aG.
-\]
+$$
 
 So the verification equations can pass even with an oversized integer.
 
@@ -932,20 +932,20 @@ Original code:
 rho_i = H1(str(id).encode(), m, Bencoded)
 ```
 
-The standardized FROST construction binds \(\rho_i\) to more structured data,
+The standardized FROST construction binds $\rho_i$ to more structured data,
 including the group public key and fixed-length hashes of the message and
 commitment list.
 
 Why is that better?
 
-Because \(\rho_i\) should be unambiguously tied to:
+Because $\rho_i$ should be unambiguously tied to:
 
 - this exact FROST group;
 - this exact message;
 - this exact commitment list; and
 - this exact participant identifier.
 
-The original program still gives every honest party the same \(\rho_i\), so the
+The original program still gives every honest party the same $\rho_i$, so the
 signature equation works. It is simply not the RFC transcript.
 
 **Verdict:** not an algebra bug; a conformance/security-domain-separation gap.
@@ -976,9 +976,9 @@ return (R, z)
 
 without checking:
 
-\[
+$$
 \boxed{zG\stackrel{?}{=}R+cY.}
-\]
+$$
 
 ### Why does this matter if all shares passed?
 
@@ -987,7 +987,7 @@ Mathematically, valid shares should aggregate to a valid signature.
 But software can fail between those two facts:
 
 - wrong signer subset;
-- stale \(\lambda_i\);
+- stale $\lambda_i$;
 - different challenge view;
 - aggregation bug;
 - corrupted state;
@@ -1089,11 +1089,11 @@ The audited rewrite removes those hidden dependencies.
 
 The configuration advertises:
 
-\[
+$$
 t=4,
 \qquad
 n=5.
-\]
+$$
 
 But:
 
@@ -1111,9 +1111,9 @@ select all five participants.
 
 So every successful signature demonstrates:
 
-\[
+$$
 5\text{-of-}5
-\]
+$$
 
 participation on a key that happens to have threshold 4.
 
@@ -1243,7 +1243,7 @@ def sample():
 
 There are two issues.
 
-First, the range excludes valid nonzero scalars such as \(1\) and \(q-1\).
+First, the range excludes valid nonzero scalars such as $1$ and $q-1$.
 That is a tiny statistical issue in a field this large, but unnecessary.
 
 Second, more importantly, RFC 9591 defines nonce generation so that fresh
@@ -1318,9 +1318,9 @@ The hardened educational rewrite keeps the same architecture but adds:
 
 Every scalar state is kept in:
 
-\[
+$$
 \mathbb Z_q.
-\]
+$$
 
 For example:
 
@@ -1369,9 +1369,9 @@ A nonce pair and its public commitments are consumed together.
 
 Before returning:
 
-\[
+$$
 zG\stackrel{?}{=}R+cY.
-\]
+$$
 
 ### Better transcript framing
 
@@ -1484,7 +1484,7 @@ wire interoperability.
 For `FROST(secp256k1, SHA-256)`, the standard specifies ciphersuite-specific
 serialization and domain-separated hash functions.
 
-In particular, the standardized \(H_1\) and \(H_2\) are scalar-producing
+In particular, the standardized $H_1$ and $H_2$ are scalar-producing
 hash-to-field operations rather than simply:
 
 ```python
@@ -1498,7 +1498,7 @@ int(SHA512(...)[0:32])
 ```
 
 The binding-factor transcript must follow the standard's canonical structure,
-and messages/commitments are hashed through the specified \(H_4\) and \(H_5\)
+and messages/commitments are hashed through the specified $H_4$ and $H_5$
 functions.
 
 ---
@@ -1655,23 +1655,23 @@ The central FROST equations are correctly represented.
 
 Specifically:
 
-\[
+$$
 R_i=D_i+\rho_iE_i,
-\]
+$$
 
-\[
+$$
 z_i=d_i+\rho_i e_i+\lambda_i s_i c,
-\]
+$$
 
-\[
+$$
 z_iG=R_i+\lambda_i cY_i,
-\]
+$$
 
 and:
 
-\[
+$$
 z=\sum_i z_i
-\]
+$$
 
 are the right structure.
 
@@ -1692,7 +1692,7 @@ execution.
 
 The most important are:
 
-1. protocol scalars are not explicitly reduced modulo \(q\);
+1. protocol scalars are not explicitly reduced modulo $q$;
 2. the binding-factor and challenge functions are not the RFC 9591 secp256k1
    ciphersuite definitions;
 3. the final aggregate signature is not verified;

@@ -56,7 +56,7 @@ $$
 \psi_\ell
 $$
 
-provides an algebraic description of the \(\ell\)-torsion subgroup
+provides an algebraic description of the $\ell$-torsion subgroup
 
 $$
 E[\ell].
@@ -72,7 +72,7 @@ t\bmod\ell
 }
 $$
 
-for several small primes \(\ell\), reconstructs \(t\) using the Chinese Remainder Theorem, and finally uses Hasse's bound to identify the unique integer trace.
+for several small primes $\ell$, reconstructs $t$ using the Chinese Remainder Theorem, and finally uses Hasse's bound to identify the unique integer trace.
 
 This was a major breakthrough:
 
@@ -106,31 +106,29 @@ $$
 
 - [1. The point-counting problem](#1-the-point-counting-problem)
 - [2. Why naive enumeration is not enough](#2-why-naive-enumeration-is-not-enough)
-- [3. Hasse reduces the problem to computing (t)](#3-hasse-reduces-the-problem-to-computing-t)
+- [3. Hasse reduces the problem to computing $t$](#3-hasse-reduces-the-problem-to-computing-ttt)
 - [4. The Frobenius endomorphism](#4-the-frobenius-endomorphism)
 - [5. Frobenius characteristic equation](#5-frobenius-characteristic-equation)
-- [6. Restricting Frobenius to (E\[\ell\])](#6-restricting-frobenius-to-eell)
-- [7. Why computing (t\bmod\ell) is enough](#7-why-computing-tbmodell-is-enough)
+- [6. Restricting Frobenius to $E\[\ell\]$](#6-restricting-frobenius-to-eℓeelleℓ)
+- [7. Why computing $t\bmod\ell$ is enough](#7-why-computing-tmodℓtbmodelltmodℓ-is-enough)
 - [8. Division polynomials as symbolic torsion](#8-division-polynomials-as-symbolic-torsion)
 - [9. The quotient coordinate algebra](#9-the-quotient-coordinate-algebra)
-- [10. Representing a generic (\ell)-torsion point](#10-representing-a-generic-ell-torsion-point)
+- [10. Representing a generic $\ell$-torsion point](#10-representing-a-generic-ℓellℓ-torsion-point)
 - [11. Computing Frobenius symbolically](#11-computing-frobenius-symbolically)
-- [12. Solving for (t\bmod\ell)](#12-solving-for-tbmodell)
-- [13. The special case (\ell=2)](#13-the-special-case-ell2)
+- [12. Solving for $t\bmod\ell$](#12-solving-for-tmodℓtbmodelltmodℓ)
+- [13. The special case $\ell=2$](#13-the-special-case-ℓ2ell2ℓ2)
 - [14. Zero divisors and factor discovery](#14-zero-divisors-and-factor-discovery)
 - [15. Chinese Remainder reconstruction](#15-chinese-remainder-reconstruction)
-- [16. Why (M>4\sqrt q) is sufficient](#16-why-m4sqrt-q-is-sufficient)
+- [16. Why $M>4\sqrt q$ is sufficient](#16-why-m4qm4sqrt-qm4q-is-sufficient)
 - [17. Complete Schoof workflow](#17-complete-schoof-workflow)
 - [18. Structure of the Sage implementation](#18-structure-of-the-sage-implementation)
-- [19. The trace_mod routine](#19-the-trace_mod-routine)
-- [20. The Schoof routine](#20-the-schoof-routine)
+- [19. The `trace_mod` routine](#19-the-trace_mod-routine)
+- [20. The `Schoof` routine](#20-the-schoof-routine)
 - [21. Testing and validation](#21-testing-and-validation)
 - [22. Complexity](#22-complexity)
 - [23. Why pure Schoof is mainly a reference implementation](#23-why-pure-schoof-is-mainly-a-reference-implementation)
 
 ---
-
-<a id="point-counting-problem"></a>
 
 ## 1. The point-counting problem
 
@@ -152,13 +150,13 @@ $$
 
 For cryptographic curves this number is fundamental.
 
-Once \(N\) is known, we can factor it as
+Once $N$ is known, we can factor it as
 
 $$
 N=hr,
 $$
 
-where \(r\) may be a large prime subgroup order and \(h\) the cofactor.
+where $r$ may be a large prime subgroup order and $h$ the cofactor.
 
 This information determines:
 
@@ -207,7 +205,7 @@ $$
 
 field-scale work.
 
-The input \(q\), however, occupies only
+The input $q$, however, occupies only
 
 $$
 O(\log q)
@@ -219,7 +217,7 @@ Therefore enumeration is exponential in the bit length of the field size.
 
 For a cryptographic-sized prime field, this is hopeless.
 
-Schoof's key achievement was to replace dependence polynomial in \(q\) with dependence polynomial in
+Schoof's key achievement was to replace dependence polynomial in $q$ with dependence polynomial in
 
 $$
 \boxed{
@@ -231,7 +229,7 @@ $$
 
 <a id="hasse-trace"></a>
 
-## 3. Hasse reduces the problem to computing \(t\)
+## 3. Hasse reduces the problem to computing $t$
 
 Define
 
@@ -279,7 +277,7 @@ This changes the problem fundamentally.
 
 ## 4. The Frobenius endomorphism
 
-Define the \(q\)-power Frobenius map
+Define the $q$-power Frobenius map
 
 $$
 \boxed{
@@ -353,9 +351,9 @@ $$
 [q]
 $$
 
-means the multiplication-by-\(q\) endomorphism, not merely the integer \(q\).
+means the multiplication-by-$q$ endomorphism, not merely the integer $q$.
 
-Applying the equation to a point \(P\),
+Applying the equation to a point $P$,
 
 $$
 \boxed{
@@ -367,13 +365,13 @@ $$
 
 This equation is the computational heart of Schoof's algorithm.
 
-If we can determine \(t\) modulo enough small primes, we can reconstruct \(t\) completely.
+If we can determine $t$ modulo enough small primes, we can reconstruct $t$ completely.
 
 ---
 
 <a id="frobenius-torsion"></a>
 
-## 6. Restricting Frobenius to \(E[\ell]\)
+## 6. Restricting Frobenius to $E[\ell]$
 
 Take a small prime
 
@@ -403,7 +401,7 @@ $$
 [\ell]P=\mathcal O.
 $$
 
-Therefore integer scalar multiplication on \(E[\ell]\) depends only on the scalar modulo \(\ell\).
+Therefore integer scalar multiplication on $E[\ell]$ depends only on the scalar modulo $\ell$.
 
 So
 
@@ -425,7 +423,7 @@ $$
 [q\bmod\ell]P.
 $$
 
-Hence the Frobenius equation on \(E[\ell]\) becomes
+Hence the Frobenius equation on $E[\ell]$ becomes
 
 $$
 \boxed{
@@ -443,7 +441,7 @@ This converts the global trace problem into a collection of small modular proble
 
 <a id="trace-mod-ell"></a>
 
-## 7. Why computing \(t\bmod\ell\) is enough
+## 7. Why computing $t\bmod\ell$ is enough
 
 Choose distinct small primes
 
@@ -548,7 +546,7 @@ $$
 
 ## 8. Division polynomials as symbolic torsion
 
-Chapter X introduced the \(\ell\)-division polynomial
+Chapter X introduced the $\ell$-division polynomial
 
 $$
 \psi_\ell.
@@ -560,7 +558,7 @@ $$
 \ell\neq\operatorname{char}(\mathbb F_q),
 $$
 
-its roots are the \(x\)-coordinates of the nonzero \(\ell\)-torsion points.
+its roots are the $x$-coordinates of the nonzero $\ell$-torsion points.
 
 Thus
 
@@ -584,7 +582,7 @@ $$
 \psi_\ell.
 $$
 
-This allows us to manipulate a **generic \(\ell\)-torsion point symbolically**.
+This allows us to manipulate a **generic $\ell$-torsion point symbolically**.
 
 That is the central computational trick.
 
@@ -616,9 +614,9 @@ $$
 h(x)=0.
 $$
 
-Thus the formal element \(x\) behaves like the \(x\)-coordinate of a generic \(\ell\)-torsion point.
+Thus the formal element $x$ behaves like the $x$-coordinate of a generic $\ell$-torsion point.
 
-To retain the \(y\)-coordinate, impose
+To retain the $y$-coordinate, impose
 
 $$
 y^2=x^3+Ax+B.
@@ -647,7 +645,7 @@ a(x)+b(x)y.
 }
 $$
 
-This representation is particularly useful because every higher power of \(y\) can be reduced using
+This representation is particularly useful because every higher power of $y$ can be reduced using
 
 $$
 y^2=x^3+Ax+B.
@@ -657,7 +655,7 @@ $$
 
 <a id="generic-torsion-point"></a>
 
-## 10. Representing a generic \(\ell\)-torsion point
+## 10. Representing a generic $\ell$-torsion point
 
 The implementation represents symbolic point coordinates using elements of the quotient algebra.
 
@@ -669,8 +667,8 @@ $$
 
 For symmetry reasons, many expressions separate naturally into:
 
-* an \(x\)-part in \(R_x\);
-* a \(y\)-part of the form \(b(x)y\).
+* an $x$-part in $R_x$;
+* a $y$-part of the form $b(x)y$.
 
 Thus the generic point can be manipulated symbolically without ever finding a concrete root of
 
@@ -680,7 +678,7 @@ $$
 
 This distinction matters:
 
-> We are not literally enumerating \(E[\ell]\).
+> We are not literally enumerating $E[\ell]$.
 
 Instead,
 
@@ -732,7 +730,7 @@ $$
 x^q\bmod\psi_\ell(x).
 $$
 
-For the \(y\)-coordinate,
+For the $y$-coordinate,
 
 $$
 y^q
@@ -740,7 +738,7 @@ y^q
 y(y^2)^{(q-1)/2}
 $$
 
-when \(q\) is odd.
+when $q$ is odd.
 
 Using
 
@@ -783,15 +781,15 @@ Repeated modular exponentiation allows these expressions to be computed without 
 
 <a id="solve-trace"></a>
 
-## 12. Solving for \(t\bmod\ell\)
+## 12. Solving for $t\bmod\ell$
 
-On \(E[\ell]\),
+On $E[\ell]$,
 
 $$
 \pi^2-[t]\pi+[q]=0.
 $$
 
-Thus for a generic \(\ell\)-torsion point \(P\),
+Thus for a generic $\ell$-torsion point $P$,
 
 $$
 \boxed{
@@ -807,7 +805,7 @@ $$
 q
 $$
 
-modulo \(\ell\):
+modulo $\ell$:
 
 $$
 q_\ell
@@ -845,7 +843,7 @@ $$
 }
 $$
 
-Since \(\ell\) is deliberately small, trying candidate residues is feasible.
+Since $\ell$ is deliberately small, trying candidate residues is feasible.
 
 More refined formulations reduce the number of cases or exploit additional algebraic structure, but this is the central idea.
 
@@ -853,11 +851,11 @@ More refined formulations reduce the number of cases or exploit additional algeb
 
 <a id="ell-two"></a>
 
-## 13. The special case \(\ell=2\)
+## 13. The special case $\ell=2$
 
-The prime \(2\) is usually handled separately.
+The prime $2$ is usually handled separately.
 
-Recall that nontrivial \(2\)-torsion points have
+Recall that nontrivial $2$-torsion points have
 
 $$
 y=0.
@@ -871,7 +869,7 @@ x^3+Ax+B.
 }
 $$
 
-A rational nontrivial \(2\)-torsion point exists exactly when this cubic has a root in
+A rational nontrivial $2$-torsion point exists exactly when this cubic has a root in
 
 $$
 \mathbb F_q.
@@ -897,7 +895,7 @@ t\bmod2.
 }
 $$
 
-For odd \(q\), this becomes the first modular trace component used in reconstruction.
+For odd $q$, this becomes the first modular trace component used in reconstruction.
 
 ---
 
@@ -1020,7 +1018,7 @@ $$
 t'\equiv b\pmod\ell.
 $$
 
-Reduce \(t'\) modulo
+Reduce $t'$ modulo
 
 $$
 M\ell
@@ -1038,7 +1036,7 @@ This process is repeated for every small prime.
 
 <a id="crt-bound"></a>
 
-## 16. Why \(M>4\sqrt q\) is sufficient
+## 16. Why $M>4\sqrt q$ is sufficient
 
 The trace lies in
 
@@ -1058,7 +1056,7 @@ $$
 t_1,t_2
 $$
 
-inside the interval had the same residue modulo \(M\).
+inside the interval had the same residue modulo $M$.
 
 Then
 
@@ -1081,7 +1079,7 @@ M>4\sqrt q,
 }
 $$
 
-the only multiple of \(M\) with magnitude at most \(4\sqrt q\) is zero.
+the only multiple of $M$ with magnitude at most $4\sqrt q$ is zero.
 
 Therefore
 
@@ -1089,7 +1087,7 @@ $$
 t_1=t_2.
 $$
 
-So the residue modulo \(M\) uniquely determines \(t\).
+So the residue modulo $M$ uniquely determines $t$.
 
 This is the precise reason behind Schoof's stopping condition.
 
@@ -1223,7 +1221,7 @@ Its helper routines correspond to distinct pieces of elliptic-curve arithmetic.
 
 ### `add(P, Q, A, f)`
 
-This performs symbolic point addition modulo a polynomial \(f\).
+This performs symbolic point addition modulo a polynomial $f$.
 
 Conceptually,
 
@@ -1237,9 +1235,9 @@ $$
 
 inside the quotient coordinate algebra.
 
-Any required inverse is computed modulo \(f\).
+Any required inverse is computed modulo $f$.
 
-If the denominator is not invertible, the implementation can inspect its gcd with \(f\).
+If the denominator is not invertible, the implementation can inspect its gcd with $f$.
 
 ---
 
@@ -1265,7 +1263,7 @@ $$
 
 But all arithmetic is interpreted inside the quotient algebra associated with the torsion polynomial.
 
-Again, failure to invert a denominator may reveal a factor of \(f\).
+Again, failure to invert a denominator may reveal a factor of $f$.
 
 ---
 
@@ -1357,7 +1355,7 @@ $$
 h(x).
 $$
 
-This represents generic \(\ell\)-torsion \(x\)-coordinates.
+This represents generic $\ell$-torsion $x$-coordinates.
 
 ---
 
@@ -1381,7 +1379,7 @@ $$
 
 ---
 
-### Step 4 — Scalar \(q\bmod\ell\)
+### Step 4 — Scalar $q\bmod\ell$
 
 Compute
 
@@ -1425,7 +1423,7 @@ $$
 
 ### Step 6 — Factor handling
 
-If a denominator becomes a zero divisor modulo \(h\), compute a gcd.
+If a denominator becomes a zero divisor modulo $h$, compute a gcd.
 
 When a nontrivial factor is found, the symbolic calculation may continue modulo the smaller factor.
 
@@ -1464,7 +1462,7 @@ for small primes ell != characteristic:
         stop
 ```
 
-Finally choose the representative of \(T\bmod M\) satisfying
+Finally choose the representative of $T\bmod M$ satisfying
 
 $$
 \boxed{
@@ -1568,7 +1566,7 @@ $$
 
 Why?
 
-The primes \(\ell\) required are small.
+The primes $\ell$ required are small.
 
 Since
 
@@ -1582,7 +1580,7 @@ $$
 \log q.
 $$
 
-For each \(\ell\),
+For each $\ell$,
 
 $$
 \deg\psi_\ell

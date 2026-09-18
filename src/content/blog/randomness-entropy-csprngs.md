@@ -29,7 +29,7 @@ All of these are often described casually as *random values*, but that phrase hi
 
 A computer does not normally obtain every cryptographic key directly from some continuously flowing source of perfect physical randomness. Instead, real systems form a pipeline:
 
-\[
+$$
 \boxed{
 \text{physical uncertainty}
 \longrightarrow
@@ -43,7 +43,7 @@ A computer does not normally obtain every cryptographic key directly from some c
 \longrightarrow
 \text{cryptographic values}
 }
-\]
+$$
 
 Understanding randomness therefore requires us to separate **entropy**, **random physical observations**, and **pseudorandom generation**.
 
@@ -51,29 +51,29 @@ That distinction is not merely terminology. Many catastrophic cryptographic fail
 
 ## Entropy is uncertainty, not simply "random-looking data"
 
-Suppose \(X\) is a random variable taking values \(x\) with probabilities \(p(x)\).
+Suppose $X$ is a random variable taking values $x$ with probabilities $p(x)$.
 
 One classical measure of uncertainty is **Shannon entropy**:
 
-\[
+$$
 H(X)
 =
 -\sum_x p(x)\log_2 p(x).
-\]
+$$
 
 Shannon entropy measures the *average* information obtained when the outcome becomes known.
 
-If \(X\) is uniformly distributed over \(2^k\) possible outcomes, then
+If $X$ is uniformly distributed over $2^k$ possible outcomes, then
 
-\[
+$$
 H(X)=k.
-\]
+$$
 
 A fair eight-sided die therefore contains
 
-\[
+$$
 \log_2 8 = 3
-\]
+$$
 
 bits of Shannon entropy.
 
@@ -83,20 +83,20 @@ But cryptography often cares about a more adversarial question:
 
 That leads naturally to **min-entropy**:
 
-\[
+$$
 H_\infty(X)
 =
 -\log_2
 \left(
 \max_x p(x)
 \right).
-\]
+$$
 
 Min-entropy is controlled entirely by the most likely outcome.
 
 Consider a source with four possible outcomes:
 
-\[
+$$
 \Pr[X=0]=\frac12,
 \qquad
 \Pr[X=1]=\frac14,
@@ -104,11 +104,11 @@ Consider a source with four possible outcomes:
 \Pr[X=2]=\frac18,
 \qquad
 \Pr[X=3]=\frac18.
-\]
+$$
 
 Its Shannon entropy is
 
-\[
+$$
 H(X)
 =
 \frac12(1)
@@ -121,18 +121,18 @@ H(X)
 =
 1.75
 \text{ bits}.
-\]
+$$
 
-But an attacker can simply guess \(X=0\) and succeed with probability \(1/2\). Therefore,
+But an attacker can simply guess $X=0$ and succeed with probability $1/2$. Therefore,
 
-\[
+$$
 H_\infty(X)
 =
 -\log_2(1/2)
 =
 1
 \text{ bit}.
-\]
+$$
 
 This difference is extremely important.
 
@@ -144,33 +144,33 @@ There is another subtlety: entropy must be considered relative to what the adver
 
 Suppose a machine generates a 128-bit value, but an attacker already knows all except 20 uncertain bits. The representation is still 128 bits long, yet the attacker's effective uncertainty may be only around
 
-\[
+$$
 20\text{ bits}.
-\]
+$$
 
 This is why **bit length is not entropy**.
 
 A 256-bit string does not automatically contain 256 bits of entropy.
 
-For example, suppose a program chooses a value from only \(2^{20}\) possibilities and then hashes it with SHA-256:
+For example, suppose a program chooses a value from only $2^{20}$ possibilities and then hashes it with SHA-256:
 
-\[
+$$
 x
 \in
 \{0,\ldots,2^{20}-1\},
-\]
+$$
 
-\[
+$$
 y=\operatorname{SHA256}(x).
-\]
+$$
 
-The output \(y\) is 256 bits long and will probably *look* random.
+The output $y$ is 256 bits long and will probably *look* random.
 
 But an attacker still has only about
 
-\[
+$$
 2^{20}
-\]
+$$
 
 candidate inputs to test.
 
@@ -180,7 +180,7 @@ More generally, deterministic processing cannot manufacture fresh uncertainty th
 
 That distinction will appear repeatedly in cryptographic engineering:
 
-\[
+$$
 \boxed{
 \text{output size}
 \neq
@@ -188,7 +188,7 @@ That distinction will appear repeatedly in cryptographic engineering:
 \neq
 \text{security level}
 }
-\]
+$$
 
 ### Where does entropy come from?
 
@@ -209,7 +209,7 @@ A physical source may be:
 
 So the real process is closer to
 
-\[
+$$
 \text{noise source}
 \rightarrow
 \text{measurement}
@@ -219,7 +219,7 @@ So the real process is closer to
 \text{conditioning}
 \rightarrow
 \text{entropy estimate}.
-\]
+$$
 
 The purpose of conditioning is to transform imperfect source data into a representation that is more suitable for use by the random-bit-generation system.
 
@@ -227,7 +227,7 @@ This does **not** mean that a hash function somehow creates entropy. Rather, a s
 
 A simplified example might be
 
-\[
+$$
 s
 =
 H(
@@ -241,11 +241,11 @@ x_2
 \parallel
 x_k
 ),
-\]
+$$
 
-where the \(x_i\) are measurements collected from one or more entropy sources.
+where the $x_i$ are measurements collected from one or more entropy sources.
 
-How much entropy may safely be credited to \(s\) depends on the statistical model of those sources, their dependencies, the conditioning construction, and what information might be available to the adversary.
+How much entropy may safely be credited to $s$ depends on the statistical model of those sources, their dependencies, the conditioning construction, and what information might be available to the adversary.
 
 This is why serious random-number-generator design includes **entropy estimation and source validation**, rather than simply hashing some timestamps and declaring the result random.
 
@@ -257,25 +257,25 @@ Instead it initializes a **cryptographically secure pseudorandom number generato
 
 Conceptually,
 
-\[
+$$
 S_0
 \leftarrow
 \operatorname{Instantiate}(\text{entropy},\text{nonce},\text{personalization}),
-\]
+$$
 
 and subsequent calls evolve an internal state:
 
-\[
+$$
 (S_{i+1},R_i)
 \leftarrow
 G(S_i),
-\]
+$$
 
-where \(R_i\) is pseudorandom output.
+where $R_i$ is pseudorandom output.
 
 The crucial word is **pseudorandom**.
 
-Once \(S_0\) is fixed, the generator is deterministic. Running the same algorithm from exactly the same state produces exactly the same outputs.
+Once $S_0$ is fixed, the generator is deterministic. Running the same algorithm from exactly the same state produces exactly the same outputs.
 
 That is not a defect.
 
@@ -283,7 +283,7 @@ The cryptographic requirement is that, without knowledge of the secret state, an
 
 So we deliberately use:
 
-\[
+$$
 \boxed{
 \text{small amount of high-quality uncertainty}
 \rightarrow
@@ -291,7 +291,7 @@ So we deliberately use:
 \rightarrow
 \text{large amount of pseudorandom output}
 }
-\]
+$$
 
 rather than demanding a physical random event for every generated bit.
 
@@ -363,19 +363,19 @@ Combining several entropy sources can still be valuable.
 
 Suppose
 
-\[
+$$
 X_1,X_2,\ldots,X_n
-\]
+$$
 
 are independent or partially independent sources and we derive
 
-\[
+$$
 S
 =
 H(
 X_1\parallel X_2\parallel\cdots\parallel X_n
 ).
-\]
+$$
 
 Intuitively, we would like the system to remain safe even if several sources turn out to be weak, provided at least one contributes sufficient uncertainty unknown to the attacker.
 
@@ -389,7 +389,7 @@ This is one reason designs such as **Yarrow** and later **Fortuna** introduced e
 
 Thinking only about initial seeding is not enough.
 
-Suppose an attacker compromises the CSPRNG state at time \(t\).
+Suppose an attacker compromises the CSPRNG state at time $t$.
 
 Several different security questions now arise.
 
@@ -399,11 +399,11 @@ A well-designed generator aims to provide **backtracking resistance**: knowledge
 
 Conceptually, if state evolution uses a one-way transformation,
 
-\[
+$$
 S_{i+1}=F(S_i),
-\]
+$$
 
-then learning \(S_{i+1}\) should not make recovering \(S_i\) easy.
+then learning $S_{i+1}$ should not make recovering $S_i$ easy.
 
 **Can the attacker predict future outputs?**
 
@@ -413,11 +413,11 @@ The system therefore needs fresh entropy.
 
 After new unpredictable input is incorporated,
 
-\[
+$$
 S'
 =
 \operatorname{Reseed}(S,E),
-\]
+$$
 
 we want the attacker eventually to lose knowledge of the state again.
 
@@ -431,32 +431,32 @@ A related systems problem appears with process and virtual-machine cloning.
 
 Imagine a virtual machine whose CSPRNG state is
 
-\[
+$$
 S.
-\]
+$$
 
 If a snapshot is cloned into two machines, both may initially contain the same state:
 
-\[
+$$
 S_A=S_B=S.
-\]
+$$
 
 If nothing distinguishes them, they may begin producing identical streams:
 
-\[
+$$
 R_{A,1}=R_{B,1},
 \quad
 R_{A,2}=R_{B,2},
 \quad\ldots
-\]
+$$
 
 Modern systems therefore need to consider fork detection, reseeding, hardware events, and other mechanisms that prevent long-lived duplicate generator state.
 
 Randomness is thus not simply a function:
 
-\[
+$$
 \operatorname{randomBytes}(32).
-\]
+$$
 
 It is a **stateful security subsystem**.
 
@@ -485,51 +485,51 @@ This distinction has practical consequences.
 
 Consider the simplified ECDSA equation
 
-\[
+$$
 s
 =
 k^{-1}(H(m)+rx)
 \pmod n.
-\]
+$$
 
-If the signing nonce \(k\) becomes known,
+If the signing nonce $k$ becomes known,
 
-\[
+$$
 x
 =
 r^{-1}(sk-H(m))
 \pmod n,
-\]
+$$
 
 so the private key can be recovered.
 
-If the same \(k\) is reused across two signatures,
+If the same $k$ is reused across two signatures,
 
-\[
+$$
 s_1
 =
 k^{-1}(H(m_1)+rx)
-\]
+$$
 
 and
 
-\[
+$$
 s_2
 =
 k^{-1}(H(m_2)+rx),
-\]
+$$
 
 then subtraction eliminates the private key term and allows recovery of the nonce:
 
-\[
+$$
 k
 =
 \frac{H(m_1)-H(m_2)}
 {s_1-s_2}
 \pmod n.
-\]
+$$
 
-Once \(k\) is recovered, \(x\) follows.
+Once $k$ is recovered, $x$ follows.
 
 This is why signature nonce generation is not a minor implementation detail.
 
@@ -543,9 +543,9 @@ The nonce does not need to be secret, but reuse of a nonce under the same key ca
 
 Thus "use random bytes" is only one possible strategy for achieving the real requirement:
 
-\[
+$$
 \boxed{\text{nonce uniqueness under a fixed key}}
-\]
+$$
 
 and the system must reason about collision probability, counters, crash recovery, distributed senders, and key rotation.
 
@@ -557,33 +557,33 @@ Weak randomness has caused some of the most practical failures in otherwise stro
 
 The general patterns recur:
 
-\[
+$$
 \text{insufficient entropy}
 \rightarrow
 \text{small key space}
 \rightarrow
 \text{search becomes feasible},
-\]
+$$
 
 or
 
-\[
+$$
 \text{nonce reuse}
 \rightarrow
 \text{algebraic relation}
 \rightarrow
 \text{secret-key recovery},
-\]
+$$
 
 or
 
-\[
+$$
 \text{state cloning}
 \rightarrow
 \text{repeated output}
 \rightarrow
 \text{cross-session failures}.
-\]
+$$
 
 This is important because randomness sits underneath almost every later topic in cryptography.
 

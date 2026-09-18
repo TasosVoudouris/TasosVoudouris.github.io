@@ -64,6 +64,39 @@ function withoutFencedCode(body) {
   return body.replace(/```[\s\S]*?```/g, '').replace(/~~~[\s\S]*?~~~/g, '');
 }
 
+function withoutInlineCode(line) {
+  // Remove inline-code spans before validating prose/math delimiters.
+  // This is intentionally conservative: math-like text inside code is allowed.
+  return line.replace(/(`+)(.*?)\1/g, '');
+}
+
+function validateMathDelimiters(rel, body, errors) {
+  const prose = withoutFencedCode(body);
+  const lines = prose.split(/\r?\n/);
+
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i];
+    const trimmed = line.trim();
+
+    // remark-math on this site supports $...$ and $$...$$. The TeX-style
+    // Markdown delimiters \(...\) and \[...\] are not recognized here
+    // and would be rendered literally on the site.
+    if (trimmed === '\\[' || trimmed === '\\]') {
+      errors.push(`${rel}:${i + 1}: unsupported display-math delimiter "${trimmed}"; use $$`);
+    }
+
+    const visible = withoutInlineCode(line);
+    if (visible.includes('\\(') || visible.includes('\\)')) {
+      errors.push(`${rel}:${i + 1}: unsupported inline-math delimiter \(...\); use $...$`);
+    }
+  }
+
+  const standaloneDollarLines = lines.filter((line) => line.trim() === '$$').length;
+  if (standaloneDollarLines % 2 !== 0) {
+    errors.push(`${rel}: unbalanced standalone $$ display-math delimiters`);
+  }
+}
+
 function localImageTarget(asset) {
   const clean = asset.split('#')[0].split('?')[0];
   return {
@@ -156,6 +189,8 @@ for (const file of files) {
 
   const codeFenceCount = (body.match(/^\s{0,3}```/gm) ?? []).length;
   if (codeFenceCount % 2 !== 0) errors.push(`${rel}: unbalanced triple-backtick code fences`);
+
+  validateMathDelimiters(rel, body, errors);
 
   const visibleBody = withoutFencedCode(body);
 

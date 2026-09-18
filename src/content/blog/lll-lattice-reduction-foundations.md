@@ -30,15 +30,15 @@ This distinction creates the central problem of **lattice basis reduction**.
 
 Suppose:
 
-\[
+$$
 L=L(B),
-\]
+$$
 
 where:
 
-\[
+$$
 B=(b_1,\ldots,b_n).
-\]
+$$
 
 The basis may contain vectors that are:
 
@@ -49,29 +49,29 @@ The basis may contain vectors that are:
 
 Yet another basis:
 
-\[
+$$
 B'=BU,
 \qquad
 U\in GL_n(\mathbb Z),
-\]
+$$
 
 may generate exactly the same lattice while exposing its geometry much more clearly.
 
 The goal of reduction is therefore not:
 
-\[
+$$
 \boxed{
 \text{change the lattice}.
 }
-\]
+$$
 
 It is:
 
-\[
+$$
 \boxed{
 \text{change the basis while preserving the lattice}.
 }
-\]
+$$
 
 The Lenstra–Lenstra–Lovász algorithm, or **LLL**, achieves this in polynomial time for integer or rational input bases.
 
@@ -81,13 +81,13 @@ Instead, it produces a basis satisfying explicit geometric conditions and theref
 
 The underlying architecture is:
 
-\[
+$$
 \boxed{
 \text{integer basis operations}
 \quad\text{guided by}\quad
 \text{real Gram--Schmidt geometry}.
 }
-\]
+$$
 
 That idea is the foundation not only of LLL, but also of Babai decoding, BKZ, and much of practical lattice cryptanalysis.
 
@@ -96,7 +96,6 @@ That idea is the foundation not only of LLL, but also of Babai decoding, BKZ, an
 ## Table of Contents
 
 - [1. Gram–Schmidt data and the reduction problem](#1-gramschmidt-data-and-the-reduction-problem)
-- [b_i](#b_i)
 - [Size reduction and the Lovász condition](#size-reduction-and-the-lovász-condition)
 - [The LLL algorithm and why it terminates](#the-lll-algorithm-and-why-it-terminates)
 - [What LLL actually guarantees](#what-lll-actually-guarantees)
@@ -114,33 +113,33 @@ That idea is the foundation not only of LLL, but also of Babai decoding, BKZ, an
 
 Let:
 
-\[
+$$
 B=(b_1,\ldots,b_n)
-\]
+$$
 
 be a lattice basis.
 
 Its Gram–Schmidt orthogonalization is:
 
-\[
+$$
 \boxed{
 b_1^*,\ldots,b_n^*.
 }
-\]
+$$
 
 Recall:
 
-\[
+$$
 b_1^*=b_1,
-\]
+$$
 
 and for:
 
-\[
+$$
 i>1,
-\]
+$$
 
-\[
+$$
 \boxed{
 b_i^*
 =
@@ -149,11 +148,11 @@ b_i
 \sum_{j<i}
 \mu_{i,j}b_j^*,
 }
-\]
+$$
 
 where:
 
-\[
+$$
 \boxed{
 \mu_{i,j}
 =
@@ -163,11 +162,11 @@ where:
 \langle b_j^*,b_j^*\rangle
 }.
 }
-\]
+$$
 
 Equivalently:
 
-\[
+$$
 \boxed{
 b_i
 =
@@ -176,7 +175,7 @@ b_i^*
 \sum_{j<i}
 \mu_{i,j}b_j^*.
 }
-\]
+$$
 
 ---
 
@@ -184,29 +183,29 @@ b_i^*
 
 The original vectors:
 
-\[
+$$
 b_i
-\]
+$$
 
 belong to the lattice.
 
 The Gram–Schmidt vectors:
 
-\[
+$$
 b_i^*
-\]
+$$
 
 generally do not.
 
 The original basis is an arithmetic object:
 
-\[
+$$
 \boxed{
 L
 =
 \mathbb Zb_1+\cdots+\mathbb Zb_n.
 }
-\]
+$$
 
 The Gram–Schmidt family is a geometric auxiliary system.
 
@@ -220,45 +219,45 @@ We are allowed to modify the first family only through integer unimodular operat
 
 The coefficient:
 
-\[
+$$
 \mu_{i,j}
-\]
+$$
 
-measures how much of \(b_i\) lies in the Gram–Schmidt direction:
+measures how much of $b_i$ lies in the Gram–Schmidt direction:
 
-\[
+$$
 b_j^*.
-\]
+$$
 
 If:
 
-\[
+$$
 |\mu_{i,j}|
-\]
+$$
 
-is large, then \(b_i\) contains a large component parallel to an earlier direction.
+is large, then $b_i$ contains a large component parallel to an earlier direction.
 
 That often indicates unnecessary skew.
 
 For example, suppose approximately:
 
-\[
+$$
 b_2
 =
 100b_1+b_2^*.
-\]
+$$
 
 Then replacing:
 
-\[
+$$
 b_2
-\]
+$$
 
 by:
 
-\[
+$$
 b_2-100b_1
-\]
+$$
 
 removes this enormous redundant component without changing the lattice.
 
@@ -270,41 +269,41 @@ This is the basic idea of **size reduction**.
 
 From the previous articles:
 
-\[
+$$
 \boxed{
 \det(L)
 =
 \prod_{i=1}^{n}
 \|b_i^*\|_2.
 }
-\]
+$$
 
 If the basis is transformed by:
 
-\[
+$$
 B'=BU,
 \qquad
 U\in GL_n(\mathbb Z),
-\]
+$$
 
 then:
 
-\[
+$$
 \det(L(B'))
 =
 \det(L(B)).
-\]
+$$
 
 So reduction can redistribute the Gram–Schmidt lengths and dramatically change the visible basis geometry, but it cannot change their product:
 
-\[
+$$
 \boxed{
 \prod_i
 \|b_i^*\|
 =
 \det(L).
 }
-\]
+$$
 
 This invariant strongly constrains what any reduction algorithm can accomplish.
 
@@ -324,68 +323,68 @@ The second controls how successive Gram–Schmidt lengths are allowed to behave.
 
 An LLL basis is **size-reduced** when:
 
-\[
+$$
 \boxed{
 |\mu_{i,j}|
 \le
 \frac12
 }
-\]
+$$
 
 for all:
 
-\[
+$$
 j<i.
-\]
+$$
 
 Suppose:
 
-\[
+$$
 |\mu_{i,j}|>\frac12.
-\]
+$$
 
 Choose:
 
-\[
+$$
 r
 =
 \left\lfloor
 \mu_{i,j}
 \right\rceil,
-\]
+$$
 
 the nearest integer to:
 
-\[
+$$
 \mu_{i,j}.
-\]
+$$
 
 Then replace:
 
-\[
+$$
 \boxed{
 b_i
 \leftarrow
 b_i-rb_j.
 }
-\]
+$$
 
 Because:
 
-\[
+$$
 r\in\mathbb Z,
-\]
+$$
 
 this is an elementary unimodular column operation.
 
 Therefore:
 
-\[
+$$
 \boxed{
 L
 \text{ does not change}.
 }
-\]
+$$
 
 ---
 
@@ -393,29 +392,29 @@ L
 
 The corresponding coefficient becomes:
 
-\[
+$$
 \mu'_{i,j}
 =
 \mu_{i,j}-r.
-\]
+$$
 
-Because \(r\) is a nearest integer:
+Because $r$ is a nearest integer:
 
-\[
+$$
 \boxed{
 |\mu'_{i,j}|
 \le
 \frac12.
 }
-\]
+$$
 
 So the arithmetic operation:
 
-\[
+$$
 b_i\leftarrow b_i-rb_j
-\]
+$$
 
-removes the unnecessary large component in the \(b_j^*\) direction.
+removes the unnecessary large component in the $b_j^*$ direction.
 
 ---
 
@@ -423,7 +422,7 @@ removes the unnecessary large component in the \(b_j^*\) direction.
 
 Let:
 
-\[
+$$
 b_1=
 \begin{pmatrix}
 4\\
@@ -435,17 +434,17 @@ b_2=
 13\\
 4
 \end{pmatrix}.
-\]
+$$
 
 Because:
 
-\[
+$$
 b_1^*=b_1,
-\]
+$$
 
 we have:
 
-\[
+$$
 \mu_{2,1}
 =
 \frac{
@@ -453,71 +452,71 @@ we have:
 }{
 \|b_1\|^2
 }.
-\]
+$$
 
 Now:
 
-\[
+$$
 \langle b_2,b_1\rangle
 =
 13\cdot4+4
 =
 56,
-\]
+$$
 
 and:
 
-\[
+$$
 \|b_1\|^2
 =
 17.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \mu_{2,1}
 =
 \frac{56}{17}
 \approx3.294.
-\]
+$$
 
 The nearest integer is:
 
-\[
+$$
 3.
-\]
+$$
 
 So replace:
 
-\[
+$$
 b_2
 \leftarrow
 b_2-3b_1.
-\]
+$$
 
 This gives:
 
-\[
+$$
 b_2'
 =
 \begin{pmatrix}
 1\\
 1
 \end{pmatrix}.
-\]
+$$
 
 A vector of norm:
 
-\[
+$$
 \sqrt{185}
-\]
+$$
 
 has been replaced by one of norm:
 
-\[
+$$
 \sqrt2,
-\]
+$$
 
 without changing the lattice.
 
@@ -529,9 +528,9 @@ That is the power of an integer basis operation.
 
 A basis can satisfy:
 
-\[
+$$
 |\mu_{i,j}|\le\frac12
-\]
+$$
 
 and still have a badly ordered Gram–Schmidt profile.
 
@@ -543,37 +542,37 @@ LLL therefore imposes a second condition.
 
 Choose:
 
-\[
+$$
 \boxed{
 \frac14<\delta<1.
 }
-\]
+$$
 
 The classical choice is:
 
-\[
+$$
 \boxed{
 \delta=\frac34.
 }
-\]
+$$
 
 Implementations often use values closer to:
 
-\[
+$$
 1
-\]
+$$
 
 to obtain stronger practical reduction.
 
 For each:
 
-\[
+$$
 k=2,\ldots,n,
-\]
+$$
 
 the **Lovász condition** is:
 
-\[
+$$
 \boxed{
 \delta
 \|b_{k-1}^*\|^2
@@ -583,11 +582,11 @@ the **Lovász condition** is:
 \mu_{k,k-1}^2
 \|b_{k-1}^*\|^2.
 }
-\]
+$$
 
 Equivalently:
 
-\[
+$$
 \boxed{
 \|b_k^*\|^2
 \ge
@@ -596,49 +595,49 @@ Equivalently:
 \right)
 \|b_{k-1}^*\|^2.
 }
-\]
+$$
 
 ---
 
-### Why \(\delta>1/4\)?
+### Why $\delta>1/4$?
 
 After size reduction:
 
-\[
+$$
 |\mu_{k,k-1}|
 \le
 \frac12.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \mu_{k,k-1}^2
 \le
 \frac14.
-\]
+$$
 
 If:
 
-\[
+$$
 \delta>\frac14,
-\]
+$$
 
 then:
 
-\[
+$$
 \delta-\mu_{k,k-1}^2
-\]
+$$
 
 has a positive lower bound:
 
-\[
+$$
 \delta-\frac14>0.
-\]
+$$
 
 Define:
 
-\[
+$$
 \boxed{
 \alpha
 =
@@ -646,41 +645,41 @@ Define:
 \delta-\frac14
 }.
 }
-\]
+$$
 
 Then the Lovász and size-reduction conditions imply:
 
-\[
+$$
 \boxed{
 \|b_k^*\|^2
 \ge
 \alpha^{-1}
 \|b_{k-1}^*\|^2.
 }
-\]
+$$
 
 For:
 
-\[
+$$
 \delta=\frac34,
-\]
+$$
 
 we have:
 
-\[
+$$
 \alpha=2.
-\]
+$$
 
 Thus:
 
-\[
+$$
 \boxed{
 \|b_k^*\|^2
 \ge
 \frac12
 \|b_{k-1}^*\|^2.
 }
-\]
+$$
 
 The Gram–Schmidt lengths cannot collapse arbitrarily fast from one index to the next.
 
@@ -690,7 +689,7 @@ The Gram–Schmidt lengths cannot collapse arbitrarily fast from one index to th
 
 If:
 
-\[
+$$
 \delta
 \|b_{k-1}^*\|^2
 >
@@ -698,17 +697,17 @@ If:
 +
 \mu_{k,k-1}^2
 \|b_{k-1}^*\|^2,
-\]
+$$
 
 LLL swaps:
 
-\[
+$$
 \boxed{
 b_{k-1}
 \leftrightarrow
 b_k.
 }
-\]
+$$
 
 The algorithm then revisits the preceding region of the basis.
 
@@ -720,19 +719,19 @@ This local reordering is what distinguishes LLL from simple size reduction.
 
 At a high level, LLL alternates between:
 
-\[
+$$
 \boxed{
 \text{integer coefficient reduction}
 }
-\]
+$$
 
 and:
 
-\[
+$$
 \boxed{
 \text{local basis reordering}.
 }
-\]
+$$
 
 A simplified version is:
 
@@ -786,54 +785,54 @@ Instead, the proof uses a carefully chosen **potential**.
 
 Define:
 
-\[
+$$
 L_i
 =
 \mathbb Zb_1+\cdots+\mathbb Zb_i.
-\]
+$$
 
 Its squared covolume inside its real span is:
 
-\[
+$$
 \boxed{
 d_i
 =
 \det(L_i)^2.
 }
-\]
+$$
 
 Using Gram–Schmidt:
 
-\[
+$$
 \boxed{
 d_i
 =
 \prod_{j=1}^{i}
 \|b_j^*\|^2.
 }
-\]
+$$
 
 Now define:
 
-\[
+$$
 \boxed{
 \Phi(B)
 =
 \prod_{i=1}^{n}
 d_i.
 }
-\]
+$$
 
 Equivalently:
 
-\[
+$$
 \boxed{
 \Phi(B)
 =
 \prod_{j=1}^{n}
 \|b_j^*\|^{2(n-j+1)}.
 }
-\]
+$$
 
 ---
 
@@ -841,21 +840,21 @@ Equivalently:
 
 Replacing:
 
-\[
+$$
 b_k
 \leftarrow
 b_k-rb_j,
 \qquad
 j<k,
-\]
+$$
 
 does not change any prefix lattice as an abstract lattice.
 
 Therefore it does not change:
 
-\[
+$$
 \Phi(B).
-\]
+$$
 
 ---
 
@@ -863,16 +862,16 @@ Therefore it does not change:
 
 Suppose the pair:
 
-\[
+$$
 b_{k-1},
 b_k
-\]
+$$
 
 violates the Lovász condition.
 
 After swapping them, the relevant prefix determinant changes by the factor:
 
-\[
+$$
 \frac{
 \|b_k^*\|^2
 +
@@ -881,30 +880,30 @@ After swapping them, the relevant prefix determinant changes by the factor:
 }{
 \|b_{k-1}^*\|^2
 }.
-\]
+$$
 
 Lovász failure means this ratio is:
 
-\[
+$$
 <\delta.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 \Phi(B_{\mathrm{new}})
 <
 \delta
 \Phi(B_{\mathrm{old}}).
 }
-\]
+$$
 
 Since:
 
-\[
+$$
 \delta<1,
-\]
+$$
 
 every swap decreases the potential by a definite factor.
 
@@ -914,27 +913,27 @@ every swap decreases the potential by a definite factor.
 
 For an integer basis, the quantities:
 
-\[
+$$
 d_i
-\]
+$$
 
 are positive integers.
 
-One way to see this is through the Cauchy–Binet formula: \(d_i\) is a sum of squares of integer minors of the first \(i\) basis vectors.
+One way to see this is through the Cauchy–Binet formula: $d_i$ is a sum of squares of integer minors of the first $i$ basis vectors.
 
 Therefore:
 
-\[
+$$
 \boxed{
 \Phi(B)\ge1.
 }
-\]
+$$
 
 But every Lovász swap multiplies the potential by something strictly smaller than:
 
-\[
+$$
 \delta<1.
-\]
+$$
 
 So infinitely many swaps are impossible.
 
@@ -953,23 +952,23 @@ One must additionally control:
 - arithmetic bit lengths;
 - the cost of Gram–Schmidt updates.
 
-For an integer basis whose entries have bounded bit length, the classical LLL analysis shows polynomial running time in the input size for fixed admissible \(\delta\).
+For an integer basis whose entries have bounded bit length, the classical LLL analysis shows polynomial running time in the input size for fixed admissible $\delta$.
 
 Thus LLL's significance is not merely:
 
-\[
+$$
 \boxed{
 \text{it eventually finds a reduced basis}.
 }
-\]
+$$
 
 It is:
 
-\[
+$$
 \boxed{
 \text{it does so in polynomial time}.
 }
-\]
+$$
 
 ---
 
@@ -987,44 +986,44 @@ This distinction matters enormously.
 
 Recall:
 
-\[
+$$
 \alpha
 =
 \frac1{
 \delta-\frac14
 }.
-\]
+$$
 
 From size reduction and Lovász:
 
-\[
+$$
 \|b_k^*\|^2
 \ge
 \alpha^{-1}
 \|b_{k-1}^*\|^2.
-\]
+$$
 
 Iterating:
 
-\[
+$$
 \boxed{
 \|b_i^*\|^2
 \ge
 \alpha^{-(i-1)}
 \|b_1\|^2.
 }
-\]
+$$
 
 Equivalently:
 
-\[
+$$
 \boxed{
 \|b_1\|
 \le
 \alpha^{(i-1)/2}
 \|b_i^*\|.
 }
-\]
+$$
 
 ---
 
@@ -1032,84 +1031,84 @@ Equivalently:
 
 Take any:
 
-\[
+$$
 0\neq v\in L.
-\]
+$$
 
 Write:
 
-\[
+$$
 v
 =
 z_1b_1+\cdots+z_kb_k,
-\]
+$$
 
-where \(k\) is the largest index with:
+where $k$ is the largest index with:
 
-\[
+$$
 z_k\neq0.
-\]
+$$
 
-In Gram–Schmidt coordinates, the component of \(v\) in the \(b_k^*\) direction is:
+In Gram–Schmidt coordinates, the component of $v$ in the $b_k^*$ direction is:
 
-\[
+$$
 z_kb_k^*.
-\]
+$$
 
 Since:
 
-\[
+$$
 z_k\in\mathbb Z\setminus\{0\},
-\]
+$$
 
 we get:
 
-\[
+$$
 \|v\|
 \ge
 \|b_k^*\|.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 \lambda_1(L)
 \ge
 \min_i
 \|b_i^*\|.
 }
-\]
+$$
 
 Combining this with the Gram–Schmidt inequalities gives:
 
-\[
+$$
 \boxed{
 \|b_1\|
 \le
 \alpha^{(n-1)/2}
 \lambda_1(L).
 }
-\]
+$$
 
 For the classical choice:
 
-\[
+$$
 \delta=\frac34,
 \qquad
 \alpha=2,
-\]
+$$
 
 we obtain:
 
-\[
+$$
 \boxed{
 \|b_1\|
 \le
 2^{(n-1)/2}
 \lambda_1(L).
 }
-\]
+$$
 
 So LLL is a polynomial-time approximation algorithm for SVP with an exponential approximation factor.
 
@@ -1119,40 +1118,40 @@ So LLL is a polynomial-time approximation algorithm for SVP with an exponential 
 
 Using:
 
-\[
+$$
 \det(L)
 =
 \prod_i
 \|b_i^*\|
-\]
+$$
 
 and the same Gram–Schmidt relation, one obtains:
 
-\[
+$$
 \boxed{
 \|b_1\|
 \le
 \alpha^{(n-1)/4}
 \det(L)^{1/n}.
 }
-\]
+$$
 
 For:
 
-\[
+$$
 \delta=\frac34,
-\]
+$$
 
 this becomes:
 
-\[
+$$
 \boxed{
 \|b_1\|
 \le
 2^{(n-1)/4}
 \det(L)^{1/n}.
 }
-\]
+$$
 
 This compares the first reduced basis vector directly with the natural determinant scale.
 
@@ -1162,9 +1161,9 @@ This compares the first reduced basis vector directly with the natural determina
 
 The bound:
 
-\[
+$$
 2^{(n-1)/2}
-\]
+$$
 
 grows exponentially.
 
@@ -1200,21 +1199,21 @@ That is the correct interpretation.
 
 For linearly independent vectors:
 
-\[
+$$
 b_1,\ldots,b_n,
-\]
+$$
 
 Hadamard's inequality gives:
 
-\[
+$$
 \det(L)
 \le
 \prod_i\|b_i\|.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 \eta(B)
 =
@@ -1225,21 +1224,21 @@ Therefore:
 }
 \ge1
 }
-\]
+$$
 
 can be used as a measure of basis skew.
 
 An orthogonal basis satisfies:
 
-\[
+$$
 \eta(B)=1.
-\]
+$$
 
 Reduction generally tries to decrease such geometric distortion while preserving:
 
-\[
+$$
 \det(L).
-\]
+$$
 
 ---
 
@@ -1257,21 +1256,21 @@ The canonical example is **Babai's nearest-plane algorithm**.
 
 Suppose the lattice basis:
 
-\[
+$$
 b_1,\ldots,b_n
-\]
+$$
 
 is orthogonal.
 
 Given a target:
 
-\[
+$$
 t,
-\]
+$$
 
 compute each coordinate:
 
-\[
+$$
 c_i
 =
 \frac{
@@ -1279,25 +1278,25 @@ c_i
 }{
 \langle b_i,b_i\rangle
 }.
-\]
+$$
 
 Then round:
 
-\[
+$$
 z_i
 =
 \lfloor c_i\rceil.
-\]
+$$
 
 The lattice point:
 
-\[
+$$
 \boxed{
 v
 =
 \sum_i z_i b_i
 }
-\]
+$$
 
 is an exact closest lattice vector.
 
@@ -1315,27 +1314,27 @@ Babai instead uses the Gram–Schmidt geometry.
 
 Let:
 
-\[
+$$
 b_1^*,\ldots,b_n^*
-\]
+$$
 
 be the orthogonalized basis.
 
 Begin with:
 
-\[
+$$
 y=t.
-\]
+$$
 
 Process indices backwards:
 
-\[
+$$
 i=n,n-1,\ldots,1.
-\]
+$$
 
 Compute:
 
-\[
+$$
 \boxed{
 c_i
 =
@@ -1345,29 +1344,29 @@ c_i
 \langle b_i^*,b_i^*\rangle
 }.
 }
-\]
+$$
 
 Round:
 
-\[
+$$
 z_i
 =
 \lfloor c_i\rceil.
-\]
+$$
 
 Then update:
 
-\[
+$$
 \boxed{
 y
 \leftarrow
 y-z_ib_i.
 }
-\]
+$$
 
 At the end:
 
-\[
+$$
 \boxed{
 v
 =
@@ -1375,7 +1374,7 @@ t-y
 =
 \sum_i z_i b_i
 }
-\]
+$$
 
 is the Babai lattice point.
 
@@ -1385,23 +1384,23 @@ is the Babai lattice point.
 
 The vector:
 
-\[
+$$
 b_n^*
-\]
+$$
 
 captures the component orthogonal to the span:
 
-\[
+$$
 \operatorname{span}(b_1,\ldots,b_{n-1}).
-\]
+$$
 
 So the last coordinate can be chosen first.
 
 After subtracting the corresponding multiple of:
 
-\[
+$$
 b_n,
-\]
+$$
 
 the problem is reduced toward the earlier subspace.
 
@@ -1409,11 +1408,11 @@ This recursion continues until the first basis direction.
 
 Hence the name:
 
-\[
+$$
 \boxed{
 \text{nearest plane}.
 }
-\]
+$$
 
 At each stage, the target is rounded toward a hyperplane associated with the remaining lower-dimensional lattice structure.
 
@@ -1427,7 +1426,7 @@ If it is highly skewed, an early rounding error can distort all subsequent decis
 
 This gives the standard computational pipeline:
 
-\[
+$$
 \boxed{
 \text{reduce the basis}
 \rightarrow
@@ -1435,7 +1434,7 @@ This gives the standard computational pipeline:
 \rightarrow
 \text{obtain an approximate CVP solution}.
 }
-\]
+$$
 
 LLL and BKZ therefore improve not only short-vector search but also decoding.
 
@@ -1445,21 +1444,21 @@ LLL and BKZ therefore improve not only short-vector search but also decoding.
 
 Suppose a target:
 
-\[
+$$
 t=v+e
-\]
+$$
 
-lies near a lattice vector \(v\).
+lies near a lattice vector $v$.
 
-If the basis is sufficiently good and the error is sufficiently small, Babai may recover \(v\).
+If the basis is sufficiently good and the error is sufficiently small, Babai may recover $v$.
 
 The exact decoding radius depends on the geometry of the reduced basis.
 
 So Babai is not automatically an exact BDD solver up to:
 
-\[
+$$
 \lambda_1/2.
-\]
+$$
 
 The information-theoretic unique-decoding radius and the radius guaranteed by a particular algorithm are different concepts.
 
@@ -1479,23 +1478,23 @@ Its geometric ancestor is the classical two-dimensional reduction of lattice bas
 
 Let:
 
-\[
+$$
 b_1,b_2
-\]
+$$
 
 be a basis of a two-dimensional lattice.
 
 Assume:
 
-\[
+$$
 \|b_1\|
 \le
 \|b_2\|.
-\]
+$$
 
 Compute:
 
-\[
+$$
 \boxed{
 r
 =
@@ -1507,29 +1506,29 @@ r
 }
 \right\rceil.
 }
-\]
+$$
 
 Then replace:
 
-\[
+$$
 \boxed{
 b_2
 \leftarrow
 b_2-rb_1.
 }
-\]
+$$
 
 If the new:
 
-\[
+$$
 b_2
-\]
+$$
 
-is shorter than \(b_1\), swap them and repeat.
+is shorter than $b_1$, swap them and repeat.
 
 The process resembles the Euclidean algorithm:
 
-\[
+$$
 \boxed{
 \text{subtract the best integer multiple}
 \rightarrow
@@ -1537,7 +1536,7 @@ The process resembles the Euclidean algorithm:
 \rightarrow
 \text{repeat}.
 }
-\]
+$$
 
 In dimension two, this process can recover very strong geometric information, including a shortest vector.
 
@@ -1549,17 +1548,17 @@ LLL generalizes the same philosophy to higher dimensions using Gram–Schmidt co
 
 In two dimensions there is only one earlier direction to control.
 
-In dimension \(n\), a vector:
+In dimension $n$, a vector:
 
-\[
+$$
 b_i
-\]
+$$
 
 can interact with all:
 
-\[
+$$
 b_1,\ldots,b_{i-1}.
-\]
+$$
 
 The local geometry becomes much more complicated.
 
@@ -1575,24 +1574,24 @@ But stronger reduction requires looking at more than adjacent pairs.
 
 Choose a block size:
 
-\[
+$$
 \boxed{
 \beta.
 }
-\]
+$$
 
 Instead of considering only adjacent basis vectors, BKZ repeatedly considers projected sublattices of dimension up to:
 
-\[
+$$
 \beta.
-\]
+$$
 
-Very roughly, at index \(i\):
+Very roughly, at index $i$:
 
 1. project the block:
-   \[
+   $$
    b_i,\ldots,b_{i+\beta-1}
-   \]
+   $$
    orthogonally to the span of earlier basis vectors;
 2. solve or approximate an SVP instance inside that projected block;
 3. use the resulting short vector to improve the global basis;
@@ -1605,39 +1604,39 @@ Very roughly, at index \(i\):
 
 The parameter:
 
-\[
+$$
 \beta
-\]
+$$
 
 controls the main tradeoff:
 
-\[
+$$
 \boxed{
 \text{small }\beta
 \Rightarrow
 \text{cheaper but weaker reduction},
 }
-\]
+$$
 
 while:
 
-\[
+$$
 \boxed{
 \text{large }\beta
 \Rightarrow
 \text{stronger but much more expensive reduction}.
 }
-\]
+$$
 
 The difficult subroutine is SVP in dimension approximately:
 
-\[
+$$
 \beta.
-\]
+$$
 
 Its cost rises rapidly with the block size.
 
-This makes \(\beta\) one of the central parameters in modern lattice cryptanalysis.
+This makes $\beta$ one of the central parameters in modern lattice cryptanalysis.
 
 ---
 
@@ -1645,7 +1644,7 @@ This makes \(\beta\) one of the central parameters in modern lattice cryptanalys
 
 It is useful to think of the progression as:
 
-\[
+$$
 \boxed{
 \text{Gauss reduction}
 \rightarrow
@@ -1653,7 +1652,7 @@ It is useful to think of the progression as:
 \rightarrow
 \text{BKZ}.
 }
-\]
+$$
 
 Gauss reduction handles the two-dimensional geometry extremely strongly.
 
@@ -1663,9 +1662,9 @@ BKZ spends more computational effort to obtain stronger reduction over larger bl
 
 In idealized exact-oracle formulations, taking:
 
-\[
+$$
 \beta=n
-\]
+$$
 
 approaches full-dimensional HKZ-style reduction, but at exponential computational cost.
 
@@ -1689,15 +1688,15 @@ from fractions import Fraction
 
 Then quantities such as:
 
-\[
+$$
 \mu_{i,j}
-\]
+$$
 
 and:
 
-\[
+$$
 \|b_i^*\|^2
-\]
+$$
 
 can be computed without floating-point rounding error.
 
@@ -1726,11 +1725,11 @@ Production implementations use more sophisticated methods:
 
 The implementation problem is therefore:
 
-\[
+$$
 \boxed{
 \text{use approximate geometry without losing exact lattice arithmetic}.
 }
-\]
+$$
 
 ---
 
@@ -1896,29 +1895,29 @@ It is not intended to compete with optimized lattice software.
 
 For small inputs, useful tests include verifying:
 
-\[
+$$
 \boxed{
 L(B_{\mathrm{out}})
 =
 L(B_{\mathrm{in}})
 }
-\]
+$$
 
 through an explicitly tracked unimodular transformation.
 
 One can also test:
 
-\[
+$$
 \boxed{
 |\mu_{i,j}|
 \le
 \frac12
 }
-\]
+$$
 
 and:
 
-\[
+$$
 \boxed{
 \delta
 \|b_{k-1}^*\|^2
@@ -1928,17 +1927,17 @@ and:
 \mu_{k,k-1}^2
 \|b_{k-1}^*\|^2.
 }
-\]
+$$
 
 For square bases:
 
-\[
+$$
 \boxed{
 |\det B_{\mathrm{out}}|
 =
 |\det B_{\mathrm{in}}|.
 }
-\]
+$$
 
 These are implementation invariants.
 
@@ -1952,41 +1951,41 @@ One major use of LLL is polynomial small-root computation.
 
 The broad Coppersmith pattern is:
 
-\[
+$$
 \boxed{
 \text{construct many related polynomials}
 }
-\]
+$$
 
-\[
+$$
 \downarrow
-\]
+$$
 
-\[
+$$
 \boxed{
 \text{encode their coefficient vectors as a lattice}
 }
-\]
+$$
 
-\[
+$$
 \downarrow
-\]
+$$
 
-\[
+$$
 \boxed{
 \text{apply LLL}
 }
-\]
+$$
 
-\[
+$$
 \downarrow
-\]
+$$
 
-\[
+$$
 \boxed{
 \text{obtain a sufficiently small polynomial relation}.
 }
-\]
+$$
 
 The important insight is not merely:
 
@@ -1996,19 +1995,19 @@ The difficult part is constructing the lattice so that sufficiently short vector
 
 Thus:
 
-\[
+$$
 \boxed{
 \text{lattice construction}
 }
-\]
+$$
 
 is usually as important as:
 
-\[
+$$
 \boxed{
 \text{lattice reduction}.
 }
-\]
+$$
 
 ---
 
@@ -2018,19 +2017,19 @@ Similar reasoning appears in Hidden Number Problem constructions.
 
 Information about a hidden scalar is transformed into:
 
-\[
+$$
 \boxed{
 \text{an unusually close target}
 }
-\]
+$$
 
 or:
 
-\[
+$$
 \boxed{
 \text{an unusually short embedded vector}.
 }
-\]
+$$
 
 Then:
 
@@ -2050,7 +2049,7 @@ In practical lattice reduction, one frequently summarizes first-vector quality u
 
 One common convention defines:
 
-\[
+$$
 \boxed{
 \delta_0(B)
 =
@@ -2062,26 +2061,26 @@ One common convention defines:
 }
 \right)^{1/n}.
 }
-\]
+$$
 
 Equivalently:
 
-\[
+$$
 \boxed{
 \|b_1\|
 =
 \delta_0(B)^n
 \det(L)^{1/n}.
 }
-\]
+$$
 
 Different sources use slightly different exponent conventions, so the definition should always be stated explicitly.
 
 Smaller:
 
-\[
+$$
 \delta_0
-\]
+$$
 
 means stronger reduction.
 
@@ -2093,7 +2092,7 @@ Another common empirical model is the **Geometric Series Assumption (GSA)**.
 
 It predicts that after strong reduction, the Gram–Schmidt lengths behave approximately geometrically:
 
-\[
+$$
 \boxed{
 \frac{
 \|b_i^*\|
@@ -2103,25 +2102,25 @@ It predicts that after strong reduction, the Gram–Schmidt lengths behave appro
 \approx
 \text{constant}.
 }
-\]
+$$
 
 Equivalently:
 
-\[
+$$
 \boxed{
 \log\|b_i^*\|
 }
-\]
+$$
 
-is approximately affine in the basis index \(i\).
+is approximately affine in the basis index $i$.
 
 Since:
 
-\[
+$$
 \prod_i\|b_i^*\|
 =
 \det(L),
-\]
+$$
 
 the determinant fixes the total volume while the GSA predicts how this volume is distributed across the Gram–Schmidt profile.
 
@@ -2147,19 +2146,19 @@ They are indispensable for modern cryptanalytic estimation, but they remain mode
 
 Therefore security arguments should distinguish:
 
-\[
+$$
 \boxed{
 \text{proven reduction guarantee}
 }
-\]
+$$
 
 from:
 
-\[
+$$
 \boxed{
 \text{empirical BKZ/GSA estimate}.
 }
-\]
+$$
 
 ---
 
@@ -2167,35 +2166,35 @@ from:
 
 Lattice reduction begins with an integer basis:
 
-\[
+$$
 \boxed{
 B=(b_1,\ldots,b_n).
 }
-\]
+$$
 
 Gram–Schmidt produces geometric data:
 
-\[
+$$
 \boxed{
 b_i^*,
 \qquad
 \mu_{i,j}.
 }
-\]
+$$
 
 Size reduction controls:
 
-\[
+$$
 \boxed{
 |\mu_{i,j}|
 \le
 \frac12.
 }
-\]
+$$
 
 The Lovász condition controls neighboring Gram–Schmidt scales:
 
-\[
+$$
 \boxed{
 \delta
 \|b_{k-1}^*\|^2
@@ -2205,32 +2204,32 @@ The Lovász condition controls neighboring Gram–Schmidt scales:
 \mu_{k,k-1}^2
 \|b_{k-1}^*\|^2.
 }
-\]
+$$
 
 If the condition fails:
 
-\[
+$$
 \boxed{
 \text{swap}.
 }
-\]
+$$
 
 A decreasing potential proves termination.
 
 The result satisfies:
 
-\[
+$$
 \boxed{
 \|b_1\|
 \le
 \alpha^{(n-1)/2}
 \lambda_1(L),
 }
-\]
+$$
 
 where:
 
-\[
+$$
 \boxed{
 \alpha
 =
@@ -2238,28 +2237,28 @@ where:
 \delta-\frac14
 }.
 }
-\]
+$$
 
 For:
 
-\[
+$$
 \delta=\frac34,
-\]
+$$
 
 this becomes:
 
-\[
+$$
 \boxed{
 \|b_1\|
 \le
 2^{(n-1)/2}
 \lambda_1(L).
 }
-\]
+$$
 
 The reduced basis can then support approximate decoding:
 
-\[
+$$
 \boxed{
 \text{LLL/BKZ}
 \rightarrow
@@ -2267,45 +2266,45 @@ The reduced basis can then support approximate decoding:
 \rightarrow
 \text{approximate CVP}.
 }
-\]
+$$
 
 Stronger block reduction gives:
 
-\[
+$$
 \boxed{
 \text{LLL}
 \rightarrow
 \text{BKZ-}\beta
 }
-\]
+$$
 
 with a computational tradeoff controlled by:
 
-\[
+$$
 \beta.
-\]
+$$
 
 Modern lattice cryptanalysis therefore revolves around three interacting objects:
 
-\[
+$$
 \boxed{
 \text{lattice construction},
 }
-\]
+$$
 
-\[
+$$
 \boxed{
 \text{reduction strength},
 }
-\]
+$$
 
 and:
 
-\[
+$$
 \boxed{
 \text{target geometry}.
 }
-\]
+$$
 
 ---
 
@@ -2315,7 +2314,7 @@ and:
 
 Let:
 
-\[
+$$
 b_1=
 \begin{pmatrix}
 4\\
@@ -2327,13 +2326,13 @@ b_2=
 13\\
 4
 \end{pmatrix}.
-\]
+$$
 
 Compute:
 
-\[
+$$
 \mu_{2,1}.
-\]
+$$
 
 Perform one size-reduction step.
 
@@ -2345,9 +2344,9 @@ Verify that the new basis generates the same lattice.
 
 Suppose:
 
-\[
+$$
 \mu_{i,j}=2.73.
-\]
+$$
 
 What integer should be subtracted in the size-reduction step?
 
@@ -2359,23 +2358,23 @@ What is the new value of the corresponding coefficient?
 
 Let:
 
-\[
+$$
 \delta=\frac34,
-\]
+$$
 
-\[
+$$
 \|b_{k-1}^*\|^2=20,
-\]
+$$
 
-\[
+$$
 \|b_k^*\|^2=8,
-\]
+$$
 
 and:
 
-\[
+$$
 \mu_{k,k-1}=\frac12.
-\]
+$$
 
 Determine whether the Lovász condition holds.
 
@@ -2385,25 +2384,25 @@ Determine whether the Lovász condition holds.
 
 For:
 
-\[
+$$
 \delta=\frac34,
-\]
+$$
 
 compute:
 
-\[
+$$
 \alpha
 =
 \frac1{
 \delta-\frac14
 }.
-\]
+$$
 
 Recover the classical approximation factor:
 
-\[
+$$
 \alpha^{(n-1)/2}.
-\]
+$$
 
 ---
 
@@ -2411,25 +2410,25 @@ Recover the classical approximation factor:
 
 Explain why:
 
-\[
+$$
 b_i
 \leftarrow
 b_i-rb_j
-\]
+$$
 
 with:
 
-\[
+$$
 r\in\mathbb Z
-\]
+$$
 
 preserves the lattice.
 
 What would go wrong if:
 
-\[
+$$
 r=\frac12?
-\]
+$$
 
 ---
 
@@ -2437,39 +2436,39 @@ r=\frac12?
 
 Show that:
 
-\[
+$$
 \Phi(B)
 =
 \prod_{i=1}^{n}
 \det(L_i)^2
-\]
+$$
 
 can also be written:
 
-\[
+$$
 \Phi(B)
 =
 \prod_{j=1}^{n}
 \|b_j^*\|^{2(n-j+1)}.
-\]
+$$
 
 ---
 
 ### Exercise 7 — Approximation guarantee
 
-Explain why a nonzero lattice vector whose largest nonzero basis coefficient has index \(k\) must satisfy:
+Explain why a nonzero lattice vector whose largest nonzero basis coefficient has index $k$ must satisfy:
 
-\[
+$$
 \|v\|
 \ge
 \|b_k^*\|.
-\]
+$$
 
 Use this observation to explain the connection between Gram–Schmidt lengths and:
 
-\[
+$$
 \lambda_1(L).
-\]
+$$
 
 ---
 
@@ -2477,17 +2476,17 @@ Use this observation to explain the connection between Gram–Schmidt lengths an
 
 Let:
 
-\[
+$$
 b_1=(2,0),
 \qquad
 b_2=(0,3),
-\]
+$$
 
 and:
 
-\[
+$$
 t=(4.4,5.2).
-\]
+$$
 
 Apply coordinate rounding.
 
@@ -2501,11 +2500,11 @@ Why is the answer exact in this orthogonal case?
 
 Why does:
 
-\[
+$$
 \operatorname{dist}(t,L)
 <
 \frac{\lambda_1(L)}2
-\]
+$$
 
 guarantee a unique nearest vector, but not automatically guarantee that Babai returns it from an arbitrary bad basis?
 
@@ -2515,21 +2514,21 @@ guarantee a unique nearest vector, but not automatically guarantee that Babai re
 
 Let:
 
-\[
+$$
 b_1,b_2
-\]
+$$
 
 be a two-dimensional basis.
 
 Explain why replacing:
 
-\[
+$$
 b_2
-\]
+$$
 
 by:
 
-\[
+$$
 b_2-
 \left\lfloor
 \frac{
@@ -2539,7 +2538,7 @@ b_2-
 }
 \right\rceil
 b_1
-\]
+$$
 
 is analogous to a Euclidean-algorithm remainder step.
 
@@ -2549,9 +2548,9 @@ is analogous to a Euclidean-algorithm remainder step.
 
 Explain conceptually why increasing:
 
-\[
+$$
 \beta
-\]
+$$
 
 should improve reduction quality.
 
@@ -2563,19 +2562,19 @@ Why does it also increase computational cost dramatically?
 
 Suppose:
 
-\[
+$$
 \det(L)^{1/n}=100
-\]
+$$
 
 and a reduced basis has:
 
-\[
+$$
 \|b_1\|=160.
-\]
+$$
 
 Under the convention:
 
-\[
+$$
 \delta_0
 =
 \left(
@@ -2585,9 +2584,9 @@ Under the convention:
 \det(L)^{1/n}
 }
 \right)^{1/n},
-\]
+$$
 
-write the corresponding root-Hermite factor in terms of \(n\).
+write the corresponding root-Hermite factor in terms of $n$.
 
 ---
 
@@ -2595,15 +2594,15 @@ write the corresponding root-Hermite factor in terms of \(n\).
 
 What would a geometric Gram–Schmidt profile look like on a graph of:
 
-\[
+$$
 \log\|b_i^*\|
-\]
+$$
 
 against:
 
-\[
+$$
 i?
-\]
+$$
 
 Why should deviation from a straight line not automatically be interpreted as an implementation bug?
 
@@ -2615,32 +2614,32 @@ You should now be able to explain:
 
 1. Why a lattice basis can be bad even when the lattice itself is unchanged.
 2. What the Gram–Schmidt vectors:
-   \[
+   $$
    b_i^*
-   \]
+   $$
    represent.
 3. What:
-   \[
+   $$
    \mu_{i,j}
-   \]
+   $$
    measures.
 4. Why Gram–Schmidt vectors need not belong to the lattice.
 5. What size reduction means.
 6. Why nearest-integer subtraction preserves the lattice.
 7. Why:
-   \[
+   $$
    |\mu_{i,j}|\le1/2
-   \]
+   $$
    is the natural size-reduction condition.
 8. What the Lovász parameter:
-   \[
+   $$
    \delta
-   \]
+   $$
    controls.
 9. Why:
-   \[
+   $$
    1/4<\delta<1
-   \]
+   $$
    is the standard range.
 10. What the Lovász condition states.
 11. What happens when the Lovász condition fails.
@@ -2649,29 +2648,29 @@ You should now be able to explain:
 14. Why integral input gives a discrete lower bound for the potential.
 15. Why termination alone is weaker than polynomial-time complexity.
 16. What approximation guarantee LLL gives for:
-   \[
+   $$
    b_1.
-   \]
+   $$
 17. Why LLL does not solve exact SVP.
 18. How:
-   \[
+   $$
    \det(L)
-   \]
+   $$
    constrains reduced basis quality.
 19. What orthogonality defect measures.
 20. How Babai's nearest-plane algorithm works.
 21. Why Babai is exact for an orthogonal basis.
 22. Why a reduced basis improves approximate decoding.
 23. Why algorithmic decoding radius differs from the information-theoretic radius:
-   \[
+   $$
    \lambda_1/2.
-   \]
+   $$
 24. How Gauss reduction anticipates LLL in two dimensions.
 25. How BKZ generalizes local reduction to blocks.
 26. Why block size:
-   \[
+   $$
    \beta
-   \]
+   $$
    controls a time-quality tradeoff.
 27. Why larger BKZ block sizes require increasingly expensive SVP computation.
 28. What a root-Hermite factor is intended to summarize.
@@ -2682,11 +2681,11 @@ You should now be able to explain:
 
 The core principle is:
 
-\[
+$$
 \boxed{
 \text{LLL never changes the lattice.}
 }
-\]
+$$
 
 It changes our **view of the lattice**.
 
@@ -2741,7 +2740,7 @@ There, repeated nearest-integer subtraction and swapping give the classical **Ga
 
 The two-dimensional setting lets us see almost everything geometrically:
 
-\[
+$$
 \boxed{
 \text{projection},
 \quad
@@ -2751,7 +2750,7 @@ The two-dimensional setting lets us see almost everything geometrically:
 \quad
 \text{basis swapping}.
 }
-\]
+$$
 
 It also provides a useful toy model for understanding how an NTRU-style public relation can hide an unusually short secret vector inside a lattice.
 

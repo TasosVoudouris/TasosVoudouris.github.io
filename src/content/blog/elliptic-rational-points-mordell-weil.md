@@ -86,7 +86,7 @@ $$
 
 is the **rank**.
 
-This chapter explains why finite generation is plausible, why ordinary coordinates are not enough to prove it, and how **descent and height functions** reveal the arithmetic structure of \(E(\mathbb Q)\).
+This chapter explains why finite generation is plausible, why ordinary coordinates are not enough to prove it, and how **descent and height functions** reveal the arithmetic structure of $E(\mathbb Q)$.
 
 ---
 
@@ -108,15 +108,13 @@ This chapter explains why finite generation is plausible, why ordinary coordinat
 - [14. A small rational example](#14-a-small-rational-example)
 - [15. Selmer groups and practical descent](#15-selmer-groups-and-practical-descent)
 - [Rank](#rank)
-- [17. Torsion over (\mathbb Q)](#17-torsion-over-mathbb-q)
+- [17. Torsion over $\mathbb Q$](#17-torsion-over-qmathbb-qq)
 - [18. Birch and Swinnerton-Dyer](#18-birch-and-swinnerton-dyer)
 - [19. Why this matters for cryptography](#19-why-this-matters-for-cryptography)
 - [20. The bigger picture](#20-the-bigger-picture)
 - [Further reading](#further-reading)
 
 ---
-
-<a id="conics-to-cubics"></a>
 
 ## 1. From conics to cubics
 
@@ -134,7 +132,7 @@ $$
 P\in C(\mathbb Q).
 $$
 
-Draw every line of rational slope through \(P\).
+Draw every line of rational slope through $P$.
 
 Each such line intersects the conic one more time.
 
@@ -278,7 +276,7 @@ So the geometric group law restricts naturally to rational points.
 
 The central theorem is more general than the rational case.
 
-Let \(K\) be a number field and let
+Let $K$ be a number field and let
 
 $$
 E/K
@@ -321,7 +319,7 @@ The two components behave very differently.
 
 ### Torsion part
 
-A point \(P\) is torsion if
+A point $P$ is torsion if
 
 $$
 [n]P=\mathcal O
@@ -437,9 +435,9 @@ $$
 r>0,
 $$
 
-then \(E(\mathbb Q)\) is infinite.
+then $E(\mathbb Q)$ is infinite.
 
-For example, if \(P\) has infinite order,
+For example, if $P$ has infinite order,
 
 $$
 P,\;2P,\;3P,\;4P,\ldots
@@ -467,7 +465,7 @@ $$
 
 occur.
 
-The group therefore behaves like an \(r\)-dimensional integer lattice, together with a finite torsion component.
+The group therefore behaves like an $r$-dimensional integer lattice, together with a finite torsion component.
 
 This analogy becomes even stronger once we introduce canonical heights.
 
@@ -485,7 +483,7 @@ $$
 
 places no obvious upper bound on the numerator or denominator of a rational point.
 
-A rational \(x\)-coordinate may have the form
+A rational $x$-coordinate may have the form
 
 $$
 x=\frac uv
@@ -515,11 +513,11 @@ E(\mathbb Q)/mE(\mathbb Q)
 }
 $$
 
-for a suitable integer \(m\geq2\).
+for a suitable integer $m\geq2$.
 
 This is the **weak Mordell–Weil theorem**.
 
-Second, we need a notion of size that behaves predictably under multiplication by \(m\).
+Second, we need a notion of size that behaves predictably under multiplication by $m$.
 
 That is the role of **heights**.
 
@@ -571,7 +569,7 @@ $$
 \frac{1000001}{2000003}
 $$
 
-are both close to \(0.5\).
+are both close to $0.5$.
 
 But the second requires much larger integers to describe.
 
@@ -696,7 +694,7 @@ $$
 h_x([n]P)
 $$
 
-behaves roughly quadratically in \(n\), but not exactly.
+behaves roughly quadratically in $n$, but not exactly.
 
 This bounded error is enough to suggest a better definition.
 
@@ -738,7 +736,7 @@ h_x([2^n]P)
 }
 $$
 
-Different books may absorb the factor \(1/2\) into the normalization of the underlying height, but the essential properties are the same.
+Different books may absorb the factor $1/2$ into the normalization of the underlying height, but the essential properties are the same.
 
 The key relation is
 
@@ -876,7 +874,7 @@ $$
 
 Why is one direction immediate?
 
-If \(P\) has order \(m\),
+If $P$ has order $m$,
 
 $$
 [m]P=\mathcal O.
@@ -937,13 +935,13 @@ E(K)/mE(K)
 }
 $$
 
-for every number field \(K\) and every integer
+for every number field $K$ and every integer
 
 $$
 m\geq2.
 $$
 
-For the rational case and \(m=2\),
+For the rational case and $m=2$,
 
 $$
 \boxed{
@@ -972,7 +970,7 @@ $$
 Q_1,\ldots,Q_t
 $$
 
-such that every rational point \(P\) can be written as
+such that every rational point $P$ can be written as
 
 $$
 \boxed{
@@ -982,7 +980,7 @@ Q_i+2P'
 }
 $$
 
-for some \(i\) and some
+for some $i$ and some
 
 $$
 P'\in E(\mathbb Q).
@@ -1008,7 +1006,7 @@ $$
 Q_1,\ldots,Q_t.
 $$
 
-Given an arbitrary point \(P\), write
+Given an arbitrary point $P$, write
 
 $$
 P
@@ -1016,7 +1014,7 @@ P
 Q_i+2P_1.
 $$
 
-Now solve for the height of \(P_1\).
+Now solve for the height of $P_1$.
 
 Since canonical height is quadratic,
 
@@ -1038,7 +1036,7 @@ $$
 \hat h(P-Q_i).
 $$
 
-Using the quadratic-form properties of \(\hat h\), this is controlled by the height of \(P\) plus constants depending only on the finite set of \(Q_i\).
+Using the quadratic-form properties of $\hat h$, this is controlled by the height of $P$ plus constants depending only on the finite set of $Q_i$.
 
 The key effect is:
 
@@ -1050,7 +1048,7 @@ $$
 }
 $$
 
-So replacing \(P\) by an appropriate “half-point modulo a representative” reduces its arithmetic size substantially.
+So replacing $P$ by an appropriate “half-point modulo a representative” reduces its arithmetic size substantially.
 
 This can be repeated:
 
@@ -1130,19 +1128,19 @@ $$
 
 ### Step 2: descent
 
-For every point \(P\),
+For every point $P$,
 
 $$
 P=Q_i+2P_1.
 $$
 
-The height of \(P_1\) is roughly one quarter of the height of \(P\).
+The height of $P_1$ is roughly one quarter of the height of $P$.
 
 ---
 
 ### Step 3: repeat
 
-If \(P_1\) is still large, write
+If $P_1$ is still large, write
 
 $$
 P_1=Q_j+2P_2.
@@ -1178,11 +1176,11 @@ $$
 
 Every rational point can therefore be reconstructed from:
 
-* one of the finitely many quotient representatives \(Q_i\);
-* finitely many bounded-height points from \(S\);
+* one of the finitely many quotient representatives $Q_i$;
+* finitely many bounded-height points from $S$;
 * repeated doubling.
 
-Hence finitely many rational points generate all of \(E(\mathbb Q)\).
+Hence finitely many rational points generate all of $E(\mathbb Q)$.
 
 Therefore,
 
@@ -1226,7 +1224,7 @@ $$
 3^3-2=25.
 $$
 
-Let us double \(P\).
+Let us double $P$.
 
 The tangent slope is
 
@@ -1327,13 +1325,13 @@ That is the quantity descent controls.
 
 ## 15. Selmer groups and practical descent
 
-The phrase “perform a \(2\)-descent” usually means something more concrete than merely studying
+The phrase “perform a $2$-descent” usually means something more concrete than merely studying
 
 $$
 E(\mathbb Q)/2E(\mathbb Q).
 $$
 
-One constructs a finite computable group called the **\(2\)-Selmer group**:
+One constructs a finite computable group called the **$2$-Selmer group**:
 
 $$
 \operatorname{Sel}_2(E/\mathbb Q).
@@ -1393,7 +1391,7 @@ $$
 \mathbb R
 $$
 
-and over the \(p\)-adic fields
+and over the $p$-adic fields
 
 $$
 \mathbb Q_p.
@@ -1477,7 +1475,7 @@ $$
 \mathbb Z^r.
 $$
 
-Through the canonical height pairing, it behaves geometrically like a Euclidean lattice of rank \(r\).
+Through the canonical height pairing, it behaves geometrically like a Euclidean lattice of rank $r$.
 
 Thus a remarkable second lattice-like structure appears inside elliptic-curve arithmetic:
 
@@ -1497,7 +1495,7 @@ But the analogy is mathematically useful.
 
 <a id="torsion-over-q"></a>
 
-## 17. Torsion over \(\mathbb Q\)
+## 17. Torsion over $\mathbb Q$
 
 The torsion subgroup is not arbitrary.
 
@@ -1527,7 +1525,7 @@ $$
 }
 $$
 
-So only finitely many abstract torsion structures can occur over \(\mathbb Q\).
+So only finitely many abstract torsion structures can occur over $\mathbb Q$.
 
 This is remarkably rigid.
 
@@ -1581,7 +1579,7 @@ $$
 }
 $$
 
-The refined conjecture goes much further and relates the leading coefficient at \(s=1\) to quantities including:
+The refined conjecture goes much further and relates the leading coefficient at $s=1$ to quantities including:
 
 * the regulator;
 * the torsion subgroup;
@@ -1641,7 +1639,7 @@ Concepts such as:
 * global fields;
 * heights;
 * Frobenius;
-* \(L\)-functions;
+* $L$-functions;
 
 are all interconnected.
 
@@ -1699,7 +1697,7 @@ $$
 
 ---
 
-### Chapter IV — arithmetic structure over \(\mathbb Q\)
+### Chapter IV — arithmetic structure over $\mathbb Q$
 
 $$
 \boxed{
@@ -1834,11 +1832,11 @@ Now the group itself is finite.
 The questions become:
 
 * How many points are there?
-* Why is the count near \(p+1\)?
+* Why is the count near $p+1$?
 * What is the Frobenius endomorphism?
 * What does Hasse's bound mean?
 * What are point orders and cofactors?
-* When is \(E(\mathbb F_p)\) cyclic?
+* When is $E(\mathbb F_p)$ cyclic?
 * How do we choose a cryptographic subgroup?
 
 That is the point where the arithmetic theory begins to connect directly with practical elliptic-curve cryptography.

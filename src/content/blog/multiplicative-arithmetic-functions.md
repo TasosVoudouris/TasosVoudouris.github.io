@@ -24,27 +24,27 @@ Arithmetic functions attach numerical information to positive integers.
 
 Examples include:
 
-\[
+$$
 \tau(n),
-\]
+$$
 
-the number of positive divisors of \(n\),
+the number of positive divisors of $n$,
 
-\[
+$$
 \sigma(n),
-\]
+$$
 
 the sum of its positive divisors,
 
-\[
+$$
 \varphi(n),
-\]
+$$
 
-the number of invertible residue classes modulo \(n\), and
+the number of invertible residue classes modulo $n$, and
 
-\[
+$$
 \mu(n),
-\]
+$$
 
 the Möbius function.
 
@@ -54,53 +54,53 @@ They are not.
 
 A large part of their structure comes from two ideas:
 
-\[
+$$
 \boxed{
 \text{prime-power decomposition}
 }
-\]
+$$
 
 and
 
-\[
+$$
 \boxed{
 \text{Dirichlet convolution}.
 }
-\]
+$$
 
 For a multiplicative arithmetic function, knowing its values on:
 
-\[
+$$
 p^e
-\]
+$$
 
 is enough to determine its value on every positive integer.
 
 Dirichlet convolution then provides an algebraic operation that explains identities such as:
 
-\[
+$$
 \tau
 =
 \mathbf 1 * \mathbf 1,
-\]
+$$
 
-\[
+$$
 \sigma
 =
 \mathbf 1 * \operatorname{id},
-\]
+$$
 
 and:
 
-\[
+$$
 \varphi
 =
 \operatorname{id} * \mu.
-\]
+$$
 
 This is the computational viewpoint of the article:
 
-\[
+$$
 \boxed{
 \text{factorization}
 \rightarrow
@@ -110,7 +110,7 @@ This is the computational viewpoint of the article:
 \rightarrow
 \text{convolution identities}.
 }
-\]
+$$
 
 ---
 
@@ -134,67 +134,67 @@ This is the computational viewpoint of the article:
 
 An **arithmetic function** is a function:
 
-\[
+$$
 \boxed{
 f:\mathbb N\rightarrow\mathbb C.
 }
-\]
+$$
 
 The codomain can be generalized, but complex-valued arithmetic functions are the classical setting.
 
 Examples include:
 
-\[
+$$
 n\mapsto n,
-\]
+$$
 
-\[
+$$
 n\mapsto \varphi(n),
-\]
+$$
 
-\[
+$$
 n\mapsto \mu(n),
-\]
+$$
 
 and:
 
-\[
+$$
 n\mapsto \tau(n).
-\]
+$$
 
 ---
 
 ### Multiplicative functions
 
-An arithmetic function \(f\) is **multiplicative** if:
+An arithmetic function $f$ is **multiplicative** if:
 
-\[
+$$
 f(1)=1
-\]
+$$
 
 and:
 
-\[
+$$
 \boxed{
 f(ab)=f(a)f(b)
 }
-\]
+$$
 
 whenever:
 
-\[
+$$
 \gcd(a,b)=1.
-\]
+$$
 
 The coprimality condition is essential.
 
 Multiplicativity does **not** generally mean:
 
-\[
+$$
 f(ab)=f(a)f(b)
-\]
+$$
 
-for arbitrary \(a,b\).
+for arbitrary $a,b$.
 
 ---
 
@@ -202,27 +202,27 @@ for arbitrary \(a,b\).
 
 A function is **completely multiplicative** if:
 
-\[
+$$
 \boxed{
 f(ab)=f(a)f(b)
 }
-\]
+$$
 
 for all positive integers:
 
-\[
+$$
 a,b.
-\]
+$$
 
 Thus:
 
-\[
+$$
 \boxed{
 \text{completely multiplicative}
 \Longrightarrow
 \text{multiplicative}.
 }
-\]
+$$
 
 The converse is false.
 
@@ -232,30 +232,30 @@ The converse is false.
 
 Define:
 
-\[
+$$
 \operatorname{id}(n)=n.
-\]
+$$
 
 Then:
 
-\[
+$$
 \operatorname{id}(ab)
 =
 ab
 =
 \operatorname{id}(a)\operatorname{id}(b)
-\]
+$$
 
-for all \(a,b\).
+for all $a,b$.
 
 Therefore:
 
-\[
+$$
 \boxed{
 \operatorname{id}
 \text{ is completely multiplicative}.
 }
-\]
+$$
 
 ---
 
@@ -263,41 +263,41 @@ Therefore:
 
 Euler's totient is multiplicative:
 
-\[
+$$
 \gcd(a,b)=1
 \Longrightarrow
 \varphi(ab)=\varphi(a)\varphi(b).
-\]
+$$
 
 But it is not completely multiplicative.
 
 For example:
 
-\[
+$$
 \varphi(2)=1,
-\]
+$$
 
 so:
 
-\[
+$$
 \varphi(2)\varphi(2)=1.
-\]
+$$
 
 But:
 
-\[
+$$
 \varphi(4)=2.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 \varphi(4)
 \neq
 \varphi(2)^2.
 }
-\]
+$$
 
 ---
 
@@ -305,45 +305,45 @@ Therefore:
 
 Every positive integer has a unique prime factorization:
 
-\[
+$$
 \boxed{
 n
 =
 \prod_{i=1}^{r}
 p_i^{e_i}.
 }
-\]
+$$
 
 The prime powers:
 
-\[
+$$
 p_i^{e_i}
-\]
+$$
 
 are pairwise coprime.
 
-Therefore, if \(f\) is multiplicative:
+Therefore, if $f$ is multiplicative:
 
-\[
+$$
 \boxed{
 f(n)
 =
 \prod_{i=1}^{r}
 f(p_i^{e_i}).
 }
-\]
+$$
 
 This is one of the most important computational consequences of multiplicativity.
 
-Instead of developing a separate algorithm for arbitrary \(n\), we need only understand:
+Instead of developing a separate algorithm for arbitrary $n$, we need only understand:
 
-\[
+$$
 \boxed{
 f(p^e).
 }
-\]
+$$
 
-The factorization of \(n\) then assembles the final answer.
+The factorization of $n$ then assembles the final answer.
 
 ---
 
@@ -351,27 +351,27 @@ The factorization of \(n\) then assembles the final answer.
 
 Let:
 
-\[
+$$
 n=360.
-\]
+$$
 
 Its prime factorization is:
 
-\[
+$$
 360
 =
 2^3\cdot3^2\cdot5.
-\]
+$$
 
-For a multiplicative function \(f\):
+For a multiplicative function $f$:
 
-\[
+$$
 f(360)
 =
 f(2^3)
 f(3^2)
 f(5).
-\]
+$$
 
 Thus one global arithmetic problem has been reduced to three local prime-power evaluations.
 
@@ -387,51 +387,51 @@ Several of the most important arithmetic functions admit especially simple prime
 
 Let:
 
-\[
+$$
 \tau(n)
-\]
+$$
 
-denote the number of positive divisors of \(n\).
+denote the number of positive divisors of $n$.
 
 For:
 
-\[
+$$
 p^e,
-\]
+$$
 
 the divisors are:
 
-\[
+$$
 1,p,p^2,\ldots,p^e.
-\]
+$$
 
 So:
 
-\[
+$$
 \boxed{
 \tau(p^e)=e+1.
 }
-\]
+$$
 
 Therefore, if:
 
-\[
+$$
 n
 =
 \prod_{i=1}^{r}
 p_i^{e_i},
-\]
+$$
 
 then:
 
-\[
+$$
 \boxed{
 \tau(n)
 =
 \prod_{i=1}^{r}
 (e_i+1).
 }
-\]
+$$
 
 ---
 
@@ -439,27 +439,27 @@ then:
 
 For:
 
-\[
+$$
 360
 =
 2^3\cdot3^2\cdot5,
-\]
+$$
 
 we obtain:
 
-\[
+$$
 \tau(360)
 =
 (3+1)(2+1)(1+1).
-\]
+$$
 
 Hence:
 
-\[
+$$
 \boxed{
 \tau(360)=24.
 }
-\]
+$$
 
 ---
 
@@ -467,39 +467,39 @@ Hence:
 
 Let:
 
-\[
+$$
 \sigma(n)
 =
 \sum_{d\mid n}d.
-\]
+$$
 
 For a prime power:
 
-\[
+$$
 p^e,
-\]
+$$
 
 we have:
 
-\[
+$$
 \sigma(p^e)
 =
 1+p+\cdots+p^e.
-\]
+$$
 
 Using the geometric-series formula:
 
-\[
+$$
 \boxed{
 \sigma(p^e)
 =
 \frac{p^{e+1}-1}{p-1}.
 }
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 \sigma(n)
 =
@@ -510,7 +510,7 @@ p_i^{e_i+1}-1
 p_i-1
 }.
 }
-\]
+$$
 
 ---
 
@@ -518,57 +518,57 @@ p_i-1
 
 Euler's totient:
 
-\[
+$$
 \varphi(n)
-\]
+$$
 
 counts:
 
-\[
+$$
 \boxed{
 \left|
 (\mathbb Z/n\mathbb Z)^\times
 \right|.
 }
-\]
+$$
 
 For a prime power:
 
-\[
+$$
 p^e,
-\]
+$$
 
-the nonunits are exactly the multiples of \(p\).
+the nonunits are exactly the multiples of $p$.
 
 There are:
 
-\[
+$$
 p^{e-1}
-\]
+$$
 
 such residue classes.
 
 Therefore:
 
-\[
+$$
 \varphi(p^e)
 =
 p^e-p^{e-1}.
-\]
+$$
 
 Equivalently:
 
-\[
+$$
 \boxed{
 \varphi(p^e)
 =
 p^{e-1}(p-1).
 }
-\]
+$$
 
 Using multiplicativity:
 
-\[
+$$
 \boxed{
 \varphi(n)
 =
@@ -578,7 +578,7 @@ n
 1-\frac1p
 \right).
 }
-\]
+$$
 
 ---
 
@@ -586,13 +586,13 @@ n
 
 The Möbius function:
 
-\[
+$$
 \mu:\mathbb N\rightarrow\{-1,0,1\}
-\]
+$$
 
 is defined by:
 
-\[
+$$
 \boxed{
 \mu(n)
 =
@@ -613,25 +613,25 @@ n
 \text{ distinct primes}.
 \end{cases}
 }
-\]
+$$
 
 Equivalently, on prime powers:
 
-\[
+$$
 \mu(p)=-1,
-\]
+$$
 
 while:
 
-\[
+$$
 \boxed{
 \mu(p^e)=0
 \qquad
 (e\ge2).
 }
-\]
+$$
 
-The function \(\mu\) is multiplicative but not completely multiplicative.
+The function $\mu$ is multiplicative but not completely multiplicative.
 
 ---
 
@@ -639,46 +639,46 @@ The function \(\mu\) is multiplicative but not completely multiplicative.
 
 For:
 
-\[
+$$
 30=2\cdot3\cdot5,
-\]
+$$
 
 we have three distinct prime factors, so:
 
-\[
+$$
 \boxed{
 \mu(30)=(-1)^3=-1.
 }
-\]
+$$
 
 But:
 
-\[
+$$
 12=2^2\cdot3
-\]
+$$
 
 contains a squared prime factor.
 
 Therefore:
 
-\[
+$$
 \boxed{
 \mu(12)=0.
 }
-\]
+$$
 
 ---
 
 ### A compact prime-power table
 
-| Function | \(f(p^e)\) |
+| Function | $f(p^e)$ |
 | --- | --- |
-| \(\tau\) | \(e+1\) |
-| \(\sigma\) | \(\displaystyle \frac{p^{e+1}-1}{p-1}\) |
-| \(\varphi\) | \(p^{e-1}(p-1)\) |
-| \(\mu\) | \(-1\) if \(e=1\), \(0\) if \(e\ge2\) |
+| $\tau$ | $e+1$ |
+| $\sigma$ | $\displaystyle \frac{p^{e+1}-1}{p-1}$ |
+| $\varphi$ | $p^{e-1}(p-1)$ |
+| $\mu$ | $-1$ if $e=1$, $0$ if $e\ge2$ |
 
-Once the factorization of \(n\) is known, these formulas make evaluation almost immediate.
+Once the factorization of $n$ is known, these formulas make evaluation almost immediate.
 
 ---
 
@@ -686,9 +686,9 @@ Once the factorization of \(n\) is known, these formulas make evaluation almost 
 
 Arithmetic functions can themselves be combined algebraically.
 
-For arithmetic functions \(f\) and \(g\), define their **Dirichlet convolution** by:
+For arithmetic functions $f$ and $g$, define their **Dirichlet convolution** by:
 
-\[
+$$
 \boxed{
 (f*g)(n)
 =
@@ -696,9 +696,9 @@ For arithmetic functions \(f\) and \(g\), define their **Dirichlet convolution**
 f(d)
 g\left(\frac nd\right).
 }
-\]
+$$
 
-The sum runs over the positive divisors of \(n\).
+The sum runs over the positive divisors of $n$.
 
 ---
 
@@ -706,19 +706,19 @@ The sum runs over the positive divisors of \(n\).
 
 For:
 
-\[
+$$
 n=6,
-\]
+$$
 
 the divisors are:
 
-\[
+$$
 1,2,3,6.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \begin{aligned}
 (f*g)(6)
 &=
@@ -730,13 +730,13 @@ f(3)g(2)
 +
 f(6)g(1).
 \end{aligned}
-\]
+$$
 
 The divisor pairs:
 
-\[
+$$
 (d,n/d)
-\]
+$$
 
 are exactly what drives the convolution.
 
@@ -746,23 +746,23 @@ are exactly what drives the convolution.
 
 Dirichlet convolution is associative:
 
-\[
+$$
 \boxed{
 (f*g)*h
 =
 f*(g*h).
 }
-\]
+$$
 
 It is also commutative:
 
-\[
+$$
 \boxed{
 f*g
 =
 g*f.
 }
-\]
+$$
 
 Together with pointwise addition, arithmetic functions form a commutative ring under these operations.
 
@@ -772,30 +772,30 @@ Together with pointwise addition, arithmetic functions form a commutative ring u
 
 Define:
 
-\[
+$$
 \varepsilon(n)
 =
 \begin{cases}
 1,&n=1,\\
 0,&n>1.
 \end{cases}
-\]
+$$
 
 Then:
 
-\[
+$$
 \boxed{
 f*\varepsilon
 =
 f.
 }
-\]
+$$
 
 So:
 
-\[
+$$
 \varepsilon
-\]
+$$
 
 is the multiplicative identity for Dirichlet convolution.
 
@@ -805,26 +805,26 @@ is the multiplicative identity for Dirichlet convolution.
 
 Define:
 
-\[
+$$
 \mathbf 1(n)=1
-\]
+$$
 
 for every:
 
-\[
+$$
 n\ge1.
-\]
+$$
 
 Then:
 
-\[
+$$
 (\mathbf 1*f)(n)
 =
 \sum_{d\mid n}
 f(d).
-\]
+$$
 
-Thus convolution with \(\mathbf 1\) performs a **divisor sum**.
+Thus convolution with $\mathbf 1$ performs a **divisor sum**.
 
 That simple observation explains many classical identities.
 
@@ -834,29 +834,29 @@ That simple observation explains many classical identities.
 
 Consider:
 
-\[
+$$
 (\mathbf 1*\mathbf 1)(n).
-\]
+$$
 
 We obtain:
 
-\[
+$$
 (\mathbf 1*\mathbf 1)(n)
 =
 \sum_{d\mid n}1.
-\]
+$$
 
 But the sum contains one term for each divisor.
 
 Therefore:
 
-\[
+$$
 \boxed{
 \tau
 =
 \mathbf 1*\mathbf 1.
 }
-\]
+$$
 
 ---
 
@@ -864,35 +864,35 @@ Therefore:
 
 Let:
 
-\[
+$$
 \operatorname{id}(n)=n.
-\]
+$$
 
 Then:
 
-\[
+$$
 (\mathbf 1*\operatorname{id})(n)
 =
 \sum_{d\mid n}
 \operatorname{id}\left(\frac nd\right).
-\]
+$$
 
 Equivalently, after exchanging divisor pairs:
 
-\[
+$$
 =
 \sum_{d\mid n}d.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 \sigma
 =
 \mathbf 1*\operatorname{id}.
 }
-\]
+$$
 
 ---
 
@@ -900,32 +900,32 @@ Therefore:
 
 A classical identity is:
 
-\[
+$$
 \boxed{
 \sum_{d\mid n}
 \varphi(d)
 =
 n.
 }
-\]
+$$
 
 In convolution notation:
 
-\[
+$$
 \boxed{
 \varphi*\mathbf 1
 =
 \operatorname{id}.
 }
-\]
+$$
 
 This identity says that the integers:
 
-\[
+$$
 1,\ldots,n
-\]
+$$
 
-can be classified according to the value of their GCD with \(n\), producing totient-sized classes.
+can be classified according to the value of their GCD with $n$, producing totient-sized classes.
 
 ---
 
@@ -933,57 +933,57 @@ can be classified according to the value of their GCD with \(n\), producing toti
 
 Suppose:
 
-\[
+$$
 f
-\]
+$$
 
 and:
 
-\[
+$$
 g
-\]
+$$
 
 are multiplicative.
 
 Then:
 
-\[
+$$
 \boxed{
 f*g
 }
-\]
+$$
 
 is also multiplicative.
 
 To see the mechanism, let:
 
-\[
+$$
 \gcd(m,n)=1.
-\]
+$$
 
 Every divisor of:
 
-\[
+$$
 mn
-\]
+$$
 
 has a unique form:
 
-\[
+$$
 d=ab
-\]
+$$
 
 with:
 
-\[
+$$
 a\mid m,
 \qquad
 b\mid n.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \begin{aligned}
 (f*g)(mn)
 &=
@@ -995,19 +995,19 @@ g\left(
 \frac nb
 \right).
 \end{aligned}
-\]
+$$
 
 By multiplicativity:
 
-\[
+$$
 f(ab)
 =
 f(a)f(b)
-\]
+$$
 
 and:
 
-\[
+$$
 g\left(
 \frac ma
 \frac nb
@@ -1015,15 +1015,15 @@ g\left(
 =
 g\left(\frac ma\right)
 g\left(\frac nb\right).
-\]
+$$
 
 So the double sum factors:
 
-\[
+$$
 (f*g)(mn)
 =
 (f*g)(m)(f*g)(n).
-\]
+$$
 
 Hence convolution preserves multiplicativity.
 
@@ -1035,7 +1035,7 @@ This explains why many functions defined through divisor sums inherit multiplica
 
 One of the most important identities involving the Möbius function is:
 
-\[
+$$
 \boxed{
 \sum_{d\mid n}
 \mu(d)
@@ -1045,19 +1045,19 @@ One of the most important identities involving the Möbius function is:
 0,&n>1.
 \end{cases}
 }
-\]
+$$
 
 In convolution notation:
 
-\[
+$$
 \boxed{
 \mathbf 1*\mu
 =
 \varepsilon.
 }
-\]
+$$
 
-Therefore \(\mu\) is the Dirichlet-convolution inverse of the constant-one function.
+Therefore $\mu$ is the Dirichlet-convolution inverse of the constant-one function.
 
 ---
 
@@ -1065,122 +1065,122 @@ Therefore \(\mu\) is the Dirichlet-convolution inverse of the constant-one funct
 
 Suppose:
 
-\[
+$$
 n>1
-\]
+$$
 
 has:
 
-\[
+$$
 r
-\]
+$$
 
 distinct prime divisors.
 
 Only squarefree divisors contribute to:
 
-\[
+$$
 \sum_{d\mid n}\mu(d),
-\]
+$$
 
 because all other divisors have Möbius value zero.
 
-Choosing a squarefree divisor means selecting a subset of those \(r\) primes.
+Choosing a squarefree divisor means selecting a subset of those $r$ primes.
 
 Therefore:
 
-\[
+$$
 \sum_{d\mid n}\mu(d)
 =
 \sum_{k=0}^{r}
 \binom rk(-1)^k.
-\]
+$$
 
 By the binomial theorem:
 
-\[
+$$
 =
 (1-1)^r.
-\]
+$$
 
 Since:
 
-\[
+$$
 r\ge1,
-\]
+$$
 
 we obtain:
 
-\[
+$$
 \boxed{
 \sum_{d\mid n}\mu(d)=0.
 }
-\]
+$$
 
-For \(n=1\):
+For $n=1$:
 
-\[
+$$
 \mu(1)=1.
-\]
+$$
 
 Hence:
 
-\[
+$$
 \boxed{
 \mathbf 1*\mu=\varepsilon.
 }
-\]
+$$
 
 ---
 
 ### Möbius inversion theorem
 
-Suppose two arithmetic functions \(F\) and \(G\) satisfy:
+Suppose two arithmetic functions $F$ and $G$ satisfy:
 
-\[
+$$
 \boxed{
 G(n)
 =
 \sum_{d\mid n}
 F(d).
 }
-\]
+$$
 
 In convolution notation:
 
-\[
+$$
 G
 =
 \mathbf 1*F.
-\]
+$$
 
-Convolve both sides with \(\mu\):
+Convolve both sides with $\mu$:
 
-\[
+$$
 \mu*G
 =
 \mu*\mathbf 1*F.
-\]
+$$
 
 Since:
 
-\[
+$$
 \mu*\mathbf 1
 =
 \varepsilon,
-\]
+$$
 
 we obtain:
 
-\[
+$$
 \mu*G
 =
 F.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 F(n)
 =
@@ -1188,20 +1188,20 @@ F(n)
 \mu(d)
 G\left(\frac nd\right).
 }
-\]
+$$
 
 This is the **Möbius inversion formula**.
 
 An equivalent form is:
 
-\[
+$$
 \boxed{
 F(n)
 =
 \sum_{d\mid n}
 \mu\left(\frac nd\right)G(d).
 }
-\]
+$$
 
 ---
 
@@ -1209,51 +1209,51 @@ F(n)
 
 Recall:
 
-\[
+$$
 \sum_{d\mid n}\varphi(d)=n.
-\]
+$$
 
 Thus:
 
-\[
+$$
 \mathbf 1*\varphi
 =
 \operatorname{id}.
-\]
+$$
 
 Apply Möbius inversion:
 
-\[
+$$
 \boxed{
 \varphi
 =
 \mu*\operatorname{id}.
 }
-\]
+$$
 
 Because convolution is commutative:
 
-\[
+$$
 \boxed{
 \varphi
 =
 \operatorname{id}*\mu.
 }
-\]
+$$
 
 Explicitly:
 
-\[
+$$
 \varphi(n)
 =
 \sum_{d\mid n}
 \mu(d)
 \frac nd.
-\]
+$$
 
-Factor out \(n\):
+Factor out $n$:
 
-\[
+$$
 \boxed{
 \varphi(n)
 =
@@ -1261,11 +1261,11 @@ n
 \sum_{d\mid n}
 \frac{\mu(d)}{d}.
 }
-\]
+$$
 
 From the multiplicative structure of the right-hand side we recover:
 
-\[
+$$
 \boxed{
 \varphi(n)
 =
@@ -1275,7 +1275,7 @@ n
 1-\frac1p
 \right).
 }
-\]
+$$
 
 So Möbius inversion does not merely produce another formula.
 
@@ -1287,75 +1287,75 @@ It explains structurally why the totient formula has its familiar prime-product 
 
 An arithmetic function:
 
-\[
+$$
 f:\mathbb N\rightarrow\mathbb C
-\]
+$$
 
 has a Dirichlet inverse whenever:
 
-\[
+$$
 \boxed{
 f(1)\neq0.
 }
-\]
+$$
 
-That is, there exists \(f^{-1}\) such that:
+That is, there exists $f^{-1}$ such that:
 
-\[
+$$
 f*f^{-1}
 =
 \varepsilon.
-\]
+$$
 
 The values of the inverse can be computed recursively.
 
 At:
 
-\[
+$$
 n=1,
-\]
+$$
 
 we need:
 
-\[
+$$
 f(1)f^{-1}(1)=1,
-\]
+$$
 
 so:
 
-\[
+$$
 f^{-1}(1)
 =
 \frac1{f(1)}.
-\]
+$$
 
 For:
 
-\[
+$$
 n>1,
-\]
+$$
 
 the convolution identity gives:
 
-\[
+$$
 \sum_{d\mid n}
 f(d)
 f^{-1}(n/d)
 =
 0.
-\]
+$$
 
 This determines the new value from smaller divisor arguments.
 
 The Möbius function is simply the most famous example:
 
-\[
+$$
 \boxed{
 \mu
 =
 \mathbf 1^{-1}.
 }
-\]
+$$
 
 ---
 
@@ -1363,9 +1363,9 @@ The Möbius function is simply the most famous example:
 
 The mathematics suggests a natural implementation strategy.
 
-For one integer \(n\):
+For one integer $n$:
 
-1. factor \(n\);
+1. factor $n$;
 2. store the prime powers;
 3. evaluate every multiplicative function from that same factorization.
 
@@ -1377,11 +1377,11 @@ Do **not** independently enumerate every divisor for each arithmetic function un
 
 For example:
 
-\[
+$$
 360
 =
 2^3\cdot3^2\cdot5
-\]
+$$
 
 can be stored as:
 
@@ -1433,7 +1433,7 @@ It is not a cryptographic-scale factorization algorithm.
 
 ---
 
-### Computing \(\tau(n)\)
+### Computing $\tau(n)$
 
 ```python
 def tau_from_factorization(
@@ -1449,16 +1449,16 @@ def tau_from_factorization(
 
 This implements:
 
-\[
+$$
 \tau(n)
 =
 \prod_p
 (e_p+1).
-\]
+$$
 
 ---
 
-### Computing \(\sigma(n)\)
+### Computing $\sigma(n)$
 
 ```python
 def sigma_from_factorization(
@@ -1476,15 +1476,15 @@ def sigma_from_factorization(
 
 This directly evaluates:
 
-\[
+$$
 \sigma(p^e)
 =
 \frac{p^{e+1}-1}{p-1}.
-\]
+$$
 
 ---
 
-### Computing \(\varphi(n)\)
+### Computing $\varphi(n)$
 
 A convenient exact formula is:
 
@@ -1503,7 +1503,7 @@ def phi_from_factorization(
     return result
 ```
 
-Alternatively, starting from \(n\):
+Alternatively, starting from $n$:
 
 ```python
 def phi(n: int) -> int:
@@ -1518,7 +1518,7 @@ def phi(n: int) -> int:
 
 The second implementation realizes:
 
-\[
+$$
 \varphi(n)
 =
 n
@@ -1526,13 +1526,13 @@ n
 \left(
 1-\frac1p
 \right)
-\]
+$$
 
 without floating-point arithmetic.
 
 ---
 
-### Computing \(\mu(n)\)
+### Computing $\mu(n)$
 
 ```python
 def mu_from_factorization(
@@ -1551,15 +1551,15 @@ def mu_from_factorization(
 
 For:
 
-\[
+$$
 n=1,
-\]
+$$
 
 the factor dictionary is empty, so this correctly returns:
 
-\[
+$$
 1.
-\]
+$$
 
 ---
 
@@ -1604,19 +1604,19 @@ mu            = 0
 
 This illustrates the main computational principle:
 
-\[
+$$
 \boxed{
 \text{factor once}
 \rightarrow
 \text{reuse everywhere}.
 }
-\]
+$$
 
 ---
 
 ### Computing a Dirichlet convolution directly
 
-For small \(n\), a direct implementation is:
+For small $n$, a direct implementation is:
 
 ```python
 from math import isqrt
@@ -1684,23 +1684,23 @@ print(
 
 These evaluate:
 
-\[
+$$
 (\mathbf 1*\mathbf 1)(360)
 =
 \tau(360)
 =
 24
-\]
+$$
 
 and:
 
-\[
+$$
 (\mathbf 1*\operatorname{id})(360)
 =
 \sigma(360)
 =
 1170.
-\]
+$$
 
 ---
 
@@ -1712,7 +1712,7 @@ There are two different computational settings.
 
 If we want:
 
-\[
+$$
 \varphi(n),
 \quad
 \tau(n),
@@ -1720,23 +1720,23 @@ If we want:
 \sigma(n),
 \quad
 \mu(n)
-\]
+$$
 
-for a single \(n\), factorization is a natural representation.
+for a single $n$, factorization is a natural representation.
 
-#### All values up to \(N\)
+#### All values up to $N$
 
 If instead we want:
 
-\[
+$$
 \varphi(1),\ldots,\varphi(N)
-\]
+$$
 
 or:
 
-\[
+$$
 \mu(1),\ldots,\mu(N),
-\]
+$$
 
 factoring every integer independently is wasteful.
 
@@ -1766,13 +1766,13 @@ def phi_sieve(N: int) -> list[int]:
 
 This represents an important distinction in computational number theory:
 
-\[
+$$
 \boxed{
 \text{single-instance algorithms}
 \neq
 \text{batch algorithms}.
 }
-\]
+$$
 
 The best representation depends on the computational task.
 
@@ -1782,17 +1782,17 @@ The best representation depends on the computational task.
 
 Suppose:
 
-\[
+$$
 n
 =
 \prod_i p_i^{e_i}
-\]
+$$
 
 is already known.
 
 Then evaluating:
 
-\[
+$$
 \tau(n),
 \quad
 \sigma(n),
@@ -1800,7 +1800,7 @@ Then evaluating:
 \varphi(n),
 \quad
 \mu(n)
-\]
+$$
 
 from the factorization is cheap.
 
@@ -1808,25 +1808,25 @@ But if the factorization is **not** known, obtaining it may dominate the entire 
 
 For a large semiprime:
 
-\[
+$$
 N=pq,
-\]
+$$
 
-knowing \(p\) and \(q\) makes:
+knowing $p$ and $q$ makes:
 
-\[
+$$
 \varphi(N)
 =
 (p-1)(q-1)
-\]
+$$
 
 immediate.
 
-Recovering \(p\) and \(q\) from \(N\) is a completely different computational problem.
+Recovering $p$ and $q$ from $N$ is a completely different computational problem.
 
 Therefore formulas such as:
 
-\[
+$$
 \varphi(n)
 =
 n
@@ -1834,7 +1834,7 @@ n
 \left(
 1-\frac1p
 \right)
-\]
+$$
 
 should not be interpreted as automatically efficient algorithms when the prime divisors are unknown.
 
@@ -1846,19 +1846,19 @@ That distinction is fundamental in cryptography.
 
 Arithmetic functions provide a bridge between:
 
-\[
+$$
 \boxed{
 \text{prime factorization}
 }
-\]
+$$
 
 and:
 
-\[
+$$
 \boxed{
 \text{global arithmetic information}.
 }
-\]
+$$
 
 They compress structural information about an integer into computable invariants.
 
@@ -1868,15 +1868,15 @@ They compress structural information about an integer into computable invariants
 
 The divisor function:
 
-\[
+$$
 \tau(n)
-\]
+$$
 
 describes the combinatorial structure of the exponent vector:
 
-\[
+$$
 (e_1,\ldots,e_r).
-\]
+$$
 
 ---
 
@@ -1884,9 +1884,9 @@ describes the combinatorial structure of the exponent vector:
 
 The function:
 
-\[
+$$
 \sigma(n)
-\]
+$$
 
 appears in the theory of:
 
@@ -1901,17 +1901,17 @@ appears in the theory of:
 
 The function:
 
-\[
+$$
 \varphi(n)
-\]
+$$
 
 measures:
 
-\[
+$$
 \left|
 (\mathbb Z/n\mathbb Z)^\times
 \right|.
-\]
+$$
 
 It therefore connects arithmetic functions directly to finite multiplicative groups.
 
@@ -1930,22 +1930,22 @@ The Möbius function is particularly important because it acts as an inverse to 
 
 If:
 
-\[
+$$
 G(n)
 =
 \sum_{d\mid n}
 F(d),
-\]
+$$
 
 then Möbius inversion reconstructs:
 
-\[
+$$
 F.
-\]
+$$
 
 Schematically:
 
-\[
+$$
 \boxed{
 F
 \overset{\mathbf 1 *}{\longrightarrow}
@@ -1953,7 +1953,7 @@ G
 \overset{\mu *}{\longrightarrow}
 F.
 }
-\]
+$$
 
 This principle appears throughout:
 
@@ -1969,50 +1969,50 @@ This principle appears throughout:
 
 There is also a deeper analytic connection.
 
-To an arithmetic function \(f\), one may associate a Dirichlet series:
+To an arithmetic function $f$, one may associate a Dirichlet series:
 
-\[
+$$
 D_f(s)
 =
 \sum_{n=1}^{\infty}
 \frac{f(n)}{n^s}.
-\]
+$$
 
 Under suitable convergence conditions, Dirichlet convolution corresponds to ordinary multiplication:
 
-\[
+$$
 \boxed{
 D_{f*g}(s)
 =
 D_f(s)D_g(s).
 }
-\]
+$$
 
 For example:
 
-\[
+$$
 D_{\mathbf 1}(s)
 =
 \zeta(s),
-\]
+$$
 
 while:
 
-\[
+$$
 \mathbf 1*\mu
 =
 \varepsilon
-\]
+$$
 
 corresponds formally to:
 
-\[
+$$
 \boxed{
 D_\mu(s)
 =
 \frac1{\zeta(s)}.
 }
-\]
+$$
 
 This is one reason Dirichlet convolution is not merely convenient notation.
 
@@ -2026,88 +2026,88 @@ That connection becomes increasingly important in analytic and computational num
 
 The central objects of this article can be summarized by a small convolution dictionary:
 
-\[
+$$
 \boxed{
 \tau
 =
 \mathbf 1*\mathbf 1
 }
-\]
+$$
 
-\[
+$$
 \boxed{
 \sigma
 =
 \mathbf 1*\operatorname{id}
 }
-\]
+$$
 
-\[
+$$
 \boxed{
 \mathbf 1*\mu
 =
 \varepsilon
 }
-\]
+$$
 
-\[
+$$
 \boxed{
 \varphi*\mathbf 1
 =
 \operatorname{id}
 }
-\]
+$$
 
 and therefore:
 
-\[
+$$
 \boxed{
 \varphi
 =
 \operatorname{id}*\mu.
 }
-\]
+$$
 
 At the computational level:
 
-\[
+$$
 \boxed{
 n
 =
 \prod p_i^{e_i}
 }
-\]
+$$
 
 turns multiplicative evaluation into:
 
-\[
+$$
 \boxed{
 f(n)
 =
 \prod_i
 f(p_i^{e_i}).
 }
-\]
+$$
 
 So two decompositions are operating simultaneously:
 
-\[
+$$
 \boxed{
 \text{integer}
 \rightarrow
 \text{prime powers}
 }
-\]
+$$
 
 and:
 
-\[
+$$
 \boxed{
 \text{arithmetic function}
 \rightarrow
 \text{Dirichlet-convolution structure}.
 }
-\]
+$$
 
 These two viewpoints are among the basic organizing principles of computational multiplicative number theory.
 
@@ -2119,17 +2119,17 @@ These two viewpoints are among the basic organizing principles of computational 
 
 Determine whether each function is multiplicative or completely multiplicative:
 
-\[
+$$
 \operatorname{id}(n)=n,
-\]
+$$
 
-\[
+$$
 \varphi(n),
-\]
+$$
 
-\[
+$$
 \mu(n).
-\]
+$$
 
 Give a counterexample when complete multiplicativity fails.
 
@@ -2139,15 +2139,15 @@ Give a counterexample when complete multiplicativity fails.
 
 Factor:
 
-\[
+$$
 756
-\]
+$$
 
 and compute:
 
-\[
+$$
 \tau(756).
-\]
+$$
 
 Do not enumerate its divisors individually.
 
@@ -2157,15 +2157,15 @@ Do not enumerate its divisors individually.
 
 Using the prime factorization of:
 
-\[
+$$
 360,
-\]
+$$
 
 verify:
 
-\[
+$$
 \sigma(360)=1170.
-\]
+$$
 
 ---
 
@@ -2173,17 +2173,17 @@ verify:
 
 Compute:
 
-\[
+$$
 \varphi(360)
-\]
+$$
 
 from its prime-power factorization.
 
 Then verify:
 
-\[
+$$
 \varphi(360)=96.
-\]
+$$
 
 ---
 
@@ -2191,7 +2191,7 @@ Then verify:
 
 Compute:
 
-\[
+$$
 \mu(30),
 \qquad
 \mu(42),
@@ -2199,7 +2199,7 @@ Compute:
 \mu(60),
 \qquad
 \mu(210).
-\]
+$$
 
 Explain each answer from the prime factorization.
 
@@ -2209,15 +2209,15 @@ Explain each answer from the prime factorization.
 
 Show directly that:
 
-\[
+$$
 (\mathbf 1*\mathbf 1)(12)=6.
-\]
+$$
 
 Compare this with:
 
-\[
+$$
 \tau(12).
-\]
+$$
 
 ---
 
@@ -2225,9 +2225,9 @@ Compare this with:
 
 Verify:
 
-\[
+$$
 \sum_{d\mid12}\varphi(d)=12.
-\]
+$$
 
 Then rewrite the identity using Dirichlet convolution.
 
@@ -2237,15 +2237,15 @@ Then rewrite the identity using Dirichlet convolution.
 
 Verify:
 
-\[
+$$
 \sum_{d\mid30}\mu(d)=0.
-\]
+$$
 
 Explain the cancellation using subsets of the prime divisors:
 
-\[
+$$
 2,3,5.
-\]
+$$
 
 ---
 
@@ -2253,36 +2253,36 @@ Explain the cancellation using subsets of the prime divisors:
 
 Suppose:
 
-\[
+$$
 G(n)
 =
 \sum_{d\mid n}
 F(d).
-\]
+$$
 
-Use Möbius inversion to write \(F(n)\) explicitly in terms of \(G\).
+Use Möbius inversion to write $F(n)$ explicitly in terms of $G$.
 
 Then apply the formula to:
 
-\[
+$$
 G(n)=n
-\]
+$$
 
 to recover a formula for:
 
-\[
+$$
 \varphi(n).
-\]
+$$
 
 ---
 
 ### Exercise 10 — Computational strategy
 
-Suppose the prime factorization of a \(1000\)-digit integer is already known.
+Suppose the prime factorization of a $1000$-digit integer is already known.
 
 Explain why computing:
 
-\[
+$$
 \tau(n),
 \quad
 \sigma(n),
@@ -2290,11 +2290,11 @@ Explain why computing:
 \varphi(n),
 \quad
 \mu(n)
-\]
+$$
 
 can still be straightforward.
 
-Now explain why the same statement does not imply that these values are automatically easy to obtain from an arbitrary unfactored \(1000\)-digit integer.
+Now explain why the same statement does not imply that these values are automatically easy to obtain from an arbitrary unfactored $1000$-digit integer.
 
 ---
 
@@ -2307,71 +2307,71 @@ You should now be able to explain:
 3. Why multiplicative functions reduce to prime-power evaluation.
 4. Why:
    
-   \[
+   $$
    \tau(p^e)=e+1.
-   \]
+   $$
 
 5. Why:
 
-   \[
+   $$
    \sigma(p^e)
    =
    \frac{p^{e+1}-1}{p-1}.
-   \] 
+   $$
 
 6. Why:
    
-   \[
+   $$
    \varphi(p^e)
    =
    p^{e-1}(p-1).
-   \]
+   $$
 
 7. How the Möbius function depends on squarefreeness.
 8. What Dirichlet convolution is.
 9.  Why it is associative and commutative.
-10. What the convolution identity \(\varepsilon\) is.
+10. What the convolution identity $\varepsilon$ is.
 11. Why:
 
-    \[
+    $$
     \tau
     =
     \mathbf 1*\mathbf 1.
-    \]
+    $$
 
 12. Why:
     
-    \[
+    $$
     \sigma
     =
     \mathbf 1*\operatorname{id}.
-    \]
+    $$
 
 13. Why:
     
-    \[
+    $$
     \mathbf 1*\mu
     =
     \varepsilon.
-    \]
+    $$
 
 14. Why:
     
-    \[
+    $$
     \varphi*\mathbf 1
     =
     \operatorname{id}.
-    \]
+    $$
 
 15. How Möbius inversion follows from convolution.
 16. Why convolution preserves multiplicativity.
 17. Why:
     
-    \[
+    $$
     \varphi
     =
     \operatorname{id}*\mu.
-    \]
+    $$
     
 18. Why one known factorization can support many arithmetic-function evaluations.
 19. Why factoring may nevertheless dominate the overall computational cost.
@@ -2382,19 +2382,19 @@ If these ideas are clear, arithmetic functions should no longer appear as a disc
 
 They form an algebraic and computational system built around:
 
-\[
+$$
 \boxed{
 \text{prime factorization}
 }
-\]
+$$
 
 and:
 
-\[
+$$
 \boxed{
 \text{divisor structure}.
 }
-\]
+$$
 
 ---
 
@@ -2431,7 +2431,7 @@ A computational reference for prime-related algorithms, factorization, and large
 
 This first article focused mainly on arithmetic information attached to individual integers:
 
-\[
+$$
 \tau(n),
 \qquad
 \sigma(n),
@@ -2439,28 +2439,28 @@ This first article focused mainly on arithmetic information attached to individu
 \varphi(n),
 \qquad
 \mu(n).
-\]
+$$
 
 The next natural question is global.
 
 Instead of asking:
 
-\[
+$$
 \text{What arithmetic structure does one integer have?}
-\]
+$$
 
 we ask:
 
-\[
+$$
 \boxed{
 \text{How are the primes distributed among all integers?}
 }
-\]
+$$
 
 That leads from multiplicative arithmetic functions to:
 
-\[
+$$
 \pi(x),
-\]
+$$
 
 the Prime Number Theorem, explicit prime-counting estimates, and the computational study of prime gaps.

@@ -97,11 +97,9 @@ The resulting operation turns the points of an elliptic curve into an **abelian 
 
 ---
 
-<a id="weierstrass-form"></a>
-
 ## 1. Weierstrass form revisited
 
-The general Weierstrass equation over a field \(K\) is
+The general Weierstrass equation over a field $K$ is
 
 $$
 y^2+a_1xy+a_3y
@@ -140,7 +138,7 @@ $$
 
 This guarantees that the cubic is nonsingular.
 
-For the rest of this chapter we assume short Weierstrass form and characteristic different from \(2\) and \(3\).
+For the rest of this chapter we assume short Weierstrass form and characteristic different from $2$ and $3$.
 
 ---
 
@@ -154,9 +152,9 @@ $$
 P,Q\in E.
 $$
 
-Draw the line passing through \(P\) and \(Q\).
+Draw the line passing through $P$ and $Q$.
 
-Because a line has degree \(1\) and the elliptic curve has degree \(3\), Bézout's theorem tells us that the line and the cubic meet in three points over an algebraic closure, counting multiplicity.
+Because a line has degree $1$ and the elliptic curve has degree $3$, Bézout's theorem tells us that the line and the cubic meet in three points over an algebraic closure, counting multiplicity.
 
 So if two intersections are known,
 
@@ -180,7 +178,7 @@ $$
 P+Q=R.
 $$
 
-Instead, we reflect \(R\) across the \(x\)-axis.
+Instead, we reflect $R$ across the $x$-axis.
 
 If
 
@@ -204,11 +202,11 @@ $$
 
 Thus:
 
-1. draw the line through \(P\) and \(Q\);
-2. find its third intersection with \(E\);
-3. reflect that point across the \(x\)-axis.
+1. draw the line through $P$ and $Q$;
+2. find its third intersection with $E$;
+3. reflect that point across the $x$-axis.
 
-That reflected point is \(P+Q\).
+That reflected point is $P+Q$.
 
 ---
 
@@ -248,7 +246,7 @@ $$
 
 also lies on the curve.
 
-So the inverse of \(P\) is
+So the inverse of $P$ is
 
 $$
 \boxed{
@@ -256,7 +254,7 @@ $$
 }
 $$
 
-Geometrically, negation is reflection across the \(x\)-axis.
+Geometrically, negation is reflection across the $x$-axis.
 
 Therefore,
 
@@ -296,7 +294,7 @@ $$
 x_1\neq x_2.
 $$
 
-The line through \(P\) and \(Q\) has slope
+The line through $P$ and $Q$ has slope
 
 $$
 \boxed{
@@ -328,7 +326,7 @@ $$
 
 This line intersects the elliptic curve in three points.
 
-Two are \(P\) and \(Q\).
+Two are $P$ and $Q$.
 
 Let the third be
 
@@ -412,7 +410,7 @@ x^3
 0.
 $$
 
-The roots of this cubic equation are exactly the three \(x\)-coordinates
+The roots of this cubic equation are exactly the three $x$-coordinates
 
 $$
 x_1,
@@ -436,7 +434,7 @@ x_R
 \lambda^2-x_1-x_2.
 $$
 
-Since reflection does not change the \(x\)-coordinate,
+Since reflection does not change the $x$-coordinate,
 
 $$
 \boxed{
@@ -520,9 +518,9 @@ $$
 
 There is no unique secant line through two distinct points anymore.
 
-Instead, we take the **tangent line** to the curve at \(P\).
+Instead, we take the **tangent line** to the curve at $P$.
 
-This corresponds to the line intersecting the cubic twice at \(P\), counting multiplicity, and once more at another point \(R\).
+This corresponds to the line intersecting the cubic twice at $P$, counting multiplicity, and once more at another point $R$.
 
 Then
 
@@ -548,7 +546,7 @@ $$
 y^2=x^3+ax+b.
 $$
 
-Differentiate implicitly with respect to \(x\):
+Differentiate implicitly with respect to $x$:
 
 $$
 2y\frac{dy}{dx}
@@ -634,7 +632,7 @@ The formulas contain divisions.
 
 Therefore we must understand when the denominators vanish.
 
-### Case 1: \(P=-Q\)
+### Case 1: $P=-Q$
 
 Suppose
 
@@ -678,7 +676,7 @@ $$
 
 ---
 
-### Case 2: Doubling a point with \(y=0\)
+### Case 2: Doubling a point with $y=0$
 
 Suppose
 
@@ -710,7 +708,7 @@ $$
 }
 $$
 
-Such a point has order \(2\).
+Such a point has order $2$.
 
 Notice that the doubling slope formula also detects this special case because its denominator is
 
@@ -768,7 +766,7 @@ $$
 }
 $$
 
-It is tempting to think of \(\mathcal O\) as merely a convenient symbol.
+It is tempting to think of $\mathcal O$ as merely a convenient symbol.
 
 It is not.
 
@@ -838,7 +836,7 @@ It follows from exactly the same three-intersection geometry as ordinary point a
 
 ## 10. Why the group is abelian
 
-The points of \(E\), together with \(\mathcal O\), form an abelian group.
+The points of $E$, together with $\mathcal O$, form an abelian group.
 
 Let us examine the group axioms.
 
@@ -894,7 +892,7 @@ $$
 
 ### Commutativity
 
-The line through \(P\) and \(Q\) is the same line as the line through \(Q\) and \(P\).
+The line through $P$ and $Q$ is the same line as the line through $Q$ and $P$.
 
 Therefore the third intersection is identical.
 
@@ -950,7 +948,7 @@ Such a proof is possible, but it hides the real mathematics.
 
 A deeper explanation comes from divisor theory.
 
-For an elliptic curve \(E\), consider degree-zero divisor classes
+For an elliptic curve $E$, consider degree-zero divisor classes
 
 $$
 \operatorname{Pic}^0(E).
@@ -980,7 +978,7 @@ P
 }
 $$
 
-identifies \(E\) with its degree-zero Picard group.
+identifies $E$ with its degree-zero Picard group.
 
 Now suppose a line intersects the cubic at
 
@@ -1083,7 +1081,7 @@ $$
 Q=(1,\sqrt3).
 $$
 
-Check \(P\):
+Check $P$:
 
 $$
 2^2=4
@@ -1095,9 +1093,9 @@ $$
 0^3-2(0)+4=4.
 $$
 
-So \(P\in E\).
+So $P\in E$.
 
-For \(Q\),
+For $Q$,
 
 $$
 (\sqrt3)^2=3
@@ -1183,7 +1181,7 @@ P+Q
 }
 $$
 
-The arithmetic may look messy over \(\mathbb R\), but the same algebra works over finite fields.
+The arithmetic may look messy over $\mathbb R$, but the same algebra works over finite fields.
 
 There, division simply becomes multiplication by a modular inverse.
 
@@ -1245,7 +1243,7 @@ The affine chart can be visualized as a slice of projective space:
 
 <img src="/images/ready/elliptic-curves-group-law/affine.PNG" width="250"/><br/>
 
-<em>The affine plane is the chart \(Z=1\); points with \(Z=0\) form the line at infinity.</em>
+<em>The affine plane is the chart $Z=1$; points with $Z=0$ form the line at infinity.</em>
 
 </div>
 
@@ -1261,7 +1259,7 @@ $$
 
 <img src="/images/ready/elliptic-curves-group-law/2Dplane.PNG" width="600"/><br/>
 
-<em>The affine elliptic curve together with its projective identity point \(\mathcal O\).</em>
+<em>The affine elliptic curve together with its projective identity point $\mathcal O$.</em>
 
 </div>
 
@@ -1449,9 +1447,9 @@ $$
 [n]P
 $$
 
-by literally performing \(n-1\) additions would be extremely inefficient.
+by literally performing $n-1$ additions would be extremely inefficient.
 
-Instead, we exploit the binary representation of \(n\).
+Instead, we exploit the binary representation of $n$.
 
 For example,
 
@@ -1669,7 +1667,7 @@ We will study:
 * modular inverses;
 * quadratic residues;
 * counting points;
-* the structure of \(E(\mathbb F_p)\);
+* the structure of $E(\mathbb F_p)$;
 * Hasse's theorem;
 * point orders and subgroups.
 

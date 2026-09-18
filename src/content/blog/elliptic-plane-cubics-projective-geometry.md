@@ -28,7 +28,7 @@ An elliptic curve is not merely a real graph with a characteristic symmetric sha
 
 That picture is useful for intuition, but it is not the mathematical definition.
 
-An **elliptic curve over a field \(K\)** is a smooth projective curve of genus one together with a distinguished \(K\)-rational point.
+An **elliptic curve over a field $K$** is a smooth projective curve of genus one together with a distinguished $K$-rational point.
 
 Symbolically, we should think of an elliptic curve as
 
@@ -40,10 +40,10 @@ $$
 
 where
 
-* \(E\) is a smooth projective genus-one curve;
-* \(\mathcal O\in E(K)\) is a distinguished rational point.
+* $E$ is a smooth projective genus-one curve;
+* $\mathcal O\in E(K)$ is a distinguished rational point.
 
-The point \(\mathcal O\) will later become the identity element of the elliptic-curve group.
+The point $\mathcal O$ will later become the identity element of the elliptic-curve group.
 
 For most explicit calculations, elliptic curves are represented by **Weierstrass equations**.
 
@@ -76,7 +76,7 @@ This chapter builds the geometric foundation behind that representation.
 
 The standard definition is:
 
-> An elliptic curve over a field \(K\) is a smooth projective algebraic curve of genus one together with a distinguished \(K\)-rational point.
+> An elliptic curve over a field $K$ is a smooth projective algebraic curve of genus one together with a distinguished $K$-rational point.
 
 Every word matters.
 
@@ -108,7 +108,7 @@ This point allows the curve to acquire a group structure.
 
 A subtle but important distinction follows.
 
-A smooth projective curve of genus one **without a \(K\)-rational point** is a genus-one curve, but it is not yet an elliptic curve over \(K\).
+A smooth projective curve of genus one **without a $K$-rational point** is a genus-one curve, but it is not yet an elliptic curve over $K$.
 
 The rational base point is part of the definition.
 
@@ -134,7 +134,7 @@ $$
 y^2=x^3-x+1
 $$
 
-is a plane cubic because the highest total degree appearing is \(3\).
+is a plane cubic because the highest total degree appearing is $3$.
 
 Over the real numbers we can draw such curves and obtain the familiar shapes often associated with elliptic curves.
 
@@ -173,7 +173,7 @@ y^2+a_1xy+a_3y
 x^3+a_2x^2+a_4x+a_6.
 $$
 
-The coefficients lie in the base field \(K\).
+The coefficients lie in the base field $K$.
 
 When
 
@@ -200,7 +200,7 @@ $$
 
 matters.
 
-In characteristics \(2\) and \(3\), the transformations used to eliminate certain terms require division by \(2\) or \(3\), which is impossible when those elements vanish in the field.
+In characteristics $2$ and $3$, the transformations used to eliminate certain terms require division by $2$ or $3$, which is impossible when those elements vanish in the field.
 
 Therefore the long Weierstrass equation is the more general model.
 
@@ -281,7 +281,7 @@ $$
 Z\neq0,
 $$
 
-we can divide by \(Z\) and write
+we can divide by $Z$ and write
 
 $$
 x=\frac{X}{Z},
@@ -339,7 +339,7 @@ a\frac XZ
 b.
 $$
 
-Multiply by \(Z^3\):
+Multiply by $Z^3$:
 
 $$
 Y^2Z
@@ -376,7 +376,7 @@ E:
 F(X,Y,Z)=0.
 $$
 
-Every term now has total degree \(3\):
+Every term now has total degree $3$:
 
 $$
 \deg(Y^2Z)=3,
@@ -458,9 +458,9 @@ $$
 P+\mathcal O=P
 $$
 
-for every point \(P\in E\).
+for every point $P\in E$.
 
-So \(\mathcal O\) is not an artificial bookkeeping device.
+So $\mathcal O$ is not an artificial bookkeeping device.
 
 It is the identity element required to complete the group law.
 
@@ -626,7 +626,7 @@ $$
 x^3+ax+b=0.
 $$
 
-Therefore \(x\) must simultaneously satisfy
+Therefore $x$ must simultaneously satisfy
 
 $$
 3x^2+a=0
@@ -855,7 +855,7 @@ $$
 3.
 $$
 
-Bézout's theorem tells us, under the appropriate hypotheses and over an algebraic closure, that two projective plane curves of degrees \(m\) and \(n\) intersect in
+Bézout's theorem tells us, under the appropriate hypotheses and over an algebraic closure, that two projective plane curves of degrees $m$ and $n$ intersect in
 
 $$
 mn
@@ -907,9 +907,9 @@ $$
 
 Then there are not two distinct points through which to draw a secant line.
 
-Instead, we use the tangent line at \(P\).
+Instead, we use the tangent line at $P$.
 
-The tangent touches the curve with intersection multiplicity at least two at \(P\).
+The tangent touches the curve with intersection multiplicity at least two at $P$.
 
 So Bézout still counts
 
@@ -933,7 +933,7 @@ It is rooted in algebraic intersection theory.
 
 Suppose we work only in affine coordinates.
 
-Take two points having the same \(x\)-coordinate:
+Take two points having the same $x$-coordinate:
 
 $$
 P=(x,y)

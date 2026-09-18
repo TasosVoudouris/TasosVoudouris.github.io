@@ -67,9 +67,9 @@ $$
 g^x,
 $$
 
-computing \(g^x\) from \(g\) and \(x\) is easy.
+computing $g^x$ from $g$ and $x$ is easy.
 
-But recovering \(x\) from \(g\) and \(g^x\) may be computationally difficult in appropriately chosen groups.
+But recovering $x$ from $g$ and $g^x$ may be computationally difficult in appropriately chosen groups.
 
 This asymmetry becomes the basis of several cryptographic constructions.
 

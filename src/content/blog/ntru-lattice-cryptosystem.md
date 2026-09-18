@@ -28,7 +28,7 @@ draft: false
 
 **NTRU** is one of the earliest and most influential practical lattice-based public-key cryptosystems.
 
-Its arithmetic is performed inside a polynomial quotient ring, but its security can also be visualized through a highly structured lattice of dimension \(2N\).
+Its arithmetic is performed inside a polynomial quotient ring, but its security can also be visualized through a highly structured lattice of dimension $2N$.
 
 This makes NTRU especially useful pedagogically.
 
@@ -94,8 +94,8 @@ $$
 
 Two moduli are used:
 
-* a small plaintext modulus \(p\);
-* a much larger ciphertext modulus \(q\);
+* a small plaintext modulus $p$;
+* a much larger ciphertext modulus $q$;
 
 with typically
 
@@ -119,7 +119,7 @@ R_q
 (\mathbb Z/q\mathbb Z)[x]/(x^N-1).
 $$
 
-Every element can be represented by a polynomial of degree less than \(N\):
+Every element can be represented by a polynomial of degree less than $N$:
 
 $$
 a(x)
@@ -216,7 +216,7 @@ This cyclic structure is precisely what later produces the circulant matrices ap
 
 ## 3. Small polynomials
 
-The secret polynomials are not chosen uniformly from all of \(R_q\).
+The secret polynomials are not chosen uniformly from all of $R_q$.
 
 They are deliberately chosen to be small.
 
@@ -248,7 +248,7 @@ $$
 \sqrt{3}.
 $$
 
-Compare this with a generic polynomial modulo a large \(q\).
+Compare this with a generic polynomial modulo a large $q$.
 
 After center lifting its coefficients to approximately
 
@@ -270,7 +270,7 @@ $$
 f,g\in R.
 $$
 
-The polynomial \(f\) must be invertible modulo the required moduli.
+The polynomial $f$ must be invertible modulo the required moduli.
 
 We therefore need inverses
 
@@ -306,7 +306,7 @@ inside their respective quotient rings.
 
 Not every polynomial is invertible.
 
-Key generation therefore samples an appropriate \(f\) and checks the necessary invertibility conditions.
+Key generation therefore samples an appropriate $f$ and checks the necessary invertibility conditions.
 
 ---
 
@@ -316,7 +316,7 @@ There are several closely related ways to write classical NTRU.
 
 They are algebraically similar but should never be mixed mid-derivation.
 
-### Convention A: place \(p\) in the public key
+### Convention A: place $p$ in the public key
 
 Define
 
@@ -359,7 +359,7 @@ $$
 
 ---
 
-### Convention B: place \(p\) in encryption
+### Convention B: place $p$ in encryption
 
 Alternatively define
 
@@ -437,7 +437,7 @@ $$
 prh+m,
 $$
 
-thereby accidentally inserting the factor \(p\) twice.
+thereby accidentally inserting the factor $p$ twice.
 
 ---
 
@@ -477,7 +477,7 @@ prh+m
 }
 $$
 
-The polynomial \(r\) provides fresh randomness.
+The polynomial $r$ provides fresh randomness.
 
 Thus two encryptions of the same message should generally produce different ciphertexts.
 
@@ -491,7 +491,7 @@ $$
 
 ## 7. Decryption
 
-The secret-key holder knows \(f\).
+The secret-key holder knows $f$.
 
 Given
 
@@ -534,9 +534,9 @@ $$
 
 Now comes the critical step.
 
-The coefficients of \(a\) are **center lifted** from residues modulo \(q\) to integers near zero.
+The coefficients of $a$ are **center lifted** from residues modulo $q$ to integers near zero.
 
-For example, when \(q=32\),
+For example, when $q=32$,
 
 $$
 28
@@ -554,7 +554,7 @@ $$
 28\equiv-4\pmod{32}.
 $$
 
-After center lifting, reduce modulo \(p\).
+After center lifting, reduce modulo $p$.
 
 Since
 
@@ -598,7 +598,7 @@ $$
 prg+fm
 $$
 
-modulo \(q\).
+modulo $q$.
 
 Suppose the true integer polynomial is
 
@@ -618,7 +618,7 @@ c_i
 \frac q2,
 $$
 
-then reduction modulo \(q\), followed by centered lifting, recovers exactly the same integer coefficient.
+then reduction modulo $q$, followed by centered lifting, recovers exactly the same integer coefficient.
 
 Thus
 
@@ -632,7 +632,7 @@ $$
 
 loses no information.
 
-Then reduction modulo \(p\) gives
+Then reduction modulo $p$ gives
 
 $$
 c
@@ -665,8 +665,8 @@ is a simple sufficient correctness condition.
 
 The exact probability analysis depends on:
 
-* the distributions of \(f,g,r,m\);
-* the values \(p,q,N\);
+* the distributions of $f,g,r,m$;
+* the values $p,q,N$;
 * the convolution structure;
 * the particular NTRU variant.
 
@@ -676,7 +676,7 @@ This is traditionally called a **decryption failure**.
 
 ---
 
-### A useful special form of \(f\)
+### A useful special form of $f$
 
 Some NTRU constructions choose
 
@@ -684,7 +684,7 @@ $$
 f=1+pF
 $$
 
-for a small polynomial \(F\).
+for a small polynomial $F$.
 
 Then automatically
 
@@ -760,7 +760,7 @@ $$
 g=(-1,-1,0,0,1).
 $$
 
-For this toy example, \(f\) is invertible modulo both \(3\) and \(32\).
+For this toy example, $f$ is invertible modulo both $3$ and $32$.
 
 One finds
 
@@ -900,11 +900,11 @@ $$
 (-16,16),
 $$
 
-so no information was lost modulo \(32\).
+so no information was lost modulo $32$.
 
 ---
 
-### Reduce modulo \(p\)
+### Reduce modulo $p$
 
 Now reduce
 
@@ -912,7 +912,7 @@ $$
 (5,-3,-7,2,4)
 $$
 
-modulo \(3\):
+modulo $3$:
 
 $$
 (2,0,2,2,1).
@@ -987,7 +987,7 @@ h
 h_0+h_1x+\cdots+h_{N-1}x^{N-1}.
 $$
 
-Multiplication by \(h\) in
+Multiplication by $h$ in
 
 $$
 \mathbb Z[x]/(x^N-1)
@@ -1134,7 +1134,7 @@ g f_q^{-1}
 \pmod q.
 $$
 
-Multiplying by \(f\),
+Multiplying by $f$,
 
 $$
 fh
@@ -1158,7 +1158,7 @@ $$
 (\mathbf f,\mathbf g)
 $$
 
-satisfies the defining relation of \(L_h\).
+satisfies the defining relation of $L_h$.
 
 Hence
 
@@ -1216,7 +1216,7 @@ The lattice contains infinitely many vectors.
 
 What makes the secret special is its norm.
 
-Suppose \(f\) and \(g\) are sparse ternary polynomials.
+Suppose $f$ and $g$ are sparse ternary polynomials.
 
 Then their coefficients lie in
 
@@ -1224,7 +1224,7 @@ $$
 \{-1,0,1\}.
 $$
 
-If \(f\) contains \(d_f\) nonzero coefficients, then approximately
+If $f$ contains $d_f$ nonzero coefficients, then approximately
 
 $$
 \|\mathbf f\|_2
@@ -1253,7 +1253,7 @@ $$
 
 is relatively small.
 
-By contrast, generic lattice vectors produced directly from the public basis may contain coordinates on the scale of \(q\).
+By contrast, generic lattice vectors produced directly from the public basis may contain coordinates on the scale of $q$.
 
 Thus the secret is not merely a vector in the lattice.
 
@@ -1326,7 +1326,7 @@ This immediately gives the natural geometric scale of the lattice.
 
 ### Gaussian heuristic
 
-For a random-looking \(d\)-dimensional lattice of determinant \(D\), the Gaussian heuristic predicts a shortest-vector scale approximately
+For a random-looking $d$-dimensional lattice of determinant $D$, the Gaussian heuristic predicts a shortest-vector scale approximately
 
 $$
 \lambda_1(L)
@@ -1450,7 +1450,7 @@ $$
 
 called the **block size**.
 
-Larger \(\beta\) generally produces better reduction.
+Larger $\beta$ generally produces better reduction.
 
 But the computational cost grows rapidly.
 
@@ -1531,7 +1531,7 @@ $$
 fh\equiv g\pmod q,
 $$
 
-then multiplying both components by powers of \(x\) produces related vectors.
+then multiplying both components by powers of $x$ produces related vectors.
 
 Thus NTRU lattices contain algebraically related short vectors rather than one isolated secret point.
 
@@ -1580,9 +1580,9 @@ $$
 fh\equiv g\pmod q,
 $$
 
-where both \(f\) and \(g\) are unusually small.
+where both $f$ and $g$ are unusually small.
 
-The associated computational assumption is essentially that, given \(h\), recovering suitable short \(f,g\) satisfying this relation is hard.
+The associated computational assumption is essentially that, given $h$, recovering suitable short $f,g$ satisfying this relation is hard.
 
 This is often described as an **NTRU assumption** or Search-NTRU-style problem.
 

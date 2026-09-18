@@ -61,7 +61,7 @@ ChaCha20 represents a different design philosophy.
 
 Its core is built from only three operation families:
 
-\[
+$$
 \boxed{
 \text{Addition}
 +
@@ -69,13 +69,13 @@ Its core is built from only three operation families:
 +
 \text{XOR}
 }
-\]
+$$
 
 which gives the common abbreviation:
 
-\[
+$$
 \boxed{\text{ARX}}.
-\]
+$$
 
 There are:
 
@@ -97,17 +97,17 @@ Modular addition is different.
 
 The operation:
 
-\[
+$$
 a+b\pmod{2^{32}}
-\]
+$$
 
 creates carry bits.
 
 Those carries make addition nonlinear over:
 
-\[
+$$
 \mathbb F_2.
-\]
+$$
 
 So ChaCha20 combines:
 
@@ -139,17 +139,17 @@ The goal is to make distinguishing, key recovery, and useful prediction computat
 
 This article follows the IETF/CFRG variant specified by RFC 8439:
 
-\[
+$$
 \text{key}=256\text{ bits},
-\]
+$$
 
-\[
+$$
 \text{nonce}=96\text{ bits},
-\]
+$$
 
-\[
+$$
 \text{block counter}=32\text{ bits}.
-\]
+$$
 
 Older ChaCha descriptions used other layouts, including a 64-bit nonce with a 64-bit counter.
 
@@ -163,24 +163,24 @@ For this series, **ChaCha20 means the RFC 8439 layout unless explicitly stated o
 
 The ChaCha20 block function operates on sixteen unsigned 32-bit words:
 
-\[
+$$
 x_0,x_1,\ldots,x_{15}.
-\]
+$$
 
-They are displayed as a \(4\times4\) matrix:
+They are displayed as a $4\times4$ matrix:
 
-\[
+$$
 \begin{bmatrix}
 x_0 & x_1 & x_2 & x_3\\
 x_4 & x_5 & x_6 & x_7\\
 x_8 & x_9 & x_{10} & x_{11}\\
 x_{12} & x_{13} & x_{14} & x_{15}
 \end{bmatrix}.
-\]
+$$
 
 For RFC 8439, the layout is:
 
-\[
+$$
 \boxed{
 \begin{bmatrix}
 c_0&c_1&c_2&c_3\\
@@ -189,14 +189,14 @@ k_4&k_5&k_6&k_7\\
 ctr&n_0&n_1&n_2
 \end{bmatrix}
 }
-\]
+$$
 
 where:
 
-- \(c_0,\ldots,c_3\) are fixed constants;
-- \(k_0,\ldots,k_7\) are the 256-bit key;
-- \(ctr\) is the 32-bit block counter;
-- \(n_0,n_1,n_2\) are the 96-bit nonce.
+- $c_0,\ldots,c_3$ are fixed constants;
+- $k_0,\ldots,k_7$ are the 256-bit key;
+- $ctr$ is the 32-bit block counter;
+- $n_0,n_1,n_2$ are the 96-bit nonce.
 
 ### Constants
 
@@ -208,21 +208,21 @@ expand 32-byte k
 
 Parsed as four little-endian 32-bit words, they become:
 
-\[
+$$
 c_0=\texttt{0x61707865},
-\]
+$$
 
-\[
+$$
 c_1=\texttt{0x3320646e},
-\]
+$$
 
-\[
+$$
 c_2=\texttt{0x79622d32},
-\]
+$$
 
-\[
+$$
 c_3=\texttt{0x6b206574}.
-\]
+$$
 
 These constants are public.
 
@@ -242,9 +242,9 @@ For example, the first four key bytes:
 
 become:
 
-\[
+$$
 k_0=\texttt{0x03020100}.
-\]
+$$
 
 This byte order matters.
 
@@ -252,13 +252,13 @@ A big-endian implementation can have the correct-looking round structure and sti
 
 ### Counter
 
-Word \(12\) is the 32-bit block counter.
+Word $12$ is the 32-bit block counter.
 
 Each block function invocation produces:
 
-\[
+$$
 64\text{ bytes}
-\]
+$$
 
 of keystream.
 
@@ -266,17 +266,17 @@ So the counter identifies which 64-byte keystream block is being generated.
 
 ### Nonce
 
-Words \(13,14,15\) contain the 96-bit nonce.
+Words $13,14,15$ contain the 96-bit nonce.
 
 The nonce is parsed as three little-endian 32-bit words.
 
 The nonce is public, but under RFC 8439 it:
 
-\[
+$$
 \boxed{
 \text{MUST NOT repeat for the same key}.
 }
-\]
+$$
 
 This is not a recommendation to keep it secret.
 
@@ -290,9 +290,9 @@ The quarter round is the basic transformation of ChaCha20.
 
 It takes four 32-bit words:
 
-\[
+$$
 (a,b,c,d)
-\]
+$$
 
 and updates them in place.
 
@@ -307,63 +307,63 @@ c += d; b ^= c; b <<<=  7
 
 All additions are modulo:
 
-\[
+$$
 2^{32}.
-\]
+$$
 
 ### Formal definition
 
 Write:
 
-\[
+$$
 \operatorname{ROTL}_r(x)
-\]
+$$
 
-for 32-bit left rotation by \(r\) positions.
+for 32-bit left rotation by $r$ positions.
 
 Then:
 
-\[
+$$
 a\leftarrow a+b\pmod{2^{32}},
-\]
+$$
 
-\[
+$$
 d\leftarrow\operatorname{ROTL}_{16}(d\oplus a),
-\]
+$$
 
-\[
+$$
 c\leftarrow c+d\pmod{2^{32}},
-\]
+$$
 
-\[
+$$
 b\leftarrow\operatorname{ROTL}_{12}(b\oplus c),
-\]
+$$
 
-\[
+$$
 a\leftarrow a+b\pmod{2^{32}},
-\]
+$$
 
-\[
+$$
 d\leftarrow\operatorname{ROTL}_{8}(d\oplus a),
-\]
+$$
 
-\[
+$$
 c\leftarrow c+d\pmod{2^{32}},
-\]
+$$
 
-\[
+$$
 b\leftarrow\operatorname{ROTL}_{7}(b\oplus c).
-\]
+$$
 
 The rotation distances are therefore:
 
-\[
+$$
 16,\ 12,\ 8,\ 7.
-\]
+$$
 
 ### Why mask to 32 bits
 
-In a language with fixed-width unsigned 32-bit arithmetic, overflow naturally reduces modulo \(2^{32}\).
+In a language with fixed-width unsigned 32-bit arithmetic, overflow naturally reduces modulo $2^{32}$.
 
 Python integers do not overflow.
 
@@ -403,13 +403,13 @@ They wrap around into the low positions.
 
 XOR satisfies:
 
-\[
+$$
 (x\oplus y)\oplus z
 =
 x\oplus(y\oplus z)
-\]
+$$
 
-inside a vector space over \(\mathbb F_2\).
+inside a vector space over $\mathbb F_2$.
 
 Rotation is also a linear permutation of bit positions.
 
@@ -432,39 +432,39 @@ Repeated interaction among addition, rotation, and XOR spreads such effects acro
 
 RFC 8439 gives:
 
-\[
+$$
 a=\texttt{0x11111111},
-\]
+$$
 
-\[
+$$
 b=\texttt{0x01020304},
-\]
+$$
 
-\[
+$$
 c=\texttt{0x9b8d6f43},
-\]
+$$
 
-\[
+$$
 d=\texttt{0x01234567}.
-\]
+$$
 
 After one quarter round:
 
-\[
+$$
 a=\texttt{0xea2a92f4},
-\]
+$$
 
-\[
+$$
 b=\texttt{0xcb1cf8ce},
-\]
+$$
 
-\[
+$$
 c=\texttt{0x4581472e},
-\]
+$$
 
-\[
+$$
 d=\texttt{0x5881c4bb}.
-\]
+$$
 
 That small vector is extremely valuable because it isolates:
 
@@ -482,27 +482,27 @@ If the quarter-round vector fails, there is no reason to debug the full block fu
 
 ChaCha20 does not apply the quarter round to four consecutive words repeatedly.
 
-It alternates between **column** and **diagonal** groupings so information moves across the entire \(4\times4\) state.
+It alternates between **column** and **diagonal** groupings so information moves across the entire $4\times4$ state.
 
 ### Column round
 
 The four column quarter rounds are:
 
-\[
+$$
 QR(0,4,8,12),
-\]
+$$
 
-\[
+$$
 QR(1,5,9,13),
-\]
+$$
 
-\[
+$$
 QR(2,6,10,14),
-\]
+$$
 
-\[
+$$
 QR(3,7,11,15).
-\]
+$$
 
 Graphically:
 
@@ -522,21 +522,21 @@ Each vertical group is transformed independently during that round.
 
 Then the grouping changes:
 
-\[
+$$
 QR(0,5,10,15),
-\]
+$$
 
-\[
+$$
 QR(1,6,11,12),
-\]
+$$
 
-\[
+$$
 QR(2,7,8,13),
-\]
+$$
 
-\[
+$$
 QR(3,4,9,14).
-\]
+$$
 
 This causes words that interacted only within one column to interact across new positions.
 
@@ -546,27 +546,27 @@ One column round plus one diagonal round is commonly called a **double round**.
 
 ChaCha20 performs:
 
-\[
+$$
 10
-\]
+$$
 
 double rounds.
 
 That is:
 
-\[
+$$
 20
-\]
+$$
 
 rounds total.
 
 Since every round contains four quarter rounds, the complete transformation performs:
 
-\[
+$$
 20\cdot4
 =
 80
-\]
+$$
 
 quarter rounds.
 
@@ -591,28 +591,28 @@ After the 20 rounds, ChaCha20 does **not** serialize the transformed state direc
 
 Let the initial state be:
 
-\[
+$$
 X
-\]
+$$
 
 and the state after 20 rounds be:
 
-\[
+$$
 X'.
-\]
+$$
 
 The block function computes:
 
-\[
+$$
 Y_i
 =
 X'_i+X_i
 \pmod{2^{32}}
-\]
+$$
 
 for all sixteen words.
 
-Then \(Y\) is serialized little-endian.
+Then $Y$ is serialized little-endian.
 
 This feed-forward step is essential.
 
@@ -622,17 +622,17 @@ It is part of the ChaCha20 block function, not an optional postprocessing step.
 
 The sixteen final words are each 32 bits:
 
-\[
+$$
 16\cdot32
 =
 512\text{ bits}.
-\]
+$$
 
 Therefore the block output is:
 
-\[
+$$
 64\text{ bytes}.
-\]
+$$
 
 The words are serialized one by one in little-endian byte order.
 
@@ -642,51 +642,51 @@ The words are serialized one by one in little-endian byte order.
 
 The block function maps:
 
-\[
+$$
 (K,\operatorname{counter},N)
-\]
+$$
 
 to one 64-byte keystream block.
 
 Write:
 
-\[
+$$
 KS_j
 =
 \operatorname{ChaCha20Block}
 (
 K,j,N
 ).
-\]
+$$
 
 For a message longer than 64 bytes, increment the block counter:
 
-\[
+$$
 KS_j,
 KS_{j+1},
 KS_{j+2},
 \ldots
-\]
+$$
 
 and concatenate the blocks.
 
 Encryption is:
 
-\[
+$$
 C=P\oplus KS.
-\]
+$$
 
 Decryption is identical:
 
-\[
+$$
 P=C\oplus KS.
-\]
+$$
 
 ### Partial final block
 
 The plaintext length need not be a multiple of 64 bytes.
 
-If the final plaintext block has only \(r<64\) bytes, generate one complete keystream block but use only its first \(r\) bytes.
+If the final plaintext block has only $r<64$ bytes, generate one complete keystream block but use only its first $r$ bytes.
 
 The unused keystream bytes are discarded.
 
@@ -694,16 +694,16 @@ No padding is inherently required by ChaCha20 itself.
 
 ### Counter progression
 
-If the initial counter is \(j_0\), the message blocks use:
+If the initial counter is $j_0$, the message blocks use:
 
-\[
+$$
 j_0,
 j_0+1,
 j_0+2,
 \ldots
-\]
+$$
 
-without wrapping modulo \(2^{32}\) within one encryption context.
+without wrapping modulo $2^{32}$ within one encryption context.
 
 Once the counter space would wrap, that key/nonce context must not continue.
 
@@ -711,19 +711,19 @@ Once the counter space would wrap, that key/nonce context must not continue.
 
 At a fixed block position:
 
-\[
+$$
 (K,N,j)
-\]
+$$
 
 determines the keystream block completely.
 
 Therefore repeating the same triple gives the same block:
 
-\[
+$$
 \operatorname{ChaCha20Block}(K,N,j)
 =
 \operatorname{ChaCha20Block}(K,N,j).
-\]
+$$
 
 That sounds trivial, but it is the operational heart of stream-cipher safety.
 
@@ -735,11 +735,11 @@ ChaCha20 is secure only when its operational contract is respected.
 
 The most important rule is:
 
-\[
+$$
 \boxed{
 \text{do not repeat a nonce under the same key}.
 }
-\]
+$$
 
 RFC 8439 states this requirement explicitly.
 
@@ -749,23 +749,23 @@ Suppose two plaintexts are encrypted using the same key, nonce, and overlapping 
 
 Then they receive the same keystream:
 
-\[
+$$
 C_1=P_1\oplus KS,
-\]
+$$
 
-\[
+$$
 C_2=P_2\oplus KS.
-\]
+$$
 
 XORing gives:
 
-\[
+$$
 \boxed{
 C_1\oplus C_2
 =
 P_1\oplus P_2.
 }
-\]
+$$
 
 This is exactly the two-time-pad failure studied earlier in the series.
 
@@ -795,14 +795,14 @@ The RFC 8439 variant has a 32-bit block counter.
 
 Since each block is 64 bytes, the raw addressable block space per key/nonce pair is:
 
-\[
+$$
 2^{32}\cdot64
 =
 2^{38}
 \text{ bytes}
 =
 256\text{ GiB}.
-\]
+$$
 
 Operationally, the counter must not wrap.
 
@@ -844,7 +844,7 @@ So nonce discipline is partly systems engineering.
 
 This is the same lesson seen throughout the series:
 
-\[
+$$
 \boxed{
 \text{strong primitive}
 +
@@ -852,7 +852,7 @@ This is the same lesson seen throughout the series:
 =
 \text{broken protocol}.
 }
-\]
+$$
 
 ---
 
@@ -873,25 +873,25 @@ It does **not** authenticate:
 
 Suppose:
 
-\[
+$$
 C=P\oplus KS.
-\]
+$$
 
 An attacker sends:
 
-\[
+$$
 C'=C\oplus\Delta.
-\]
+$$
 
 The receiver decrypts:
 
-\[
+$$
 P'
 =
 C'\oplus KS
 =
 P\oplus\Delta.
-\]
+$$
 
 So an attacker can induce chosen bit flips without knowing the key.
 
@@ -901,9 +901,9 @@ This is inherent to unauthenticated stream encryption.
 
 RFC 8439 also defines the AEAD construction:
 
-\[
+$$
 \text{ChaCha20-Poly1305}.
-\]
+$$
 
 At a high level:
 
@@ -923,9 +923,9 @@ This is why RFC 8439 notes that a standalone ChaCha20 initial counter may often 
 
 In the AEAD construction, block counter 0 is used for key derivation, and actual message encryption begins at:
 
-\[
+$$
 1.
-\]
+$$
 
 That distinction is protocol-specific and should not be hidden inside a generic "ChaCha20" helper without documentation.
 
@@ -1237,9 +1237,9 @@ ChaCha20 is an instructive contrast with every generator studied earlier in the 
 
 There is no recurrence such as:
 
-\[
+$$
 S_{i+1}=aS_i+c\pmod m
-\]
+$$
 
 whose parameters can be solved from a few output words.
 
@@ -1247,13 +1247,13 @@ whose parameters can be solved from a few output words.
 
 The keystream does not satisfy a small exposed linear recurrence over:
 
-\[
+$$
 \mathbb F_2.
-\]
+$$
 
 ### Unlike Geffe
 
-The design is not a tiny Boolean combiner whose output has an obvious \(3/4\) correlation with one internal source.
+The design is not a tiny Boolean combiner whose output has an obvious $3/4$ correlation with one internal source.
 
 ### Unlike RC4
 
@@ -1278,13 +1278,13 @@ Reduced-round attacks help measure how much security margin the full 20-round co
 
 This is how modern cipher evaluation works:
 
-\[
+$$
 \boxed{
 \text{study weaker round counts}
 \rightarrow
 \text{understand margin of full design}.
 }
-\]
+$$
 
 ### Constant-time engineering
 
@@ -1324,33 +1324,33 @@ ChaCha20 marks a major shift in the series.
 
 The earlier generators taught us how simple structure leaks information:
 
-\[
+$$
 \text{LCG}
 \rightarrow
 \text{affine predictability},
-\]
+$$
 
-\[
+$$
 \text{LFSR}
 \rightarrow
 \text{linear recurrence recovery},
-\]
+$$
 
-\[
+$$
 \text{Geffe}
 \rightarrow
 \text{correlation attack},
-\]
+$$
 
-\[
+$$
 \text{RC4}
 \rightarrow
 \text{keystream bias}.
-\]
+$$
 
 ChaCha20 uses a carefully designed ARX transformation:
 
-\[
+$$
 \boxed{
 \text{addition}
 +
@@ -1358,25 +1358,25 @@ ChaCha20 uses a carefully designed ARX transformation:
 +
 \text{XOR}.
 }
-\]
+$$
 
 Its RFC 8439 state is:
 
-\[
+$$
 \begin{bmatrix}
 \text{constants}\\
 \text{256-bit key}\\
 \text{32-bit counter + 96-bit nonce}
 \end{bmatrix}
-\]
+$$
 
 organized as sixteen 32-bit words.
 
 The quarter round repeatedly applies:
 
-\[
+$$
 16,\ 12,\ 8,\ 7
-\]
+$$
 
 bit rotations around modular additions and XORs.
 
@@ -1384,53 +1384,53 @@ Four column quarter rounds followed by four diagonal quarter rounds form a doubl
 
 Ten double rounds give:
 
-\[
+$$
 20
-\]
+$$
 
 rounds and:
 
-\[
+$$
 80
-\]
+$$
 
 quarter rounds.
 
 Finally, the transformed state is added to the original state and serialized little-endian into:
 
-\[
+$$
 64
-\]
+$$
 
 keystream bytes.
 
 The stream-cipher interface is then simple:
 
-\[
+$$
 KS_j
 =
 \operatorname{ChaCha20Block}(K,j,N),
-\]
+$$
 
-\[
+$$
 C=P\oplus KS.
-\]
+$$
 
 But that simplicity leaves one operational rule non-negotiable:
 
-\[
+$$
 \boxed{
 \text{never repeat a nonce under the same key}.
 }
-\]
+$$
 
 If keystream overlaps, the old two-time-pad identity returns:
 
-\[
+$$
 C_1\oplus C_2
 =
 P_1\oplus P_2.
-\]
+$$
 
 ChaCha20 itself provides confidentiality only.
 
@@ -1438,7 +1438,7 @@ ChaCha20-Poly1305 adds authentication and associated-data protection and is ther
 
 The deeper lesson is that modern stream-cipher security comes from several layers working together:
 
-\[
+$$
 \boxed{
 \text{well-analyzed core}
 +
@@ -1452,7 +1452,7 @@ The deeper lesson is that modern stream-cipher security comes from several layer
 +
 \text{authenticated protocol use}.
 }
-\]
+$$
 
 That is a very different mindset from:
 

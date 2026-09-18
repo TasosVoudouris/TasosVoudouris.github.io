@@ -28,7 +28,7 @@ The previous chapter introduced Montgomery curves as one possible model of an el
 
 We now study why that model became so important computationally.
 
-A Montgomery curve over a field \(K\) of characteristic different from \(2\) has the form
+A Montgomery curve over a field $K$ of characteristic different from $2$ has the form
 
 $$
 \boxed{
@@ -47,7 +47,7 @@ $$
 
 The model is not important merely because its equation looks different from short Weierstrass form.
 
-Its real advantage is that scalar multiplication can be performed using essentially only the \(x\)-coordinate.
+Its real advantage is that scalar multiplication can be performed using essentially only the $x$-coordinate.
 
 This leads to:
 
@@ -83,15 +83,15 @@ These ideas form the mathematical foundation of constructions such as X25519.
 
 - [1. Montgomery curves](#1-montgomery-curves)
 - [2. Basic geometric structure](#2-basic-geometric-structure)
-- [3. Why the (x)-coordinate is special](#3-why-the-x-coordinate-is-special)
+- [3. Why the $x$-coordinate is special](#3-why-the-xxx-coordinate-is-special)
 - [4. The Kummer-line viewpoint](#4-the-kummer-line-viewpoint)
-- [5. Projective (X:Z) coordinates](#5-projective-xz-coordinates)
-- [6. Deriving (x(2P))](#6-deriving-x2p)
+- [5. Projective $X:Z$ coordinates](#5-projective-xzxzxz-coordinates)
+- [6. Deriving $x(2P)$](#6-deriving-x2px2px2p)
 - [7. Projective xDBL formulas](#7-projective-xdbl-formulas)
-- [8. The (A_${24}) optimization](#8-the-a_24-optimization)
+- [8. The $A_{24}$ optimization](#8-the-a24a_24a24-optimization)
 - [9. Differential addition](#9-differential-addition)
 - [10. Projective xADD formulas](#10-projective-xadd-formulas)
-- [11. Why xADD needs (P-Q)](#11-why-xadd-needs-p-q)
+- [11. Why xADD needs $P-Q$](#11-why-xadd-needs-pqp-qpq)
 - [12. Combined xDBLADD](#12-combined-xdbladd)
 - [13. The Montgomery ladder invariant](#13-the-montgomery-ladder-invariant)
 - [14. One ladder step](#14-one-ladder-step)
@@ -99,7 +99,7 @@ These ideas form the mathematical foundation of constructions such as X25519.
 - [16. Constant-time considerations](#16-constant-time-considerations)
 - [17. Recovering an affine coordinate](#17-recovering-an-affine-coordinate)
 - [18. Curve25519 and X25519](#18-curve25519-and-x25519)
-- [19. The Montgomery (j)-invariant](#19-the-montgomery-j-invariant)
+- [19. The Montgomery $j$-invariant](#19-the-montgomery-jjj-invariant)
 - [20. Relation to Weierstrass form](#20-relation-to-weierstrass-form)
 - [21. Relation to twisted Edwards curves](#21-relation-to-twisted-edwards-curves)
 - [22. What x-only arithmetic loses](#22-what-x-only-arithmetic-loses)
@@ -108,8 +108,6 @@ These ideas form the mathematical foundation of constructions such as X25519.
 - [Further reading](#further-reading)
 
 ---
-
-<a id="montgomery-curves"></a>
 
 ## 1. Montgomery curves
 
@@ -162,7 +160,7 @@ $$
 
 ---
 
-### A built-in \(2\)-torsion point
+### A built-in $2$-torsion point
 
 Set
 
@@ -212,7 +210,7 @@ $$
 }
 $$
 
-So Montgomery form naturally exposes a rational point of order \(2\).
+So Montgomery form naturally exposes a rational point of order $2$.
 
 ---
 
@@ -282,13 +280,13 @@ Thus ordinary affine addition works exactly as expected.
 
 But this is not why Montgomery curves are computationally exceptional.
 
-The real advantage appears when we stop computing \(y\).
+The real advantage appears when we stop computing $y$.
 
 ---
 
 <a id="x-coordinate-special"></a>
 
-## 3. Why the \(x\)-coordinate is special
+## 3. Why the $x$-coordinate is special
 
 For every point
 
@@ -310,7 +308,7 @@ x(P)=x(-P).
 }
 $$
 
-So the \(x\)-coordinate forgets the sign of a point.
+So the $x$-coordinate forgets the sign of a point.
 
 The map
 
@@ -338,9 +336,9 @@ E/\{\pm1\}.
 }
 $$
 
-This quotient retains enough information for scalar multiplication when only the final \(x\)-coordinate is needed.
+This quotient retains enough information for scalar multiplication when only the final $x$-coordinate is needed.
 
-That is exactly the setting used by Montgomery \(x\)-coordinate arithmetic.
+That is exactly the setting used by Montgomery $x$-coordinate arithmetic.
 
 ---
 
@@ -362,9 +360,9 @@ $$
 
 This is often called the **Kummer line**.
 
-A finite affine point is represented by its \(x\)-coordinate.
+A finite affine point is represented by its $x$-coordinate.
 
-The point at infinity maps to the projective point at infinity of the \(x\)-line.
+The point at infinity maps to the projective point at infinity of the $x$-line.
 
 Thus:
 
@@ -412,9 +410,9 @@ Montgomery arithmetic solves this using **differential addition**.
 
 <a id="projective-xz"></a>
 
-## 5. Projective \(X:Z\) coordinates
+## 5. Projective $X:Z$ coordinates
 
-Instead of representing an \(x\)-coordinate as a field element
+Instead of representing an $x$-coordinate as a field element
 
 $$
 x,
@@ -452,7 +450,7 @@ $$
 (\lambda X:\lambda Z)
 $$
 
-represent the same coordinate for every nonzero \(\lambda\).
+represent the same coordinate for every nonzero $\lambda$.
 
 For example,
 
@@ -472,7 +470,7 @@ $$
 (10:2).
 $$
 
-The point at infinity on the \(x\)-line is represented by
+The point at infinity on the $x$-line is represented by
 
 $$
 \boxed{
@@ -515,7 +513,7 @@ This is one of the central engineering advantages of the Montgomery ladder.
 
 <a id="derive-xdbl"></a>
 
-## 6. Deriving \(x(2P)\)
+## 6. Deriving $x(2P)$
 
 Let
 
@@ -537,7 +535,7 @@ $$
 \frac{3x^2+2Ax+1}{2By}.
 $$
 
-The doubled \(x\)-coordinate is
+The doubled $x$-coordinate is
 
 $$
 x(2P)
@@ -568,7 +566,7 @@ $$
 x(P).
 $$
 
-The \(y\)-coordinate has disappeared.
+The $y$-coordinate has disappeared.
 
 That is the key observation behind xDBL.
 
@@ -631,7 +629,7 @@ No field inversion is required.
 
 <a id="a24"></a>
 
-## 8. The \(A_{24}\) optimization
+## 8. The $A_{24}$ optimization
 
 The doubling formulas can be rearranged into an implementation-friendly form.
 
@@ -673,7 +671,7 @@ $$
 X_2=U^2V^2.
 $$
 
-For \(Z_2\), define
+For $Z_2$, define
 
 $$
 \boxed{
@@ -721,7 +719,7 @@ $$
 
 These formulas are algebraically equivalent.
 
-This is an important implementation detail because literature and software may define \(A_{24}\) differently.
+This is an important implementation detail because literature and software may define $A_{24}$ differently.
 
 So seeing either
 
@@ -753,7 +751,7 @@ x(P),
 x(Q),
 $$
 
-but not the corresponding \(y\)-coordinates.
+but not the corresponding $y$-coordinates.
 
 As discussed earlier, this is not enough to determine
 
@@ -857,7 +855,7 @@ $$
 CB=A_QB_P.
 $$
 
-Then a projective representation of \(x(P+Q)\) is
+Then a projective representation of $x(P+Q)$ is
 
 $$
 \boxed{
@@ -892,7 +890,7 @@ $$
 
 Again:
 
-* no \(y\)-coordinate;
+* no $y$-coordinate;
 * no inversion;
 * only field additions, subtractions, multiplications, and squarings.
 
@@ -900,7 +898,7 @@ Again:
 
 <a id="why-difference"></a>
 
-## 11. Why xADD needs \(P-Q\)
+## 11. Why xADD needs $P-Q$
 
 Why is the difference required?
 
@@ -922,7 +920,7 @@ $$
 x(Q).
 $$
 
-The coordinate data cannot distinguish \(Q\) from \(-Q\).
+The coordinate data cannot distinguish $Q$ from $-Q$.
 
 But
 
@@ -936,7 +934,7 @@ $$
 P-Q
 $$
 
-usually have different \(x\)-coordinates.
+usually have different $x$-coordinates.
 
 Therefore the operation
 
@@ -1100,7 +1098,7 @@ $$
 
 There are two possible next states.
 
-### Next scalar bit is \(0\)
+### Next scalar bit is $0$
 
 We need
 
@@ -1126,7 +1124,7 @@ $$
 
 ---
 
-### Next scalar bit is \(1\)
+### Next scalar bit is $1$
 
 We need
 
@@ -1169,7 +1167,7 @@ This is exactly what the next iteration requires.
 
 ## 15. Why the ladder is efficient
 
-Suppose the scalar \(n\) has bit length
+Suppose the scalar $n$ has bit length
 
 $$
 \ell.
@@ -1200,7 +1198,7 @@ But the advantage is not merely asymptotic complexity.
 Ordinary double-and-add might perform:
 
 * one doubling for every bit;
-* an addition only when the bit equals \(1\).
+* an addition only when the bit equals $1$.
 
 That creates a visibly different operation pattern depending on the secret scalar.
 
@@ -1313,7 +1311,7 @@ $$
 
 Thus one inversion is performed at the end.
 
-Over a prime field \(\mathbb F_p\), Fermat's little theorem gives
+Over a prime field $\mathbb F_p$, Fermat's little theorem gives
 
 $$
 Z^{-1}
@@ -1421,9 +1419,9 @@ $$
 The X25519 operation takes:
 
 * a scalar;
-* a Montgomery \(u\)-coordinate;
+* a Montgomery $u$-coordinate;
 
-and returns another \(u\)-coordinate.
+and returns another $u$-coordinate.
 
 It therefore matches exactly the arithmetic developed in this chapter:
 
@@ -1461,7 +1459,7 @@ $$
 
 <a id="montgomery-j"></a>
 
-## 19. The Montgomery \(j\)-invariant
+## 19. The Montgomery $j$-invariant
 
 For
 
@@ -1470,7 +1468,7 @@ M_{A,B}:
 By^2=x^3+Ax^2+x,
 $$
 
-the \(j\)-invariant is
+the $j$-invariant is
 
 $$
 \boxed{
@@ -1482,11 +1480,11 @@ j(M_{A,B})
 }
 $$
 
-Notice that \(B\) disappears.
+Notice that $B$ disappears.
 
-This reflects the fact that over an algebraic closure, \(B\) can be absorbed through a \(y\)-coordinate rescaling.
+This reflects the fact that over an algebraic closure, $B$ can be absorbed through a $y$-coordinate rescaling.
 
-Thus the raw parameter \(A\) is not itself the invariant.
+Thus the raw parameter $A$ is not itself the invariant.
 
 The actual geometric invariant is
 
@@ -1496,7 +1494,7 @@ j.
 }
 $$
 
-Different \(A\)-values or coordinate conventions can therefore require more care than simply comparing raw parameters.
+Different $A$-values or coordinate conventions can therefore require more care than simply comparing raw parameters.
 
 ---
 
@@ -1715,7 +1713,7 @@ $$
 -P.
 $$
 
-Consequently, the \(x\)-line is not itself the elliptic-curve group.
+Consequently, the $x$-line is not itself the elliptic-curve group.
 
 In particular, we do not have a general operation
 
@@ -1820,7 +1818,7 @@ When reviewing the implementation, useful questions include:
 
 1. How is the point at infinity represented?
 2. Does the implementation distinguish full points from x-only coordinates?
-3. Which \(A_{24}\) convention is used?
+3. Which $A_{24}$ convention is used?
 4. Are inversions avoided inside scalar-multiplication loops?
 5. How are exceptional values handled?
 6. Does the scalar loop have a regular operation pattern?

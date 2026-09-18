@@ -62,39 +62,39 @@ Before the modes themselves, we need one more low-level issue: **padding**.
 
 Let
 
-\[
+$$
 E_K : \{0,1\}^n \rightarrow \{0,1\}^n
-\]
+$$
 
-be a block cipher under key \(K\), with inverse
+be a block cipher under key $K$, with inverse
 
-\[
+$$
 D_K = E_K^{-1}.
-\]
+$$
 
 For AES,
 
-\[
+$$
 n=128.
-\]
+$$
 
 Thus a single AES invocation maps
 
-\[
+$$
 P_i \in \{0,1\}^{128}
-\]
+$$
 
 to
 
-\[
+$$
 C_i = E_K(P_i).
-\]
+$$
 
 For a long message,
 
-\[
+$$
 M = P_1 \| P_2 \| \cdots \| P_\ell,
-\]
+$$
 
 we need a rule that says:
 
@@ -150,19 +150,19 @@ This distinction is important:
 
 # 3. PKCS#7-Style Padding
 
-The padding convention commonly called **PKCS#7 padding** appends \(p\) bytes, each with value \(p\), where
+The padding convention commonly called **PKCS#7 padding** appends $p$ bytes, each with value $p$, where
 
-\[
+$$
 p = B - (|M| \bmod B)
-\]
+$$
 
-and \(B\) is the block size in bytes.
+and $B$ is the block size in bytes.
 
 For AES,
 
-\[
+$$
 B=16.
-\]
+$$
 
 The rule has one subtle but essential consequence:
 
@@ -194,15 +194,15 @@ contains 7 bytes.
 
 Therefore
 
-\[
+$$
 p = 16-7=9.
-\]
+$$
 
 The padding byte is
 
-\[
+$$
 09_{16}.
-\]
+$$
 
 The padded message is
 
@@ -355,17 +355,17 @@ CBC, CFB, OFB, and CTR are all malleable when used without authentication.
 
 ECB is the simplest block-cipher mode.
 
-For each plaintext block \(P_i\),
+For each plaintext block $P_i$,
 
-\[
+$$
 C_i = E_K(P_i).
-\]
+$$
 
 Decryption is
 
-\[
+$$
 P_i = D_K(C_i).
-\]
+$$
 
 There is:
 
@@ -394,15 +394,15 @@ All blocks may be processed simultaneously.
 
 If
 
-\[
+$$
 P_i=P_j,
-\]
+$$
 
 then
 
-\[
+$$
 C_i=C_j.
-\]
+$$
 
 The block cipher may be excellent, yet ECB exposes equality relationships at the message layer.
 
@@ -507,31 +507,31 @@ CBC introduces a dependency between adjacent blocks.
 
 Let
 
-\[
+$$
 C_0 = IV.
-\]
+$$
 
 Encryption is:
 
-\[
+$$
 C_i = E_K(P_i \oplus C_{i-1}).
-\]
+$$
 
 Decryption is:
 
-\[
+$$
 P_i = D_K(C_i)\oplus C_{i-1}.
-\]
+$$
 
 For the first block:
 
-\[
+$$
 C_1=E_K(P_1\oplus IV),
-\]
+$$
 
-\[
+$$
 P_1=D_K(C_1)\oplus IV.
-\]
+$$
 
 ![CBC overview](/images/ready/padding-and-encryption-modes/image-5.png)
 
@@ -556,15 +556,15 @@ The IV:
 
 To compute
 
-\[
+$$
 C_i,
-\]
+$$
 
 we need
 
-\[
+$$
 C_{i-1}.
-\]
+$$
 
 Therefore CBC encryption forms a dependency chain:
 
@@ -580,9 +580,9 @@ Encryption cannot naturally process all blocks in parallel.
 
 Each block satisfies
 
-\[
+$$
 P_i=D_K(C_i)\oplus C_{i-1}.
-\]
+$$
 
 All ciphertext blocks are already available to the receiver.
 
@@ -654,31 +654,31 @@ CBC provides confidentiality, not integrity.
 
 Recall:
 
-\[
+$$
 P_i = D_K(C_i)\oplus C_{i-1}.
-\]
+$$
 
-If an attacker flips a bit in \(C_{i-1}\), the corresponding bit of \(P_i\) flips predictably.
+If an attacker flips a bit in $C_{i-1}$, the corresponding bit of $P_i$ flips predictably.
 
 Let
 
-\[
+$$
 C'_{i-1}=C_{i-1}\oplus\Delta.
-\]
+$$
 
 Then
 
-\[
+$$
 P'_i
 =
 D_K(C_i)\oplus C'_{i-1}
 =
 P_i\oplus\Delta.
-\]
+$$
 
 The preceding plaintext block is also disturbed because the modified ciphertext block itself is decrypted, but the next plaintext block receives a controlled XOR difference.
 
-The IV behaves like \(C_0\). Therefore modifying the IV allows controlled modifications of the first plaintext block unless the IV is authenticated.
+The IV behaves like $C_0$. Therefore modifying the IV allows controlled modifications of the first plaintext block unless the IV is authenticated.
 
 ---
 
@@ -714,25 +714,25 @@ CFB uses the **encryption** function of the block cipher to produce a keystream 
 
 For full-block CFB, also called CFB128 for AES, let
 
-\[
+$$
 C_0 = IV.
-\]
+$$
 
 Encryption:
 
-\[
+$$
 C_i = P_i \oplus E_K(C_{i-1}).
-\]
+$$
 
 Decryption:
 
-\[
+$$
 P_i = C_i \oplus E_K(C_{i-1}).
-\]
+$$
 
-Notice that \(D_K\) is not required.
+Notice that $D_K$ is not required.
 
-Both directions use \(E_K\).
+Both directions use $E_K$.
 
 ![CFB diagram](/images/ready/padding-and-encryption-modes/cfb.PNG)
 
@@ -759,7 +759,7 @@ This is why CFB is called **self-synchronizing**.
 
 CFB is not defined only at the full 128-bit block size.
 
-NIST defines CFB with a segment size \(s\). Examples include:
+NIST defines CFB with a segment size $s$. Examples include:
 
 - CFB8,
 - CFB128.
@@ -822,9 +822,9 @@ For full-block CFB:
 
 **Encryption:** sequential.
 
-To compute \(C_i\), we need \(C_{i-1}\).
+To compute $C_i$, we need $C_{i-1}$.
 
-**Decryption:** block-cipher invocations can be parallelized once the ciphertext is available, because each plaintext block uses known values \(C_i\) and \(C_{i-1}\).
+**Decryption:** block-cipher invocations can be parallelized once the ciphertext is available, because each plaintext block uses known values $C_i$ and $C_{i-1}$.
 
 ---
 
@@ -844,37 +844,37 @@ Suppose an API improperly lets an attacker request CFB encryption using arbitrar
 
 For a target ciphertext,
 
-\[
+$$
 C_1,C_2,\dots
-\]
+$$
 
 we have
 
-\[
+$$
 P_2=C_2\oplus E_K(C_1).
-\]
+$$
 
 If the attacker asks the service to encrypt the all-zero block using
 
-\[
+$$
 IV'=C_1,
-\]
+$$
 
 then the first returned ciphertext block is
 
-\[
+$$
 C'_1
 =
 0\oplus E_K(C_1)
 =
 E_K(C_1).
-\]
+$$
 
 Therefore:
 
-\[
+$$
 P_2=C_2\oplus C'_1.
-\]
+$$
 
 The block cipher is not broken. The API has exposed the exact keystream block needed to decrypt part of the target ciphertext.
 
@@ -938,25 +938,25 @@ OFB turns the block cipher into a synchronous keystream generator.
 
 Let
 
-\[
+$$
 O_0 = IV.
-\]
+$$
 
 Then:
 
-\[
+$$
 O_i = E_K(O_{i-1}),
-\]
+$$
 
-\[
+$$
 C_i = P_i \oplus O_i.
-\]
+$$
 
 Decryption is identical:
 
-\[
+$$
 P_i = C_i \oplus O_i.
-\]
+$$
 
 ![OFB mode](/images/ready/padding-and-encryption-modes/ofb.png)
 
@@ -971,9 +971,9 @@ The crucial difference from CFB is the feedback value:
 
 The recurrence
 
-\[
+$$
 O_i=E_K(O_{i-1})
-\]
+$$
 
 depends only on:
 
@@ -1018,11 +1018,11 @@ assert len(ciphertext) == len(message)
 
 The OFB recurrence is sequential:
 
-\[
+$$
 O_i=E_K(O_{i-1}).
-\]
+$$
 
-Therefore generating block \(i\) requires block \(i-1\).
+Therefore generating block $i$ requires block $i-1$.
 
 **Encryption:** not naturally parallelizable.
 
@@ -1040,21 +1040,21 @@ If the same key and IV are reused, the same OFB keystream is generated.
 
 For two messages:
 
-\[
+$$
 C=P\oplus O,
-\]
+$$
 
-\[
+$$
 C'=P'\oplus O.
-\]
+$$
 
 Then:
 
-\[
+$$
 C\oplus C'
 =
 P\oplus P'.
-\]
+$$
 
 The keystream disappears.
 
@@ -1066,21 +1066,21 @@ NIST SP 800-38A requires unique IVs for OFB.
 
 Because
 
-\[
+$$
 P=C\oplus O,
-\]
+$$
 
 if an attacker flips one ciphertext bit,
 
-\[
+$$
 C'=C\oplus\Delta,
-\]
+$$
 
 then
 
-\[
+$$
 P'=P\oplus\Delta.
-\]
+$$
 
 The same bit flips in the recovered plaintext.
 
@@ -1096,35 +1096,35 @@ Instead of feeding output or ciphertext back into the block cipher, CTR encrypts
 
 Let the counter blocks be
 
-\[
+$$
 T_1,T_2,\dots,T_\ell,
-\]
+$$
 
 with the fundamental requirement:
 
-\[
+$$
 T_i \neq T_j
-\]
+$$
 
 for every block-cipher invocation under the same key.
 
 Generate the keystream:
 
-\[
+$$
 S_i=E_K(T_i).
-\]
+$$
 
 Then:
 
-\[
+$$
 C_i=P_i\oplus S_i.
-\]
+$$
 
 Decryption is identical:
 
-\[
+$$
 P_i=C_i\oplus S_i.
-\]
+$$
 
 ![CTR mode](/images/ready/padding-and-encryption-modes/image-8.png)
 
@@ -1134,14 +1134,14 @@ P_i=C_i\oplus S_i.
 
 A common layout is:
 
-\[
+$$
 T_i = N \| \operatorname{ctr}_i,
-\]
+$$
 
 where:
 
-- \(N\) is a per-message nonce,
-- \(\operatorname{ctr}_i\) is a block counter.
+- $N$ is a per-message nonce,
+- $\operatorname{ctr}_i$ is a block counter.
 
 The exact partition is protocol-specific.
 
@@ -1161,9 +1161,9 @@ For a final short block, only the necessary number of keystream bytes are XORed.
 
 Thus:
 
-\[
+$$
 |C|=|P|.
-\]
+$$
 
 ---
 
@@ -1171,15 +1171,15 @@ Thus:
 
 Unlike CBC, CFB, and OFB, the CTR input blocks can be generated independently:
 
-\[
+$$
 T_i=N\|\operatorname{ctr}_i.
-\]
+$$
 
 Therefore all values
 
-\[
+$$
 E_K(T_i)
-\]
+$$
 
 can be computed in parallel.
 
@@ -1271,21 +1271,21 @@ The 8-byte nonce plus the 8-byte counter forms one 16-byte AES input block.
 
 Suppose two plaintext streams use the same key and the same counter-block sequence:
 
-\[
+$$
 C=P\oplus S,
-\]
+$$
 
-\[
+$$
 C'=P'\oplus S.
-\]
+$$
 
 Then:
 
-\[
+$$
 C\oplus C'
 =
 P\oplus P'.
-\]
+$$
 
 If part of one plaintext is known or predictable, the corresponding part of the other plaintext can immediately be derived.
 
@@ -1335,15 +1335,15 @@ CTR is malleable for the same XOR reason as OFB.
 
 If:
 
-\[
+$$
 C'=C\oplus\Delta,
-\]
+$$
 
 then:
 
-\[
+$$
 P'=P\oplus\Delta.
-\]
+$$
 
 An attacker does not need the key to induce a selected difference in the decrypted plaintext.
 
@@ -1360,10 +1360,10 @@ For full-block variants:
 | Mode | Modify one ciphertext block/segment | Effect on recovered plaintext |
 |---|---|---|
 | ECB | corrupted block | corresponding plaintext block becomes unpredictable |
-| CBC | modify \(C_i\) | \(P_i\) becomes unpredictable; \(P_{i+1}\) gets predictable XOR difference |
-| CFB128 | modify \(C_i\) | \(P_i\) gets predictable XOR difference; \(P_{i+1}\) becomes corrupted |
-| OFB | modify bit in \(C_i\) | same bit flips in \(P_i\) only |
-| CTR | modify bit in \(C_i\) | same bit flips in \(P_i\) only |
+| CBC | modify $C_i$ | $P_i$ becomes unpredictable; $P_{i+1}$ gets predictable XOR difference |
+| CFB128 | modify $C_i$ | $P_i$ gets predictable XOR difference; $P_{i+1}$ becomes corrupted |
+| OFB | modify bit in $C_i$ | same bit flips in $P_i$ only |
+| CTR | modify bit in $C_i$ | same bit flips in $P_i$ only |
 
 These are not "integrity features." They are descriptions of malleability and error propagation.
 
@@ -1421,9 +1421,9 @@ The critical requirement is that the **counter blocks never repeat under a key**
 
 If the counter block is constructed as
 
-\[
+$$
 nonce \| counter,
-\]
+$$
 
 then the nonce/counter allocation policy must ensure the entire 128-bit block sequence is unique.
 
@@ -1556,13 +1556,13 @@ If a system must use a confidentiality-only mode such as CBC or CTR, adding an i
 
 The clean classical composition is:
 
-\[
+$$
 C = Enc_{K_E}(M),
-\]
+$$
 
-\[
+$$
 T = MAC_{K_M}(metadata \| C),
-\]
+$$
 
 and the receiver verifies the MAC before accepting/decrypting the ciphertext.
 
@@ -1626,8 +1626,8 @@ This is an important historical transition:
 
 | Property | ECB | CBC | CFB128 | OFB | CTR |
 |---|---|---|---|---|---|
-| Uses block encryption \(E_K\) | Yes | Yes | Yes | Yes | Yes |
-| Uses block decryption \(D_K\) for message decryption | Yes | Yes | No | No | No |
+| Uses block encryption $E_K$ | Yes | Yes | Yes | Yes | Yes |
+| Uses block decryption $D_K$ for message decryption | Yes | Yes | No | No | No |
 | IV / nonce | None | IV | IV | IV | counter-block scheme |
 | Auxiliary-value requirement | — | unpredictable fresh IV | unpredictable fresh IV | unique IV | nonrepeating counter blocks |
 | Padding normally needed | Yes | Yes | No | No | No |
@@ -1882,43 +1882,43 @@ The differences are structural:
 
 ### ECB
 
-\[
+$$
 C_i=E_K(P_i).
-\]
+$$
 
 Simple and parallel, but deterministic and pattern-leaking.
 
 ### CBC
 
-\[
+$$
 C_i=E_K(P_i\oplus C_{i-1}).
-\]
+$$
 
 Chaining hides direct equality patterns but introduces sequential encryption, IV requirements, malleability, and the practical complexity of padding.
 
 ### CFB
 
-\[
+$$
 C_i=P_i\oplus E_K(C_{i-1}).
-\]
+$$
 
 Turns the block cipher into a self-synchronizing stream-like construction.
 
 ### OFB
 
-\[
+$$
 O_i=E_K(O_{i-1}),
 \qquad
 C_i=P_i\oplus O_i.
-\]
+$$
 
 Generates a message-independent synchronous keystream; IV reuse repeats that keystream.
 
 ### CTR
 
-\[
+$$
 C_i=P_i\oplus E_K(T_i).
-\]
+$$
 
 Uses distinct counter blocks, supports full parallelism and arbitrary-length input, but counter reuse creates a two-time-pad failure.
 
@@ -1928,13 +1928,13 @@ A secure primitive used under the wrong mode, with the wrong IV rule, with nonce
 
 That observation leads directly to the next stage of the series:
 
-\[
+$$
 \boxed{
 \text{confidentiality}
 \quad\longrightarrow\quad
 \text{authenticated encryption}
 }
-\]
+$$
 
 where we will study authentication tags, AEAD, AES-GCM, and the precise security role of nonces and associated data.
 

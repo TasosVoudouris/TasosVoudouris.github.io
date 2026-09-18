@@ -43,9 +43,9 @@ The previous articles studied SHA-256 as a Merkle–Damgård hash.
 
 Its high-level structure was:
 
-\[
+$$
 h_i=f(h_{i-1},M_i),
-\]
+$$
 
 where each message block is processed by a compression function and the final chaining value becomes the digest.
 
@@ -59,46 +59,46 @@ The SHA-3 family is based on **Keccak**, whose central abstraction is a **sponge
 
 The state does not shrink from:
 
-\[
+$$
 n+b
-\]
+$$
 
 bits down to:
 
-\[
+$$
 n
-\]
+$$
 
 bits after every block as in a compression function.
 
 Instead, the sponge maintains one fixed-width internal state:
 
-\[
+$$
 S\in\{0,1\}^{b}
-\]
+$$
 
 and repeatedly applies a permutation:
 
-\[
+$$
 f:\{0,1\}^{b}\rightarrow\{0,1\}^{b}.
-\]
+$$
 
 For Keccak-f[1600],
 
-\[
+$$
 b=1600.
-\]
+$$
 
 The state is split conceptually into:
 
-\[
+$$
 b=r+c,
-\]
+$$
 
 where:
 
-- \(r\) is the **rate**;
-- \(c\) is the **capacity**.
+- $r$ is the **rate**;
+- $c$ is the **capacity**.
 
 Only the rate portion directly absorbs message bits or exposes output bits.
 
@@ -136,16 +136,16 @@ It means their internal security interfaces are different.
 
 A permutation maps the state bijectively:
 
-\[
+$$
 f:\{0,1\}^{1600}\rightarrow\{0,1\}^{1600}.
-\]
+$$
 
-There is no compression inside \(f\).
+There is no compression inside $f$.
 
 Compression happens because the sponge:
 
-- injects only \(r\) message bits per absorption block,
-- hides \(c\) bits,
+- injects only $r$ message bits per absorption block,
+- hides $c$ bits,
 - returns only the requested output.
 
 The security of the construction comes from the permutation plus the way input and output are restricted by the sponge interface.
@@ -154,21 +154,21 @@ This is a subtle but important shift.
 
 In Merkle–Damgård, we reason about:
 
-\[
+$$
 \text{compression function}
 +
 \text{iteration}.
-\]
+$$
 
 In a sponge, we reason about:
 
-\[
+$$
 \text{permutation}
 +
 \text{rate/capacity interface}
 +
 \text{domain separation}.
-\]
+$$
 
 ---
 
@@ -176,33 +176,33 @@ In a sponge, we reason about:
 
 A sponge has two main phases:
 
-\[
+$$
 \boxed{\text{absorb}}
-\]
+$$
 
 followed by:
 
-\[
+$$
 \boxed{\text{squeeze}}.
-\]
+$$
 
 ### Absorption
 
 Initialize the full state to zero:
 
-\[
+$$
 S_0=0^b.
-\]
+$$
 
-Pad the message and divide it into \(r\)-bit blocks:
+Pad the message and divide it into $r$-bit blocks:
 
-\[
+$$
 M_1,M_2,\ldots,M_q.
-\]
+$$
 
 For each block:
 
-\[
+$$
 S_i
 =
 f
@@ -211,9 +211,9 @@ S_{i-1}
 \oplus
 (M_i\|0^c)
 \right).
-\]
+$$
 
-Only the first \(r\) bits—the rate portion—receive the message block.
+Only the first $r$ bits—the rate portion—receive the message block.
 
 The capacity portion is not directly XORed with message data.
 
@@ -234,12 +234,12 @@ rate                     capacity
 
 After the final absorb permutation, read output from the rate portion.
 
-If the caller needs at most \(r\) bits, no extra permutation is needed.
+If the caller needs at most $r$ bits, no extra permutation is needed.
 
 If more output is required:
 
 1. emit the current rate portion;
-2. apply \(f\);
+2. apply $f$;
 3. emit another rate portion;
 4. continue until enough bits have been produced.
 
@@ -283,15 +283,15 @@ The rate controls how many bits can be absorbed or emitted per permutation call.
 
 For SHA3-256:
 
-\[
+$$
 r=1088.
-\]
+$$
 
 That is:
 
-\[
+$$
 136\text{ bytes}.
-\]
+$$
 
 So one Keccak-f[1600] permutation can absorb up to 136 padded message bytes at a time.
 
@@ -301,21 +301,21 @@ A larger rate generally means higher throughput because more data is handled per
 
 For SHA3-256:
 
-\[
+$$
 c=512.
-\]
+$$
 
 Since:
 
-\[
+$$
 r+c=1600,
-\]
+$$
 
 we have:
 
-\[
+$$
 1088+512=1600.
-\]
+$$
 
 The capacity is deliberately not directly exposed.
 
@@ -333,13 +333,13 @@ For many sponge security arguments, the capacity determines the scale at which g
 
 A useful intuition is:
 
-\[
+$$
 \text{larger }c
 \Rightarrow
 \text{more hidden state}
 \Rightarrow
 \text{stronger generic bound}.
-\]
+$$
 
 But the exact formal bound depends on:
 
@@ -352,27 +352,27 @@ It should not be reduced to one slogan.
 
 ### Fixed output adds another limit
 
-Suppose a sponge construction returns only \(d\) output bits.
+Suppose a sponge construction returns only $d$ output bits.
 
 Then generic collision resistance cannot exceed:
 
-\[
+$$
 2^{d/2}
-\]
+$$
 
 regardless of capacity.
 
 For SHA3-256:
 
-\[
+$$
 d=256,
-\]
+$$
 
 so the output length alone caps generic collision security at:
 
-\[
+$$
 2^{128}.
-\]
+$$
 
 This agrees with its intended classical collision strength.
 
@@ -398,9 +398,9 @@ That is exactly what FIPS 202 and SP 800-185 do.
 
 Keccak uses **multi-rate padding**, commonly written:
 
-\[
+$$
 \operatorname{pad10^*1}.
-\]
+$$
 
 At the bit level, this means:
 
@@ -454,11 +454,11 @@ The standardized SHA3-256 function uses the SHA-3 domain suffix.
 
 Therefore:
 
-\[
+$$
 \operatorname{Keccak256}(M)
 \neq
 \operatorname{SHA3\!-\!256}(M)
-\]
+$$
 
 in general.
 
@@ -484,7 +484,7 @@ as separate primitives.
 
 The standardized instances are:
 
-| Function | Rate \(r\) | Capacity \(c\) | Output |
+| Function | Rate $r$ | Capacity $c$ | Output |
 |---|---:|---:|---:|
 | SHA3-224 | 1152 | 448 | 224 bits |
 | SHA3-256 | 1088 | 512 | 256 bits |
@@ -495,9 +495,9 @@ The standardized instances are:
 
 For the fixed-output SHA-3 functions, the usual ideal generic collision strengths are:
 
-\[
+$$
 112,\ 128,\ 192,\ 256
-\]
+$$
 
 bits respectively.
 
@@ -507,21 +507,21 @@ SHAKE256 has a 512-bit capacity and is designed for up to a 256-bit security str
 
 But if an application asks for only:
 
-\[
+$$
 64
-\]
+$$
 
 output bits, the output itself cannot provide 256-bit collision or preimage security.
 
-For a \(d\)-bit XOF output:
+For a $d$-bit XOF output:
 
-\[
+$$
 \text{generic preimage ceiling}\le 2^d,
-\]
+$$
 
-\[
+$$
 \text{generic collision ceiling}\le 2^{d/2}.
-\]
+$$
 
 So choosing an XOF does not remove the need to choose an appropriate output length.
 
@@ -529,9 +529,9 @@ So choosing an XOF does not remove the need to choose an appropriate output leng
 
 SHA3-256 has:
 
-\[
+$$
 r=136\text{ bytes}.
-\]
+$$
 
 Therefore message lengths around:
 
@@ -559,29 +559,29 @@ Keccak-f[1600] permutes a 1600-bit state.
 
 The state is arranged as:
 
-\[
+$$
 A[x,y,z],
-\]
+$$
 
 where:
 
-\[
+$$
 x,y\in\{0,1,2,3,4\},
-\]
+$$
 
 and:
 
-\[
+$$
 z\in\{0,\ldots,63\}.
-\]
+$$
 
-For fixed \(x,y\), the 64 bits indexed by \(z\) form a **lane**.
+For fixed $x,y$, the 64 bits indexed by $z$ form a **lane**.
 
 So the 1600-bit state consists of:
 
-\[
+$$
 5\times5=25
-\]
+$$
 
 lanes, each 64 bits wide.
 
@@ -595,9 +595,9 @@ A convenient implementation stores:
 
 with coordinate flattening such as:
 
-\[
+$$
 \text{index}=x+5y.
-\]
+$$
 
 ### Endianness
 
@@ -621,15 +621,15 @@ Copying SHA-256-style byte order into SHA-3 code produces a structurally plausib
 
 Keccak-f[1600] uses:
 
-\[
+$$
 24
-\]
+$$
 
 rounds.
 
 Each round applies five named steps in this order:
 
-\[
+$$
 \boxed{
 \theta
 \rightarrow
@@ -641,13 +641,13 @@ Each round applies five named steps in this order:
 \rightarrow
 \iota
 }
-\]
+$$
 
 The functional-composition notation may be written:
 
-\[
+$$
 \iota\circ\chi\circ\pi\circ\rho\circ\theta.
-\]
+$$
 
 The order matters.
 
@@ -659,7 +659,7 @@ Theta computes the parity of each state column.
 
 In 64-bit lane notation:
 
-\[
+$$
 C[x]
 =
 A[x,0]
@@ -671,27 +671,27 @@ A[x,2]
 A[x,3]
 \oplus
 A[x,4].
-\]
+$$
 
 Then:
 
-\[
+$$
 D[x]
 =
 C[x-1]
 \oplus
 \operatorname{ROTL}_1(C[x+1]),
-\]
+$$
 
-with \(x\) interpreted modulo 5.
+with $x$ interpreted modulo 5.
 
 Finally:
 
-\[
+$$
 A[x,y]
 \leftarrow
 A[x,y]\oplus D[x]
-\]
+$$
 
 for every lane.
 
@@ -699,25 +699,25 @@ for every lane.
 
 Theta is linear over:
 
-\[
+$$
 \mathrm{GF}(2).
-\]
+$$
 
 Its role is diffusion.
 
 A difference affecting one column parity influences neighboring columns after the update.
 
-Because the same \(D[x]\) is XORed into all five lanes of a column, the state quickly develops inter-lane dependencies.
+Because the same $D[x]$ is XORed into all five lanes of a column, the state quickly develops inter-lane dependencies.
 
 ### Rho: coordinate-dependent rotations
 
 Rho rotates each 64-bit lane by a fixed offset:
 
-\[
+$$
 A[x,y]
 \longrightarrow
 \operatorname{ROTL}_{r[x,y]}(A[x,y]).
-\]
+$$
 
 ![Rho lane rotation](/images/hash-functions/sponge-keccak-sha3/rho.png)
 
@@ -725,11 +725,11 @@ The offsets depend on coordinates.
 
 For example:
 
-\[
+$$
 r[0,0]=0.
-\]
+$$
 
-The lane at \((0,0)\) is therefore not rotated.
+The lane at $(0,0)$ is therefore not rotated.
 
 Other lanes use distinct offsets designed to distribute bit positions across subsequent rounds.
 
@@ -741,20 +741,20 @@ Pi rearranges lane coordinates.
 
 One common convention is:
 
-\[
+$$
 B[
 y,\,
 2x+3y
 ]
 =
 A[x,y],
-\]
+$$
 
 with coordinates modulo 5.
 
 When Rho and Pi are implemented together:
 
-\[
+$$
 B[
 y,\,
 2x+3y
@@ -764,7 +764,7 @@ y,\,
 (
 A[x,y]
 ).
-\]
+$$
 
 ![Pi lane movement](/images/hash-functions/sponge-keccak-sha3/pi.png)
 
@@ -780,7 +780,7 @@ Chi is the only nonlinear step of a Keccak round.
 
 For each row:
 
-\[
+$$
 A'[x,y]
 =
 B[x,y]
@@ -790,15 +790,15 @@ B[x,y]
 \land
 B[x+2,y]
 \right).
-\]
+$$
 
 ![Chi nonlinear propagation](/images/hash-functions/sponge-keccak-sha3/keccak-chi.png)
 
 The Boolean structure:
 
-\[
+$$
 a\oplus((\neg b)\land c)
-\]
+$$
 
 introduces nonlinearity through the AND operation.
 
@@ -843,19 +843,19 @@ In languages such as Python with unbounded integers, the complement should also 
 
 Iota XORs a round constant into lane:
 
-\[
+$$
 A[0,0].
-\]
+$$
 
-For round \(i\):
+For round $i$:
 
-\[
+$$
 A[0,0]
 \leftarrow
 A[0,0]
 \oplus
 RC_i.
-\]
+$$
 
 Only one lane is modified directly.
 
@@ -885,9 +885,9 @@ Keccak's security comes from repeated interaction of all five transformations ov
 
 The previous article showed that SHA-256 secret-prefix constructions are vulnerable because:
 
-\[
+$$
 \operatorname{SHA256}(K\|M)
-\]
+$$
 
 publishes the complete final chaining state.
 
@@ -897,27 +897,27 @@ SHA3-256 behaves differently.
 
 Its full internal state is:
 
-\[
+$$
 1600
-\]
+$$
 
 bits.
 
 The function exposes only:
 
-\[
+$$
 256
-\]
+$$
 
 digest bits.
 
 For SHA3-256:
 
-\[
+$$
 r=1088,
 \qquad
 c=512.
-\]
+$$
 
 The digest is output from the rate side, but the full post-permutation state is not published.
 
@@ -943,27 +943,27 @@ That does not prove every improvised keyed sponge construction is secure.
 
 For message authentication using the SHA-3 family, use a standardized keyed construction such as:
 
-\[
+$$
 \operatorname{KMAC}.
-\]
+$$
 
 The same lesson from the previous article still applies:
 
-\[
+$$
 \boxed{
 \text{absence of one attack}
 \neq
 \text{proof of a custom MAC}
 }
-\]
+$$
 
 ### Hidden capacity as the structural difference
 
 In SHA-256, the digest is enough to reconstruct:
 
-\[
+$$
 100\%
-\]
+$$
 
 of the chaining state.
 
@@ -986,25 +986,25 @@ FIPS 202 standardizes:
 
 NIST SP 800-185 builds additional functions from the SHA-3/Keccak framework.
 
-### SHA3-\(d\)
+### SHA3-$d$
 
 The fixed-output functions are:
 
-\[
+$$
 \operatorname{SHA3\!-\!224},
-\]
+$$
 
-\[
+$$
 \operatorname{SHA3\!-\!256},
-\]
+$$
 
-\[
+$$
 \operatorname{SHA3\!-\!384},
-\]
+$$
 
-\[
+$$
 \operatorname{SHA3\!-\!512}.
-\]
+$$
 
 The output size is part of the function definition.
 
@@ -1094,9 +1094,9 @@ TupleHash defines encodings for tuples so that tuple structure is preserved.
 
 It solves an application-level problem that a collision-resistant primitive alone cannot solve:
 
-\[
+$$
 \text{unambiguous structured hashing}.
-\]
+$$
 
 ### ParallelHash
 
@@ -1387,15 +1387,15 @@ def sponge(
 
 For SHA3-256:
 
-\[
+$$
 r=1088
-\]
+$$
 
 bits:
 
-\[
+$$
 136
-\]
+$$
 
 bytes.
 
@@ -1407,9 +1407,9 @@ The suffix is:
 
 and output is:
 
-\[
+$$
 32
-\]
+$$
 
 bytes.
 
@@ -1541,11 +1541,11 @@ The earlier project notes identified several instructive mistakes:
 
 These errors are useful because each one demonstrates an important rule:
 
-\[
+$$
 \boxed{
 \text{cryptographic parameters are part of the algorithm}
 }
-\]
+$$
 
 An implementation that uses the wrong rate is not "a slightly different SHA3-256."
 
@@ -1561,63 +1561,63 @@ The sponge model completes the structural comparison that began with SHA-256.
 
 Merkle–Damgård gave us:
 
-\[
+$$
 \text{compression function}
 \rightarrow
 \text{chaining state}
 \rightarrow
 \text{final digest}.
-\]
+$$
 
 Keccak gives us:
 
-\[
+$$
 \text{fixed-width permutation}
 \rightarrow
 \text{absorb}
 \rightarrow
 \text{squeeze}.
-\]
+$$
 
 The central parameter split is:
 
-\[
+$$
 b=r+c.
-\]
+$$
 
 For Keccak-f[1600]:
 
-\[
+$$
 b=1600.
-\]
+$$
 
-The rate \(r\) controls how much data interacts with the state per permutation call.
+The rate $r$ controls how much data interacts with the state per permutation call.
 
-The capacity \(c\) provides hidden internal state and underlies generic security bounds.
+The capacity $c$ provides hidden internal state and underlies generic security bounds.
 
 For SHA3-256:
 
-\[
+$$
 r=1088,
 \qquad
 c=512.
-\]
+$$
 
 Its digest size is:
 
-\[
+$$
 256
-\]
+$$
 
 bits, giving the expected ideal generic collision scale:
 
-\[
+$$
 2^{128}.
-\]
+$$
 
 The permutation itself is built from:
 
-\[
+$$
 \theta
 \rightarrow
 \rho
@@ -1627,7 +1627,7 @@ The permutation itself is built from:
 \chi
 \rightarrow
 \iota
-\]
+$$
 
 over 24 rounds.
 
@@ -1654,11 +1654,11 @@ It also depends on:
 
 That is why:
 
-\[
+$$
 \operatorname{Keccak256}
 \neq
 \operatorname{SHA3\!-\!256}.
-\]
+$$
 
 It is also why SHAKE needs an explicit output length.
 
@@ -1670,37 +1670,37 @@ SHA3-256 does not publish its full 1600-bit sponge state, and the hidden capacit
 
 But the lesson remains the same:
 
-\[
+$$
 \boxed{
 \text{do not turn structural observations into ad-hoc protocol designs}
 }
-\]
+$$
 
 The absence of Merkle–Damgård length extension is not a reason to invent:
 
-\[
+$$
 \operatorname{SHA3\!-\!256}(K\|M)
-\]
+$$
 
 as a custom MAC.
 
 The SHA-3 ecosystem already provides standardized constructions:
 
-\[
+$$
 \operatorname{KMAC},
-\]
+$$
 
-\[
+$$
 \operatorname{cSHAKE},
-\]
+$$
 
-\[
+$$
 \operatorname{TupleHash},
-\]
+$$
 
-\[
+$$
 \operatorname{ParallelHash}.
-\]
+$$
 
 These functions exist precisely because keying, domain separation, structured hashing, and parallelism deserve explicit construction rules.
 

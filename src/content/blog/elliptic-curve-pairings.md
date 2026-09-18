@@ -28,7 +28,7 @@ draft: false
 
 The previous chapters developed several ingredients that now come together naturally:
 
-* torsion groups \(E[r]\);
+* torsion groups $E[r]$;
 * divisors and principal divisors;
 * rational functions on elliptic curves;
 * Frobenius;
@@ -54,7 +54,7 @@ $$
 G_1,\;G_2
 $$
 
-are usually groups derived from \(r\)-torsion points, while
+are usually groups derived from $r$-torsion points, while
 
 $$
 G_T
@@ -129,7 +129,7 @@ $$
 - [Miller functions](#miller-functions)
 - [8. Line functions and the group law](#8-line-functions-and-the-group-law)
 - [9. The Miller recurrence](#9-the-miller-recurrence)
-- [10. Miller’s algorithm](#10-millers-algorithm)
+- [10. Miller's algorithm](#10-millers-algorithm)
 - [11. The Weil pairing](#11-the-weil-pairing)
 - [12. Properties of the Weil pairing](#12-properties-of-the-weil-pairing)
 - [13. A determinant-like interpretation](#13-a-determinant-like-interpretation)
@@ -147,8 +147,6 @@ $$
 - [Further reading](#further-reading)
 
 ---
-
-<a id="why-pairings"></a>
 
 ## 1. Why pairings appear
 
@@ -180,7 +178,7 @@ $$
 
 The remarkable property is that scalar multiplication in the curve groups becomes exponentiation in the target group.
 
-For integers \(a,b\),
+For integers $a,b$,
 
 $$
 \boxed{
@@ -214,13 +212,13 @@ That bridge is precisely what makes pairings useful — and also what makes thei
 
 ## Torsion refresher
 
-Let \(E/K\) be an elliptic curve and let
+Let $E/K$ be an elliptic curve and let
 
 $$
 r\geq1.
 $$
 
-The geometric \(r\)-torsion subgroup is
+The geometric $r$-torsion subgroup is
 
 $$
 \boxed{
@@ -257,7 +255,7 @@ $$
 }
 $$
 
-If \(r\) is prime, \(E[r]\) can be regarded as a two-dimensional vector space over
+If $r$ is prime, $E[r]$ can be regarded as a two-dimensional vector space over
 
 $$
 \mathbb F_r.
@@ -293,7 +291,7 @@ E[r]\cap E(K).
 }
 $$
 
-Not every \(r\)-torsion point need be defined over the original field.
+Not every $r$-torsion point need be defined over the original field.
 
 ---
 
@@ -301,7 +299,7 @@ Not every \(r\)-torsion point need be defined over the original field.
 
 ## Roots of unity
 
-The target of the Weil pairing is the group of \(r\)-th roots of unity:
+The target of the Weil pairing is the group of $r$-th roots of unity:
 
 $$
 \boxed{
@@ -326,7 +324,7 @@ $$
 \mu_r
 $$
 
-is cyclic of order \(r\).
+is cyclic of order $r$.
 
 Suppose we work over
 
@@ -430,13 +428,13 @@ P\neq\mathcal O
 }
 $$
 
-should imply that some \(Q\) exists such that
+should imply that some $Q$ exists such that
 
 $$
 e(P,Q)\neq1.
 $$
 
-For a pairing on \(r\)-torsion, non-degeneracy means that no nonzero point pairs trivially with every possible point.
+For a pairing on $r$-torsion, non-degeneracy means that no nonzero point pairs trivially with every possible point.
 
 ---
 
@@ -446,7 +444,7 @@ For a pairing on \(r\)-torsion, non-degeneracy means that no nonzero point pairs
 
 We already encountered divisors when proving associativity.
 
-A divisor on \(E\) is a formal finite integer combination of points:
+A divisor on $E$ is a formal finite integer combination of points:
 
 $$
 \boxed{
@@ -511,7 +509,7 @@ D
 \sum_i n_i[P_i]
 $$
 
-and the support of \(D\) avoids the zeros and poles of a rational function \(f\).
+and the support of $D$ avoids the zeros and poles of a rational function $f$.
 
 Define
 
@@ -558,7 +556,7 @@ $$
 P\in E.
 $$
 
-For a positive integer \(n\), define a rational function
+For a positive integer $n$, define a rational function
 
 $$
 f_{n,P}
@@ -620,7 +618,7 @@ $$
 \ell_{P,Q}
 $$
 
-be the line through \(P\) and \(Q\), using the tangent when
+be the line through $P$ and $Q$, using the tangent when
 
 $$
 P=Q.
@@ -704,7 +702,7 @@ Notice how directly it comes from the geometric group law.
 
 ## 9. The Miller recurrence
 
-The functions \(f_{n,P}\) satisfy a useful recurrence.
+The functions $f_{n,P}$ satisfy a useful recurrence.
 
 Suppose we know
 
@@ -774,9 +772,9 @@ $$
 f_{r,P}(Q).
 $$
 
-Computing \(f_{r,P}\) directly from its divisor would be inefficient.
+Computing $f_{r,P}$ directly from its divisor would be inefficient.
 
-Instead, Miller's algorithm uses the binary expansion of \(r\).
+Instead, Miller's algorithm uses the binary expansion of $r$.
 
 This is conceptually analogous to double-and-add scalar multiplication.
 
@@ -826,7 +824,7 @@ g_{T,P}.
 }
 $$
 
-Evaluating these functions at \(Q\) while following the bits of \(r\) yields
+Evaluating these functions at $Q$ while following the bits of $r$ yields
 
 $$
 f_{r,P}(Q)
@@ -929,7 +927,7 @@ f_Q(D_P)
 }
 $$
 
-The construction is independent of the admissible choices and produces an \(r\)-th root of unity.
+The construction is independent of the admissible choices and produces an $r$-th root of unity.
 
 This definition shows why divisors are the natural language of pairings.
 
@@ -1023,7 +1021,7 @@ $$
 
 ---
 
-### Values are \(r\)-th roots of unity
+### Values are $r$-th roots of unity
 
 $$
 \boxed{
@@ -1069,7 +1067,7 @@ $$
 \zeta
 $$
 
-is a primitive \(r\)-th root of unity.
+is a primitive $r$-th root of unity.
 
 Write
 
@@ -1192,7 +1190,7 @@ $$
 D_Q\sim[Q]-[\mathcal O]
 $$
 
-with support disjoint from the zeros and poles of \(f_{r,P}\), define
+with support disjoint from the zeros and poles of $f_{r,P}$, define
 
 $$
 \boxed{
@@ -1205,7 +1203,7 @@ $$
 
 The output is initially not a unique field element.
 
-It is an equivalence class modulo \(r\)-th powers.
+It is an equivalence class modulo $r$-th powers.
 
 That is why the target is
 
@@ -1280,7 +1278,7 @@ G_1\times G_2
 }
 $$
 
-The precise definitions of \(G_1\) and \(G_2\) depend on the pairing construction and curve setting.
+The precise definitions of $G_1$ and $G_2$ depend on the pairing construction and curve setting.
 
 ---
 
@@ -1288,7 +1286,7 @@ The precise definitions of \(G_1\) and \(G_2\) depend on the pairing constructio
 
 ## 16. Why final exponentiation works
 
-Before final exponentiation, the Tate pairing is defined only modulo \(r\)-th powers.
+Before final exponentiation, the Tate pairing is defined only modulo $r$-th powers.
 
 Suppose two representatives differ by
 
@@ -1373,8 +1371,8 @@ But their computational forms differ.
 
 | Property                 | Weil pairing               | Reduced Tate pairing            |
 | ------------------------ | -------------------------- | ------------------------------- |
-| Typical domain           | \(E[r]\times E[r]\)        | suitable \(G_1\times G_2\)      |
-| Target                   | \(\mu_r\)                  | \(\mu_r\) after reduction       |
+| Typical domain           | $E[r]\times E[r]$        | suitable $G_1\times G_2$      |
+| Target                   | $\mu_r$                  | $\mu_r$ after reduction       |
 | Bilinear                 | Yes                        | Yes                             |
 | Non-degenerate           | Yes                        | On suitable quotient/subgroups  |
 | Alternating              | Yes                        | Not generally                   |
@@ -1408,7 +1406,7 @@ $$
 r\nmid q.
 $$
 
-The **embedding degree** with respect to \(r\) is
+The **embedding degree** with respect to $r$ is
 
 $$
 \boxed{
@@ -1432,7 +1430,7 @@ k
 }
 $$
 
-the multiplicative order of \(q\) modulo \(r\).
+the multiplicative order of $q$ modulo $r$.
 
 This means
 
@@ -1444,7 +1442,7 @@ $$
 }
 $$
 
-That is the fundamental reason \(k\) matters for pairings.
+That is the fundamental reason $k$ matters for pairings.
 
 The target group of the pairing lives naturally inside
 
@@ -1458,7 +1456,7 @@ $$
 
 The embedding degree should **not** be defined simply as
 
-> the smallest extension containing all points of \(E[r]\).
+> the smallest extension containing all points of $E[r]$.
 
 The two statements are related in common pairing settings, but they are conceptually different.
 
@@ -1470,7 +1468,7 @@ r\mid(q^k-1).
 }
 $$
 
-It concerns the \(r\)-th roots of unity and therefore the multiplicative target group.
+It concerns the $r$-th roots of unity and therefore the multiplicative target group.
 
 This is the definition we will use throughout CryptoCave.
 
@@ -1490,7 +1488,7 @@ $$
 r=5.
 $$
 
-Compute powers of \(11\) modulo \(5\):
+Compute powers of $11$ modulo $5$:
 
 $$
 11\equiv1\pmod5.
@@ -1544,7 +1542,7 @@ k=4.
 }
 $$
 
-The target \(5\)-th roots of unity first appear in
+The target $5$-th roots of unity first appear in
 
 $$
 \mathbb F_{7^4}^{\times}.
@@ -1564,9 +1562,9 @@ $$
 \pi
 $$
 
-denote the \(q\)-power Frobenius.
+denote the $q$-power Frobenius.
 
-On \(r\)-torsion,
+On $r$-torsion,
 
 $$
 E[r],
@@ -1599,7 +1597,7 @@ $$
 X^2-tX+q
 $$
 
-factors modulo \(r\) as
+factors modulo $r$ as
 
 $$
 \boxed{
@@ -1615,7 +1613,7 @@ $$
 1,
 $$
 
-corresponding to \(r\)-torsion rational over the base field.
+corresponding to $r$-torsion rational over the base field.
 
 The other is associated with eigenvalue
 
@@ -1719,11 +1717,11 @@ Thus embedding degree has opposite interpretations depending on the application.
 
 ### Ordinary ECC
 
-A very small \(k\) may be dangerous.
+A very small $k$ may be dangerous.
 
 ### Pairing-based cryptography
 
-A deliberately controlled \(k\) is required so that the pairing is efficiently computable while the target-field DLP remains secure.
+A deliberately controlled $k$ is required so that the pairing is efficiently computable while the target-field DLP remains secure.
 
 So a property that can weaken one elliptic-curve system becomes an intentional feature in another.
 
@@ -1872,7 +1870,7 @@ When studying the code, useful questions include:
    \ell_{P,Q}/v_{P+Q}?
    $$
 
-4. How does the Miller loop follow the bits of \(r\)?
+4. How does the Miller loop follow the bits of $r$?
 
 5. Is the pairing implemented over
 
@@ -2146,6 +2144,6 @@ The next step is therefore to understand:
 * endomorphism rings;
 * ordinary versus supersingular endomorphism structure;
 * isogeny graphs;
-* how \(j\)-invariants move through those graphs.
+* how $j$-invariants move through those graphs.
 
 That would naturally open the next major mathematical part of the elliptic-curve series.

@@ -40,37 +40,37 @@ draft: false
 
 A cryptographic hash function maps a message of arbitrary practical length to a fixed-length digest.
 
-For an \(n\)-bit hash function we write
+For an $n$-bit hash function we write
 
-\[
+$$
 H:\{0,1\}^{*}\rightarrow\{0,1\}^{n},
-\]
+$$
 
 where
 
-\[
+$$
 \{0,1\}^{*}
-\]
+$$
 
 denotes all finite bit strings and
 
-\[
+$$
 \{0,1\}^{n}
-\]
+$$
 
-is the set of all \(n\)-bit outputs.
+is the set of all $n$-bit outputs.
 
 For SHA-256,
 
-\[
+$$
 n=256.
-\]
+$$
 
 Thus SHA-256 always returns exactly
 
-\[
+$$
 256\text{ bits}=32\text{ bytes},
-\]
+$$
 
 whether the input is:
 
@@ -110,9 +110,9 @@ A cryptographic hash function has no ordinary secret key.
 
 For the same exact input bytes,
 
-\[
+$$
 H(M)=H(M)
-\]
+$$
 
 every time.
 
@@ -143,37 +143,37 @@ But determinism also means that an ordinary hash is **not encryption**. There is
 
 ### Fixed output does not mean fixed security for every property
 
-An \(n\)-bit digest does not automatically imply \(n\)-bit resistance to every attack.
+An $n$-bit digest does not automatically imply $n$-bit resistance to every attack.
 
-For an ideal \(n\)-bit hash:
+For an ideal $n$-bit hash:
 
-\[
+$$
 \text{preimage work}\approx 2^n,
-\]
+$$
 
-\[
+$$
 \text{second-preimage work}\approx 2^n,
-\]
+$$
 
 but generic collision search requires only about
 
-\[
+$$
 2^{n/2}
-\]
+$$
 
 hash evaluations because of the birthday phenomenon.
 
 For SHA-256, the idealized generic scales are therefore roughly:
 
-\[
+$$
 2^{256}
-\]
+$$
 
 for preimage search and
 
-\[
+$$
 2^{128}
-\]
+$$
 
 for collision search.
 
@@ -227,27 +227,27 @@ They are related, but they are not interchangeable.
 
 Given a target digest
 
-\[
+$$
 y,
-\]
+$$
 
-it should be computationally infeasible to find **any** message \(x\) such that
+it should be computationally infeasible to find **any** message $x$ such that
 
-\[
+$$
 H(x)=y.
-\]
+$$
 
-Formally, the adversary receives \(y\) and wants:
+Formally, the adversary receives $y$ and wants:
 
-\[
+$$
 x\leftarrow H^{-1}(y).
-\]
+$$
 
-For an ideal \(n\)-bit hash, generic exhaustive search requires approximately
+For an ideal $n$-bit hash, generic exhaustive search requires approximately
 
-\[
+$$
 2^n
-\]
+$$
 
 trials in the worst-order sense, with the exact expected work depending on the search model and target distribution.
 
@@ -255,46 +255,46 @@ The key point is that the target digest is fixed **before** the search.
 
 ### Second-preimage resistance
 
-Here the attacker is given a particular message \(x\) and must find a different message
+Here the attacker is given a particular message $x$ and must find a different message
 
-\[
+$$
 x'\neq x
-\]
+$$
 
 such that
 
-\[
+$$
 H(x')=H(x).
-\]
+$$
 
 The challenge is:
 
-\[
+$$
 x
 \longrightarrow
 \text{find }x'\neq x
 \text{ with equal digest}.
-\]
+$$
 
 For an ideal fixed-length hash, the generic scale is again about
 
-\[
+$$
 2^n.
-\]
+$$
 
 This property matters when one specific committed or signed object already exists.
 
-Imagine a signed document \(M\) whose signature covers
+Imagine a signed document $M$ whose signature covers
 
-\[
+$$
 H(M).
-\]
+$$
 
-If an attacker could cheaply construct a different document \(M'\) satisfying
+If an attacker could cheaply construct a different document $M'$ satisfying
 
-\[
+$$
 H(M')=H(M),
-\]
+$$
 
 the same digest would represent two different contents.
 
@@ -304,33 +304,33 @@ For collision resistance, the attacker is free to choose **both** inputs.
 
 The goal is to find
 
-\[
+$$
 x\neq x'
-\]
+$$
 
 such that
 
-\[
+$$
 H(x)=H(x').
-\]
+$$
 
 This freedom makes generic collision search much easier than preimage search.
 
-For an ideal \(n\)-bit function, a collision appears after roughly
+For an ideal $n$-bit function, a collision appears after roughly
 
-\[
+$$
 2^{n/2}
-\]
+$$
 
-samples rather than \(2^n\).
+samples rather than $2^n$.
 
 ### The differences at a glance
 
-| Property | Given to attacker | Goal | Ideal generic scale for \(n\)-bit hash |
+| Property | Given to attacker | Goal | Ideal generic scale for $n$-bit hash |
 |---|---|---|---:|
-| Preimage | digest \(y\) | find \(x\) with \(H(x)=y\) | \(2^n\) |
-| Second preimage | message \(x\) | find \(x'\neq x\) with \(H(x')=H(x)\) | \(2^n\) |
-| Collision | nothing fixed | find any \(x\neq x'\) with equal digest | \(2^{n/2}\) |
+| Preimage | digest $y$ | find $x$ with $H(x)=y$ | $2^n$ |
+| Second preimage | message $x$ | find $x'\neq x$ with $H(x')=H(x)$ | $2^n$ |
+| Collision | nothing fixed | find any $x\neq x'$ with equal digest | $2^{n/2}$ |
 
 The distinction is easier to remember in question form:
 
@@ -420,9 +420,9 @@ b"\x8b\x1a\x99S\xc4a\x12\x96\xa8'\xab\xf8\xc4x\x04\xd7"
 
 MD5 returns:
 
-\[
+$$
 128\text{ bits}=16\text{ bytes}.
-\]
+$$
 
 MD5 is retained here because it is historically important and useful for studying failures. It should not be selected for new cryptographic applications that require collision resistance.
 
@@ -446,9 +446,9 @@ f7ff9e8b7bb2e09b70935a5d785e0cc5d9d0abf0
 
 SHA-1 returns:
 
-\[
+$$
 160\text{ bits}=20\text{ bytes}.
-\]
+$$
 
 SHA-1 is also no longer an appropriate choice for new collision-resistant applications.
 
@@ -472,9 +472,9 @@ Output:
 
 SHA-256 returns:
 
-\[
+$$
 256\text{ bits}=32\text{ bytes}.
-\]
+$$
 
 ### SHA-3
 
@@ -639,15 +639,15 @@ We keep the examples, but classify them precisely.
 
 Consider:
 
-\[
+$$
 H(x)=ax+b.
-\]
+$$
 
-If \(a\neq0\), then:
+If $a\neq0$, then:
 
-\[
+$$
 x=\frac{H(x)-b}{a}.
-\]
+$$
 
 So the map is directly invertible.
 
@@ -684,11 +684,11 @@ But there is an even more basic issue.
 
 As written,
 
-\[
+$$
 H(x)=ax+b
-\]
+$$
 
-does **not** have fixed-length output. Its output magnitude grows with \(x\).
+does **not** have fixed-length output. Its output magnitude grows with $x$.
 
 So this is better described as an **invertible toy transformation** than as a proper cryptographic hash function.
 
@@ -698,9 +698,9 @@ That makes the example more useful, not less: it teaches us that "hard to revers
 
 Suppose we define:
 
-\[
+$$
 H(x)=\operatorname{CaesarEncrypt}_{17}(x).
-\]
+$$
 
 Then:
 
@@ -741,31 +741,31 @@ hashing:
 
 Now consider:
 
-\[
+$$
 H(x)=\sum_{c\in x}\operatorname{ord}(c).
-\]
+$$
 
 For `"hello"`:
 
-\[
+$$
 104+101+108+108+111=532.
-\]
+$$
 
 So:
 
-\[
+$$
 H(\text{"hello"})=532.
-\]
+$$
 
 Any permutation of the characters gives the same value:
 
-\[
+$$
 H(\text{"hello"})
 =
 H(\text{"ehllo"})
 =
 H(\text{"helol"}).
-\]
+$$
 
 The original example also uses a completely different string:
 
@@ -823,14 +823,14 @@ There is again a structural caveat: the raw sum is not fixed-length as message l
 
 We can force fixed length, for example:
 
-\[
+$$
 H_{16}(x)
 =
 \left(
 \sum_{c\in x}\operatorname{ord}(c)
 \right)
 \bmod 2^{16},
-\]
+$$
 
 but that makes the function only more obviously collision-prone; it does not repair the cryptographic design.
 
@@ -838,9 +838,9 @@ but that makes the function only more obviously collision-prone; it does not rep
 
 Consider the transformation:
 
-\[
+$$
 H(x)=x\;\&\;0xAD
-\]
+$$
 
 applied independently to each byte.
 
@@ -900,7 +900,7 @@ These toy constructions fail for different reasons:
 
 | Construction | Main failure |
 |---|---|
-| \(ax+b\) | directly invertible; not fixed-output |
+| $ax+b$ | directly invertible; not fixed-output |
 | Caesar transform | reversible; not compressing |
 | character sum | order independent; trivial second preimages; not fixed-output |
 | bytewise AND | discards independent bits; trivial second preimages; not fixed-output |
@@ -915,52 +915,52 @@ Before asking whether a function has 128-bit or 256-bit security, we should ask 
 
 Collision resistance is where output size and probability interact most visibly.
 
-### Why collisions appear after about \(2^{n/2}\) samples
+### Why collisions appear after about $2^{n/2}$ samples
 
-Suppose a hash has \(N=2^n\) possible outputs and we hash \(q\) independently distributed messages.
+Suppose a hash has $N=2^n$ possible outputs and we hash $q$ independently distributed messages.
 
 The probability of **no collision** is approximately:
 
-\[
+$$
 \Pr[\text{no collision}]
 \approx
 \exp\left(
 -\frac{q(q-1)}{2N}
 \right).
-\]
+$$
 
 Therefore the collision probability is approximately:
 
-\[
+$$
 \Pr[\text{collision}]
 \approx
 1-
 \exp\left(
 -\frac{q(q-1)}{2N}
 \right).
-\]
+$$
 
 The probability becomes substantial when:
 
-\[
+$$
 q^2
 \approx
 N,
-\]
+$$
 
 so:
 
-\[
+$$
 q
 \approx
 \sqrt{N}
 =
 2^{n/2}.
-\]
+$$
 
 More precisely, a collision probability near one half appears around:
 
-\[
+$$
 q
 \approx
 \sqrt{
@@ -968,21 +968,21 @@ q
 }
 \approx
 1.1774\cdot 2^{n/2}.
-\]
+$$
 
 For a 16-bit digest:
 
-\[
+$$
 2^{16}=65536
-\]
+$$
 
 possible values, and the 50% collision scale is only about:
 
-\[
+$$
 1.1774\cdot2^8
 \approx
 301
-\]
+$$
 
 samples.
 
@@ -1001,9 +1001,9 @@ def H(x):
 
 The output space contains only:
 
-\[
+$$
 2^{16}
-\]
+$$
 
 possible digests.
 
@@ -1046,11 +1046,11 @@ H(b"input_323") = f064
 
 so:
 
-\[
+$$
 H(\texttt{input\_105})
 =
 H(\texttt{input\_323}).
-\]
+$$
 
 The search needs only a few hundred messages, exactly the scale predicted by the birthday bound.
 
@@ -1146,27 +1146,27 @@ That is why MD5 should not be used in new constructions where collision resistan
 
 Suppose an attacker can efficiently generate a pair:
 
-\[
+$$
 M\neq M'
-\]
+$$
 
 with:
 
-\[
+$$
 H(M)=H(M').
-\]
+$$
 
 That does not mean the attacker can take an arbitrary target digest:
 
-\[
+$$
 y
-\]
+$$
 
 and efficiently solve:
 
-\[
+$$
 H(x)=y.
-\]
+$$
 
 The first is a collision problem.
 
@@ -1272,17 +1272,17 @@ Authentication requires a secret or asymmetric verification mechanism.
 
 In this series, the direct next step is HMAC:
 
-\[
+$$
 \operatorname{HMAC}_K(M),
-\]
+$$
 
 which uses a cryptographic hash inside a keyed construction designed for message authentication.
 
 Naively inventing a keyed hash by writing something like:
 
-\[
+$$
 H(K\|M)
-\]
+$$
 
 should not be assumed secure for every hash construction. Standardized MAC designs exist precisely so that these composition details do not need to be reinvented.
 
@@ -1353,53 +1353,53 @@ A cryptographic hash function is much more than a program that transforms bytes 
 
 Its mathematical interface is:
 
-\[
+$$
 H:\{0,1\}^{*}\rightarrow\{0,1\}^{n},
-\]
+$$
 
 and its classical security goals are:
 
-\[
+$$
 \boxed{
 \text{preimage resistance}
 }
-\]
+$$
 
-\[
+$$
 \boxed{
 \text{second-preimage resistance}
 }
-\]
+$$
 
-\[
+$$
 \boxed{
 \text{collision resistance}
 }
-\]
+$$
 
 These goals have different attack models and different generic complexities.
 
-For an ideal \(n\)-bit hash:
+For an ideal $n$-bit hash:
 
-\[
+$$
 \text{preimage}\sim2^n,
-\]
+$$
 
-\[
+$$
 \text{second preimage}\sim2^n,
-\]
+$$
 
-\[
+$$
 \text{collision}\sim2^{n/2}.
-\]
+$$
 
 The deliberately weak examples make the distinctions concrete.
 
 The affine map:
 
-\[
+$$
 H(x)=ax+b
-\]
+$$
 
 is invertible.
 
@@ -1411,21 +1411,21 @@ The bytewise AND transformation destroys information independently in each byte 
 
 The 16-bit truncated MD5 experiment demonstrates the birthday bound:
 
-\[
+$$
 \texttt{input\_105}
 \neq
 \texttt{input\_323}
-\]
+$$
 
 yet:
 
-\[
+$$
 H(\texttt{input\_105})
 =
 H(\texttt{input\_323})
 =
 \texttt{f064}.
-\]
+$$
 
 Repeating the same experiment with truncated SHA-256 produces a collision just as quickly because the weakness in that experiment is the **16-bit output size**, not the underlying full hash.
 
@@ -1445,15 +1445,15 @@ Those distinctions are exactly what make the next step natural.
 
 The next article in **Hash Functions & MACs** can move from:
 
-\[
+$$
 \boxed{\text{unkeyed hashing}}
-\]
+$$
 
 to:
 
-\[
+$$
 \boxed{\text{keyed authentication}}
-\]
+$$
 
 and study why HMAC is constructed the way it is rather than simply prepending a secret key to a message.
 

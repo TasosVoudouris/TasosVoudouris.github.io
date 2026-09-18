@@ -44,48 +44,48 @@ The standard solution is **iteration**.
 
 Let
 
-\[
+$$
 f:\{0,1\}^{n}\times\{0,1\}^{b}\rightarrow\{0,1\}^{n}
-\]
+$$
 
 be a compression function.
 
 It receives:
 
-- an \(n\)-bit chaining value,
-- one \(b\)-bit message block,
+- an $n$-bit chaining value,
+- one $b$-bit message block,
 
-and produces a new \(n\)-bit chaining value.
+and produces a new $n$-bit chaining value.
 
 After padding the message into blocks
 
-\[
+$$
 M_1,M_2,\ldots,M_\ell,
-\]
+$$
 
 define
 
-\[
+$$
 h_0=IV
-\]
+$$
 
 and iteratively compute
 
-\[
+$$
 h_i=f(h_{i-1},M_i)
-\]
+$$
 
 for:
 
-\[
+$$
 1\le i\le\ell.
-\]
+$$
 
 The final digest is:
 
-\[
+$$
 H(M)=h_\ell.
-\]
+$$
 
 ![Merkle–Damgård iteration](/images/hash-functions/merkle-damgard-sha256/merkle.png)
 
@@ -111,9 +111,9 @@ The first compression call has no previous message-derived state.
 
 So the construction defines a fixed initial value:
 
-\[
+$$
 h_0=IV.
-\]
+$$
 
 The IV is part of the hash-function specification.
 
@@ -142,15 +142,15 @@ This is an example of **nothing-up-my-sleeve constants**: the values are reprodu
 
 The internal computation evolves through states:
 
-\[
+$$
 h_0,h_1,\ldots,h_\ell.
-\]
+$$
 
-But for a fixed message \(M\), padding rule, IV, and compression function, the final value is uniquely determined:
+But for a fixed message $M$, padding rule, IV, and compression function, the final value is uniquely determined:
 
-\[
+$$
 H(M)=h_\ell.
-\]
+$$
 
 The implementation may stream blocks incrementally, but the hash itself remains deterministic.
 
@@ -201,15 +201,15 @@ hashlib.sha256(
 
 It is important to distinguish:
 
-\[
+$$
 f(h,m)
-\]
+$$
 
 from:
 
-\[
+$$
 H(M).
-\]
+$$
 
 The compression function has fixed-size inputs.
 
@@ -242,19 +242,19 @@ It is part of the cryptographic construction.
 
 Suppose a block hash processes:
 
-\[
+$$
 b\text{-bit blocks}.
-\]
+$$
 
-Most messages are not exact multiples of \(b\).
+Most messages are not exact multiples of $b$.
 
 The hash therefore needs an injective or suitably structured transformation:
 
-\[
+$$
 M
 \longrightarrow
 \operatorname{pad}(M)
-\]
+$$
 
 such that the padded message can be parsed unambiguously into fixed-size blocks.
 
@@ -270,7 +270,7 @@ The classical strengthening rule appends:
 
 Conceptually:
 
-\[
+$$
 M
 \|
 1
@@ -278,7 +278,7 @@ M
 0^k
 \|
 \operatorname{len}(M).
-\]
+$$
 
 The exact field widths depend on the hash function.
 
@@ -288,15 +288,15 @@ The length field makes the encoding sensitive to the original message boundary.
 
 SHA-256 processes 512-bit blocks.
 
-For a byte-aligned message of length \(L\) bytes:
+For a byte-aligned message of length $L$ bytes:
 
 1. append `0x80`;
 2. append enough zero bytes so that the current length is congruent to 56 modulo 64;
-3. append the original bit length \(8L\) as an unsigned 64-bit big-endian integer.
+3. append the original bit length $8L$ as an unsigned 64-bit big-endian integer.
 
 Thus:
 
-\[
+$$
 \operatorname{pad}(M)
 =
 M
@@ -306,13 +306,13 @@ M
 \texttt{00}\cdots\texttt{00}
 \|
 \operatorname{BE64}(8L).
-\]
+$$
 
 The final length is always a positive multiple of:
 
-\[
+$$
 64\text{ bytes}=512\text{ bits}.
-\]
+$$
 
 ### Boundary examples
 
@@ -322,9 +322,9 @@ These boundary cases are worth memorizing because they catch many incorrect impl
 
 For:
 
-\[
+$$
 L=0,
-\]
+$$
 
 SHA-256 appends:
 
@@ -345,25 +345,25 @@ A 55-byte input has room for:
 
 So it remains one padded block:
 
-\[
+$$
 55+1+8=64.
-\]
+$$
 
 #### 56-byte message
 
 Now:
 
-\[
+$$
 56+1+8=65.
-\]
+$$
 
 The padding no longer fits in one block.
 
 The hash needs two blocks, so the message receives:
 
-\[
+$$
 72
-\]
+$$
 
 padding bytes in total.
 
@@ -430,35 +430,35 @@ The length encoding is central to that argument.
 
 Suppose:
 
-\[
+$$
 M\neq M'
-\]
+$$
 
 but:
 
-\[
+$$
 H(M)=H(M').
-\]
+$$
 
 After padding, we get two block sequences:
 
-\[
+$$
 M_1,\ldots,M_\ell
-\]
+$$
 
 and:
 
-\[
+$$
 M'_1,\ldots,M'_{\ell'}.
-\]
+$$
 
 Start from the equal final hash states and compare the chains backward.
 
 If the final compression inputs differ but produce the same output, we have found a collision in:
 
-\[
+$$
 f.
-\]
+$$
 
 If the final blocks are the same, move backward.
 
@@ -466,11 +466,11 @@ Eventually, because the padded encodings differ and cannot silently represent th
 
 That yields a reduction:
 
-\[
+$$
 \text{collision in }H
 \Longrightarrow
 \text{collision in }f.
-\]
+$$
 
 ### What the theorem does not say
 
@@ -478,11 +478,11 @@ This theorem is specifically about collision resistance under its assumptions.
 
 It does **not** mean:
 
-\[
+$$
 \text{Merkle–Damgård hash}
 =
 \text{ideal random oracle}.
-\]
+$$
 
 It does not automatically provide:
 
@@ -507,9 +507,9 @@ That structure creates both engineering advantages and cryptanalytic consequence
 
 The positive side is immediate:
 
-\[
+$$
 h_i=f(h_{i-1},M_i).
-\]
+$$
 
 Only the previous state is required.
 
@@ -524,15 +524,15 @@ This supports:
 
 Inside a single message chain:
 
-\[
+$$
 h_i
-\]
+$$
 
 cannot be computed before:
 
-\[
+$$
 h_{i-1}.
-\]
+$$
 
 So classical Merkle–Damgård iteration is inherently sequential for one message.
 
@@ -544,38 +544,38 @@ This is different from tree-hash constructions that deliberately expose parallel
 
 For many Merkle–Damgård hashes, the digest directly reveals the final chaining state:
 
-\[
+$$
 H(M)=h_\ell.
-\]
+$$
 
 If an attacker knows:
 
-- \(H(M)\),
+- $H(M)$,
 - the message length or enough information to infer the padding,
 
 the attacker can continue the compression chain on additional blocks.
 
 Conceptually:
 
-\[
+$$
 H(M)
-\]
+$$
 
 becomes a valid starting state for hashing:
 
-\[
+$$
 X.
-\]
+$$
 
 This permits computation of a digest corresponding to:
 
-\[
+$$
 M
 \|
 \operatorname{pad}(M)
 \|
 X
-\]
+$$
 
 without knowing the original message bytes in the ordinary way a fresh hash API would require.
 
@@ -593,22 +593,22 @@ That distinction is easy to miss.
 
 Suppose someone invents:
 
-\[
+$$
 \operatorname{Tag}
 =
 \operatorname{SHA256}(K\|M).
-\]
+$$
 
 If an attacker knows:
 
 - the tag,
 - the message,
 - or enough about the encoded message,
-- and can infer or guess \(|K|\),
+- and can infer or guess $|K|$,
 
 then the attacker may be able to continue from the exposed SHA-256 state and construct a valid tag for:
 
-\[
+$$
 K
 \|
 M
@@ -616,7 +616,7 @@ M
 \operatorname{pad}(K\|M)
 \|
 X.
-\]
+$$
 
 No SHA-256 collision is required.
 
@@ -630,7 +630,7 @@ The next article can study this attack directly.
 
 ### Multicollisions
 
-Suppose we find one compression-function collision from state \(h_0\):
+Suppose we find one compression-function collision from state $h_0$:
 
 ```text
 M0 ----\
@@ -638,7 +638,7 @@ M0 ----\
 M0' ---/
 ```
 
-Then find another collision from \(h_1\):
+Then find another collision from $h_1$:
 
 ```text
 M1 ----\
@@ -657,21 +657,21 @@ M0' || M1'
 
 giving four colliding messages.
 
-Continue for \(k\) stages and obtain:
+Continue for $k$ stages and obtain:
 
-\[
+$$
 2^k
-\]
+$$
 
 colliding messages.
 
 Joux showed that this can be assembled at cost roughly:
 
-\[
+$$
 k\cdot 2^{n/2}
-\]
+$$
 
-compression work under idealized assumptions, rather than the much larger cost one might expect for a random function producing a \(2^k\)-way collision.
+compression work under idealized assumptions, rather than the much larger cost one might expect for a random function producing a $2^k$-way collision.
 
 This does not mean that finding one SHA-256 collision is currently easy.
 
@@ -700,19 +700,19 @@ Expandable-message techniques use similar ideas to create many different message
 
 Again, the lesson is structural:
 
-\[
+$$
 \text{iterated construction}
 \neq
 \text{perfect random oracle}.
-\]
+$$
 
 ### Long-message second-preimage attacks
 
 For extremely long target messages, generic structural second-preimage attacks on Merkle–Damgård can beat the naive:
 
-\[
+$$
 2^n
-\]
+$$
 
 expectation.
 
@@ -740,17 +740,17 @@ One classical approach builds a compression function from a block cipher.
 
 The Davies–Meyer construction is:
 
-\[
+$$
 f(h,m)
 =
 E_m(h)\oplus h.
-\]
+$$
 
 Interpretation:
 
-- \(m\) acts as the block-cipher key;
-- \(h\) acts as the block-cipher plaintext;
-- the output is XORed with \(h\).
+- $m$ acts as the block-cipher key;
+- $h$ acts as the block-cipher plaintext;
+- the output is XORed with $h$.
 
 ![Davies–Meyer compression](/images/hash-functions/merkle-damgard-sha256/daviesmeyer.png)
 
@@ -758,11 +758,11 @@ The XOR is called **feed-forward**.
 
 Without it, a construction such as:
 
-\[
+$$
 f(h,m)=E_m(h)
-\]
+$$
 
-would inherit the block cipher's easy invertibility with respect to the data input when \(m\) is known.
+would inherit the block cipher's easy invertibility with respect to the data input when $m$ is known.
 
 Feed-forward removes that direct inversion path.
 
@@ -772,9 +772,9 @@ A block cipher is not automatically a secure compression function under every wi
 
 Given:
 
-\[
+$$
 E_K(P),
-\]
+$$
 
 we can choose which quantity becomes:
 
@@ -808,11 +808,11 @@ The transformation is closely related to the SHACAL-2 block cipher construction,
 
 The SHA-256 API is still:
 
-\[
+$$
 \text{message}
 \rightarrow
 \text{digest},
-\]
+$$
 
 not "encrypt the chaining state with a separately exposed cipher."
 
@@ -837,23 +837,23 @@ SHA-256 uses:
 
 The maximum message length represented by the SHA-256 padding field is:
 
-\[
+$$
 <2^{64}\text{ bits}.
-\]
+$$
 
 ### The eight-word state
 
 At the beginning of a compression call, the chaining state is:
 
-\[
+$$
 (H_0,H_1,H_2,H_3,H_4,H_5,H_6,H_7).
-\]
+$$
 
 These are copied into working variables:
 
-\[
+$$
 (a,b,c,d,e,f,g,h).
-\]
+$$
 
 The compression rounds mutate the working variables.
 
@@ -863,9 +863,9 @@ After round 63, the original input state is added back word-by-word.
 
 A 64-byte block is interpreted as sixteen 32-bit big-endian words:
 
-\[
+$$
 W_0,W_1,\ldots,W_{15}.
-\]
+$$
 
 For example:
 
@@ -888,19 +888,19 @@ Using little-endian parsing would define a different algorithm.
 
 The original sixteen words expand to:
 
-\[
+$$
 W_0,\ldots,W_{63}.
-\]
+$$
 
 For:
 
-\[
+$$
 16\le t<64,
-\]
+$$
 
 compute:
 
-\[
+$$
 W_t
 =
 \sigma_1(W_{t-2})
@@ -911,11 +911,11 @@ W_{t-7}
 +
 W_{t-16}
 \pmod{2^{32}}.
-\]
+$$
 
 The small sigma functions are:
 
-\[
+$$
 \sigma_0(x)
 =
 \operatorname{ROTR}^7(x)
@@ -923,9 +923,9 @@ The small sigma functions are:
 \operatorname{ROTR}^{18}(x)
 \oplus
 \operatorname{SHR}^3(x),
-\]
+$$
 
-\[
+$$
 \sigma_1(x)
 =
 \operatorname{ROTR}^{17}(x)
@@ -933,7 +933,7 @@ The small sigma functions are:
 \operatorname{ROTR}^{19}(x)
 \oplus
 \operatorname{SHR}^{10}(x).
-\]
+$$
 
 ### Rotation versus shift
 
@@ -941,17 +941,17 @@ This distinction is easy to implement incorrectly.
 
 For rotation:
 
-\[
+$$
 \operatorname{ROTR}^r(x)
-\]
+$$
 
 bits shifted off the right end re-enter on the left.
 
 For logical right shift:
 
-\[
+$$
 \operatorname{SHR}^r(x),
-\]
+$$
 
 the left side is filled with zeros and the rightmost bits are discarded.
 
@@ -1000,30 +1000,30 @@ SHA-256 uses two nonlinear Boolean functions.
 
 Choice:
 
-\[
+$$
 \operatorname{Ch}(x,y,z)
 =
 (x\land y)
 \oplus
 (\neg x\land z).
-\]
+$$
 
 Bitwise interpretation:
 
-- if a bit of \(x\) is 1, choose the corresponding bit of \(y\);
-- otherwise choose the bit of \(z\).
+- if a bit of $x$ is 1, choose the corresponding bit of $y$;
+- otherwise choose the bit of $z$.
 
 An equivalent Boolean form is:
 
-\[
+$$
 \operatorname{Ch}(x,y,z)
 =
 z\oplus(x\land(y\oplus z)).
-\]
+$$
 
 Majority:
 
-\[
+$$
 \operatorname{Maj}(x,y,z)
 =
 (x\land y)
@@ -1031,15 +1031,15 @@ Majority:
 (x\land z)
 \oplus
 (y\land z).
-\]
+$$
 
-For each bit position, this returns the majority bit among \(x,y,z\).
+For each bit position, this returns the majority bit among $x,y,z$.
 
 ### Big Sigma functions
 
 SHA-256 also defines:
 
-\[
+$$
 \Sigma_0(x)
 =
 \operatorname{ROTR}^{2}(x)
@@ -1047,9 +1047,9 @@ SHA-256 also defines:
 \operatorname{ROTR}^{13}(x)
 \oplus
 \operatorname{ROTR}^{22}(x),
-\]
+$$
 
-\[
+$$
 \Sigma_1(x)
 =
 \operatorname{ROTR}^{6}(x)
@@ -1057,29 +1057,29 @@ SHA-256 also defines:
 \operatorname{ROTR}^{11}(x)
 \oplus
 \operatorname{ROTR}^{25}(x).
-\]
+$$
 
 These use rotations only.
 
 Do not confuse:
 
-\[
+$$
 \sigma_0,\sigma_1
-\]
+$$
 
 from the message schedule with:
 
-\[
+$$
 \Sigma_0,\Sigma_1
-\]
+$$
 
 from the round function.
 
 ### One compression round
 
-At round \(t\):
+At round $t$:
 
-\[
+$$
 T_1
 =
 h
@@ -1092,56 +1092,56 @@ K_t
 +
 W_t
 \pmod{2^{32}},
-\]
+$$
 
-\[
+$$
 T_2
 =
 \Sigma_0(a)
 +
 \operatorname{Maj}(a,b,c)
 \pmod{2^{32}}.
-\]
+$$
 
 Then:
 
-\[
+$$
 h\leftarrow g,
-\]
+$$
 
-\[
+$$
 g\leftarrow f,
-\]
+$$
 
-\[
+$$
 f\leftarrow e,
-\]
+$$
 
-\[
+$$
 e\leftarrow d+T_1\pmod{2^{32}},
-\]
+$$
 
-\[
+$$
 d\leftarrow c,
-\]
+$$
 
-\[
+$$
 c\leftarrow b,
-\]
+$$
 
-\[
+$$
 b\leftarrow a,
-\]
+$$
 
-\[
+$$
 a\leftarrow T_1+T_2\pmod{2^{32}}.
-\]
+$$
 
 This happens for:
 
-\[
+$$
 t=0,1,\ldots,63.
-\]
+$$
 
 ![SHA-256 structure](/images/hash-functions/merkle-damgard-sha256/sha256.png)
 
@@ -1151,28 +1151,28 @@ After the 64 rounds, the working words are not returned directly.
 
 Instead:
 
-\[
+$$
 H_0'
 =
 H_0+a
 \pmod{2^{32}},
-\]
+$$
 
-\[
+$$
 H_1'
 =
 H_1+b
 \pmod{2^{32}},
-\]
+$$
 
 and so on through:
 
-\[
+$$
 H_7'
 =
 H_7+h
 \pmod{2^{32}}.
-\]
+$$
 
 The result becomes the next chaining state.
 
@@ -1182,9 +1182,9 @@ For the final message block, concatenating the eight words gives the SHA-256 dig
 
 The 64 constants:
 
-\[
+$$
 K_0,\ldots,K_{63}
-\]
+$$
 
 come from the fractional parts of cube roots of the first 64 prime numbers.
 
@@ -1206,7 +1206,7 @@ SHA-256 mixes several operation families:
 - NOT,
 - rotations,
 - logical shifts,
-- addition modulo \(2^{32}\).
+- addition modulo $2^{32}$.
 
 Modular addition is nonlinear with respect to bitwise XOR because carries propagate between bit positions.
 
@@ -1499,9 +1499,9 @@ def sha256(message):
 
 The most famous SHA-256 test vector is:
 
-\[
+$$
 M=\texttt{"abc"}.
-\]
+$$
 
 Expected digest:
 
@@ -1607,9 +1607,9 @@ not because production code should expose these interfaces, but because they mak
 
 A SHA-256 digest is exactly:
 
-\[
+$$
 8\times32=256
-\]
+$$
 
 bits of final chaining state.
 
@@ -1666,9 +1666,9 @@ For adversarial authenticity, use:
 
 Avoid:
 
-\[
+$$
 \operatorname{SHA256}(K\|M)
-\]
+$$
 
 as an ad-hoc MAC.
 
@@ -1676,9 +1676,9 @@ Because SHA-256 is Merkle–Damgård based and exposes its final chaining state,
 
 Use:
 
-\[
+$$
 \operatorname{HMAC\!-\!SHA256}_K(M)
-\]
+$$
 
 or the protocol's specified authentication primitive.
 
@@ -1713,17 +1713,17 @@ Use:
 
 SHA-256 outputs:
 
-\[
+$$
 256
-\]
+$$
 
 bits.
 
 Its ideal generic collision strength is therefore approximately:
 
-\[
+$$
 128
-\]
+$$
 
 bits, not 256.
 
@@ -1765,9 +1765,9 @@ We know that:
 4. compression can continue from an arbitrary internal state;
 5. a naive secret-prefix MAC may expose a digest of:
 
-\[
+$$
 K\|M.
-\]
+$$
 
 Therefore the next question is immediate:
 
@@ -1795,25 +1795,25 @@ Next: [Length-Extension Attacks](/blog/length-extension-attacks/).
 
 Merkle–Damgård solves a fundamental engineering problem:
 
-\[
+$$
 \text{fixed-size compression}
 \rightarrow
 \text{arbitrary-length hash}.
-\]
+$$
 
 Its iteration is:
 
-\[
+$$
 h_0=IV,
-\]
+$$
 
-\[
+$$
 h_i=f(h_{i-1},M_i),
-\]
+$$
 
-\[
+$$
 H(M)=h_\ell.
-\]
+$$
 
 With an appropriate strengthening rule, collision resistance of the compression function can be transferred to the full iterated hash under the theorem's assumptions.
 
@@ -1830,27 +1830,27 @@ SHA-256 instantiates this general pattern with:
 
 The message schedule uses:
 
-\[
+$$
 \sigma_0,
 \qquad
 \sigma_1,
-\]
+$$
 
 while the round function uses:
 
-\[
+$$
 \Sigma_0,
 \qquad
 \Sigma_1,
-\]
+$$
 
 together with:
 
-\[
+$$
 \operatorname{Ch},
 \qquad
 \operatorname{Maj}.
-\]
+$$
 
 The construction is strong, practical, incremental, and standardized.
 
@@ -1867,23 +1867,23 @@ without claiming that SHA-256 itself is generally broken.
 
 This is the main conceptual result of the article:
 
-\[
+$$
 \boxed{
 \text{security of the compression function}
 \neq
 \text{every possible security property of the iterated construction}
 }
-\]
+$$
 
 and:
 
-\[
+$$
 \boxed{
 \text{security of the hash}
 \neq
 \text{security of every protocol that uses the hash}
 }
-\]
+$$
 
 Those distinctions lead directly to the next chapter, where the Merkle–Damgård state interface is no longer merely an implementation detail—it becomes the mechanism behind a concrete **length-extension attack**.
 
@@ -1905,7 +1905,7 @@ Those distinctions lead directly to the next chapter, where the Merkle–Damgår
 
 6. A. Joux, **Multicollisions in Iterated Hash Functions: Application to Cascaded Constructions**, CRYPTO 2004.
 
-7. J. Kelsey and B. Schneier, **Second Preimages on n-bit Hash Functions for Much Less than \(2^n\) Work**, EUROCRYPT 2005.
+7. J. Kelsey and B. Schneier, **Second Preimages on n-bit Hash Functions for Much Less than $2^n$ Work**, EUROCRYPT 2005.
 
 8. J. Kelsey and T. Kohno, **Herding Hash Functions and the Nostradamus Attack**, EUROCRYPT 2006.
 

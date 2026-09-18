@@ -48,13 +48,13 @@ Its design contains no S-box tables, no block structure, and no large algebraic 
 
 Instead, it maintains a permutation of the byte values
 
-\[
+$$
 0,1,\ldots,255
-\]
+$$
 
 and updates that permutation using only:
 
-- byte addition modulo \(256\);
+- byte addition modulo $256$;
 - swaps;
 - table lookups.
 
@@ -65,11 +65,11 @@ The algorithm has two phases:
 
 Encryption is then:
 
-\[
+$$
 C_i=P_i\oplus Z_i,
-\]
+$$
 
-where \(Z_i\) is the \(i\)-th RC4 keystream byte.
+where $Z_i$ is the $i$-th RC4 keystream byte.
 
 This compact design made RC4 extremely attractive historically.
 
@@ -118,26 +118,26 @@ This is a more subtle type of pseudorandomness failure.
 
 RC4 maintains:
 
-- a 256-byte permutation \(S\);
-- two byte-sized indices \(i,j\).
+- a 256-byte permutation $S$;
+- two byte-sized indices $i,j$.
 
 At every point:
 
-\[
+$$
 S
-\]
+$$
 
 is a permutation of:
 
-\[
+$$
 \{0,\ldots,255\}.
-\]
+$$
 
 So RC4's permutation state alone has:
 
-\[
+$$
 256!
-\]
+$$
 
 possible arrangements.
 
@@ -149,50 +149,50 @@ But a huge state space does not imply ideal pseudorandom output.
 
 Let the secret key be:
 
-\[
+$$
 K[0],K[1],\ldots,K[\ell-1].
-\]
+$$
 
 Initialize:
 
-\[
+$$
 S[i]=i
-\]
+$$
 
 for:
 
-\[
+$$
 0\le i<256.
-\]
+$$
 
 Set:
 
-\[
+$$
 j=0.
-\]
+$$
 
 Then for:
 
-\[
+$$
 i=0,1,\ldots,255,
-\]
+$$
 
 compute:
 
-\[
+$$
 j
 \leftarrow
 (j+S[i]+K[i\bmod\ell])
 \bmod256,
-\]
+$$
 
 and swap:
 
-\[
+$$
 S[i]
 \leftrightarrow
 S[j].
-\]
+$$
 
 Pseudocode:
 
@@ -247,35 +247,35 @@ Those deviations matter because the PRGA begins immediately from the KSA result.
 
 After KSA, initialize:
 
-\[
+$$
 i=0,\qquad j=0.
-\]
+$$
 
 For each output byte:
 
-\[
+$$
 i
 \leftarrow
 (i+1)\bmod256,
-\]
+$$
 
-\[
+$$
 j
 \leftarrow
 (j+S[i])\bmod256.
-\]
+$$
 
 Swap:
 
-\[
+$$
 S[i]
 \leftrightarrow
 S[j].
-\]
+$$
 
 Then output:
 
-\[
+$$
 \boxed{
 Z
 =
@@ -283,7 +283,7 @@ S[
 (S[i]+S[j])\bmod256
 ].
 }
-\]
+$$
 
 Pseudocode:
 
@@ -334,15 +334,15 @@ That compactness was one of RC4's strengths operationally and one reason it spre
 
 Because encryption is XOR:
 
-\[
+$$
 C=P\oplus Z,
-\]
+$$
 
 decryption is:
 
-\[
+$$
 P=C\oplus Z.
-\]
+$$
 
 So the same function can decrypt when given the same key.
 
@@ -350,23 +350,23 @@ That also means RC4 inherits the ordinary malleability of unauthenticated stream
 
 Changing:
 
-\[
+$$
 C_i
-\]
+$$
 
 by:
 
-\[
+$$
 \Delta_i
-\]
+$$
 
 changes the recovered plaintext by the same amount:
 
-\[
+$$
 P_i'
 =
 P_i\oplus\Delta_i.
-\]
+$$
 
 RC4 by itself therefore provides no message authentication.
 
@@ -378,15 +378,15 @@ An ideal stream cipher should produce keystream that is computationally indistin
 
 For a random byte:
 
-\[
+$$
 Z_i\in\{0,\ldots,255\},
-\]
+$$
 
 the ideal probability of any fixed value is:
 
-\[
+$$
 \frac1{256}.
-\]
+$$
 
 RC4 violates this ideal model in many measurable ways.
 
@@ -394,25 +394,25 @@ RC4 violates this ideal model in many measurable ways.
 
 A keystream bias is a statistical deviation such as:
 
-\[
+$$
 \Pr[Z_i=v]
 \neq
 \frac1{256}.
-\]
+$$
 
 The attacker may still be wrong most of the time.
 
 For example, a probability changing from:
 
-\[
+$$
 \frac1{256}
-\]
+$$
 
 to approximately:
 
-\[
+$$
 \frac2{256}
-\]
+$$
 
 is tiny in absolute terms.
 
@@ -422,7 +422,7 @@ If the same plaintext position is encrypted many times under independent or rela
 
 This is exactly the same statistical principle introduced in the Geffe article:
 
-\[
+$$
 \boxed{
 \text{small bias}
 +
@@ -430,7 +430,7 @@ This is exactly the same statistical principle introduced in the Geffe article:
 =
 \text{usable information}.
 }
-\]
+$$
 
 ### The famous second-byte bias
 
@@ -438,23 +438,23 @@ One of RC4's best-known biases is associated with its second output byte.
 
 For independent random keys, the event:
 
-\[
+$$
 Z_2=0
-\]
+$$
 
 occurs with probability close to:
 
-\[
+$$
 \frac{2}{256}
 =
 \frac1{128},
-\]
+$$
 
 rather than the ideal:
 
-\[
+$$
 \frac1{256}.
-\]
+$$
 
 This is commonly associated with the Mantin-Shamir analysis.
 
@@ -466,50 +466,50 @@ Across many sessions, it becomes statistically measurable.
 
 ### Quantifying the bias
 
-Under the ideal model, for \(N\) independent samples:
+Under the ideal model, for $N$ independent samples:
 
-\[
+$$
 X_{\text{uniform}}
 \sim
 \operatorname{Binomial}
 \left(
 N,\frac1{256}
 \right).
-\]
+$$
 
 The expected count is:
 
-\[
+$$
 \mathbb E[X_{\text{uniform}}]
 =
 \frac{N}{256}.
-\]
+$$
 
-Under an approximate \(2/256\) RC4 bias:
+Under an approximate $2/256$ RC4 bias:
 
-\[
+$$
 \mathbb E[X_{\text{RC4}}]
 \approx
 \frac{2N}{256}.
-\]
+$$
 
 For:
 
-\[
+$$
 N=100000,
-\]
+$$
 
 the ideal expected count is about:
 
-\[
+$$
 390.625,
-\]
+$$
 
 while the biased expectation is about:
 
-\[
+$$
 781.25.
-\]
+$$
 
 That gap is large compared with ordinary binomial fluctuations.
 
@@ -527,7 +527,7 @@ This motivated historical proposals such as:
 RC4-drop[n]
 ```
 
-where the first \(n\) output bytes were discarded.
+where the first $n$ output bytes were discarded.
 
 That can reduce some early biases.
 
@@ -567,7 +567,7 @@ The protocol converts a weak statistical signal into an attack by allowing avera
 
 This is another recurring engineering principle:
 
-\[
+$$
 \boxed{
 \text{primitive weakness}
 \times
@@ -575,7 +575,7 @@ This is another recurring engineering principle:
 =
 \text{practical attack surface}.
 }
-\]
+$$
 
 ---
 
@@ -597,13 +597,13 @@ Classic WEP used a public 24-bit IV together with a long-term secret key.
 
 Conceptually, the RC4 key was formed as:
 
-\[
+$$
 K_{\text{packet}}
 =
 IV
 \|
 K_{\text{secret}}.
-\]
+$$
 
 Because the IV was transmitted openly, an attacker knew the first bytes of each packet's RC4 key.
 
@@ -615,11 +615,11 @@ This created a setting where the attacker could collect many KSA executions whos
 
 Recall:
 
-\[
+$$
 j
 \leftarrow
 j+S[i]+K[i]\pmod{256}.
-\]
+$$
 
 At early KSA positions, the permutation has undergone only a few swaps.
 
@@ -659,15 +659,15 @@ WEP packets had predictable protocol structure.
 
 If:
 
-\[
+$$
 C=P\oplus Z,
-\]
+$$
 
-and enough of \(P\) is known or guessed, then:
+and enough of $P$ is known or guessed, then:
 
-\[
+$$
 Z=C\oplus P.
-\]
+$$
 
 Thus the attacker obtains early RC4 keystream bytes.
 
@@ -701,11 +701,11 @@ that creates the FMS attack environment.
 
 So the correct statement is:
 
-\[
+$$
 \boxed{
 \text{FMS exploits RC4 KSA under WEP-style related keys}.
 }
-\]
+$$
 
 It should not be generalized mechanically to every API that happens to concatenate two byte strings.
 
@@ -719,11 +719,11 @@ The important historical point for this series is that RC4's key scheduling coul
 
 WEP therefore demonstrates that:
 
-\[
+$$
 \boxed{
 \text{key derivation and nonce processing are part of cipher security}.
 }
-\]
+$$
 
 A protocol cannot simply feed structured public material into a cipher's key input and assume the primitive will behave like an ideal related-key-secure object.
 
@@ -788,11 +788,11 @@ The safe conclusion today is not:
 
 It is:
 
-\[
+$$
 \boxed{
 \text{do not deploy RC4}.
 }
-\]
+$$
 
 ### Compatibility archaeology versus design choice
 
@@ -854,11 +854,11 @@ It requires:
 
 So RC4 should be treated as:
 
-\[
+$$
 \boxed{
 \text{deprecated cryptographic history}
 }
-\]
+$$
 
 rather than a fallback algorithm.
 
@@ -931,9 +931,9 @@ because stream encryption is XOR-based.
 
 For the same vector:
 
-\[
+$$
 Z=P\oplus C.
-\]
+$$
 
 The first nine keystream bytes are:
 
@@ -953,27 +953,27 @@ For each key:
 2. generate the first two PRGA bytes;
 3. record whether:
 
-   \[
+   $$
    Z_2=0.
-   \]
+   $$
 
 For an ideal byte stream:
 
-\[
+$$
 \Pr[Z_2=0]
 =
 \frac1{256}
 \approx
 0.00390625.
-\]
+$$
 
 RC4 is expected to show a frequency closer to:
 
-\[
+$$
 \frac2{256}
 =
 0.0078125.
-\]
+$$
 
 A deterministic experiment can use a seeded noncryptographic PRNG to generate the *test keys*, because the purpose here is reproducibility, not secret-key generation.
 
@@ -1043,13 +1043,13 @@ second-byte zero frequency > uniform expectation
 
 Again:
 
-\[
+$$
 \boxed{
 \text{implementation consistency}
 \neq
 \text{security}.
 }
-\]
+$$
 
 ---
 
@@ -1068,13 +1068,13 @@ ChaCha20 uses a 512-bit state consisting of:
 
 Its round function uses ARX operations:
 
-\[
+$$
 \text{Addition}
 +
 \text{Rotation}
 +
 \text{XOR}.
-\]
+$$
 
 It does not rely on RC4-style byte permutation scheduling.
 
@@ -1088,7 +1088,7 @@ Instead of feeding an IV into the key scheduler, the IETF construction separates
 
 Conceptually:
 
-\[
+$$
 Z_{\text{block}}
 =
 \operatorname{ChaCha20Block}
@@ -1097,7 +1097,7 @@ K,
 N,
 \operatorname{counter}
 ).
-\]
+$$
 
 That is a much cleaner protocol interface than treating public nonce material as part of an ad-hoc related key.
 
@@ -1107,9 +1107,9 @@ Bare ChaCha20 is still only a stream cipher.
 
 Modern protocols normally use:
 
-\[
+$$
 \text{ChaCha20-Poly1305}
-\]
+$$
 
 to obtain authenticated encryption.
 
@@ -1136,36 +1136,36 @@ RC4 is one of the most useful historical stream ciphers to study because its des
 
 The cipher begins with a key-scheduled permutation:
 
-\[
+$$
 S:\{0,\ldots,255\}
 \rightarrow
 \{0,\ldots,255\}.
-\]
+$$
 
 The KSA updates:
 
-\[
+$$
 j
 \leftarrow
 j+S[i]+K[i\bmod|K|]
 \pmod{256}
-\]
+$$
 
 and swaps:
 
-\[
+$$
 S[i]\leftrightarrow S[j].
-\]
+$$
 
-The PRGA then repeatedly updates \(i,j\), swaps two permutation entries, and outputs:
+The PRGA then repeatedly updates $i,j$, swaps two permutation entries, and outputs:
 
-\[
+$$
 Z
 =
 S[
 (S[i]+S[j])\bmod256
 ].
-\]
+$$
 
 This looks highly irregular.
 
@@ -1175,13 +1175,13 @@ RC4 exhibits statistically measurable biases, including the famous elevated prob
 
 That yields the first major lesson:
 
-\[
+$$
 \boxed{
 \text{complex-looking state updates}
 \neq
 \text{ideal pseudorandomness}.
 }
-\]
+$$
 
 WEP adds a second lesson.
 
@@ -1197,11 +1197,11 @@ The FMS attack exploited:
 
 So:
 
-\[
+$$
 \boxed{
 \text{key/nonce processing is part of cipher security}.
 }
-\]
+$$
 
 TLS adds a third lesson.
 
@@ -1213,11 +1213,11 @@ Dropping early bytes was not a durable answer.
 
 The correct modern conclusion is:
 
-\[
+$$
 \boxed{
 \text{RC4 is obsolete and should not be deployed}.
 }
-\]
+$$
 
 That makes RC4 a natural bridge to the next article.
 

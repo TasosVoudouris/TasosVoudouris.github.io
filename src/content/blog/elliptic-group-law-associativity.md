@@ -33,7 +33,7 @@ $$
 P,Q\in E,
 $$
 
-draw the line through \(P\) and \(Q\), find its third intersection \(R\), and define
+draw the line through $P$ and $Q$, find its third intersection $R$, and define
 
 $$
 P+Q=-R.
@@ -80,7 +80,7 @@ The chord-and-tangent construction is simply the geometric manifestation of addi
 - [5. Zeros, poles, and principal divisors](#5-zeros-poles-and-principal-divisors)
 - [6. Degree and divisor classes](#6-degree-and-divisor-classes)
 - [7. The Picard group](#7-the-picard-group)
-- [8. Why (E) is identified with (\operatorname${Pic}^0(E))](#8-why-e-is-identified-with-operatornamepic0e)
+- [8. Why $E$ is identified with $\operatorname{Pic}^0(E)$](#8-why-eee-is-identified-with-pic0eoperatornamepic0epic0e)
 - [9. A line through three points](#9-a-line-through-three-points)
 - [10. Recovering the chord-and-tangent law](#10-recovering-the-chord-and-tangent-law)
 - [11. Why reflection gives the inverse](#11-why-reflection-gives-the-inverse)
@@ -92,8 +92,6 @@ The chord-and-tangent construction is simply the geometric manifestation of addi
 
 ---
 
-<a id="associativity-problem"></a>
-
 ## 1. The associativity problem
 
 Let
@@ -103,7 +101,7 @@ E:
 y^2=x^3+ax+b
 $$
 
-be a nonsingular elliptic curve over a field of characteristic different from \(2\) and \(3\).
+be a nonsingular elliptic curve over a field of characteristic different from $2$ and $3$.
 
 From the previous chapter we already know how to define
 
@@ -189,7 +187,7 @@ It is what makes elliptic-curve arithmetic coherent.
 
 Recall the geometric construction.
 
-Let a line intersect the cubic \(E\) at
+Let a line intersect the cubic $E$ at
 
 $$
 P,\quad Q,\quad R,
@@ -217,7 +215,7 @@ This notation is extremely suggestive.
 
 Three collinear points sum to the identity.
 
-If \(P=Q\), the line is the tangent at \(P\), and the intersection at \(P\) is counted twice.
+If $P=Q$, the line is the tangent at $P$, and the intersection at $P$ is counted twice.
 
 If
 
@@ -280,13 +278,13 @@ But several problems immediately appear.
 
 We need separate cases for:
 
-* \(P=Q\);
-* \(Q=R\);
-* \(P=-Q\);
-* \(Q=-R\);
+* $P=Q$;
+* $Q=R$;
+* $P=-Q$;
+* $Q=-R$;
 * vertical lines;
-* points with \(y=0\);
-* the point \(\mathcal O\);
+* points with $y=0$;
+* the point $\mathcal O$;
 * denominators that vanish.
 
 Even in the generic case, the resulting rational expressions are unpleasant.
@@ -305,9 +303,9 @@ The algebraic-geometric proof reveals the structure hidden behind the formulas.
 
 ## 4. Divisors on a curve
 
-Let \(E\) be a smooth projective curve.
+Let $E$ be a smooth projective curve.
 
-A **divisor** on \(E\) is a finite formal integer combination of points:
+A **divisor** on $E$ is a finite formal integer combination of points:
 
 $$
 \boxed{
@@ -321,7 +319,7 @@ $$
 n_P\in\mathbb Z
 $$
 
-and all but finitely many \(n_P\) are zero.
+and all but finitely many $n_P$ are zero.
 
 For example,
 
@@ -373,7 +371,7 @@ $$
 
 be a nonzero rational function on the curve.
 
-At each point \(P\), the function has an integer order
+At each point $P$, the function has an integer order
 
 $$
 \operatorname{ord}_P(f).
@@ -381,25 +379,25 @@ $$
 
 Roughly:
 
-* if \(f\) has a zero of multiplicity \(m\) at \(P\),
+* if $f$ has a zero of multiplicity $m$ at $P$,
 
 $$
 \operatorname{ord}_P(f)=m;
 $$
 
-* if \(f\) has a pole of order \(m\),
+* if $f$ has a pole of order $m$,
 
 $$
 \operatorname{ord}_P(f)=-m;
 $$
 
-* if \(f\) is nonzero and finite at \(P\),
+* if $f$ is nonzero and finite at $P$,
 
 $$
 \operatorname{ord}_P(f)=0.
 $$
 
-The **divisor of \(f\)** is
+The **divisor of $f$** is
 
 $$
 \boxed{
@@ -490,7 +488,7 @@ D_1-D_2
 \operatorname{div}(f)
 $$
 
-for some rational function \(f\).
+for some rational function $f$.
 
 So instead of distinguishing divisors that differ only by the zeros and poles of a rational function, we place them in the same equivalence class.
 
@@ -558,7 +556,7 @@ The remarkable fact about an elliptic curve is that the curve itself can be iden
 
 <a id="elliptic-picard-identification"></a>
 
-## 8. Why \(E\) is identified with \(\operatorname{Pic}^0(E)\)
+## 8. Why $E$ is identified with $\operatorname{Pic}^0(E)$
 
 Fix the distinguished point
 
@@ -615,7 +613,7 @@ So instead of working with arbitrary divisor classes, we can label them by actua
 
 ### Why genus one matters
 
-Very roughly, the Riemann-Roch theorem shows that every degree-zero divisor \(D\) satisfies
+Very roughly, the Riemann-Roch theorem shows that every degree-zero divisor $D$ satisfies
 
 $$
 D+[\mathcal O]
@@ -623,7 +621,7 @@ D+[\mathcal O]
 [P]
 $$
 
-for some point \(P\).
+for some point $P$.
 
 Hence
 
@@ -651,7 +649,7 @@ E\cong\operatorname{Pic}^0(E).
 }
 $$
 
-This object is also the **Jacobian** of \(E\):
+This object is also the **Jacobian** of $E$:
 
 $$
 \boxed{
@@ -695,7 +693,7 @@ $$
 Z=0.
 $$
 
-Consider the rational function on \(E\)
+Consider the rational function on $E$
 
 $$
 \frac{\ell}{Z}.
@@ -725,13 +723,13 @@ $$
 Z=0
 $$
 
-meets \(E\) only at
+meets $E$ only at
 
 $$
 \mathcal O=(0:1:0)
 $$
 
-with total intersection multiplicity \(3\).
+with total intersection multiplicity $3$.
 
 Therefore,
 
@@ -784,7 +782,7 @@ P+Q+R=\mathcal O
 }
 $$
 
-when \(P,Q,R\) are collinear.
+when $P,Q,R$ are collinear.
 
 ---
 
@@ -792,7 +790,7 @@ when \(P,Q,R\) are collinear.
 
 ## 10. Recovering the chord-and-tangent law
 
-Suppose the line through \(P\) and \(Q\) meets the cubic a third time at \(R\).
+Suppose the line through $P$ and $Q$ meets the cubic a third time at $R$.
 
 From the divisor relation,
 
@@ -828,7 +826,7 @@ $$
 \Phi(-R).
 $$
 
-Because \(\Phi\) is an isomorphism,
+Because $\Phi$ is an isomorphism,
 
 $$
 \boxed{
@@ -884,7 +882,7 @@ $$
 -R.
 $$
 
-At the point at infinity, \(x\) has a pole of order \(2\).
+At the point at infinity, $x$ has a pole of order $2$.
 
 Therefore,
 
@@ -916,7 +914,7 @@ $$
 }
 $$
 
-This proves algebraically that reflection across the \(x\)-axis corresponds exactly to group inversion.
+This proves algebraically that reflection across the $x$-axis corresponds exactly to group inversion.
 
 So even the visual reflection rule is encoded naturally in divisor theory.
 
@@ -954,7 +952,7 @@ $$
 \Phi(P+Q)+\Phi(R).
 $$
 
-Because \(\Phi\) respects addition,
+Because $\Phi$ respects addition,
 
 $$
 =
@@ -989,7 +987,7 @@ $$
 \Phi(P+(Q+R)).
 $$
 
-Since \(\Phi\) is injective,
+Since $\Phi$ is injective,
 
 $$
 \boxed{
@@ -1021,9 +1019,9 @@ And divisor-class addition is associative by construction.
 
 The divisor argument automatically includes point doubling.
 
-Suppose the tangent line at \(P\) intersects \(E\) again at \(R\).
+Suppose the tangent line at $P$ intersects $E$ again at $R$.
 
-The tangent has intersection multiplicity \(2\) at \(P\).
+The tangent has intersection multiplicity $2$ at $P$.
 
 Therefore the zero divisor contributed by the line is
 
@@ -1085,7 +1083,7 @@ Intersection multiplicity automatically handles the repeated point.
 
 ### Flex points
 
-An especially interesting case occurs when the tangent intersects the cubic with multiplicity \(3\) at the same point \(P\).
+An especially interesting case occurs when the tangent intersects the cubic with multiplicity $3$ at the same point $P$.
 
 Then
 
@@ -1109,7 +1107,7 @@ $$
 }
 $$
 
-Such a point is a \(3\)-torsion point.
+Such a point is a $3$-torsion point.
 
 This provides a beautiful connection between local intersection geometry and the algebraic order of a point.
 
@@ -1223,7 +1221,7 @@ $$
 
 We can now see the complete logical progression.
 
-Start with a smooth projective cubic \(E\) and a distinguished point
+Start with a smooth projective cubic $E$ and a distinguished point
 
 $$
 \mathcal O.
@@ -1244,7 +1242,7 @@ $$
 \operatorname{Prin}(E).
 $$
 
-For a genus-one curve with base point \(\mathcal O\),
+For a genus-one curve with base point $\mathcal O$,
 
 $$
 \boxed{
@@ -1405,10 +1403,10 @@ $$
 That raises a new collection of questions:
 
 * How many points does the curve have?
-* Why is the number close to \(p+1\)?
+* Why is the number close to $p+1$?
 * What does Hasse's theorem tell us?
 * What are point orders and subgroups?
 * When is the group cyclic?
-* How do we compute inside \(E(\mathbb F_p)\)?
+* How do we compute inside $E(\mathbb F_p)$?
 
 Those questions lead directly from algebraic geometry toward the mathematics used in elliptic-curve cryptography.

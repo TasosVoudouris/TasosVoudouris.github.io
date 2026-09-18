@@ -54,47 +54,47 @@ A confidentiality-only mode does not necessarily answer that question. In fact, 
 
 For CTR,
 
-\[
+$$
 C=P\oplus S,
-\]
+$$
 
-where \(S\) is the generated keystream. If an attacker changes the ciphertext to
+where $S$ is the generated keystream. If an attacker changes the ciphertext to
 
-\[
+$$
 C'=C\oplus\Delta,
-\]
+$$
 
 then the receiver obtains
 
-\[
+$$
 P'
 =
 C'\oplus S
 =
 P\oplus\Delta.
-\]
+$$
 
 The attacker does not know the plaintext or the key, yet can induce a selected XOR difference in the decrypted plaintext.
 
 For CBC,
 
-\[
+$$
 P_i=D_K(C_i)\oplus C_{i-1}.
-\]
+$$
 
-Changing \(C_{i-1}\) changes \(P_i\) in a predictable XOR fashion. The previous article also showed why observable padding validity can turn unauthenticated CBC into a padding-oracle problem.
+Changing $C_{i-1}$ changes $P_i$ in a predictable XOR fashion. The previous article also showed why observable padding validity can turn unauthenticated CBC into a padding-oracle problem.
 
 These are not failures of AES. They are consequences of using **confidentiality without ciphertext integrity**.
 
 Authenticated encryption addresses both properties at once:
 
-\[
+$$
 \boxed{
 \text{confidentiality}
 +
 \text{ciphertext integrity/authenticity}
 }
-\]
+$$
 
 and **Authenticated Encryption with Associated Data (AEAD)** additionally authenticates selected data that deliberately remains visible.
 
@@ -135,9 +135,9 @@ must make authentication fail.
 
 This distinction is fundamental:
 
-\[
+$$
 \text{confidential} \neq \text{authenticated}.
-\]
+$$
 
 ### Integrity, authenticity, and what AEAD does not prove
 
@@ -154,9 +154,9 @@ It does **not** automatically provide:
 
 Replay is especially easy to misunderstand. If an attacker records a valid tuple
 
-\[
+$$
 (N,A,C,T)
-\]
+$$
 
 and sends the exact same tuple again, the authentication tag is still valid.
 
@@ -179,42 +179,42 @@ RFC 5116 provides a useful abstract interface for authenticated encryption with 
 
 Conceptually, encryption receives
 
-\[
+$$
 (K,N,P,A),
-\]
+$$
 
 where:
 
-- \(K\) is the secret key,
-- \(N\) is a nonce,
-- \(P\) is plaintext,
-- \(A\) is associated authenticated data.
+- $K$ is the secret key,
+- $N$ is a nonce,
+- $P$ is plaintext,
+- $A$ is associated authenticated data.
 
 We can write the encryption operation as
 
-\[
+$$
 (C,T)
 \leftarrow
 \operatorname{Seal}(K,N,P,A),
-\]
+$$
 
-where \(C\) is ciphertext and \(T\) is an authentication tag.
+where $C$ is ciphertext and $T$ is an authentication tag.
 
 Decryption is conceptually
 
-\[
+$$
 \operatorname{Open}(K,N,C,A,T)
 \rightarrow
 P
 \quad\text{or}\quad
 \bot.
-\]
+$$
 
 The symbol
 
-\[
+$$
 \bot
-\]
+$$
 
 means authentication failure.
 
@@ -265,9 +265,9 @@ RFC 5116 emphasizes nonce uniqueness for nonce-based AEAD algorithms: distinct e
 
 That gives us the central invariant
 
-\[
+$$
 (K,N)
-\]
+$$
 
 must not be accidentally reused in algorithms such as AES-GCM and ChaCha20-Poly1305.
 
@@ -326,7 +326,7 @@ It is computed using secret-key-dependent state. A tag forgery should succeed on
 
 Tag length matters.
 
-A \(t\)-bit tag gives only a \(2^{-t}\)-scale naive guessing barrier per independent attempt, and real security bounds also depend on:
+A $t$-bit tag gives only a $2^{-t}$-scale naive guessing barrier per independent attempt, and real security bounds also depend on:
 
 - total messages,
 - total authenticated data,
@@ -357,11 +357,11 @@ Do not:
 
 The precise API varies by library, but the logical contract should remain:
 
-\[
+$$
 \boxed{
 \text{plaintext or failure}
 }
-\]
+$$
 
 not "plaintext plus a boolean that the caller may forget to check."
 
@@ -378,15 +378,15 @@ The order of these operations matters.
 
 Let
 
-\[
+$$
 Enc_{K_E}
-\]
+$$
 
 be an encryption algorithm and
 
-\[
+$$
 MAC_{K_M}
-\]
+$$
 
 a MAC using an independent key.
 
@@ -396,21 +396,21 @@ Three generic composition patterns are commonly discussed.
 
 Compute
 
-\[
+$$
 C=Enc_{K_E}(P)
-\]
+$$
 
 and separately
 
-\[
+$$
 T=MAC_{K_M}(P).
-\]
+$$
 
 Output
 
-\[
+$$
 (C,T).
-\]
+$$
 
 This authenticates the plaintext rather than the ciphertext.
 
@@ -422,15 +422,15 @@ The important point is not that every encrypt-and-MAC system is automatically br
 
 Compute
 
-\[
+$$
 T=MAC_{K_M}(P)
-\]
+$$
 
 and then
 
-\[
+$$
 C=Enc_{K_E}(P\|T).
-\]
+$$
 
 The receiver decrypts before it can verify the MAC.
 
@@ -444,25 +444,25 @@ Again, carefully designed MAC-then-encrypt constructions can have security argum
 
 Compute
 
-\[
+$$
 C=Enc_{K_E}(P)
-\]
+$$
 
 and then authenticate the ciphertext and relevant context:
 
-\[
+$$
 T=
 MAC_{K_M}
 (
 N\|A\|C
 ).
-\]
+$$
 
 The receiver first checks
 
-\[
+$$
 T\stackrel{?}{=}MAC_{K_M}(N\|A\|C)
-\]
+$$
 
 and only then decrypts.
 
@@ -488,16 +488,16 @@ A manual composition should not casually use the same key for unrelated primitiv
 
 A better structure is:
 
-\[
+$$
 K_E,K_M
 \leftarrow
 \operatorname{KDF}(K_{\text{master}},\text{context}).
-\]
+$$
 
 Then:
 
-- \(K_E\) is used only for encryption,
-- \(K_M\) is used only for authentication.
+- $K_E$ is used only for encryption,
+- $K_M$ is used only for authentication.
 
 This is **key separation**.
 
@@ -544,47 +544,47 @@ That does not eliminate all mistakes—nonce reuse alone can still be catastroph
 Galois/Counter Mode (GCM) combines two ideas:
 
 1. **CTR-like encryption** for confidentiality,
-2. **GHASH**, a polynomial authenticator over \(GF(2^{128})\).
+2. **GHASH**, a polynomial authenticator over $GF(2^{128})$.
 
 NIST SP 800-38D specifies GCM and the authentication-only specialization GMAC.
 
 The result is an AEAD construction:
 
-\[
+$$
 (K,IV,P,A)
 \longrightarrow
 (C,T).
-\]
+$$
 
 The most common and efficient IV size is 96 bits.
 
 ### The high-level construction
 
-Let AES under key \(K\) be denoted \(E_K\).
+Let AES under key $K$ be denoted $E_K$.
 
 First derive the **hash subkey**
 
-\[
+$$
 H=E_K(0^{128}).
-\]
+$$
 
 For a 96-bit IV, GCM constructs
 
-\[
+$$
 J_0
 =
 IV\|0^{31}\|1.
-\]
+$$
 
 Encryption begins from the incremented counter value. Conceptually,
 
-\[
+$$
 C_i
 =
 P_i
 \oplus
 E_K(\operatorname{inc32}^{\,i}(J_0)).
-\]
+$$
 
 The authentication side computes GHASH over:
 
@@ -594,19 +594,19 @@ The authentication side computes GHASH over:
 - zero padding,
 - encoded bit lengths of AAD and ciphertext.
 
-The resulting authentication value is masked using an AES output derived from \(J_0\).
+The resulting authentication value is masked using an AES output derived from $J_0$.
 
 A schematic tag equation is
 
-\[
+$$
 T
 =
 E_K(J_0)
 \oplus
 \operatorname{GHASH}_H(A,C),
-\]
+$$
 
-with the exact standardized formatting of \(A\), \(C\), padding, and lengths understood.
+with the exact standardized formatting of $A$, $C$, padding, and lengths understood.
 
 This formula is extremely useful conceptually because it shows the two independent-looking halves of GCM:
 
@@ -619,47 +619,47 @@ GHASH + tag mask      -> authentication
 
 GHASH works over
 
-\[
+$$
 GF(2^{128}),
-\]
+$$
 
 defined using the polynomial
 
-\[
+$$
 x^{128}+x^7+x^2+x+1.
-\]
+$$
 
 Let the formatted GHASH input be split into 128-bit blocks
 
-\[
+$$
 X_1,X_2,\dots,X_m.
-\]
+$$
 
 Set
 
-\[
+$$
 Y_0=0
-\]
+$$
 
 and iterate
 
-\[
+$$
 Y_i
 =
 (Y_{i-1}\oplus X_i)\cdot H.
-\]
+$$
 
 Then
 
-\[
+$$
 \operatorname{GHASH}_H(X_1,\dots,X_m)
 =
 Y_m.
-\]
+$$
 
-Expanding the recurrence gives a polynomial in the secret hash subkey \(H\):
+Expanding the recurrence gives a polynomial in the secret hash subkey $H$:
 
-\[
+$$
 Y_m
 =
 X_1H^m
@@ -669,11 +669,11 @@ X_2H^{m-1}
 \cdots
 \oplus
 X_mH.
-\]
+$$
 
 This is why GCM's authentication is called a polynomial hash.
 
-GHASH is **not** intended to be a standalone unkeyed cryptographic hash function. Its security role exists inside GCM with the secret-derived subkey \(H\) and the final encrypted tag mask.
+GHASH is **not** intended to be a standalone unkeyed cryptographic hash function. Its security role exists inside GCM with the secret-derived subkey $H$ and the final encrypted tag mask.
 
 ### What exactly is authenticated?
 
@@ -806,79 +806,79 @@ If the same key and nonce are reused, the same counter-derived keystream is reus
 
 For two plaintexts,
 
-\[
+$$
 C=P\oplus S,
-\]
+$$
 
-\[
+$$
 C'=P'\oplus S,
-\]
+$$
 
 so
 
-\[
+$$
 C\oplus C'
 =
 P\oplus P'.
-\]
+$$
 
 That already damages confidentiality.
 
 But GCM has a second problem.
 
-With the same nonce, \(J_0\) repeats, so the tag mask
+With the same nonce, $J_0$ repeats, so the tag mask
 
-\[
+$$
 E_K(J_0)
-\]
+$$
 
 also repeats.
 
 For two messages,
 
-\[
+$$
 T_1
 =
 E_K(J_0)
 \oplus
 GHASH_H(A_1,C_1),
-\]
+$$
 
-\[
+$$
 T_2
 =
 E_K(J_0)
 \oplus
 GHASH_H(A_2,C_2).
-\]
+$$
 
 XOR the equations:
 
-\[
+$$
 T_1\oplus T_2
 =
 GHASH_H(A_1,C_1)
 \oplus
 GHASH_H(A_2,C_2).
-\]
+$$
 
 The secret mask disappears.
 
-What remains is an algebraic relation in the GHASH key \(H\).
+What remains is an algebraic relation in the GHASH key $H$.
 
-Because GHASH is polynomial evaluation in \(GF(2^{128})\), nonce reuse can expose polynomial equations whose unknown is \(H\). Depending on message structure, known data, number of reused records, and tag information, those equations can reduce the possible authentication state enough to enable forgeries.
+Because GHASH is polynomial evaluation in $GF(2^{128})$, nonce reuse can expose polynomial equations whose unknown is $H$. Depending on message structure, known data, number of reused records, and tag information, those equations can reduce the possible authentication state enough to enable forgeries.
 
 This family of failures is often called the **GCM forbidden attack**.
 
 So GCM nonce reuse can threaten both:
 
-\[
+$$
 \boxed{
 \text{confidentiality}
 \quad\text{and}\quad
 \text{authenticity}
 }
-\]
+$$
 
 without breaking AES itself.
 
@@ -886,11 +886,11 @@ without breaking AES itself.
 
 GCM supports more general IV lengths in SP 800-38D, but 96 bits has a special construction:
 
-\[
+$$
 J_0=IV\|0^{31}\|1.
-\]
+$$
 
-Other IV lengths require an additional GHASH-based derivation of \(J_0\).
+Other IV lengths require an additional GHASH-based derivation of $J_0$.
 
 The 96-bit form is therefore both operationally common and mathematically cleaner.
 
@@ -914,7 +914,7 @@ The distinction between a **current final standard** and a **planned revision** 
 
 ChaCha20-Poly1305 approaches AEAD differently.
 
-Instead of AES plus a polynomial hash over \(GF(2^{128})\), it combines:
+Instead of AES plus a polynomial hash over $GF(2^{128})$, it combines:
 
 - the ChaCha20 stream cipher,
 - the Poly1305 one-time authenticator.
@@ -955,15 +955,15 @@ Its block function takes:
 
 The internal state consists of sixteen 32-bit words and is transformed by repeated **quarter rounds** using:
 
-- modular addition modulo \(2^{32}\),
+- modular addition modulo $2^{32}$,
 - XOR,
 - fixed rotations.
 
 The cryptographic design therefore relies heavily on ARX operations:
 
-\[
+$$
 \text{Addition} + \text{Rotation} + \text{XOR}.
-\]
+$$
 
 That makes ChaCha20 structurally very different from AES's S-box and finite-field linear layer.
 
@@ -993,28 +993,28 @@ This separation is part of the standardized construction.
 
 Poly1305 uses a one-time 256-bit key commonly viewed as two 128-bit values:
 
-\[
+$$
 (r,s).
-\]
+$$
 
-The \(r\) value is **clamped** by clearing and fixing certain bits according to the algorithm.
+The $r$ value is **clamped** by clearing and fixing certain bits according to the algorithm.
 
 The message is split into blocks and interpreted algebraically modulo
 
-\[
+$$
 2^{130}-5.
-\]
+$$
 
 At a high level, the accumulator has the form
 
-\[
+$$
 h_i
 =
 (h_{i-1}+m_i)r
 \pmod{2^{130}-5}.
-\]
+$$
 
-After all blocks are processed, the second key component \(s\) is added and the low 128 bits form the tag.
+After all blocks are processed, the second key component $s$ is added and the low 128 bits form the tag.
 
 The important design idea is that the Poly1305 key is **one-time**.
 
@@ -1039,14 +1039,14 @@ This formatting prevents ambiguity between the AAD and ciphertext regions and bi
 
 The tag is then:
 
-\[
+$$
 T
 =
 Poly1305_{\text{one-time key}}
 (
 \text{formatted AAD and ciphertext}
 ).
-\]
+$$
 
 Notice that the MAC is computed over the **ciphertext**, not the plaintext.
 
@@ -1109,11 +1109,11 @@ With the same ChaCha20 key and nonce:
 
 The first problem creates the familiar stream-cipher relation
 
-\[
+$$
 C\oplus C'
 =
 P\oplus P'.
-\]
+$$
 
 The second violates Poly1305's one-time-key assumption.
 
@@ -1134,7 +1134,7 @@ AES-GCM and ChaCha20-Poly1305 solve the same high-level problem, but they do so 
 | Property | AES-GCM | ChaCha20-Poly1305 |
 |---|---|---|
 | Encryption primitive | AES in counter mode | ChaCha20 stream cipher |
-| Authentication primitive | GHASH over \(GF(2^{128})\) | Poly1305 |
+| Authentication primitive | GHASH over $GF(2^{128})$ | Poly1305 |
 | Common nonce size | 96 bits | 96 bits |
 | Common tag size | 128 bits | 128 bits |
 | Key size | AES-128/192/256 depending profile/API | 256 bits |
@@ -1142,7 +1142,7 @@ AES-GCM and ChaCha20-Poly1305 solve the same high-level problem, but they do so 
 | Padding needed | No | No |
 | Parallelizable encryption | Yes | ChaCha blocks can be independently generated from counters |
 | Main catastrophic misuse | nonce reuse | nonce reuse |
-| Arithmetic style | AES + binary-field multiplication | ARX + arithmetic modulo \(2^{130}-5\) for MAC |
+| Arithmetic style | AES + binary-field multiplication | ARX + arithmetic modulo $2^{130}-5$ for MAC |
 
 This table is architectural, not a ranking. Choice in a real protocol depends on:
 
@@ -1216,9 +1216,9 @@ The rule should come from the specification, not from the vague instruction "IVs
 
 If two GCM messages were already encrypted under the same
 
-\[
+$$
 (K,N),
-\]
+$$
 
 rotating the key later does not erase the information already exposed in those ciphertexts and tags.
 
@@ -1367,7 +1367,7 @@ The previous article ended with classical confidentiality modes. This article ad
 
 The progression is now clear:
 
-\[
+$$
 \text{block cipher}
 \rightarrow
 \text{confidentiality mode}
@@ -1375,29 +1375,29 @@ The progression is now clear:
 \text{authenticated encryption}
 \rightarrow
 \text{AEAD}.
-\]
+$$
 
 The AEAD interface can be summarized as
 
-\[
+$$
 (C,T)
 \leftarrow
 \operatorname{Seal}(K,N,P,A)
-\]
+$$
 
 and
 
-\[
+$$
 P
 \leftarrow
 \operatorname{Open}(K,N,C,A,T)
-\]
+$$
 
 or authentication failure.
 
 Its four inputs have sharply different roles:
 
-\[
+$$
 \boxed{
 \begin{array}{ll}
 K & \text{secret key}\\
@@ -1406,36 +1406,36 @@ P & \text{plaintext to encrypt and authenticate}\\
 A & \text{visible data to authenticate}
 \end{array}
 }
-\]
+$$
 
 AES-GCM realizes this interface by combining counter-mode encryption with GHASH:
 
-\[
+$$
 H=E_K(0^{128}),
-\]
+$$
 
-\[
+$$
 C=P\oplus \text{GCTR keystream},
-\]
+$$
 
-\[
+$$
 T
 =
 E_K(J_0)
 \oplus
 GHASH_H(A,C).
-\]
+$$
 
 ChaCha20-Poly1305 reaches the same interface through different mathematics:
 
-\[
+$$
 \text{ChaCha20}
 \rightarrow
 \begin{cases}
 \text{one-time Poly1305 key}\\
 \text{message keystream}
 \end{cases}
-\]
+$$
 
 followed by Poly1305 authentication of AAD, ciphertext, padding, and lengths.
 
@@ -1443,27 +1443,27 @@ The most important implementation lesson is not a particular equation.
 
 It is the contract:
 
-\[
+$$
 \boxed{
 \text{never release unauthenticated plaintext}
 }
-\]
+$$
 
 together with:
 
-\[
+$$
 \boxed{
 \text{respect the nonce rules of the named AEAD}
 }
-\]
+$$
 
 and:
 
-\[
+$$
 \boxed{
 \text{authenticate the protocol context that gives the ciphertext meaning}
 }
-\]
+$$
 
 A strong primitive cannot compensate for repeated nonces, ambiguous AAD serialization, replay-blind protocol logic, or a caller that ignores authentication failure.
 

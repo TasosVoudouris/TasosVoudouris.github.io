@@ -36,39 +36,39 @@ When the moduli are pairwise coprime, the answer is remarkably clean.
 
 A system such as
 
-\[
+$$
 x\equiv a_1\pmod{m_1},
-\]
+$$
 
-\[
+$$
 x\equiv a_2\pmod{m_2},
-\]
+$$
 
-\[
+$$
 \vdots
-\]
+$$
 
-\[
+$$
 x\equiv a_k\pmod{m_k}
-\]
+$$
 
 determines one unique residue class modulo
 
-\[
+$$
 M=m_1m_2\cdots m_k.
-\]
+$$
 
 So CRT provides a bridge between:
 
-\[
+$$
 \text{many local modular views}
-\]
+$$
 
 and
 
-\[
+$$
 \text{one global residue}.
-\]
+$$
 
 This same structure appears in RSA acceleration, fault attacks, residue-number representations, modular computation, polynomial rings, and modern cryptographic engineering.
 
@@ -99,49 +99,49 @@ Before CRT, it is useful to remember how a single linear congruence behaves.
 
 Consider
 
-\[
+$$
 ax\equiv b\pmod n.
-\]
+$$
 
 Let
 
-\[
+$$
 d=\gcd(a,n).
-\]
+$$
 
 Then the congruence has a solution if and only if
 
-\[
+$$
 d\mid b.
-\]
+$$
 
-When this condition holds, there are exactly \(d\) incongruent solutions modulo \(n\).
+When this condition holds, there are exactly $d$ incongruent solutions modulo $n$.
 
 Thus:
 
-\[
+$$
 \boxed{
 ax\equiv b\pmod n
 \text{ is solvable}
 \iff
 \gcd(a,n)\mid b.
 }
-\]
+$$
 
 The particularly important case is:
 
-\[
+$$
 \gcd(a,n)=1.
-\]
+$$
 
-Then \(a\) is invertible modulo \(n\), and the congruence has exactly one solution modulo \(n\):
+Then $a$ is invertible modulo $n$, and the congruence has exactly one solution modulo $n$:
 
-\[
+$$
 x
 \equiv
 a^{-1}b
 \pmod n.
-\]
+$$
 
 This inverse-based reconstruction is exactly what we will use inside CRT.
 
@@ -151,53 +151,53 @@ This inverse-based reconstruction is exactly what we will use inside CRT.
 
 Let
 
-\[
+$$
 m_1,m_2,\ldots,m_k
-\]
+$$
 
 be pairwise coprime positive integers:
 
-\[
+$$
 \gcd(m_i,m_j)=1
 \qquad
 \text{for }i\neq j.
-\]
+$$
 
 Let
 
-\[
+$$
 a_1,a_2,\ldots,a_k
 \in\mathbb Z.
-\]
+$$
 
 Then the simultaneous system
 
-\[
+$$
 \begin{aligned}
 x &\equiv a_1 \pmod{m_1},\\
 x &\equiv a_2 \pmod{m_2},\\
 &\vdots\\
 x &\equiv a_k \pmod{m_k}
 \end{aligned}
-\]
+$$
 
 has a solution.
 
 Moreover, that solution is unique modulo
 
-\[
+$$
 \boxed{
 M
 =
 m_1m_2\cdots m_k.
 }
-\]
+$$
 
 So there is exactly one residue class
 
-\[
+$$
 [x]_M
-\]
+$$
 
 satisfying all of the congruences simultaneously.
 
@@ -205,63 +205,63 @@ The theorem does **not** normally identify one absolute integer.
 
 It identifies:
 
-\[
+$$
 \boxed{
 x\pmod M.
 }
-\]
+$$
 
-If one solution is \(x_0\), then every integer solution has the form
+If one solution is $x_0$, then every integer solution has the form
 
-\[
+$$
 x=x_0+tM,
 \qquad
 t\in\mathbb Z.
-\]
+$$
 
 ---
 
 ## Why the solution is unique
 
-Suppose two integers \(x\) and \(y\) both satisfy all of the congruences.
+Suppose two integers $x$ and $y$ both satisfy all of the congruences.
 
 Then:
 
-\[
+$$
 x\equiv y\pmod{m_i}
-\]
+$$
 
-for every \(i\).
+for every $i$.
 
 Therefore:
 
-\[
+$$
 m_i\mid(x-y)
-\]
+$$
 
 for every modulus.
 
 Because the moduli are pairwise coprime,
 
-\[
+$$
 m_1m_2\cdots m_k
 \mid
 (x-y).
-\]
+$$
 
 Hence:
 
-\[
+$$
 M\mid(x-y).
-\]
+$$
 
 Equivalently,
 
-\[
+$$
 \boxed{
 x\equiv y\pmod M.
 }
-\]
+$$
 
 So the solution is unique modulo the product.
 
@@ -275,61 +275,61 @@ The more interesting part computationally is how to actually construct that solu
 
 Let
 
-\[
+$$
 M
 =
 \prod_{i=1}^{k}m_i.
-\]
+$$
 
 For each modulus define
 
-\[
+$$
 M_i
 =
 \frac{M}{m_i}.
-\]
+$$
 
 Because all moduli are pairwise coprime,
 
-\[
+$$
 \gcd(M_i,m_i)=1.
-\]
+$$
 
-Therefore \(M_i\) has an inverse modulo \(m_i\).
+Therefore $M_i$ has an inverse modulo $m_i$.
 
 Define:
 
-\[
+$$
 y_i
 =
 M_i^{-1}\pmod{m_i}.
-\]
+$$
 
 Then:
 
-\[
+$$
 M_i y_i
 \equiv1\pmod{m_i}.
-\]
+$$
 
-But for every \(j\neq i\),
+But for every $j\neq i$,
 
-\[
+$$
 m_j\mid M_i,
-\]
+$$
 
 so:
 
-\[
+$$
 M_i y_i
 \equiv0\pmod{m_j}.
-\]
+$$
 
 Thus each term
 
-\[
+$$
 M_i y_i
-\]
+$$
 
 acts like a modular selector:
 
@@ -340,15 +340,15 @@ mod mj  → 0
           for every j ≠ i
 ```
 
-Now multiply each selector by the required residue \(a_i\):
+Now multiply each selector by the required residue $a_i$:
 
-\[
+$$
 a_iM_i y_i.
-\]
+$$
 
 Finally add them:
 
-\[
+$$
 \boxed{
 x
 \equiv
@@ -356,7 +356,7 @@ x
 a_iM_i y_i
 \pmod M.
 }
-\]
+$$
 
 That is the standard constructive CRT formula.
 
@@ -368,130 +368,130 @@ It gives us an explicit reconstruction algorithm.
 
 ## A complete example
 
-Find \(x\) satisfying:
+Find $x$ satisfying:
 
-\[
+$$
 \begin{aligned}
 x &\equiv5\pmod{13},\\
 x &\equiv8\pmod{17},\\
 x &\equiv15\pmod{29}.
 \end{aligned}
-\]
+$$
 
 The moduli are pairwise coprime, so CRT applies.
 
 First compute:
 
-\[
+$$
 M
 =
 13\cdot17\cdot29
 =
 6409.
-\]
+$$
 
 Now:
 
-\[
+$$
 M_1
 =
 \frac{6409}{13}
 =
 493,
-\]
+$$
 
-\[
+$$
 M_2
 =
 \frac{6409}{17}
 =
 377,
-\]
+$$
 
 and
 
-\[
+$$
 M_3
 =
 \frac{6409}{29}
 =
 221.
-\]
+$$
 
 We now compute the inverses.
 
 ### First selector
 
-Modulo \(13\),
+Modulo $13$,
 
-\[
+$$
 493\equiv12\pmod{13}.
-\]
+$$
 
 Since:
 
-\[
+$$
 12\cdot12
 =
 144
 \equiv1\pmod{13},
-\]
+$$
 
 we have:
 
-\[
+$$
 y_1=12.
-\]
+$$
 
 ### Second selector
 
-Modulo \(17\),
+Modulo $17$,
 
-\[
+$$
 377\equiv3\pmod{17}.
-\]
+$$
 
 Since:
 
-\[
+$$
 3\cdot6
 =
 18
 \equiv1\pmod{17},
-\]
+$$
 
 we obtain:
 
-\[
+$$
 y_2=6.
-\]
+$$
 
 ### Third selector
 
-Modulo \(29\),
+Modulo $29$,
 
-\[
+$$
 221\equiv18\pmod{29}.
-\]
+$$
 
 And:
 
-\[
+$$
 18\cdot21
 =
 378
 \equiv1\pmod{29}.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 y_3=21.
-\]
+$$
 
 The reconstruction data can be summarized as:
 
-| \(i\) | \(a_i\) | \(m_i\) | \(M_i\) | \(y_i=M_i^{-1}\pmod{m_i}\) | \(a_iM_i y_i\) |
+| $i$ | $a_i$ | $m_i$ | $M_i$ | $y_i=M_i^{-1}\pmod{m_i}$ | $a_iM_i y_i$ |
 | ---: | ---: | ---: | ---: | ---: | ---: |
 | 1 | 5 | 13 | 493 | 12 | 29580 |
 | 2 | 8 | 17 | 377 | 6 | 18096 |
@@ -499,53 +499,53 @@ The reconstruction data can be summarized as:
 
 Now add:
 
-\[
+$$
 x
 \equiv
 29580+18096+69615
 \pmod{6409}.
-\]
+$$
 
 So:
 
-\[
+$$
 x
 \equiv
 117291
 \pmod{6409}.
-\]
+$$
 
 Reducing:
 
-\[
+$$
 117291\bmod6409
 =
 1929.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 x\equiv1929\pmod{6409}.
 }
-\]
+$$
 
 Verify:
 
-\[
+$$
 1929\bmod13=5,
-\]
+$$
 
-\[
+$$
 1929\bmod17=8,
-\]
+$$
 
 and:
 
-\[
+$$
 1929\bmod29=15.
-\]
+$$
 
 Everything matches.
 
@@ -599,9 +599,9 @@ returns:
 
 So:
 
-\[
+$$
 x\equiv23\pmod{105}.
-\]
+$$
 
 For our larger example:
 
@@ -687,60 +687,60 @@ Instead of constructing every selector at once, we can combine congruences one a
 
 Suppose we already know:
 
-\[
+$$
 x\equiv a\pmod m.
-\]
+$$
 
 Then every possible solution has the form:
 
-\[
+$$
 x=a+mt.
-\]
+$$
 
 Now suppose we also require:
 
-\[
+$$
 x\equiv b\pmod n.
-\]
+$$
 
 Substitute:
 
-\[
+$$
 a+mt
 \equiv
 b
 \pmod n.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 mt
 \equiv
 b-a
 \pmod n.
-\]
+$$
 
 If:
 
-\[
+$$
 \gcd(m,n)=1,
-\]
+$$
 
-then \(m\) has an inverse modulo \(n\), so:
+then $m$ has an inverse modulo $n$, so:
 
-\[
+$$
 t
 \equiv
 (b-a)m^{-1}
 \pmod n.
-\]
+$$
 
-Once \(t\) is known, the two congruences become one congruence modulo:
+Once $t$ is known, the two congruences become one congruence modulo:
 
-\[
+$$
 mn.
-\]
+$$
 
 That gives an incremental implementation:
 
@@ -838,45 +838,45 @@ Both express the same mathematics.
 
 Suppose:
 
-\[
+$$
 \gcd(n_1,n_2)=1
-\]
+$$
 
 and:
 
-\[
+$$
 x\equiv a\pmod{n_1},
-\]
+$$
 
-\[
+$$
 x\equiv a\pmod{n_2}.
-\]
+$$
 
 Then:
 
-\[
+$$
 n_1\mid(x-a)
-\]
+$$
 
 and:
 
-\[
+$$
 n_2\mid(x-a).
-\]
+$$
 
-Because \(n_1\) and \(n_2\) are coprime,
+Because $n_1$ and $n_2$ are coprime,
 
-\[
+$$
 n_1n_2\mid(x-a).
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 x\equiv a\pmod{n_1n_2}.
 }
-\]
+$$
 
 This small result appears frequently when proving that two modular computations together determine a result modulo a product.
 
@@ -900,129 +900,129 @@ Pairwise coprimality gives the cleanest version of CRT, but it is not the most g
 
 Consider:
 
-\[
+$$
 x\equiv a\pmod m,
-\]
+$$
 
-\[
+$$
 x\equiv b\pmod n.
-\]
+$$
 
 Let:
 
-\[
+$$
 d=\gcd(m,n).
-\]
+$$
 
 A solution exists if and only if:
 
-\[
+$$
 \boxed{
 a\equiv b\pmod d.
 }
-\]
+$$
 
 Equivalently:
 
-\[
+$$
 d\mid(a-b).
-\]
+$$
 
 If this compatibility condition holds, the solution is unique modulo:
 
-\[
+$$
 \boxed{
 \operatorname{lcm}(m,n).
 }
-\]
+$$
 
 ### Compatible example
 
 Consider:
 
-\[
+$$
 x\equiv2\pmod6,
-\]
+$$
 
-\[
+$$
 x\equiv5\pmod9.
-\]
+$$
 
 Since:
 
-\[
+$$
 \gcd(6,9)=3,
-\]
+$$
 
-check the residues modulo \(3\):
+check the residues modulo $3$:
 
-\[
+$$
 2\equiv2\pmod3,
-\]
+$$
 
 and:
 
-\[
+$$
 5\equiv2\pmod3.
-\]
+$$
 
 They are compatible.
 
 Indeed,
 
-\[
+$$
 x=14
-\]
+$$
 
 satisfies:
 
-\[
+$$
 14\equiv2\pmod6
-\]
+$$
 
 and:
 
-\[
+$$
 14\equiv5\pmod9.
-\]
+$$
 
 The combined solution is unique modulo:
 
-\[
+$$
 \operatorname{lcm}(6,9)=18.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 x\equiv14\pmod{18}.
 }
-\]
+$$
 
 ### Incompatible example
 
 Now consider:
 
-\[
+$$
 x\equiv1\pmod4,
-\]
+$$
 
-\[
+$$
 x\equiv2\pmod6.
-\]
+$$
 
 Here:
 
-\[
+$$
 \gcd(4,6)=2.
-\]
+$$
 
 But:
 
-\[
+$$
 1\not\equiv2\pmod2.
-\]
+$$
 
 So the system has no solution.
 
@@ -1036,87 +1036,87 @@ It guarantees compatibility automatically and makes every required inverse exist
 
 CRT appears repeatedly in cryptography because cryptographic arithmetic often moves between:
 
-\[
+$$
 \text{one large arithmetic object}
-\]
+$$
 
 and:
 
-\[
+$$
 \text{several smaller modular components}.
-\]
+$$
 
 ### RSA
 
 Let:
 
-\[
+$$
 N=pq.
-\]
+$$
 
-Instead of computing a private operation directly modulo \(N\), CRT-RSA computes independently modulo:
+Instead of computing a private operation directly modulo $N$, CRT-RSA computes independently modulo:
 
-\[
+$$
 p
-\]
+$$
 
 and:
 
-\[
+$$
 q.
-\]
+$$
 
-For a private exponent \(d\), one typically derives:
+For a private exponent $d$, one typically derives:
 
-\[
+$$
 d_P=d\bmod(p-1),
-\]
+$$
 
-\[
+$$
 d_Q=d\bmod(q-1),
-\]
+$$
 
 and computes:
 
-\[
+$$
 S_p=M^{d_P}\bmod p,
-\]
+$$
 
-\[
+$$
 S_q=M^{d_Q}\bmod q.
-\]
+$$
 
 CRT then reconstructs the unique:
 
-\[
+$$
 S\bmod N
-\]
+$$
 
 satisfying both congruences.
 
-The result is significantly faster than one large private exponentiation modulo \(N\).
+The result is significantly faster than one large private exponentiation modulo $N$.
 
 ### CRT-RSA fault attacks
 
 The same decomposition creates an important implementation-security lesson.
 
-If a faulty RSA computation remains correct modulo \(q\) but becomes incorrect modulo \(p\), then the correct and faulty results satisfy:
+If a faulty RSA computation remains correct modulo $q$ but becomes incorrect modulo $p$, then the correct and faulty results satisfy:
 
-\[
+$$
 S\equiv\widetilde S\pmod q.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 q\mid(S-\widetilde S).
-\]
+$$
 
 A GCD can then reveal the hidden factor:
 
-\[
+$$
 \gcd(S-\widetilde S,N)=q
-\]
+$$
 
 in the useful fault case.
 
@@ -1136,33 +1136,33 @@ depending on implementation behavior.
 
 ### Combining leaked residues
 
-Suppose a reused secret exponent \(d\) leaks:
+Suppose a reused secret exponent $d$ leaks:
 
-\[
+$$
 d\bmod3,
-\]
+$$
 
-\[
+$$
 d\bmod4,
-\]
+$$
 
 and:
 
-\[
+$$
 d\bmod5.
-\]
+$$
 
 Because:
 
-\[
+$$
 3,4,5
-\]
+$$
 
 are pairwise coprime, CRT combines them into one residue modulo:
 
-\[
+$$
 60.
-\]
+$$
 
 Small pieces of modular information can therefore become a much larger piece of information about the secret.
 
@@ -1170,14 +1170,14 @@ Small pieces of modular information can therefore become a much larger piece of 
 
 Large integers can be represented by several smaller residues:
 
-\[
+$$
 x
 \longmapsto
 (
 x\bmod m_1,
 x\bmod m_2,\ldots
 ).
-\]
+$$
 
 Arithmetic can then be carried out independently in the smaller modular components.
 
@@ -1195,7 +1195,7 @@ These decompositions are important in computational algebra and also appear in m
 
 So the broader idea is:
 
-\[
+$$
 \boxed{
 \text{decompose}
 \rightarrow
@@ -1203,7 +1203,7 @@ So the broader idea is:
 \rightarrow
 \text{reconstruct}.
 }
-\]
+$$
 
 ---
 
@@ -1240,15 +1240,15 @@ should return the representative:
 
 corresponding to:
 
-\[
+$$
 x\equiv23\pmod{105}.
-\]
+$$
 
 For learning, however, the custom implementation remains valuable because it exposes exactly where:
 
-- the product \(M\),
-- the partial products \(M_i\),
-- and the modular inverses \(M_i^{-1}\)
+- the product $M$,
+- the partial products $M_i$,
+- and the modular inverses $M_i^{-1}$
 
 enter the construction.
 
@@ -1260,79 +1260,79 @@ enter the construction.
 
 Solve:
 
-\[
+$$
 x\equiv2\pmod3,
-\]
+$$
 
-\[
+$$
 x\equiv3\pmod5,
-\]
+$$
 
-\[
+$$
 x\equiv2\pmod7.
-\]
+$$
 
-Construct the \(M_i\) and \(y_i\) values explicitly.
+Construct the $M_i$ and $y_i$ values explicitly.
 
 ### Exercise 2 — Two moduli
 
 Solve:
 
-\[
+$$
 x\equiv4\pmod7,
-\]
+$$
 
-\[
+$$
 x\equiv9\pmod{11}.
-\]
+$$
 
 Give the final answer modulo:
 
-\[
+$$
 77.
-\]
+$$
 
 ### Exercise 3 — Verify reconstruction
 
 For:
 
-\[
+$$
 x\equiv1929\pmod{6409},
-\]
+$$
 
 verify all three original congruences:
 
-\[
+$$
 x\equiv5\pmod{13},
-\]
+$$
 
-\[
+$$
 x\equiv8\pmod{17},
-\]
+$$
 
-\[
+$$
 x\equiv15\pmod{29}.
-\]
+$$
 
 ### Exercise 4 — Generalized CRT
 
 Determine whether:
 
-\[
+$$
 x\equiv4\pmod6,
-\]
+$$
 
-\[
+$$
 x\equiv10\pmod{14}
-\]
+$$
 
 is compatible.
 
 Start by computing:
 
-\[
+$$
 \gcd(6,14).
-\]
+$$
 
 If a solution exists, determine its modulus.
 
@@ -1340,13 +1340,13 @@ If a solution exists, determine its modulus.
 
 Explain why:
 
-\[
+$$
 x\equiv1\pmod6,
-\]
+$$
 
-\[
+$$
 x\equiv2\pmod9
-\]
+$$
 
 has no solution.
 
@@ -1372,19 +1372,19 @@ You should now be able to explain:
 2. Why the answer is a residue class rather than one absolute integer.
 3. Why pairwise coprimality matters.
 4. Why each
-   \[
+   $$
    M_i^{-1}\pmod{m_i}
-   \]
+   $$
    exists.
 5. Why
-   \[
+   $$
    M_i y_i
-   \]
+   $$
    behaves like a modular selector.
 6. Why the reconstructed solution is unique modulo
-   \[
+   $$
    M=\prod_i m_i.
-   \]
+   $$
 7. How incremental CRT reconstruction works.
 8. What compatibility condition replaces pairwise coprimality in the generalized theorem.
 9. Why RSA benefits from CRT.
@@ -1395,13 +1395,13 @@ At that point CRT should no longer feel like a mysterious reconstruction formula
 
 It becomes a general arithmetic pattern:
 
-\[
+$$
 \boxed{
 \text{local information}
 \longleftrightarrow
 \text{global structure}.
 }
-\]
+$$
 
 ---
 
@@ -1433,21 +1433,21 @@ Useful for connecting CRT with RSA and practical cryptographic arithmetic.
 
 CRT gives us a particularly powerful view of modular arithmetic:
 
-\[
+$$
 \text{large modulus}
 \longleftrightarrow
 \text{several smaller moduli}.
-\]
+$$
 
 That idea will return repeatedly.
 
 In RSA:
 
-\[
+$$
 N=pq
-\]
+$$
 
-is decomposed into arithmetic modulo \(p\) and \(q\).
+is decomposed into arithmetic modulo $p$ and $q$.
 
 In attacks, several leaked residues can be reconstructed into information about one secret.
 

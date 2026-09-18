@@ -58,9 +58,9 @@ Inside a zero-knowledge proof system, however, the cost model can be completely 
 
 A SNARK or STARK often expresses computation as algebraic constraints over a finite field
 
-\[
+$$
 \mathbb F_p.
-\]
+$$
 
 The prover is not merely asked to *run* SHA-256.
 
@@ -72,9 +72,9 @@ That changes what "efficient" means.
 
 Consider the SHA-256 operation
 
-\[
+$$
 \operatorname{ROTR}^{13}(x).
-\]
+$$
 
 A processor can implement a 32-bit rotation directly or through a small number of machine instructions.
 
@@ -82,17 +82,17 @@ An arithmetic circuit over a large prime field does not naturally contain a "rot
 
 Instead, the circuit may need to:
 
-1. range-constrain \(x\) to 32 bits;
-2. decompose \(x\) into bits or limbs;
+1. range-constrain $x$ to 32 bits;
+2. decompose $x$ into bits or limbs;
 3. rearrange those bits;
 4. reconstruct another field element;
 5. constrain all intermediate relations.
 
 Likewise, a Boolean operation such as
 
-\[
+$$
 x\land y
-\]
+$$
 
 is cheap in ordinary binary hardware but may require many constraints when the proof system's native object is a field element.
 
@@ -100,13 +100,13 @@ So the cost of a primitive depends on **where it is being evaluated**.
 
 A useful distinction is:
 
-\[
+$$
 \boxed{
 \text{native runtime}
 \neq
 \text{proof-system constraint cost}
 }
-\]
+$$
 
 ### Arithmetization-oriented primitives
 
@@ -116,9 +116,9 @@ Instead of emulating bit operations, the primitive works directly with field ele
 
 Typical ingredients include:
 
-- exponentiation maps such as \(x\mapsto x^d\);
+- exponentiation maps such as $x\mapsto x^d$;
 - inverse exponent maps;
-- additions and multiplications in \(\mathbb F_p\);
+- additions and multiplications in $\mathbb F_p$;
 - sparse or structured linear layers;
 - sponge or compression modes over field elements.
 
@@ -157,9 +157,9 @@ SHA-256 and SHA-3 have mature byte-string interfaces and extensive standardizati
 
 A field-native primitive such as Griffin begins with objects in
 
-\[
+$$
 \mathbb F_p.
-\]
+$$
 
 That difference affects:
 
@@ -191,29 +191,29 @@ Griffin was proposed as an arithmetization-oriented family for zero-knowledge ap
 
 Its core object is a permutation
 
-\[
+$$
 G_\pi:\mathbb F_p^t\rightarrow\mathbb F_p^t.
-\]
+$$
 
 The state consists of
 
-\[
+$$
 t
-\]
+$$
 
 field elements.
 
 The original design supports:
 
-\[
+$$
 t=3
-\]
+$$
 
 or:
 
-\[
+$$
 t\in\{4,8,12,16,20,24\}.
-\]
+$$
 
 The permutation combines:
 
@@ -227,37 +227,37 @@ The design was motivated by reducing algebraic proof cost while still providing 
 
 The supplied experiment uses the prime
 
-\[
+$$
 p=2^{64}-2^{32}+1.
-\]
+$$
 
 Numerically,
 
-\[
+$$
 p=18446744069414584321.
-\]
+$$
 
 This is often called the **Goldilocks prime**.
 
-It is close to \(2^{64}\), making it attractive in some STARK-oriented systems because field elements fit naturally into machine-word-oriented implementations while still providing useful algebraic structure.
+It is close to $2^{64}$, making it attractive in some STARK-oriented systems because field elements fit naturally into machine-word-oriented implementations while still providing useful algebraic structure.
 
 The state in the supplied experiment has:
 
-\[
+$$
 t=12.
-\]
+$$
 
 The original lab reserves:
 
-\[
+$$
 c=4
-\]
+$$
 
 state elements as capacity, leaving:
 
-\[
+$$
 r=t-c=8
-\]
+$$
 
 rate elements.
 
@@ -269,57 +269,57 @@ But an important correction is needed:
 
 Each canonical field element satisfies:
 
-\[
+$$
 0\le x<p<2^{64}.
-\]
+$$
 
-The map from arbitrary 64-bit strings to \(\mathbb F_p\) must therefore specify how values at least \(p\) are handled.
+The map from arbitrary 64-bit strings to $\mathbb F_p$ must therefore specify how values at least $p$ are handled.
 
 ### The field size is almost, but not exactly, 64 bits
 
 We have:
 
-\[
+$$
 \log_2 p
 \approx
 63.9999999996641.
-\]
+$$
 
 That is extremely close to 64 bits, but cryptographic parameter inequalities are exact statements.
 
-For a sponge targeting \(\kappa\) bits under the original Griffin paper's capacity condition,
+For a sponge targeting $\kappa$ bits under the original Griffin paper's capacity condition,
 
-\[
+$$
 c
 \ge
 \left\lceil
 \frac{2\kappa}{\log_2 p}
 \right\rceil.
-\]
+$$
 
 For:
 
-\[
+$$
 \kappa=128,
-\]
+$$
 
 the right-hand side is:
 
-\[
+$$
 \left\lceil
 \frac{256}{63.9999999996641}
 \right\rceil
 =
 5.
-\]
+$$
 
 So a **four-element Goldilocks capacity does not literally satisfy that exact 128-bit sponge inequality**, even though it falls short by an almost negligible fractional amount in a continuous-bit approximation.
 
 This means the educational lab's:
 
-\[
+$$
 t=12,\quad c=4,\quad r=8
-\]
+$$
 
 should be described as a pedagogical/experimental parameter choice, not as a formally validated 128-bit Griffin sponge solely on the basis of the original capacity formula.
 
@@ -327,23 +327,23 @@ If a text wants to claim the original paper's bound literally, it must use param
 
 This is a good example of why:
 
-\[
+$$
 \boxed{
 \text{"approximately 64-bit field"}
 \neq
 \text{"every exact 64-bit bound"}
 }
-\]
+$$
 
 ### Griffin is a permutation family, not one universal hash
 
 The phrase "Griffin hash" can hide several choices:
 
-- field \(p\);
-- state width \(t\);
-- exponent parameter \(d\);
-- round count \(R\);
-- linear matrix \(M\);
+- field $p$;
+- state width $t$;
+- exponent parameter $d$;
+- round count $R$;
+- linear matrix $M$;
 - round constants;
 - sponge versus compression mode;
 - rate/capacity split;
@@ -362,7 +362,7 @@ Griffin's round structure is algebraic.
 
 At a high level, a round applies:
 
-\[
+$$
 x
 \overset{S}{\longmapsto}
 S(x)
@@ -370,7 +370,7 @@ S(x)
 M S(x)
 \overset{+c^{(i)}}{\longmapsto}
 M S(x)+c^{(i)}.
-\]
+$$
 
 The final round omits the additive constant in the original construction.
 
@@ -378,98 +378,98 @@ The final round omits the additive constant in the original construction.
 
 The nonlinear layer chooses
 
-\[
+$$
 d\in\{3,5,7,11\}
-\]
+$$
 
 as the smallest value satisfying:
 
-\[
+$$
 \gcd(d,p-1)=1.
-\]
+$$
 
 Why?
 
 The nonzero field elements form a multiplicative group of order:
 
-\[
+$$
 p-1.
-\]
+$$
 
 The map
 
-\[
+$$
 x\mapsto x^d
-\]
+$$
 
-is a permutation of \(\mathbb F_p\) when exponentiation by \(d\) is invertible modulo \(p-1\).
+is a permutation of $\mathbb F_p$ when exponentiation by $d$ is invertible modulo $p-1$.
 
 That happens exactly when:
 
-\[
+$$
 \gcd(d,p-1)=1.
-\]
+$$
 
 Then there exists:
 
-\[
+$$
 d^{-1}
-\]
+$$
 
 such that:
 
-\[
+$$
 dd^{-1}\equiv1\pmod{p-1},
-\]
+$$
 
 and the inverse power map is:
 
-\[
+$$
 x\mapsto x^{d^{-1}}.
-\]
+$$
 
 For the Goldilocks field:
 
-\[
+$$
 p-1=2^{64}-2^{32}.
-\]
+$$
 
 We have:
 
-\[
+$$
 \gcd(3,p-1)=3,
-\]
+$$
 
-\[
+$$
 \gcd(5,p-1)=5,
-\]
+$$
 
-\[
+$$
 \gcd(7,p-1)=1.
-\]
+$$
 
 So the smallest allowed choice from the design set is:
 
-\[
+$$
 \boxed{d=7}.
-\]
+$$
 
-Its inverse exponent modulo \(p-1\) is:
+Its inverse exponent modulo $p-1$ is:
 
-\[
+$$
 d^{-1}
 =
 10540996611094048183,
-\]
+$$
 
 because:
 
-\[
+$$
 7\cdot10540996611094048183
 \equiv
 1
 \pmod{p-1}.
-\]
+$$
 
 This large exponent should not be interpreted as "perform ten quintillion multiplications."
 
@@ -479,21 +479,21 @@ Implementations use an addition chain or another efficient exponentiation strate
 
 Following the Griffin specification, the first two coordinates use inverse/forward power maps:
 
-\[
+$$
 y_0=x_0^{1/d},
-\]
+$$
 
-\[
+$$
 y_1=x_1^d.
-\]
+$$
 
 The notation:
 
-\[
+$$
 1/d
-\]
+$$
 
-means exponentiation by the multiplicative inverse of \(d\) modulo \(p-1\), not ordinary real-number division.
+means exponentiation by the multiplicative inverse of $d$ modulo $p-1$, not ordinary real-number division.
 
 That distinction matters.
 
@@ -505,21 +505,21 @@ For later coordinates, Griffin uses the already transformed first coordinates an
 
 Define:
 
-\[
+$$
 L_i(z_0,z_1,z_2)
 =
 \gamma_i z_0+z_1+z_2,
-\]
+$$
 
-with distinct nonzero coefficients \(\gamma_i\), for example:
+with distinct nonzero coefficients $\gamma_i$, for example:
 
-\[
+$$
 \gamma_i=i-1.
-\]
+$$
 
-Then for \(i\ge2\), a later coordinate has the form:
+Then for $i\ge2$, a later coordinate has the form:
 
-\[
+$$
 y_i
 =
 x_i
@@ -530,9 +530,9 @@ L_i^2
 +
 \beta_i
 \right),
-\]
+$$
 
-with the \(i=2\) case using a zero in place of the previous coordinate where specified.
+with the $i=2$ case using a zero in place of the previous coordinate where specified.
 
 This form is central to Griffin's design philosophy.
 
@@ -548,21 +548,21 @@ The design was intended to produce useful nonlinear algebraic structure at relat
 
 The constants satisfy a condition of the form:
 
-\[
+$$
 \alpha_i^2-4\beta_i
-\]
+$$
 
-being a quadratic nonresidue in \(\mathbb F_p\).
+being a quadratic nonresidue in $\mathbb F_p$.
 
 Intuitively, this prevents the quadratic factor
 
-\[
+$$
 L^2+\alpha_i L+\beta_i
-\]
+$$
 
 from having roots in the field.
 
-That matters because multiplying \(x_i\) by a factor that could become zero for ordinary field inputs would complicate invertibility.
+That matters because multiplying $x_i$ by a factor that could become zero for ordinary field inputs would complicate invertibility.
 
 The exact parameter-generation rule is therefore part of the permutation definition.
 
@@ -594,41 +594,41 @@ A safe implementation should make state dependencies explicit.
 
 After the nonlinear layer, Griffin multiplies the state by an invertible matrix:
 
-\[
+$$
 x\leftarrow Mx.
-\]
+$$
 
 For small widths, the design gives compact matrices.
 
-For larger widths divisible by four, it builds the diffusion layer from structured \(4\times4\) components.
+For larger widths divisible by four, it builds the diffusion layer from structured $4\times4$ components.
 
 The objective is to spread influence across state coordinates without paying the full cost of an arbitrary dense matrix.
 
-For \(t\ge8\), the original design uses a structure assembled from repeated \(M_4\) blocks and a circulant-like outer matrix.
+For $t\ge8$, the original design uses a structure assembled from repeated $M_4$ blocks and a circulant-like outer matrix.
 
-This reduces linear-layer arithmetic from a naive quadratic pattern toward a structure with roughly linear scaling in \(t\).
+This reduces linear-layer arithmetic from a naive quadratic pattern toward a structure with roughly linear scaling in $t$.
 
 ### Invertibility must be checked in the target field
 
 The matrix must be invertible over:
 
-\[
+$$
 \mathbb F_p.
-\]
+$$
 
 It is not sufficient to check that the same integer matrix has nonzero determinant over:
 
-\[
+$$
 \mathbb Z
-\]
+$$
 
 or over a different field.
 
 The relevant condition is:
 
-\[
+$$
 \det(M)\not\equiv0\pmod p.
-\]
+$$
 
 Field choice is part of the primitive.
 
@@ -642,15 +642,15 @@ It helps avoid arbitrary hand-picked constants.
 
 But deterministic generation only solves one problem:
 
-\[
+$$
 \text{reproducibility}.
-\]
+$$
 
 It does not prove:
 
-\[
+$$
 \text{security}.
-\]
+$$
 
 The following details are consensus-critical:
 
@@ -692,28 +692,28 @@ These serve different use cases.
 
 Let the state contain:
 
-\[
+$$
 t=r+c
-\]
+$$
 
 field elements.
 
 The rate contains:
 
-\[
+$$
 r
-\]
+$$
 
 elements and the capacity contains:
 
-\[
+$$
 c.
-\]
+$$
 
 At a high level:
 
 1. initialize the state according to the mode specification;
-2. absorb \(r\) message field elements into the rate portion;
+2. absorb $r$ message field elements into the rate portion;
 3. apply the Griffin permutation;
 4. repeat;
 5. expose output field elements from the rate, permuting again if necessary.
@@ -724,17 +724,17 @@ Keccak absorbs bits/bytes.
 
 Griffin's field sponge absorbs elements of:
 
-\[
+$$
 \mathbb F_p.
-\]
+$$
 
 ### An important correction to the supplied lab's sponge wrapper
 
 The supplied project notes describe a lab wrapper that:
 
-- appends a field element \(1\) when the input is not rate-aligned;
+- appends a field element $1$ when the input is not rate-aligned;
 - pads with zeros;
-- also sets a capacity element to \(1\).
+- also sets a capacity element to $1$.
 
 That may be a useful custom educational convention, but it should **not be silently presented as the canonical sponge mode from the Griffin paper**.
 
@@ -768,7 +768,7 @@ This series has already seen the same principle repeatedly:
 
 The lesson is universal:
 
-\[
+$$
 \boxed{
 \text{secure primitive}
 +
@@ -776,7 +776,7 @@ The lesson is universal:
 \neq
 \text{secure protocol}
 }
-\]
+$$
 
 ### Griffin compression
 
@@ -784,14 +784,14 @@ The original paper also studies a permutation-based compression map with feed-fo
 
 At a high level:
 
-\[
+$$
 C(x)
 =
 \operatorname{Trn}
 (
 P(x)+x
 ).
-\]
+$$
 
 This is conceptually related to the feed-forward principle we saw earlier with Davies–Meyer.
 
@@ -823,9 +823,9 @@ H(x0, x1, ..., x_{m-1})
 
 with:
 
-\[
+$$
 x_i\in\mathbb F_p.
-\]
+$$
 
 The conversion between these worlds is not automatic.
 
@@ -835,25 +835,25 @@ Suppose one candidate field element is represented by 8 bytes.
 
 Because:
 
-\[
+$$
 p<2^{64},
-\]
+$$
 
 there are 64-bit strings that do not encode canonical field elements.
 
 For example:
 
-\[
+$$
 p
-\]
+$$
 
 itself fits in 64 bits but represents:
 
-\[
+$$
 0
-\]
+$$
 
-after reduction modulo \(p\).
+after reduction modulo $p$.
 
 If both encodings are accepted:
 
@@ -875,21 +875,21 @@ That is a canonicality failure.
 
 If external integers are simply reduced:
 
-\[
+$$
 x\mapsto x\bmod p,
-\]
+$$
 
 then:
 
-\[
+$$
 x
-\]
+$$
 
 and:
 
-\[
+$$
 x+p
-\]
+$$
 
 map to the same field element whenever both are in the external input range.
 
@@ -901,12 +901,12 @@ It is dangerous if a protocol mistakenly assumes that distinct serialized messag
 
 One canonical approach for a fixed-width candidate is:
 
-1. parse an integer \(x\);
+1. parse an integer $x$;
 2. accept only if:
 
-   \[
+   $$
    0\le x<p;
-   \]
+   $$
 
 3. otherwise reject or obtain more pseudorandom material according to the specification.
 
@@ -1023,13 +1023,13 @@ They deliberately expose low-degree algebraic structure because that structure i
 
 That creates a tension:
 
-\[
+$$
 \boxed{
 \text{proof-friendly algebra}
 \quad\text{is also}\quad
 \text{cryptanalyst-visible algebra}
 }
-\]
+$$
 
 The optimization target can become the attack surface.
 
@@ -1055,15 +1055,15 @@ For Griffin, the authors combined this approach with a round-bypassing technique
 
 Their reported practical result recovered a CICO solution for:
 
-\[
+$$
 7
-\]
+$$
 
 out of:
 
-\[
+$$
 10
-\]
+$$
 
 Griffin rounds in under four hours on one CPU core for the investigated setting.
 
@@ -1079,15 +1079,15 @@ Subsequent work improved the algebraic attack framework again using resultants.
 
 For Griffin, the authors reported practical CICO solutions for:
 
-\[
+$$
 8
-\]
+$$
 
 out of:
 
-\[
+$$
 10
-\]
+$$
 
 rounds and concluded that most analyzed Griffin variants did not reach their originally claimed security level.
 
@@ -1179,9 +1179,9 @@ What we *can* validate independently are structural arithmetic facts about the s
 
 For:
 
-\[
+$$
 p=2^{64}-2^{32}+1,
-\]
+$$
 
 we verified:
 
@@ -1200,41 +1200,41 @@ gcd(11,p-1)  = 1
 
 Therefore the first admissible exponent from:
 
-\[
+$$
 \{3,5,7,11\}
-\]
+$$
 
 is:
 
-\[
+$$
 d=7.
-\]
+$$
 
 We also verified:
 
-\[
+$$
 7d^{-1}\equiv1\pmod{p-1}
-\]
+$$
 
 for:
 
-\[
+$$
 d^{-1}=10540996611094048183.
-\]
+$$
 
 ### A direct power-map round trip
 
 For any:
 
-\[
+$$
 x\in\mathbb F_p,
-\]
+$$
 
 the permutation property predicts:
 
-\[
+$$
 \left(x^d\right)^{d^{-1}}=x.
-\]
+$$
 
 A simple Python field check is:
 
@@ -1276,11 +1276,11 @@ returns:
 5
 ```
 
-for the original paper's exact \(2\kappa/\log_2 p\) sponge-capacity formula with:
+for the original paper's exact $2\kappa/\log_2 p$ sponge-capacity formula with:
 
-\[
+$$
 \kappa=128.
-\]
+$$
 
 This is why the lab's `capacity = 4` must not be described as literally satisfying that formula.
 
@@ -1365,9 +1365,9 @@ Those are very different levels of understanding.
 
 We began with:
 
-\[
+$$
 H:\{0,1\}^*\rightarrow\{0,1\}^n.
-\]
+$$
 
 The first conceptual distinction was that collisions must exist mathematically.
 
@@ -1385,19 +1385,19 @@ Then the focus moved from informal terminology to explicit adversarial tasks.
 
 We learned that:
 
-\[
+$$
 \text{"hash broken"}
-\]
+$$
 
 is not precise enough.
 
 We should ask:
 
-\[
+$$
 \boxed{
 \text{Which security game did the attacker win?}
 }
-\]
+$$
 
 A collision is not a preimage.
 
@@ -1407,21 +1407,21 @@ A length-extension forgery is not a collision.
 
 ### Part 03 — Birthday Attacks
 
-The birthday bound explained why an \(n\)-bit digest gives only about:
+The birthday bound explained why an $n$-bit digest gives only about:
 
-\[
+$$
 n/2
-\]
+$$
 
 bits of ideal generic collision strength.
 
 The key combinatorial fact was:
 
-\[
+$$
 \binom q2
 \approx
 \frac{q^2}{2}.
-\]
+$$
 
 Collision search is cheaper because the attacker accepts any matching pair.
 
@@ -1431,15 +1431,15 @@ We then moved inside a real hash construction.
 
 SHA-256 showed how:
 
-\[
+$$
 \text{fixed-size compression}
-\]
+$$
 
 becomes:
 
-\[
+$$
 \text{arbitrary-length hashing}.
-\]
+$$
 
 Padding, state chaining, message scheduling, round functions, and feed-forward became concrete implementation objects.
 
@@ -1449,21 +1449,21 @@ Once the internal state was visible, we saw that a secure hash could be composed
 
 The construction:
 
-\[
+$$
 \operatorname{SHA256}(K\|M)
-\]
+$$
 
 failed as an improvised MAC even though SHA-256 itself remained unbroken.
 
 That produced one of the central lessons of the series:
 
-\[
+$$
 \boxed{
 \text{secure primitive}
 \neq
 \text{secure composition}
 }
-\]
+$$
 
 ### Part 06 — Sponge, Keccak, and SHA-3
 
@@ -1471,9 +1471,9 @@ SHA-3 showed that Merkle–Damgård is not the only architecture.
 
 The sponge model introduced:
 
-\[
+$$
 b=r+c,
-\]
+$$
 
 absorption, squeezing, hidden capacity, domain separation, and XOFs.
 
@@ -1515,7 +1515,7 @@ But the same algebraic simplicity that helps the prover can help the cryptanalys
 
 This creates the final conceptual progression:
 
-\[
+$$
 \boxed{
 \text{interface}
 \rightarrow
@@ -1533,7 +1533,7 @@ This creates the final conceptual progression:
 \rightarrow
 \text{cryptanalysis}
 }
-\]
+$$
 
 That is a much more complete understanding of hashing than:
 
@@ -1547,9 +1547,9 @@ Griffin is a useful final case study because it forces us to combine nearly ever
 
 It is a field-native permutation:
 
-\[
+$$
 G_\pi:\mathbb F_p^t\rightarrow\mathbb F_p^t
-\]
+$$
 
 designed for a computational environment where proof constraints matter.
 
@@ -1565,31 +1565,31 @@ Every one of those design choices has consequences.
 
 The Goldilocks experiment illustrates the details:
 
-\[
+$$
 p=2^{64}-2^{32}+1,
-\]
+$$
 
-\[
+$$
 t=12,
-\]
+$$
 
 and the first valid Griffin exponent from the design set is:
 
-\[
+$$
 d=7.
-\]
+$$
 
 But even apparently small parameter statements need precision.
 
 For the original paper's exact sponge-capacity inequality and a 128-bit target, the Goldilocks field gives:
 
-\[
+$$
 \left\lceil
 \frac{256}{\log_2 p}
 \right\rceil
 =
 5,
-\]
+$$
 
 so a four-element capacity should be treated as an educational approximation/custom choice rather than advertised as literally satisfying that condition.
 
@@ -1603,13 +1603,13 @@ That does not erase Griffin's importance.
 
 It changes how we should use it:
 
-\[
+$$
 \boxed{
 \text{important research design}
 \neq
 \text{unchanging deployment recommendation}
 }
-\]
+$$
 
 This is a fitting place to finish the series.
 
@@ -1641,27 +1641,27 @@ Part 08 — Griffin and Arithmetization-Oriented Hash Functions
 
 The series began with the fixed-output map:
 
-\[
+$$
 H:\{0,1\}^*\rightarrow\{0,1\}^n.
-\]
+$$
 
-It ends with the recognition that the symbol \(H\) hides an enormous amount of engineering and mathematics.
+It ends with the recognition that the symbol $H$ hides an enormous amount of engineering and mathematics.
 
 That is the real lesson:
 
-\[
+$$
 \boxed{
 \text{Never ask only "Which hash?"}
 }
-\]
+$$
 
 Ask:
 
-\[
+$$
 \boxed{
 \text{Which construction, which parameters, which encoding, which security goal, and which threat model?}
 }
-\]
+$$
 
 That is where cryptographic reasoning actually begins.
 

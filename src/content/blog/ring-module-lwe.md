@@ -35,7 +35,7 @@ $$
 
 But it comes with an immediate engineering cost.
 
-For an \(n\)-dimensional secret, the matrix \(A\) may contain roughly \(n^2\) modular coefficients. Storing, transmitting, and multiplying such matrices quickly becomes expensive.
+For an $n$-dimensional secret, the matrix $A$ may contain roughly $n^2$ modular coefficients. Storing, transmitting, and multiplying such matrices quickly becomes expensive.
 
 **Ring-LWE** and **Module-LWE** introduce algebraic structure into the same noisy-linear-equation idea.
 
@@ -103,9 +103,9 @@ $$
 b=As+e\pmod q.
 $$
 
-The matrix \(A\) is essentially unstructured.
+The matrix $A$ is essentially unstructured.
 
-Its entries are independently sampled modulo \(q\).
+Its entries are independently sampled modulo $q$.
 
 This has an important theoretical advantage: the corresponding hardness results ultimately concern very general lattice families.
 
@@ -117,13 +117,13 @@ $$
 m\approx n.
 $$
 
-Then \(A\) contains approximately
+Then $A$ contains approximately
 
 $$
 n^2
 $$
 
-elements of \(\mathbb Z_q\).
+elements of $\mathbb Z_q$.
 
 That already suggests a natural question:
 
@@ -139,7 +139,7 @@ a(x)
 a_0+a_1x+\cdots+a_{n-1}x^{n-1},
 $$
 
-and let multiplication by \(a(x)\) implicitly define a highly structured linear transformation.
+and let multiplication by $a(x)$ implicitly define a highly structured linear transformation.
 
 This leads to Ring-LWE.
 
@@ -155,7 +155,7 @@ $$
 \Phi_m(x)
 $$
 
-denote the \(m\)-th cyclotomic polynomial.
+denote the $m$-th cyclotomic polynomial.
 
 Consider
 
@@ -169,7 +169,7 @@ $$
 \zeta_m
 $$
 
-is a primitive \(m\)-th root of unity.
+is a primitive $m$-th root of unity.
 
 Its degree is
 
@@ -177,7 +177,7 @@ $$
 n=\varphi(m),
 $$
 
-where \(\varphi\) is Euler's totient function.
+where $\varphi$ is Euler's totient function.
 
 The ring of integers of a cyclotomic field is
 
@@ -193,7 +193,7 @@ R
 \mathbb Z[x]/(\Phi_m(x)).
 $$
 
-Reducing modulo \(q\) gives
+Reducing modulo $q$ gives
 
 $$
 R_q
@@ -209,7 +209,7 @@ R_q
 \mathbb Z_q[x]/(\Phi_m(x)).
 $$
 
-When \(q\) is prime, the coefficient ring
+When $q$ is prime, the coefficient ring
 
 $$
 \mathbb Z_q
@@ -236,7 +236,7 @@ $$
 \mathbb F_q[x]/(\Phi_m(x))
 $$
 
-is a field depends on whether \(\Phi_m(x)\) remains irreducible modulo \(q\).
+is a field depends on whether $\Phi_m(x)$ remains irreducible modulo $q$.
 
 In many cryptographic parameter sets it does not.
 
@@ -306,7 +306,7 @@ $$
 x^n+1=\Phi_{2n}(x)
 $$
 
-for \(n\) a power of two, so it defines the desired cyclotomic number field over \(\mathbb Q\).
+for $n$ a power of two, so it defines the desired cyclotomic number field over $\mathbb Q$.
 
 It does **not** need to remain irreducible over every finite field
 
@@ -316,7 +316,7 @@ $$
 
 used by an implementation.
 
-In fact, implementations often benefit from its factorization modulo \(q\).
+In fact, implementations often benefit from its factorization modulo $q$.
 
 ---
 
@@ -362,7 +362,7 @@ s(x)
 s_0+s_1x+s_2x^2+s_3x^3.
 $$
 
-Ordinary multiplication may produce terms up to degree \(6\).
+Ordinary multiplication may produce terms up to degree $6$.
 
 But because
 
@@ -380,7 +380,7 @@ $$
 x^6=-x^2.
 $$
 
-So every product returns to a polynomial of degree less than \(4\).
+So every product returns to a polynomial of degree less than $4$.
 
 This means that a single ring element represents
 
@@ -510,14 +510,14 @@ The full theoretical Ring-LWE framework is somewhat more delicate.
 
 In number-field formulations, the natural geometry involves:
 
-* the ring of integers \(R\);
-* its dual or codifferent \(R^\vee\);
+* the ring of integers $R$;
+* its dual or codifferent $R^\vee$;
 * the canonical embedding;
 * Gaussian error distributions defined in the embedded Euclidean space.
 
 For power-of-two cyclotomic rings, these objects interact especially cleanly.
 
-In particular, the dual ring is related to \(R\) by a simple scaling.
+In particular, the dual ring is related to $R$ by a simple scaling.
 
 This is one reason why the implementation-level expression
 
@@ -608,7 +608,7 @@ $$
 
 matrix coefficients.
 
-Ring-LWE can implicitly describe an \(n\)-dimensional linear transformation using only
+Ring-LWE can implicitly describe an $n$-dimensional linear transformation using only
 
 $$
 n
@@ -656,13 +656,13 @@ But algebraic number theory gives us another embedding that is much more natural
 
 This is the **canonical embedding**.
 
-Let \(K\) be a number field of degree
+Let $K$ be a number field of degree
 
 $$
 n.
 $$
 
-Suppose \(K\) has
+Suppose $K$ has
 
 $$
 r_1
@@ -751,7 +751,7 @@ $$
 \zeta_m
 $$
 
-to another primitive \(m\)-th root of unity.
+to another primitive $m$-th root of unity.
 
 Therefore, for
 
@@ -813,7 +813,7 @@ $$
 R=\mathbb Z[x]/(x^n+1)
 $$
 
-for \(n\) a power of two.
+for $n$ a power of two.
 
 Let
 
@@ -821,7 +821,7 @@ $$
 \zeta
 $$
 
-be a primitive \(2n\)-th root of unity.
+be a primitive $2n$-th root of unity.
 
 The canonical embedding evaluates
 
@@ -838,7 +838,7 @@ $$
 \ldots.
 $$
 
-The resulting transformation is essentially a discrete Fourier transform evaluated at the odd powers of \(\zeta\).
+The resulting transformation is essentially a discrete Fourier transform evaluated at the odd powers of $\zeta$.
 
 Consequently, its transformation matrix is unitary up to a global scale.
 
@@ -877,7 +877,7 @@ e(x)
 e_0+e_1x+\cdots+e_{n-1}x^{n-1},
 $$
 
-where every \(e_i\) is small.
+where every $e_i$ is small.
 
 This coefficient-oriented viewpoint is sometimes associated with **Polynomial-LWE (PLWE)**.
 
@@ -933,7 +933,7 @@ $$
 I\subseteq R
 $$
 
-is closed under multiplication by arbitrary elements of \(R\):
+is closed under multiplication by arbitrary elements of $R$:
 
 $$
 rI\subseteq I
@@ -995,7 +995,7 @@ Compact representation is only half the advantage.
 
 We also need fast multiplication.
 
-Naively multiplying two degree-\((n-1)\) polynomials requires
+Naively multiplying two degree-$(n-1)$ polynomials requires
 
 $$
 O(n^2)
@@ -1049,7 +1049,7 @@ R_q
 \mathbb F_q[x]/(x^n+1)
 $$
 
-for prime \(q\).
+for prime $q$.
 
 Suppose
 
@@ -1096,7 +1096,7 @@ x-\psi^{2j+1}
 \right)
 $$
 
-over \(\mathbb F_q\).
+over $\mathbb F_q$.
 
 The Chinese Remainder Theorem then gives an isomorphism resembling
 
@@ -1131,7 +1131,7 @@ $$
 
 This is the modular analogue of FFT-based convolution.
 
-For prime \(q\), a convenient sufficient condition for such a full transform is
+For prime $q$, a convenient sufficient condition for such a full transform is
 
 $$
 2n\mid(q-1),
@@ -1197,7 +1197,7 @@ $$
 \mathbb F_{3329}
 $$
 
-contains primitive \(256\)-th roots of unity but no primitive \(512\)-th roots.
+contains primitive $256$-th roots of unity but no primitive $512$-th roots.
 
 Consequently,
 
@@ -1221,7 +1221,7 @@ quadratic factors.
 
 ML-KEM exploits exactly this structure.
 
-Its NTT representation therefore corresponds not to \(256\) scalar evaluation slots, but to \(128\) small degree-two components.
+Its NTT representation therefore corresponds not to $256$ scalar evaluation slots, but to $128$ small degree-two components.
 
 Multiplication is performed using base multiplications inside these quadratic components.
 
@@ -1229,7 +1229,7 @@ This is sometimes described as an **incomplete NTT**.
 
 So the correct lesson is not:
 
-> NTT requires \(x^n+1\) to split completely.
+> NTT requires $x^n+1$ to split completely.
 
 Rather:
 
@@ -1291,9 +1291,9 @@ $$
 b=As+e.
 $$
 
-But now every entry of \(A\), \(s\), \(e\), and \(b\) is a polynomial-ring element.
+But now every entry of $A$, $s$, $e$, and $b$ is a polynomial-ring element.
 
-If each ring element contains \(n\) coefficients, then
+If each ring element contains $n$ coefficients, then
 
 $$
 s\in R_q^k
@@ -1319,7 +1319,7 @@ $$
 \ell k
 $$
 
-ring elements while implicitly defining a much larger structured linear transformation over \(\mathbb Z_q\).
+ring elements while implicitly defining a much larger structured linear transformation over $\mathbb Z_q$.
 
 ---
 
@@ -1361,7 +1361,7 @@ As usual, precise search/decision equivalences require the hypotheses of the the
 
 ## 13. The geometry of module lattices
 
-A module over \(R\) behaves somewhat like a vector space, except its scalars come from the ring \(R\).
+A module over $R$ behaves somewhat like a vector space, except its scalars come from the ring $R$.
 
 For example,
 
@@ -1369,7 +1369,7 @@ $$
 R^k
 $$
 
-is a free \(R\)-module of rank \(k\).
+is a free $R$-module of rank $k$.
 
 If the underlying number field has degree
 
@@ -1411,7 +1411,7 @@ $$
 
 This distinction becomes very important when reading concrete PQC parameter sets.
 
-Two systems may operate at the same polynomial degree \(n\) but use different module ranks.
+Two systems may operate at the same polynomial degree $n$ but use different module ranks.
 
 ---
 
@@ -1537,7 +1537,7 @@ But the associated worst-case problems concern highly structured ideal lattices.
 
 ### Module-LWE
 
-Several ring elements are combined into a small matrix over \(R_q\).
+Several ring elements are combined into a small matrix over $R_q$.
 
 This retains:
 

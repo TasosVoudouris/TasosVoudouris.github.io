@@ -44,9 +44,9 @@ draft: false
 
 The first article in this series introduced a cryptographic hash as a deterministic fixed-output map
 
-\[
+$$
 H:\{0,1\}^{*}\rightarrow\{0,1\}^{n}.
-\]
+$$
 
 That definition tells us what the primitive **does**.
 
@@ -54,9 +54,9 @@ It does not yet tell us what it means for the primitive to be **secure**.
 
 Because the message domain is effectively unbounded while the output space contains only
 
-\[
+$$
 2^n
-\]
+$$
 
 possible digests, collisions necessarily exist. A statement such as
 
@@ -110,9 +110,9 @@ A single number such as "256-bit hash" is therefore a starting point, not a comp
 
 A digest is not encryption:
 
-\[
+$$
 H(M)
-\]
+$$
 
 has no normal decryption algorithm.
 
@@ -138,17 +138,17 @@ That distinction becomes important later when we move from hashes to HMAC and ot
 
 When we say:
 
-\[
+$$
 \text{preimage cost}\approx2^n
-\]
+$$
 
 or
 
-\[
+$$
 \text{collision cost}\approx2^{n/2},
-\]
+$$
 
-we are describing the expected generic behavior of an idealized \(n\)-bit hash or random function model.
+we are describing the expected generic behavior of an idealized $n$-bit hash or random function model.
 
 A named construction may have cryptanalytic structure that lowers the cost.
 
@@ -156,9 +156,9 @@ SHA-1 is the canonical example.
 
 SHA-1 outputs 160 bits, so ideal collision resistance would suggest a generic scale around
 
-\[
+$$
 2^{80}.
-\]
+$$
 
 Practical SHA-1 collisions were nevertheless demonstrated using structure-specific differential cryptanalysis at significantly lower cost.
 
@@ -176,115 +176,115 @@ That distinction changes the generic cost dramatically.
 
 The attacker is given a target digest
 
-\[
+$$
 y\in\{0,1\}^{n}.
-\]
+$$
 
-The goal is to find any \(x\) such that
+The goal is to find any $x$ such that
 
-\[
+$$
 H(x)=y.
-\]
+$$
 
 The target is fixed before the search begins.
 
-For an ideal \(n\)-bit hash, each independent trial has probability
+For an ideal $n$-bit hash, each independent trial has probability
 
-\[
+$$
 2^{-n}
-\]
+$$
 
 of hitting that exact target.
 
-After \(q\) independent trials, the success probability is approximately
+After $q$ independent trials, the success probability is approximately
 
-\[
+$$
 1-(1-2^{-n})^q.
-\]
+$$
 
 For
 
-\[
+$$
 q\ll2^n,
-\]
+$$
 
 we can approximate this as
 
-\[
+$$
 \Pr[\text{success}]
 \approx
 \frac{q}{2^n}.
-\]
+$$
 
 To obtain a constant success probability, the attacker therefore needs work on the scale
 
-\[
+$$
 2^n.
-\]
+$$
 
 For SHA-256, that idealized classical scale is roughly
 
-\[
+$$
 2^{256}.
-\]
+$$
 
 ### Second-preimage resistance
 
 Now the attacker is given a particular message
 
-\[
+$$
 x
-\]
+$$
 
 and must find a different message
 
-\[
+$$
 x'\neq x
-\]
+$$
 
 such that
 
-\[
+$$
 H(x')=H(x).
-\]
+$$
 
 The digest target is induced by a fixed existing message.
 
 This is **not** the same as a collision problem because the attacker does not get to choose both endpoints freely.
 
-For an ideal random \(n\)-bit hash, the generic second-preimage scale is again roughly
+For an ideal random $n$-bit hash, the generic second-preimage scale is again roughly
 
-\[
+$$
 2^n.
-\]
+$$
 
 This property is important when a specific object already exists.
 
 Suppose a signature authenticates:
 
-\[
+$$
 H(M).
-\]
+$$
 
 If an attacker could cheaply construct
 
-\[
+$$
 M'\neq M
-\]
+$$
 
 with
 
-\[
+$$
 H(M')=H(M),
-\]
+$$
 
 then the digest would no longer uniquely bind the signature to the intended content in a computational sense.
 
 ### A subtlety: very long target messages
 
-For ideal random functions, the simple \(2^n\) intuition is appropriate.
+For ideal random functions, the simple $2^n$ intuition is appropriate.
 
-For some **iterated hash constructions**, however, exceptionally long target messages can enable dedicated second-preimage techniques that beat the naive \(2^n\) bound.
+For some **iterated hash constructions**, however, exceptionally long target messages can enable dedicated second-preimage techniques that beat the naive $2^n$ bound.
 
 This is one reason real analysis cannot always stop at:
 
@@ -303,15 +303,15 @@ For a collision, the attacker chooses both messages.
 
 The goal is:
 
-\[
+$$
 x\neq x'
-\]
+$$
 
 such that:
 
-\[
+$$
 H(x)=H(x').
-\]
+$$
 
 That freedom creates the birthday phenomenon.
 
@@ -319,17 +319,17 @@ The attacker does not need to hit a particular digest.
 
 Any matching pair is acceptable.
 
-For an ideal \(n\)-bit hash, the generic collision scale is approximately
+For an ideal $n$-bit hash, the generic collision scale is approximately
 
-\[
+$$
 2^{n/2}.
-\]
+$$
 
 For SHA-256:
 
-\[
+$$
 2^{128}.
-\]
+$$
 
 This is why a 256-bit digest provides at most about 128 bits of generic classical collision strength.
 
@@ -337,9 +337,9 @@ This is why a 256-bit digest provides at most about 128 bits of generic classica
 
 | Security task | What is fixed before the search? | Goal | Ideal classical work |
 |---|---|---|---:|
-| Preimage | digest \(y\) | find \(x\) with \(H(x)=y\) | \(2^n\) |
-| Second preimage | message \(x\) | find \(x'\neq x\) with \(H(x')=H(x)\) | \(2^n\) |
-| Collision | neither message | find any \(x\neq x'\) with equal digest | \(2^{n/2}\) |
+| Preimage | digest $y$ | find $x$ with $H(x)=y$ | $2^n$ |
+| Second preimage | message $x$ | find $x'\neq x$ with $H(x')=H(x)$ | $2^n$ |
+| Collision | neither message | find any $x\neq x'$ with equal digest | $2^{n/2}$ |
 
 A useful mental model is:
 
@@ -360,23 +360,23 @@ The more freedom the attacker has, the cheaper the generic attack can become.
 
 Suppose an attacker can efficiently produce:
 
-\[
+$$
 M_1\neq M_2
-\]
+$$
 
 with:
 
-\[
+$$
 H(M_1)=H(M_2).
-\]
+$$
 
 That says nothing immediate about whether the attacker can solve:
 
-\[
+$$
 H(X)=Y
-\]
+$$
 
-for an arbitrary externally chosen digest \(Y\).
+for an arbitrary externally chosen digest $Y$.
 
 Collision cryptanalysis and preimage cryptanalysis solve different games.
 
@@ -390,19 +390,19 @@ A **chosen-prefix collision** is more flexible.
 
 The attacker starts from two chosen prefixes:
 
-\[
+$$
 P_1,
 \qquad
 P_2,
-\]
+$$
 
-and searches for suffixes \(S_1,S_2\) such that:
+and searches for suffixes $S_1,S_2$ such that:
 
-\[
+$$
 H(P_1\|S_1)
 =
 H(P_2\|S_2).
-\]
+$$
 
 This is much more useful in protocol abuse because the two messages can begin with meaningfully different attacker-selected content.
 
@@ -429,51 +429,51 @@ The output length constrains generic security, but the relationship depends on t
 
 Assume a hash has:
 
-\[
+$$
 N=2^n
-\]
+$$
 
 possible outputs.
 
-Hash \(q\) distinct messages.
+Hash $q$ distinct messages.
 
 The probability that every digest is different is:
 
-\[
+$$
 \Pr[\text{no collision}]
 =
 \prod_{i=0}^{q-1}
 \left(
 1-\frac{i}{N}
 \right).
-\]
+$$
 
 For
 
-\[
+$$
 q\ll N,
-\]
+$$
 
 using
 
-\[
+$$
 1-x\approx e^{-x},
-\]
+$$
 
 we obtain:
 
-\[
+$$
 \Pr[\text{no collision}]
 \approx
 \exp
 \left(
 -\frac{q(q-1)}{2N}
 \right).
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \Pr[\text{collision}]
 \approx
 1-
@@ -481,65 +481,65 @@ Therefore:
 \left(
 -\frac{q(q-1)}{2N}
 \right).
-\]
+$$
 
 Setting the collision probability to approximately one half gives:
 
-\[
+$$
 q
 \approx
 \sqrt{2N\ln2}.
-\]
+$$
 
 Since
 
-\[
+$$
 N=2^n,
-\]
+$$
 
 we get:
 
-\[
+$$
 q
 \approx
 1.1774\cdot2^{n/2}.
-\]
+$$
 
 For a 16-bit output:
 
-\[
+$$
 q
 \approx
 1.1774\cdot256
 \approx
 301.
-\]
+$$
 
 So a collision after only a few hundred trials is exactly what generic probability predicts.
 
 ### Digest truncation
 
-Suppose we compute SHA-256 but retain only the first \(t\) bits:
+Suppose we compute SHA-256 but retain only the first $t$ bits:
 
-\[
+$$
 H_t(M)
 =
 \operatorname{Trunc}_t(
 \operatorname{SHA256}(M)
 ).
-\]
+$$
 
 Even if full SHA-256 behaves ideally, the truncated function has at most:
 
-\[
+$$
 t
-\]
+$$
 
 bits of generic preimage resistance and:
 
-\[
+$$
 \frac{t}{2}
-\]
+$$
 
 bits of generic collision resistance.
 
@@ -563,23 +563,23 @@ The security claim belongs to the **effective digest length**, not just the name
 
 ### Authentication tags are a related but different case
 
-Suppose a keyed authentication tag has length \(t\).
+Suppose a keyed authentication tag has length $t$.
 
 A blind online forgery guess succeeds with probability:
 
-\[
+$$
 2^{-t}
-\]
+$$
 
 per independent attempt.
 
-After \(v\) attempts, for small \(v/2^t\),
+After $v$ attempts, for small $v/2^t$,
 
-\[
+$$
 \Pr[\text{at least one successful guess}]
 \approx
 \frac{v}{2^t}.
-\]
+$$
 
 This is not the birthday collision bound.
 
@@ -593,13 +593,13 @@ This is another example of why the exact security game matters.
 
 If an attacker can target many independent digests at once, the effective attack cost can change.
 
-Suppose there are \(r\) target digests.
+Suppose there are $r$ target digests.
 
 Each random candidate has probability roughly:
 
-\[
+$$
 \frac{r}{2^n}
-\]
+$$
 
 of matching one of them.
 
@@ -617,23 +617,23 @@ Security strength is not always a single-user property.
 
 In an idealized oracle model, Grover's algorithm can reduce generic preimage search from roughly
 
-\[
+$$
 2^n
-\]
+$$
 
 classical queries to roughly
 
-\[
+$$
 2^{n/2}
-\]
+$$
 
 quantum queries.
 
 Generic quantum collision algorithms can also improve asymptotic query complexity beyond the classical birthday bound; a commonly cited idealized query scale is around:
 
-\[
+$$
 2^{n/3}.
-\]
+$$
 
 These asymptotic query counts should not be converted casually into statements such as:
 
@@ -673,17 +673,17 @@ A mature hash analysis should classify the attack before drawing conclusions.
 
 The diagnostic question is:
 
-\[
+$$
 \boxed{
 \text{Which security game did the attacker actually win?}
 }
-\]
+$$
 
 ### Dictionary attacks do not break preimage resistance
 
 Suppose a system stores:
 
-\[
+$$
 d
 =
 \operatorname{SHA256}(
@@ -693,17 +693,17 @@ d
 \|
 \text{password}
 ).
-\]
+$$
 
 Assume both username and password come from lists of only 500 likely values.
 
 Then the total candidate space contains only:
 
-\[
+$$
 500^2
 =
 250{,}000
-\]
+$$
 
 pairs.
 
@@ -726,9 +726,9 @@ This may finish quickly while SHA-256 itself remains perfectly consistent with i
 
 The weakness is:
 
-\[
+$$
 \text{low entropy of the input distribution}.
-\]
+$$
 
 ### Encoding ambiguity is not cryptanalysis
 
@@ -754,11 +754,11 @@ before hashing.
 
 Then:
 
-\[
+$$
 H(\texttt{"ab"}\|\texttt{"c"})
 =
 H(\texttt{"a"}\|\texttt{"bc"})
-\]
+$$
 
 because the underlying byte strings are literally identical.
 
@@ -777,7 +777,7 @@ Use a canonical encoding with:
 
 For example:
 
-\[
+$$
 H(
 \texttt{"USERREC-v1"}
 \|
@@ -789,7 +789,7 @@ u
 \|
 p
 ).
-\]
+$$
 
 ### Domain separation
 
@@ -809,23 +809,23 @@ If their byte encodings overlap semantically, a protocol may accidentally accept
 
 Domain separation prefixes the use case:
 
-\[
+$$
 H(
 \texttt{"PUBLIC-KEY"}
 \|
 X
 )
-\]
+$$
 
 versus:
 
-\[
+$$
 H(
 \texttt{"TRANSACTION"}
 \|
 X
 ).
-\]
+$$
 
 The label should be:
 
@@ -842,13 +842,13 @@ Certain Merkle-Damgård-style hashes expose a useful internal chaining value as 
 
 Given:
 
-\[
+$$
 H(M)
-\]
+$$
 
-and the length of \(M\), an attacker can sometimes compute:
+and the length of $M$, an attacker can sometimes compute:
 
-\[
+$$
 H(
 M
 \|
@@ -856,9 +856,9 @@ M
 \|
 X
 )
-\]
+$$
 
-without knowing \(M\).
+without knowing $M$.
 
 This does **not** mean the attacker found:
 
@@ -870,11 +870,11 @@ The attacker has exploited the iterative structure to continue hashing from the 
 
 This becomes dangerous when someone invents a naive MAC such as:
 
-\[
+$$
 \operatorname{Tag}
 =
 H(K\|M)
-\]
+$$
 
 with a length-extension-vulnerable hash family.
 
@@ -888,7 +888,7 @@ This connection makes length extension especially important in the **Hash Functi
 
 ### Multicollisions and iterated structure
 
-For an ideal random \(n\)-bit function, finding a large set of messages with one common digest might appear exponentially harder than finding one collision.
+For an ideal random $n$-bit function, finding a large set of messages with one common digest might appear exponentially harder than finding one collision.
 
 Iterated hash structures can behave differently.
 
@@ -909,13 +909,13 @@ state_2
  ...
 ```
 
-After \(k\) collision-building stages, the attacker can obtain approximately:
+After $k$ collision-building stages, the attacker can obtain approximately:
 
-\[
+$$
 2^k
-\]
+$$
 
-different messages sharing one final hash, at cost closer to \(k\) collision searches than to an independent \(2^k\)-way random-function search.
+different messages sharing one final hash, at cost closer to $k$ collision searches than to an independent $2^k$-way random-function search.
 
 This does not automatically make the underlying hash unusable.
 
@@ -972,9 +972,9 @@ Suppose a six-digit PIN is hashed with SHA-256.
 
 There are only:
 
-\[
+$$
 10^6
-\]
+$$
 
 possible PINs.
 
@@ -982,9 +982,9 @@ An attacker who learns the digest can compute SHA-256 for every PIN.
 
 The attack cost is not:
 
-\[
+$$
 2^{256}.
-\]
+$$
 
 It is approximately one million candidate evaluations.
 
@@ -998,7 +998,7 @@ A password salt is a public per-record value.
 
 Conceptually:
 
-\[
+$$
 V
 =
 \operatorname{PasswordHash}
@@ -1007,9 +1007,9 @@ P,
 S,
 \text{cost}
 ).
-\]
+$$
 
-The salt \(S\) prevents an attacker from precomputing one reusable lookup table that works efficiently across many password records.
+The salt $S$ prevents an attacker from precomputing one reusable lookup table that works efficiently across many password records.
 
 If Alice and Bob choose the same password but use different salts, their stored verifiers should differ.
 
@@ -1033,15 +1033,15 @@ Password hashing therefore deliberately adds cost.
 
 A password-hashing scheme typically takes:
 
-\[
+$$
 (P,S,c)
-\]
+$$
 
 where:
 
-- \(P\) is the password,
-- \(S\) is the salt,
-- \(c\) is a cost parameter.
+- $P$ is the password,
+- $S$ is the salt,
+- $c$ is a cost parameter.
 
 The goal is to make **every guess expensive**.
 
@@ -1186,9 +1186,9 @@ That is exactly the expected "few hundred" birthday scale for a 16-bit output.
 
 Now fix a target first:
 
-\[
+$$
 y=\texttt{0x1234}.
-\]
+$$
 
 ```python
 def find_preimage(target):
@@ -1216,17 +1216,17 @@ different generic complexity
 
 Collision:
 
-\[
+$$
 \approx2^8
-\]
+$$
 
 work.
 
 Fixed-target preimage:
 
-\[
+$$
 \approx2^{16}
-\]
+$$
 
 work.
 
@@ -1234,17 +1234,17 @@ work.
 
 For a 16-bit target, one trial succeeds with probability:
 
-\[
+$$
 \frac{1}{65536}.
-\]
+$$
 
 The expected number of geometric trials is:
 
-\[
+$$
 65536.
-\]
+$$
 
-A particular deterministic sequence can hit sooner or later. The expectation is a distributional statement, not a guarantee that the \(65,536\)-th candidate succeeds.
+A particular deterministic sequence can hit sooner or later. The expectation is a distributional statement, not a guarantee that the $65,536$-th candidate succeeds.
 
 ### Lab B: historical SHA-1 collisions
 
@@ -1286,11 +1286,11 @@ This result broke SHA-1's practical collision-resistance claim.
 
 It did **not** give an efficient general procedure for:
 
-\[
+$$
 \text{given arbitrary }y,
 \quad
 \text{find }x\text{ with SHA1}(x)=y.
-\]
+$$
 
 So SHA-1 collision resistance was broken without a corresponding general preimage break.
 
@@ -1304,11 +1304,11 @@ That is a stronger capability for protocol manipulation.
 
 A useful progression is:
 
-\[
+$$
 \text{collision}
 \rightarrow
 \text{chosen-prefix collision}
-\]
+$$
 
 but neither should be mislabeled as arbitrary second-preimage recovery.
 
@@ -1379,13 +1379,13 @@ This often determines the correct generic complexity immediately.
 
 If SHA-256 is truncated to 96 bits:
 
-\[
+$$
 \text{preimage ceiling}\approx96\text{ bits},
-\]
+$$
 
-\[
+$$
 \text{collision ceiling}\approx48\text{ bits}.
-\]
+$$
 
 Do not quote the security of the untruncated primitive.
 
@@ -1412,15 +1412,15 @@ If yes, stop and ask why a standardized keyed construction such as HMAC or KMAC 
 
 Do not assume:
 
-\[
+$$
 H(K\|M)
-\]
+$$
 
 or:
 
-\[
+$$
 H(M\|K)
-\]
+$$
 
 has the properties of a well-analyzed MAC.
 
@@ -1478,41 +1478,41 @@ Hash security is not one monolithic property.
 
 A useful analysis begins with the exact attack game.
 
-For an \(n\)-bit ideal hash:
+For an $n$-bit ideal hash:
 
-\[
+$$
 \boxed{
 \text{preimage}\sim2^n
 }
-\]
+$$
 
-\[
+$$
 \boxed{
 \text{second preimage}\sim2^n
 }
-\]
+$$
 
-\[
+$$
 \boxed{
 \text{collision}\sim2^{n/2}
 }
-\]
+$$
 
 because the attacker has different freedom in each problem.
 
 Digest truncation changes those ceilings immediately.
 
-A \(t\)-bit truncation provides at most:
+A $t$-bit truncation provides at most:
 
-\[
+$$
 t
-\]
+$$
 
 bits of generic preimage security and:
 
-\[
+$$
 \frac{t}{2}
-\]
+$$
 
 bits of generic collision security.
 
@@ -1530,11 +1530,11 @@ A password database may fall to a dictionary search without revealing any weakne
 
 That leads to a useful diagnostic rule:
 
-\[
+$$
 \boxed{
 \text{Always name the security game that failed.}
 }
-\]
+$$
 
 Instead of saying:
 
@@ -1592,6 +1592,6 @@ The next articles in the series can now build on this vocabulary: the birthday b
 
 7. A. Joux, **Multicollisions in Iterated Hash Functions: Application to Cascaded Constructions**, CRYPTO 2004.
 
-8. J. Kelsey and B. Schneier, **Second Preimages on n-bit Hash Functions for Much Less than \(2^n\) Work**, EUROCRYPT 2005.
+8. J. Kelsey and B. Schneier, **Second Preimages on n-bit Hash Functions for Much Less than $2^n$ Work**, EUROCRYPT 2005.
 
 9. J. Kelsey and T. Kohno, **Herding Hash Functions and the Nostradamus Attack**, EUROCRYPT 2006.

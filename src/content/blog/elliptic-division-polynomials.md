@@ -34,8 +34,8 @@ into explicit algebra.
 
 They encode:
 
-* the coordinates of \([n]P\);
-* the locations of \(n\)-torsion points;
+* the coordinates of $[n]P$;
+* the locations of $n$-torsion points;
 * the algebraic structure of division points;
 * the symbolic action of Frobenius on torsion.
 
@@ -112,7 +112,7 @@ $$
 ## Table of Contents
 
 - [1. Setup and notation](#1-setup-and-notation)
-- [2. Why multiplication-by-(n) should have polynomial structure](#2-why-multiplication-by-n-should-have-polynomial-structure)
+- [2. Why multiplication-by-$n$ should have polynomial structure](#2-why-multiplication-by-nnn-should-have-polynomial-structure)
 - [3. The first division polynomials](#3-the-first-division-polynomials)
 - [4. Recursive definition](#4-recursive-definition)
 - [5. Odd and even division polynomials](#5-odd-and-even-division-polynomials)
@@ -120,23 +120,21 @@ $$
 - [7. Why the roots encode torsion](#7-why-the-roots-encode-torsion)
 - [Degree growth](#degree-growth)
 - [9. Counting torsion through polynomial degree](#9-counting-torsion-through-polynomial-degree)
-- [10. Multiplication polynomials (\phi_n) and (\omega_n)](#10-multiplication-polynomials-phi_n-and-omega_n)
-- [11. Explicit coordinates of (\[n\]P)](#11-explicit-coordinates-of-np)
+- [10. Multiplication polynomials $\phi_n$ and $\omega_n$](#10-multiplication-polynomials-ϕnphi_nϕn-and-ωnomega_nωn)
+- [11. Explicit coordinates of $\[n\]P$](#11-explicit-coordinates-of-npnpnp)
 - [12. Recovering the doubling formula](#12-recovering-the-doubling-formula)
-- [13. A (3)-torsion example](#13-a-3-torsion-example)
+- [13. A $3$-torsion example](#13-a-333-torsion-example)
 - [14. Division points versus torsion points](#14-division-points-versus-torsion-points)
-- [15. Characteristic-(p) caveat](#15-characteristic-p-caveat)
+- [15. Characteristic-$p$ caveat](#15-characteristic-ppp-caveat)
 - [16. Why symbolic expressions become expensive](#16-why-symbolic-expressions-become-expensive)
-- [17. Division polynomials inside Schoof’s algorithm](#17-division-polynomials-inside-schoofs-algorithm)
-- [18. Frobenius modulo (\psi_\ell)](#18-frobenius-modulo-psi_ell)
+- [17. Division polynomials inside Schoof's algorithm](#17-division-polynomials-inside-schoofs-algorithm)
+- [18. Frobenius modulo $\psi_\ell$](#18-frobenius-modulo-ψℓpsi_ellψℓ)
 - [Implementation strategy](#implementation-strategy)
 - [20. Companion Sage implementation](#20-companion-sage-implementation)
 - [21. The bigger picture](#21-the-bigger-picture)
 - [Further reading](#further-reading)
 
 ---
-
-<a id="setup"></a>
 
 ## 1. Setup and notation
 
@@ -149,7 +147,7 @@ y^2=x^3+Ax+B
 }
 $$
 
-over a field \(K\) satisfying
+over a field $K$ satisfying
 
 $$
 \operatorname{char}(K)\neq2,3.
@@ -164,9 +162,9 @@ $$
 \neq0.
 $$
 
-Thus \(E\) is nonsingular.
+Thus $E$ is nonsingular.
 
-The multiplication-by-\(n\) map is
+The multiplication-by-$n$ map is
 
 $$
 [n]:
@@ -179,7 +177,7 @@ $$
 P\longmapsto[n]P.
 $$
 
-For a nonzero integer \(n\), this map has degree
+For a nonzero integer $n$, this map has degree
 
 $$
 \boxed{
@@ -215,7 +213,7 @@ Division polynomials provide explicit equations for these points.
 
 <a id="why-polynomials"></a>
 
-## 2. Why multiplication-by-\(n\) should have polynomial structure
+## 2. Why multiplication-by-$n$ should have polynomial structure
 
 The elliptic-curve group law is rational.
 
@@ -231,7 +229,7 @@ $$
 y(P+Q)
 $$
 
-are rational functions in the coordinates of \(P\) and \(Q\).
+are rational functions in the coordinates of $P$ and $Q$.
 
 Therefore repeated addition implies that
 
@@ -303,7 +301,7 @@ $$
 }
 $$
 
-The first nontrivial polynomial purely in \(x\) is
+The first nontrivial polynomial purely in $x$ is
 
 $$
 \boxed{
@@ -350,7 +348,7 @@ $$
 \psi_1,\psi_3,\ldots
 $$
 
-depend only on \(x\),
+depend only on $x$,
 
 while
 
@@ -358,7 +356,7 @@ $$
 \psi_2,\psi_4,\ldots
 $$
 
-contain a factor of \(y\).
+contain a factor of $y$.
 
 This pattern persists.
 
@@ -370,7 +368,7 @@ This pattern persists.
 
 The higher division polynomials are generated recursively.
 
-For \(m\geq2\),
+For $m\geq2$,
 
 $$
 \boxed{
@@ -382,7 +380,7 @@ $$
 }
 $$
 
-For \(m\geq2\),
+For $m\geq2$,
 
 $$
 \boxed{
@@ -418,9 +416,9 @@ $$
 }
 $$
 
-Although this expression appears to involve division by \(y\), the recurrence produces a valid polynomial function in the coordinate ring of the elliptic curve.
+Although this expression appears to involve division by $y$, the recurrence produces a valid polynomial function in the coordinate ring of the elliptic curve.
 
-The even-index terms naturally retain one factor of \(2y\).
+The even-index terms naturally retain one factor of $2y$.
 
 ---
 
@@ -428,7 +426,7 @@ The even-index terms naturally retain one factor of \(2y\).
 
 ## 5. Odd and even division polynomials
 
-For odd \(n\),
+For odd $n$,
 
 $$
 \boxed{
@@ -436,7 +434,7 @@ $$
 }
 $$
 
-For even \(n\),
+For even $n$,
 
 $$
 \boxed{
@@ -461,7 +459,7 @@ y^2-x^3-Ax-B
 \right),
 $$
 
-rather than all lying independently in \(K[x]\).
+rather than all lying independently in $K[x]$.
 
 This distinction matters in implementations.
 
@@ -477,9 +475,9 @@ $$
 \psi_\ell
 $$
 
-is a polynomial purely in \(x\).
+is a polynomial purely in $x$.
 
-That makes symbolic \(\ell\)-torsion arithmetic especially convenient.
+That makes symbolic $\ell$-torsion arithmetic especially convenient.
 
 ---
 
@@ -509,7 +507,7 @@ $$
 }
 $$
 
-Thus the nontrivial \(n\)-torsion points are precisely the zeros of the corresponding division polynomial.
+Thus the nontrivial $n$-torsion points are precisely the zeros of the corresponding division polynomial.
 
 Equivalently,
 
@@ -524,13 +522,13 @@ P:
 }
 $$
 
-For odd \(n\),
+For odd $n$,
 
 $$
 \psi_n(x)=0
 $$
 
-directly determines the possible \(x\)-coordinates of nonzero \(n\)-torsion points.
+directly determines the possible $x$-coordinates of nonzero $n$-torsion points.
 
 ---
 
@@ -561,7 +559,7 @@ $$
 
 develops a pole.
 
-Geometrically, a pole in the affine \(x\)-coordinate means the resulting point is the point at infinity:
+Geometrically, a pole in the affine $x$-coordinate means the resulting point is the point at infinity:
 
 $$
 [n]P=\mathcal O.
@@ -573,11 +571,11 @@ $$
 \psi_n(P)^2
 $$
 
-detects exactly when multiplication by \(n\) sends a point to the identity.
+detects exactly when multiplication by $n$ sends a point to the identity.
 
 This is why the name **division polynomial** is natural.
 
-Its roots describe the points divisible into the kernel of \([n]\).
+Its roots describe the points divisible into the kernel of $[n]$.
 
 ---
 
@@ -587,7 +585,7 @@ Its roots describe the points divisible into the kernel of \([n]\).
 
 The degrees grow quadratically.
 
-For odd \(n\),
+For odd $n$,
 
 $$
 \boxed{
@@ -597,7 +595,7 @@ $$
 }
 $$
 
-For even \(n\), write
+For even $n$, write
 
 $$
 \psi_n=2y\,f_n(x).
@@ -631,7 +629,7 @@ $$
 3x^4+\cdots.
 $$
 
-For \(n=5\),
+For $n=5$,
 
 $$
 \deg\psi_5
@@ -641,7 +639,7 @@ $$
 12.
 $$
 
-For \(n=101\),
+For $n=101$,
 
 $$
 \deg\psi_{101}
@@ -659,7 +657,7 @@ So symbolic expressions become large very quickly.
 
 ## 9. Counting torsion through polynomial degree
 
-Suppose \(n\) is odd and
+Suppose $n$ is odd and
 
 $$
 \operatorname{char}(K)\nmid n.
@@ -693,13 +691,13 @@ P
 -P.
 $$
 
-They have the same \(x\)-coordinate:
+They have the same $x$-coordinate:
 
 $$
 x(P)=x(-P).
 $$
 
-Therefore the number of distinct \(x\)-coordinates is
+Therefore the number of distinct $x$-coordinates is
 
 $$
 \frac{n^2-1}{2}.
@@ -728,15 +726,15 @@ This is an elegant connection between:
 
 * polynomial degree;
 * torsion cardinality;
-* the symmetry \(P\leftrightarrow-P\).
+* the symmetry $P\leftrightarrow-P$.
 
 ---
 
 <a id="multiplication-polynomials"></a>
 
-## 10. Multiplication polynomials \(\phi_n\) and \(\omega_n\)
+## 10. Multiplication polynomials $\phi_n$ and $\omega_n$
 
-The division polynomial \(\psi_n\) gives the denominator of the multiplication formulas.
+The division polynomial $\psi_n$ gives the denominator of the multiplication formulas.
 
 Define
 
@@ -776,7 +774,7 @@ $$
 \omega_n
 $$
 
-encode the multiplication-by-\(n\) map.
+encode the multiplication-by-$n$ map.
 
 These are sometimes collectively called the multiplication polynomials.
 
@@ -784,7 +782,7 @@ These are sometimes collectively called the multiplication polynomials.
 
 <a id="multiplication-coordinates"></a>
 
-## 11. Explicit coordinates of \([n]P\)
+## 11. Explicit coordinates of $[n]P$
 
 Let
 
@@ -843,7 +841,7 @@ Repeated point addition has been compressed into rational functions built from r
 
 ## 12. Recovering the doubling formula
 
-The \(n=2\) case provides an excellent consistency check.
+The $n=2$ case provides an excellent consistency check.
 
 We know
 
@@ -897,7 +895,7 @@ $$
 4x^4+4Ax^2+4Bx.
 $$
 
-Subtracting \(\psi_3\),
+Subtracting $\psi_3$,
 
 $$
 \phi_2
@@ -949,9 +947,9 @@ It is encoding the same elliptic-curve arithmetic algebraically.
 
 <a id="three-torsion"></a>
 
-## 13. A \(3\)-torsion example
+## 13. A $3$-torsion example
 
-For \(n=3\),
+For $n=3$,
 
 $$
 \boxed{
@@ -967,7 +965,7 @@ A^2.
 }
 $$
 
-Therefore a nonzero point \(P\) satisfies
+Therefore a nonzero point $P$ satisfies
 
 $$
 [3]P=\mathcal O
@@ -1026,7 +1024,7 @@ $$
 x=0
 $$
 
-is one possible \(3\)-torsion \(x\)-coordinate.
+is one possible $3$-torsion $x$-coordinate.
 
 Indeed,
 
@@ -1114,15 +1112,15 @@ $$
 n^2
 $$
 
-geometric division points above \(P\).
+geometric division points above $P$.
 
-So \(n\)-torsion describes the ambiguity in division by \(n\).
+So $n$-torsion describes the ambiguity in division by $n$.
 
 ---
 
 <a id="characteristic-p"></a>
 
-## 15. Characteristic-\(p\) caveat
+## 15. Characteristic-$p$ caveat
 
 The clean picture above assumes
 
@@ -1138,7 +1136,7 @@ $$
 p=\operatorname{char}(K)
 $$
 
-divides \(n\), the multiplication map may become inseparable.
+divides $n$, the multiplication map may become inseparable.
 
 In particular, the familiar statement
 
@@ -1150,7 +1148,7 @@ $$
 
 no longer holds for geometric points.
 
-For \(p\)-torsion we saw in Chapter V:
+For $p$-torsion we saw in Chapter V:
 
 ### Ordinary curves
 
@@ -1174,7 +1172,7 @@ E[p](\overline K)
 }
 $$
 
-The scheme-theoretic kernel of \([p]\) is richer than the set of geometric points.
+The scheme-theoretic kernel of $[p]$ is richer than the set of geometric points.
 
 Division polynomials therefore require extra care when the characteristic divides the index.
 
@@ -1202,7 +1200,7 @@ $$
 O(n^2).
 $$
 
-As \(n\) grows:
+As $n$ grows:
 
 * polynomial degree grows quadratically;
 * coefficient expressions grow;
@@ -1248,7 +1246,7 @@ $$
 q+1-t,
 $$
 
-where \(t\) is the trace of Frobenius.
+where $t$ is the trace of Frobenius.
 
 Schoof computes
 
@@ -1284,7 +1282,7 @@ E[\ell]
 }
 $$
 
-But explicitly constructing every \(\ell\)-torsion point would be inefficient.
+But explicitly constructing every $\ell$-torsion point would be inefficient.
 
 Instead, use
 
@@ -1294,9 +1292,9 @@ $$
 }
 $$
 
-Its roots represent the \(x\)-coordinates of the nonzero \(\ell\)-torsion points.
+Its roots represent the $x$-coordinates of the nonzero $\ell$-torsion points.
 
-So Schoof can reason about a **generic \(\ell\)-torsion point symbolically**.
+So Schoof can reason about a **generic $\ell$-torsion point symbolically**.
 
 This is the crucial role of division polynomials.
 
@@ -1304,7 +1302,7 @@ This is the crucial role of division polynomials.
 
 <a id="frobenius-mod-psi"></a>
 
-## 18. Frobenius modulo \(\psi_\ell\)
+## 18. Frobenius modulo $\psi_\ell$
 
 Let
 
@@ -1328,7 +1326,7 @@ $$
 E[\ell].
 $$
 
-Since multiplication by integers on \(E[\ell]\) depends only on those integers modulo \(\ell\), determining the correct relation reveals
+Since multiplication by integers on $E[\ell]$ depends only on those integers modulo $\ell$, determining the correct relation reveals
 
 $$
 t\bmod\ell.
@@ -1381,7 +1379,7 @@ $$
 t\bmod\ell.
 $$
 
-Repeating for enough small primes and applying the Chinese Remainder Theorem reconstructs \(t\).
+Repeating for enough small primes and applying the Chinese Remainder Theorem reconstructs $t$.
 
 Thus:
 
@@ -1417,7 +1415,7 @@ $$
 
 ---
 
-### Known \(\psi_3\)
+### Known $\psi_3$
 
 Verify
 
@@ -1451,7 +1449,7 @@ $$
 
 ### Degree tests
 
-For odd \(n\),
+For odd $n$,
 
 $$
 \deg\psi_n
@@ -1459,7 +1457,7 @@ $$
 \frac{n^2-1}{2}.
 $$
 
-For even \(n\),
+For even $n$,
 
 $$
 \deg\frac{\psi_n}{2y}
@@ -1471,7 +1469,7 @@ $$
 
 ### Torsion checks
 
-For a known torsion point \(P\), verify
+For a known torsion point $P$, verify
 
 $$
 \psi_n(P)=0
@@ -1493,7 +1491,7 @@ $$
 \frac{\phi_n(P)}{\psi_n(P)^2}
 $$
 
-against the \(x\)-coordinate obtained from ordinary scalar multiplication.
+against the $x$-coordinate obtained from ordinary scalar multiplication.
 
 Likewise compare
 
@@ -1501,7 +1499,7 @@ $$
 \frac{\omega_n(P)}{\psi_n(P)^3}
 $$
 
-with the computed \(y\)-coordinate.
+with the computed $y$-coordinate.
 
 These tests connect the symbolic recurrence directly to the group law.
 
@@ -1544,7 +1542,7 @@ It is not intended to reproduce the optimized polynomial arithmetic of productio
 
 When reviewing the script, useful questions include:
 
-1. Are previously computed \(\psi_i\) values cached?
+1. Are previously computed $\psi_i$ values cached?
 2. Are even and odd recurrences handled separately?
 3. Does the code reduce using
 
@@ -1622,7 +1620,7 @@ $$
 }
 $$
 
-For odd \(n\),
+For odd $n$,
 
 $$
 \boxed{
@@ -1640,7 +1638,7 @@ P
 -P
 $$
 
-share one \(x\)-coordinate.
+share one $x$-coordinate.
 
 For a small prime
 
@@ -1802,6 +1800,6 @@ The next natural questions are:
 * What are separable and inseparable isogenies?
 * What is the endomorphism ring?
 * Why do ordinary and supersingular curves have different endomorphism structures?
-* How do \(j\)-invariants move along isogeny graphs?
+* How do $j$-invariants move along isogeny graphs?
 
 That would take the machinery developed so far and open the next major part of elliptic-curve mathematics.

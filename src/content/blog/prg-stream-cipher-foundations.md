@@ -27,8 +27,6 @@ draft: false
 ## Table of Contents
 
 - [Deterministic Expansion and Computational Randomness](#deterministic-expansion-and-computational-randomness)
-- [\left|
-\Pr\[D(G(U_s))=1\]](#leftprdgu_s1)
 - [PRG, PRNG, CSPRNG, and DRBG: Similar Names, Different Roles](#prg-prng-csprng-and-drbg-similar-names-different-roles)
 - [From Pseudorandomness to Stream-Cipher Keystreams](#from-pseudorandomness-to-stream-cipher-keystreams)
 - [Nonce Discipline and the Catastrophe of Keystream Reuse](#nonce-discipline-and-the-catastrophe-of-keystream-reuse)
@@ -50,63 +48,63 @@ The purpose of a pseudorandom generator is not to create information-theoretic r
 
 The basic pseudorandom-generator abstraction is
 
-\[
+$$
 G:\{0,1\}^{s}\rightarrow\{0,1\}^{\ell},
 \qquad
 \ell>s.
-\]
+$$
 
-The input is an \(s\)-bit seed.
+The input is an $s$-bit seed.
 
-The output is an \(\ell\)-bit string.
+The output is an $\ell$-bit string.
 
 Because the domain contains only
 
-\[
+$$
 2^s
-\]
+$$
 
-possible seeds, the range of \(G\) can contain at most
+possible seeds, the range of $G$ can contain at most
 
-\[
+$$
 2^s
-\]
+$$
 
 different outputs.
 
 But the complete set
 
-\[
+$$
 \{0,1\}^{\ell}
-\]
+$$
 
 contains
 
-\[
+$$
 2^\ell
-\]
+$$
 
 strings.
 
-Since \(s<\ell\), we have
+Since $s<\ell$, we have
 
-\[
+$$
 2^s<2^\ell.
-\]
+$$
 
-Therefore a deterministic PRG output cannot be uniformly distributed over all \(\ell\)-bit strings in an information-theoretic sense.
+Therefore a deterministic PRG output cannot be uniformly distributed over all $\ell$-bit strings in an information-theoretic sense.
 
 This is not a flaw. It is the reason the security definition must be **computational**.
 
 ### Computational indistinguishability
 
-Let \(U_s\) denote a uniformly random \(s\)-bit seed, and \(U_\ell\) a uniformly random \(\ell\)-bit string.
+Let $U_s$ denote a uniformly random $s$-bit seed, and $U_\ell$ a uniformly random $\ell$-bit string.
 
-A distinguisher \(D\) receives one \(\ell\)-bit string and tries to determine whether it came from \(G(U_s)\) or from \(U_\ell\).
+A distinguisher $D$ receives one $\ell$-bit string and tries to determine whether it came from $G(U_s)$ or from $U_\ell$.
 
 Its distinguishing advantage can be written
 
-\[
+$$
 \operatorname{Adv}^{\mathrm{prg}}_G(D)
 =
 \left|
@@ -114,7 +112,7 @@ Its distinguishing advantage can be written
 -
 \Pr[D(U_\ell)=1]
 \right|.
-\]
+$$
 
 A secure PRG requires this advantage to be negligible for every efficient adversary in the intended model.
 
@@ -122,23 +120,23 @@ The phrase "the output looks random" is therefore too weak. The real claim is th
 
 ### Statistical distance and computational distance are different
 
-A PRG output distribution can be statistically far from uniform. Because it is supported on at most \(2^s\) points out of \(2^\ell\), an unbounded adversary with full knowledge of the range could distinguish it from uniform.
+A PRG output distribution can be statistically far from uniform. Because it is supported on at most $2^s$ points out of $2^\ell$, an unbounded adversary with full knowledge of the range could distinguish it from uniform.
 
 Cryptographic security relies on the assumption that efficiently recognizing that range is infeasible.
 
 This is one of the central ideas in modern cryptography:
 
-\[
+$$
 \boxed{
 \text{mathematical difference}
 \neq
 \text{efficiently exploitable difference}
 }
-\]
+$$
 
 ### Entropy is not created by deterministic expansion
 
-Suppose a generator receives only \(s\) bits of unknown seed state.
+Suppose a generator receives only $s$ bits of unknown seed state.
 
 Expanding that seed into one megabyte does not create one megabyte of fresh entropy. Every output bit remains a deterministic function of the state.
 
@@ -175,11 +173,11 @@ The terminology is overloaded, so the first article should distinguish the layer
 
 In complexity-based cryptography, a pseudorandom generator is usually modeled as
 
-\[
+$$
 G:\{0,1\}^s\rightarrow\{0,1\}^{\ell},
 \qquad
 \ell>s,
-\]
+$$
 
 together with a computational indistinguishability requirement.
 
@@ -209,11 +207,11 @@ A cryptographically secure PRNG is intended for an adversarial environment.
 
 A useful stateful abstraction is
 
-\[
+$$
 (S_i,\operatorname{input}_i)
 \longmapsto
 (S_{i+1},\operatorname{output}_i).
-\]
+$$
 
 The security questions now include:
 
@@ -260,7 +258,7 @@ SP 800-90C became final in September 2025.
 
 This gives a useful conceptual decomposition:
 
-\[
+$$
 \boxed{
 \text{entropy source}
 +
@@ -268,7 +266,7 @@ This gives a useful conceptual decomposition:
 +
 \text{system construction}
 }
-\]
+$$
 
 ### Current standards status
 
@@ -300,25 +298,25 @@ These categories overlap conceptually, but they are not synonyms.
 
 A synchronous stream cipher encrypts by XORing plaintext with a generated keystream.
 
-Let \(P\) be the plaintext and \(KS\) the keystream.
+Let $P$ be the plaintext and $KS$ the keystream.
 
 Encryption is
 
-\[
+$$
 C=P\oplus KS.
-\]
+$$
 
 Decryption is
 
-\[
+$$
 P=C\oplus KS
-\]
+$$
 
 because
 
-\[
+$$
 x\oplus y\oplus y=x.
-\]
+$$
 
 The XOR operation itself provides no deep cryptographic protection. Security lives in the keystream generation and in the rule that the same keystream must not be reused across different plaintexts.
 
@@ -335,17 +333,17 @@ A modern stream cipher replaces that huge random pad with a short secret key and
 
 Conceptually:
 
-\[
+$$
 KS=G(K,N,\operatorname{counter}),
-\]
+$$
 
 where:
 
-- \(K\) is secret;
-- \(N\) is usually a public nonce;
+- $K$ is secret;
+- $N$ is usually a public nonce;
 - the counter selects a particular keystream block.
 
-The design goal is that an adversary who does not know \(K\) cannot distinguish the generated keystream from the required random distribution or exploit it to recover useful plaintext information, under the primitive's nonce rules.
+The design goal is that an adversary who does not know $K$ cannot distinguish the generated keystream from the required random distribution or exploit it to recover useful plaintext information, under the primitive's nonce rules.
 
 ### The nonce is usually public
 
@@ -395,25 +393,25 @@ A bare stream cipher gives confidentiality, not integrity.
 
 If
 
-\[
+$$
 C=P\oplus KS
-\]
+$$
 
 and an attacker sends
 
-\[
+$$
 C'=C\oplus\Delta,
-\]
+$$
 
 then the receiver obtains
 
-\[
+$$
 P'
 =
 C'\oplus KS
 =
 P\oplus\Delta.
-\]
+$$
 
 The attacker can therefore induce controlled plaintext bit flips without knowing the key.
 
@@ -425,45 +423,45 @@ Modern protocols usually use authenticated encryption such as ChaCha20-Poly1305 
 
 The most important operational invariant for a synchronous stream cipher is
 
-\[
+$$
 \boxed{
 \text{never repeat the same keystream for different plaintexts}
 }
-\]
+$$
 
 Suppose
 
-\[
+$$
 C_1=P_1\oplus KS
-\]
+$$
 
 and
 
-\[
+$$
 C_2=P_2\oplus KS.
-\]
+$$
 
 Then
 
-\[
+$$
 C_1\oplus C_2
 =
 P_1\oplus P_2\oplus KS\oplus KS.
-\]
+$$
 
 Since
 
-\[
+$$
 KS\oplus KS=0,
-\]
+$$
 
 we obtain
 
-\[
+$$
 \boxed{
 C_1\oplus C_2=P_1\oplus P_2.
 }
-\]
+$$
 
 The keystream disappears.
 
@@ -473,15 +471,15 @@ Natural language, file formats, network packets, and structured application mess
 
 If part of one plaintext becomes known, then the corresponding keystream portion follows:
 
-\[
+$$
 KS=C_1\oplus P_1.
-\]
+$$
 
 Then
 
-\[
+$$
 P_2=C_2\oplus KS.
-\]
+$$
 
 This is the classical two-time-pad failure.
 
@@ -497,13 +495,13 @@ It is:
 
 ### Random nonces can collide
 
-If a \(96\)-bit nonce is sampled independently at random for each encryption, then after \(q\) encryptions under one key the approximate collision probability is
+If a $96$-bit nonce is sampled independently at random for each encryption, then after $q$ encryptions under one key the approximate collision probability is
 
-\[
+$$
 1-\exp\left(
 -\frac{q(q-1)}{2^{97}}
 \right).
-\]
+$$
 
 A large nonce space can make this probability tiny, but "96 bits is large" is not a nonce-management design by itself.
 
@@ -532,17 +530,17 @@ A useful intuition for pseudorandom generation is next-bit unpredictability.
 
 Suppose an adversary sees
 
-\[
+$$
 y_1,\ldots,y_i.
-\]
+$$
 
 It should not predict
 
-\[
+$$
 y_{i+1}
-\]
+$$
 
-with probability meaningfully better than \(1/2\) for a one-bit output.
+with probability meaningfully better than $1/2$ for a one-bit output.
 
 For standard efficiently computable PRG definitions, next-bit unpredictability is tightly connected to pseudorandomness: a useful next-bit predictor can be transformed into a distinguisher, and the standard next-bit characterization works in the other direction as well.
 
@@ -550,7 +548,7 @@ This is why "can I predict the next bit?" is such a useful security intuition.
 
 ### State compromise changes the question
 
-Suppose an attacker learns current state \(S_i\).
+Suppose an attacker learns current state $S_i$.
 
 Now ask separately:
 
@@ -606,9 +604,9 @@ A few toy experiments make the distinction concrete.
 
 A linear congruential generator uses
 
-\[
+$$
 x_{i+1}=ax_i+c\pmod m.
-\]
+$$
 
 For example:
 
@@ -730,9 +728,9 @@ This series will move from intentionally weak deterministic generators toward mo
 
 LCGs expose the affine recurrence
 
-\[
+$$
 x_{i+1}=ax_i+c\pmod m.
-\]
+$$
 
 They make algebraic state prediction and parameter recovery easy to study.
 
@@ -740,9 +738,9 @@ They make algebraic state prediction and parameter recovery easy to study.
 
 LFSRs move the analysis into
 
-\[
+$$
 \mathbb F_2.
-\]
+$$
 
 They can have excellent periods and elegant polynomial theory while remaining linear enough that output can expose the recurrence.
 
@@ -766,7 +764,7 @@ ChaCha20 represents the modern direction.
 
 Its ARX operations are:
 
-- addition modulo \(2^{32}\),
+- addition modulo $2^{32}$,
 - rotation,
 - XOR.
 
@@ -805,13 +803,13 @@ Its security comes from the computational difficulty of distinguishing its outpu
 
 The idealized model is
 
-\[
+$$
 G:\{0,1\}^{s}\rightarrow\{0,1\}^{\ell},
 \qquad
 \ell>s.
-\]
+$$
 
-Because only \(2^s\) outputs can arise from \(2^s\) seeds, deterministic expansion cannot create information-theoretic uniformity over all \(2^\ell\) possible strings.
+Because only $2^s$ outputs can arise from $2^s$ seeds, deterministic expansion cannot create information-theoretic uniformity over all $2^\ell$ possible strings.
 
 The claim is computational.
 
@@ -819,47 +817,47 @@ Practical generators add state, reseeding, entropy acquisition, and compromise b
 
 Modern random-bit-generation engineering separates
 
-\[
+$$
 \text{entropy source}
-\]
+$$
 
 from
 
-\[
+$$
 \text{deterministic generator}
-\]
+$$
 
 and from
 
-\[
+$$
 \text{complete system construction}.
-\]
+$$
 
 For a stream cipher, deterministic expansion becomes a keystream:
 
-\[
+$$
 KS=G(K,N,\operatorname{counter}).
-\]
+$$
 
 Encryption is
 
-\[
+$$
 C=P\oplus KS.
-\]
+$$
 
 That simplicity makes one invariant critical:
 
-\[
+$$
 \boxed{
 \text{the same keystream must not encrypt two different plaintexts}
 }
-\]
+$$
 
 because otherwise
 
-\[
+$$
 C_1\oplus C_2=P_1\oplus P_2.
-\]
+$$
 
 We also established that:
 
@@ -872,7 +870,7 @@ We also established that:
 
 The conceptual progression of the new series begins here:
 
-\[
+$$
 \boxed{
 \text{entropy}
 \rightarrow
@@ -888,13 +886,13 @@ The conceptual progression of the new series begins here:
 \rightarrow
 \text{stream-cipher security}
 }
-\]
+$$
 
 The next articles will deliberately break pieces of that chain.
 
 LCGs fail because their recurrence is algebraically visible.
 
-LFSRs fail because linearity exposes structure over \(\mathbb F_2\).
+LFSRs fail because linearity exposes structure over $\mathbb F_2$.
 
 Poor LFSR combinations leak correlation.
 

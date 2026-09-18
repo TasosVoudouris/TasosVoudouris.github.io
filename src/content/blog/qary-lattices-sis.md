@@ -61,13 +61,13 @@ $$
 
 This is called a **q-ary lattice**.
 
-It is a full-rank lattice in \(\mathbb R^m\), because it always contains
+It is a full-rank lattice in $\mathbb R^m$, because it always contains
 
 $$
 q\mathbb Z^m.
 $$
 
-Indeed, for every \(z\in\mathbb Z^m\),
+Indeed, for every $z\in\mathbb Z^m$,
 
 $$
 A(qz)\equiv 0\pmod q.
@@ -107,7 +107,7 @@ $$
 |\operatorname{im}\phi_A|.
 $$
 
-If \(A\) defines a surjective map onto \(\mathbb Z_q^n\), then
+If $A$ defines a surjective map onto $\mathbb Z_q^n$, then
 
 $$
 |\operatorname{im}\phi_A|=q^n,
@@ -121,15 +121,15 @@ $$
 q^n.
 $$
 
-Because \(\mathbb Z^m\) has determinant \(1\),
+Because $\mathbb Z^m$ has determinant $1$,
 
 $$
 \det\Lambda_q^\perp(A)=q^n.
 $$
 
-When \(q\) is prime, surjectivity is equivalent to saying that \(A\) has row rank \(n\) over the field \(\mathbb F_q\).
+When $q$ is prime, surjectivity is equivalent to saying that $A$ has row rank $n$ over the field $\mathbb F_q$.
 
-For composite \(q\), it is better to state the surjectivity condition explicitly rather than rely on field-style rank terminology.
+For composite $q$, it is better to state the surjectivity condition explicitly rather than rely on field-style rank terminology.
 
 ### The companion q-ary lattice
 
@@ -225,9 +225,9 @@ Instead, it asks us to find one whose integer coordinates are unusually small.
 
 ### Why ordinary linear algebra is not enough
 
-Suppose \(m>n\), and for simplicity suppose \(q\) is prime.
+Suppose $m>n$, and for simplicity suppose $q$ is prime.
 
-Linear algebra over \(\mathbb F_q\) may easily produce some nonzero vector
+Linear algebra over $\mathbb F_q$ may easily produce some nonzero vector
 
 $$
 z_q\in\mathbb F_q^m
@@ -239,7 +239,7 @@ $$
 Az_q=0.
 $$
 
-But when the coordinates of \(z_q\) are lifted back to integers, they may have magnitude comparable to \(q\).
+But when the coordinates of $z_q$ are lifted back to integers, they may have magnitude comparable to $q$.
 
 For example, using centered representatives gives coordinates in approximately
 
@@ -271,7 +271,7 @@ $$
 q e_i\in\Lambda_q^\perp(A)
 $$
 
-for every standard basis vector \(e_i\), SIS would be trivial if vectors of length \(q\) were allowed.
+for every standard basis vector $e_i$, SIS would be trivial if vectors of length $q$ were allowed.
 
 For example,
 
@@ -345,7 +345,7 @@ $$
 \|z\|_2=\sqrt{5}.
 $$
 
-So \(z\) is a short integer relation among the columns of \(A\).
+So $z$ is a short integer relation among the columns of $A$.
 
 The important word is **relation**.
 
@@ -377,9 +377,9 @@ For realistic cryptographic dimensions, such relations may exist while remaining
 
 ## 4. Why the number of columns matters
 
-The matrix \(A\) contains \(m\) columns but only \(n\) modular equations.
+The matrix $A$ contains $m$ columns but only $n$ modular equations.
 
-Increasing \(m\) gives us more possible combinations of columns and therefore more opportunities for short relations.
+Increasing $m$ gives us more possible combinations of columns and therefore more opportunities for short relations.
 
 Cryptographic parameter selection balances two requirements:
 
@@ -482,13 +482,13 @@ $$
 z=x-y.
 $$
 
-Because \(x\neq y\),
+Because $x\neq y$,
 
 $$
 z\neq0.
 $$
 
-And because \(x\) and \(y\) are binary vectors,
+And because $x$ and $y$ are binary vectors,
 
 $$
 z\in\{-1,0,1\}^m.
@@ -524,9 +524,9 @@ Consequently, if the corresponding SIS problem is hard, then finding collisions 
 
 ### Why this is a hash function
 
-The input contains \(m\) bits.
+The input contains $m$ bits.
 
-An element of \(\mathbb Z_q^n\) can be represented using roughly
+An element of $\mathbb Z_q^n$ can be represented using roughly
 
 $$
 n\log_2q
@@ -621,9 +621,9 @@ Nor should one say that solving a particular SIS instance is literally equivalen
 The actual statements depend on:
 
 * the dimensions;
-* the modulus \(q\);
-* the bound \(\beta\);
-* the number of columns \(m\);
+* the modulus $q$;
+* the bound $\beta$;
+* the number of columns $m$;
 * the norm being used;
 * the approximation factor of the worst-case lattice problem;
 * the particular reduction theorem.
@@ -640,7 +640,7 @@ $$
 \operatorname{GapSVP}_\gamma
 $$
 
-for approximation factors \(\gamma\) determined by the parameters of the reduction.
+for approximation factors $\gamma$ determined by the parameters of the reduction.
 
 Later work refined Ajtai's original reduction and substantially improved both the formulation and approximation factors.
 
@@ -721,7 +721,7 @@ is generally **not itself a lattice**, because it does not contain the origin.
 
 Instead, it is an affine translate — a coset — of the homogeneous q-ary lattice.
 
-Suppose \(t\) is any vector satisfying
+Suppose $t$ is any vector satisfying
 
 $$
 At\equiv u\pmod q.
@@ -791,7 +791,7 @@ $$
 
 is small.
 
-Equivalently, we want a lattice point \(x\in\Lambda\) close to
+Equivalently, we want a lattice point $x\in\Lambda$ close to
 
 $$
 -t.
@@ -957,7 +957,7 @@ $$
 b=A^Ts+e\pmod q
 $$
 
-and attempt to recover — or distinguish information about — the hidden secret \(s\).
+and attempt to recover — or distinguish information about — the hidden secret $s$.
 
 So the transition is:
 

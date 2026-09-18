@@ -210,9 +210,9 @@ t=v+e,
 v\in L,
 $$
 
-where \(e\) is small.
+where $e$ is small.
 
-Recovering \(v\) becomes a CVP/BDD-style problem.
+Recovering $v$ becomes a CVP/BDD-style problem.
 
 This appears naturally in:
 
@@ -303,10 +303,10 @@ $$
 
 where:
 
-* \(s\) is the hidden secret;
-* \(t_i\) is known;
-* \(u_i\) is known or derived from the observation;
-* \(\varepsilon_i\) is unknown but small.
+* $s$ is the hidden secret;
+* $t_i$ is known;
+* $u_i$ is known or derived from the observation;
+* $\varepsilon_i$ is unknown but small.
 
 Equivalently,
 
@@ -316,7 +316,7 @@ t_i s-u_i-qk_i
 \varepsilon_i
 $$
 
-for some integer \(k_i\).
+for some integer $k_i$.
 
 The modular equation has therefore become an exact integer relation:
 
@@ -340,7 +340,7 @@ This is where lattice geometry enters.
 
 ## 4. From nonce leakage to HNP
 
-Suppose we collect \(m\) relations
+Suppose we collect $m$ relations
 
 $$
 t_i s-u_i
@@ -355,7 +355,7 @@ $$
 |\varepsilon_i|<B.
 $$
 
-Then there exist integers \(k_i\) satisfying
+Then there exist integers $k_i$ satisfying
 
 $$
 t_i s-qk_i-u_i
@@ -375,7 +375,7 @@ $$
 (\varepsilon_1,\ldots,\varepsilon_m).
 $$
 
-The cryptanalyst constructs a lattice so that the unknown combination corresponding to the correct \(s\) produces exactly these unusually small coordinates.
+The cryptanalyst constructs a lattice so that the unknown combination corresponding to the correct $s$ produces exactly these unusually small coordinates.
 
 This may be formulated as:
 
@@ -429,11 +429,11 @@ $$
 
 where:
 
-* \(d\) is the private signing key;
-* \(k_i\) is the per-signature nonce;
-* \(n\) is the subgroup order.
+* $d$ is the private signing key;
+* $k_i$ is the per-signature nonce;
+* $n$ is the subgroup order.
 
-Multiply by \(k_i\):
+Multiply by $k_i$:
 
 $$
 s_i k_i
@@ -488,7 +488,7 @@ This is already very close to an HNP relation.
 
 ### Exact nonce reuse
 
-If the same nonce \(k\) is used twice, the vulnerability is simpler.
+If the same nonce $k$ is used twice, the vulnerability is simpler.
 
 No lattice is required.
 
@@ -565,7 +565,7 @@ $$
 
 are small.
 
-With sufficiently strong leakage and sufficiently many signatures, lattice techniques may recover \(d\).
+With sufficiently strong leakage and sufficiently many signatures, lattice techniques may recover $d$.
 
 The detailed treatment remains in:
 
@@ -593,7 +593,7 @@ $$
 0\leq k_i<2^{\ell}
 $$
 
-for some \(\ell\) significantly smaller than
+for some $\ell$ significantly smaller than
 
 $$
 \log_2n,
@@ -611,7 +611,7 @@ k_i
 K_i 2^b+\delta_i,
 $$
 
-where the high part \(K_i\) is known and
+where the high part $K_i$ is known and
 
 $$
 0\leq\delta_i<2^b.
@@ -674,11 +674,11 @@ $$
 |x_0|<X.
 $$
 
-The smallness of \(x_0\) is the crucial extra information.
+The smallness of $x_0$ is the crucial extra information.
 
 Without that bound, solving arbitrary modular polynomial equations may be difficult.
 
-Coppersmith's method constructs many auxiliary polynomials that also vanish modulo a large power of \(N\) at \(x_0\).
+Coppersmith's method constructs many auxiliary polynomials that also vanish modulo a large power of $N$ at $x_0$.
 
 A typical family contains objects resembling
 
@@ -686,7 +686,7 @@ $$
 x^j f(x)^i N^{m-i}.
 $$
 
-At \(x=x_0\),
+At $x=x_0$,
 
 $$
 f(x_0)
@@ -773,7 +773,7 @@ g(x_0)
 \pmod{N^m}
 $$
 
-for some suitable \(m\).
+for some suitable $m$.
 
 This creates the decisive inequality.
 
@@ -795,7 +795,7 @@ $$
 g(x_0)=zN^m
 $$
 
-for some integer \(z\).
+for some integer $z$.
 
 If lattice reduction gives a polynomial satisfying
 
@@ -803,7 +803,7 @@ $$
 |g(x_0)|<N^m,
 $$
 
-the only possible multiple of \(N^m\) in that interval is
+the only possible multiple of $N^m$ in that interval is
 
 $$
 0.
@@ -880,7 +880,7 @@ $$
 p=p_0+x_0
 $$
 
-where \(p_0\) is known and \(x_0\) is small.
+where $p_0$ is known and $x_0$ is small.
 
 Since
 
@@ -896,7 +896,7 @@ p_0+x_0
 \pmod p.
 $$
 
-The unknown part \(x_0\) is a small root of a polynomial relation modulo an unknown factor of \(N\).
+The unknown part $x_0$ is a small root of a polynomial relation modulo an unknown factor of $N$.
 
 Appropriate Coppersmith-type constructions can sometimes exploit exactly this structure.
 
@@ -1208,7 +1208,7 @@ $$
 b=As+e\pmod q.
 $$
 
-Then there exists an integer vector \(z\) such that
+Then there exists an integer vector $z$ such that
 
 $$
 As+e-b=qz.
@@ -1220,7 +1220,7 @@ $$
 As-qz-b=-e.
 $$
 
-Since \(e\) is small, the correct combination of \(s\) and \(z\) creates a vector close to the public target \(b\).
+Since $e$ is small, the correct combination of $s$ and $z$ creates a vector close to the public target $b$.
 
 This gives a natural BDD/CVP interpretation.
 
@@ -1269,7 +1269,7 @@ $$
 w
 $$
 
-with a useful modular relation to \(A\).
+with a useful modular relation to $A$.
 
 Suppose
 
@@ -1321,13 +1321,13 @@ $$
 
 are short, their inner product is statistically concentrated.
 
-If \(b\) were uniformly random instead of an LWE vector, one would expect
+If $b$ were uniformly random instead of an LWE vector, one would expect
 
 $$
 w^Tb
 $$
 
-to behave much more uniformly modulo \(q\).
+to behave much more uniformly modulo $q$.
 
 This gives a distinguisher.
 
@@ -1365,7 +1365,7 @@ $$
 
 An attacker may guess some coordinates.
 
-If \(g\) secret coordinates are guessed correctly, the remaining lattice problem has smaller effective dimension.
+If $g$ secret coordinates are guessed correctly, the remaining lattice problem has smaller effective dimension.
 
 The total cost then combines:
 
@@ -1377,7 +1377,7 @@ $$
 }
 $$
 
-Increasing \(g\):
+Increasing $g$:
 
 * makes guessing exponentially more expensive;
 * may make the remaining lattice problem substantially easier.
@@ -1393,7 +1393,7 @@ Hybrid attacks are especially relevant for:
 
 This is another reason secret distribution matters.
 
-The dimensions \(n\) and \(q\) alone do not define concrete security.
+The dimensions $n$ and $q$ alone do not define concrete security.
 
 ---
 
@@ -1480,7 +1480,7 @@ $$
 E=\{-1,0,1\},
 $$
 
-then an error variable \(e_i\) satisfies
+then an error variable $e_i$ satisfies
 
 $$
 e_i(e_i-1)(e_i+1)=0.
@@ -1544,7 +1544,7 @@ Security estimation often asks:
 
 > What block size is needed before the attack target becomes accessible?
 
-Then the estimated cost of achieving that \(\beta\) is converted into a concrete security estimate.
+Then the estimated cost of achieving that $\beta$ is converted into a concrete security estimate.
 
 ---
 
@@ -1628,8 +1628,8 @@ They can have very different concrete security.
 
 Relevant quantities include:
 
-* modulus \(q\);
-* number of samples \(m\);
+* modulus $q$;
+* number of samples $m$;
 * error width;
 * secret distribution;
 * secret sparsity;
@@ -2175,7 +2175,7 @@ The main theoretical references behind this synthesis include:
 * Dan Boneh and Ramarathnam Venkatesan, **“Hardness of Computing the Most Significant Bits of Secret Keys in Diffie-Hellman and Related Schemes,”** CRYPTO 1996.
 * Don Coppersmith, **“Finding a Small Root of a Bivariate Integer Equation; Factoring with High Bits Known,”** EUROCRYPT 1996.
 * Don Coppersmith, **“Small Solutions to Polynomial Equations, and Low Exponent RSA Vulnerabilities,”** Journal of Cryptology, 1997.
-* Dan Boneh and Glenn Durfee, **“Cryptanalysis of RSA with Private Key \(d\) Less Than \(N^{0.292}\),”** IEEE Transactions on Information Theory, 2000.
+* Dan Boneh and Glenn Durfee, **“Cryptanalysis of RSA with Private Key $d$ Less Than $N^{0.292}$,”** IEEE Transactions on Information Theory, 2000.
 * Nick Howgrave-Graham, **“Finding Small Roots of Univariate Modular Equations Revisited,”** Cryptography and Coding, 1997.
 * Martin R. Albrecht, Rachel Player, and Sam Scott, **“On the Concrete Hardness of Learning with Errors,”** Journal of Mathematical Cryptology, 2015.
 * Martin R. Albrecht et al., **Lattice Estimator**, current research software for concrete security modeling.

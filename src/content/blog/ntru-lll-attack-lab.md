@@ -77,7 +77,7 @@ Here we fill in those gaps.
 - [2. The private polynomials](#2-the-private-polynomials)
 - [3. Constructing the public key](#3-constructing-the-public-key)
 - [4. Lifting the modular relation to the integers](#4-lifting-the-modular-relation-to-the-integers)
-- [5. Multiplication by (h) as a circulant matrix](#5-multiplication-by-h-as-a-circulant-matrix)
+- [5. Multiplication by $h$ as a circulant matrix](#5-multiplication-by-hhh-as-a-circulant-matrix)
 - [6. Constructing the public NTRU lattice](#6-constructing-the-public-ntru-lattice)
 - [7. Proving that the private key lies in the lattice](#7-proving-that-the-private-key-lies-in-the-lattice)
 - [8. Why the secret is unusually short](#8-why-the-secret-is-unusually-short)
@@ -188,7 +188,7 @@ $$
 
 Both are extremely small.
 
-For \(f\),
+For $f$,
 
 $$
 \|f\|_2^2
@@ -198,7 +198,7 @@ $$
 5.
 $$
 
-For \(g\),
+For $g$,
 
 $$
 \|g\|_2^2
@@ -230,7 +230,7 @@ $$
 
 That number will become important once we compare the secret with the natural geometric scale of the public lattice.
 
-The notebook also verifies that \(f\) is invertible in the required quotient rings modulo both
+The notebook also verifies that $f$ is invertible in the required quotient rings modulo both
 
 $$
 p=3
@@ -298,7 +298,7 @@ $$
 h=f_q^{-1}g,
 $$
 
-multiplying by \(f\) gives
+multiplying by $f$ gives
 
 $$
 fh
@@ -333,9 +333,9 @@ $$
 fh-g
 $$
 
-is divisible by \(41\).
+is divisible by $41$.
 
-Instead of treating the coefficients of \(h\) only as residues in
+Instead of treating the coefficients of $h$ only as residues in
 
 $$
 \mathbb Z_{41},
@@ -442,7 +442,7 @@ That is the key step required to build the lattice.
 
 ---
 
-## 5. Multiplication by \(h\) as a circulant matrix
+## 5. Multiplication by $h$ as a circulant matrix
 
 Multiplication by a fixed polynomial is a linear operation on coefficient vectors.
 
@@ -819,7 +819,7 @@ $$
 }
 $$
 
-The Gaussian heuristic suggests that the shortest vector of a random \(d\)-dimensional lattice of determinant \(D\) should have approximate length
+The Gaussian heuristic suggests that the shortest vector of a random $d$-dimensional lattice of determinant $D$ should have approximate length
 
 $$
 \lambda_{\mathrm{GH}}
@@ -978,7 +978,7 @@ $$
 }
 $$
 
-For a tiny \(14\)-dimensional NTRU lattice containing an exceptionally short secret, however, “reasonably short” is already enough.
+For a tiny $14$-dimensional NTRU lattice containing an exceptionally short secret, however, “reasonably short” is already enough.
 
 ---
 
@@ -1104,7 +1104,7 @@ $$
 x^7=1,
 $$
 
-multiplication by \(x\) cyclically rotates coefficient vectors.
+multiplication by $x$ cyclically rotates coefficient vectors.
 
 Multiplication by
 
@@ -1117,7 +1117,7 @@ therefore performs:
 1. a cyclic rotation by four positions;
 2. a global sign change.
 
-Apply it to \(\phi\):
+Apply it to $\phi$:
 
 $$
 -x^4\phi
@@ -1246,7 +1246,7 @@ $$
 \|uf\|_2=\|f\|_2,
 $$
 
-and similarly for \(g\).
+and similarly for $g$.
 
 So
 
@@ -1288,13 +1288,13 @@ $$
 h.
 $$
 
-From \(h\), the adversary constructs
+From $h$, the adversary constructs
 
 $$
 H.
 $$
 
-From \(H\), construct
+From $H$, construct
 
 $$
 M_h
@@ -1397,13 +1397,13 @@ The relevant questions become quantitative.
 
 ### Lattice dimension
 
-If the polynomial degree is \(N\), the basic NTRU lattice has dimension
+If the polynomial degree is $N$, the basic NTRU lattice has dimension
 
 $$
 2N.
 $$
 
-Increasing \(N\) dramatically increases the cost of strong reduction.
+Increasing $N$ dramatically increases the cost of strong reduction.
 
 ---
 
@@ -1569,7 +1569,7 @@ $$
 prh+m.
 $$
 
-The factor \(p\) has then been inserted twice.
+The factor $p$ has then been inserted twice.
 
 The decryption derivation no longer matches the intended scheme.
 
@@ -1690,11 +1690,11 @@ $$
 N=7,\quad p=3,\quad q=41;
 $$
 
-* the original private polynomials \(f\) and \(g\);
-* the exact public polynomial \(h\);
-* cyclic polynomial multiplication modulo \(x^7-1\);
-* construction of the public circulant matrix \(H\);
-* construction of the \(14\times14\) NTRU lattice basis;
+* the original private polynomials $f$ and $g$;
+* the exact public polynomial $h$;
+* cyclic polynomial multiplication modulo $x^7-1$;
+* construction of the public circulant matrix $H$;
+* construction of the $14\times14$ NTRU lattice basis;
 * verification that
 
 $$
@@ -1752,7 +1752,7 @@ $$
 (f,g)\in\mathcal L_h.
 $$
 
-And because \(f\) and \(g\) are deliberately small,
+And because $f$ and $g$ are deliberately small,
 
 $$
 (f,g)

@@ -29,16 +29,10 @@ draft: false
 - [Recovering Parameters When the Modulus Is Known](#recovering-parameters-when-the-modulus-is-known)
 - [When the Modular Inverse Does Not Exist](#when-the-modular-inverse-does-not-exist)
 - [Recovering an Unknown Modulus](#recovering-an-unknown-modulus)
-- [\[
-t_it_${i+2}](#t_it_i2)
-- [t_it_${i+2}](#t_it_i2-1)
 - [Periods, Hull–Dobell, and Why Period Is Not Security](#periods-hulldobell-and-why-period-is-not-security)
 - [From State Recovery to Keystream Prediction](#from-state-recovery-to-keystream-prediction)
 - [Executable Experiments](#executable-experiments)
 - [Conclusion](#conclusion)
-- [\[
-\boxed${
-t_it_${i+2}](#boxedt_it_i2)
 - [References](#references)
 
 ---
@@ -49,19 +43,19 @@ A linear congruential generator is one of the clearest examples of the differenc
 
 Its state evolves according to
 
-\[
+$$
 S_{i+1}
 =
 aS_i+c
 \pmod m,
-\]
+$$
 
 where:
 
-- \(m\) is the modulus;
-- \(a\) is the multiplier;
-- \(c\) is the increment;
-- \(S_0\) is the initial state or seed.
+- $m$ is the modulus;
+- $a$ is the multiplier;
+- $c$ is the increment;
+- $S_0$ is the initial state or seed.
 
 The recurrence is extremely cheap to evaluate.
 
@@ -81,53 +75,53 @@ Once an attacker learns enough information about the state sequence, the unknown
 
 The distinction is:
 
-\[
+$$
 \boxed{
 \text{deterministic}
 \neq
 \text{cryptographically weak}
 }
-\]
+$$
 
 but:
 
-\[
+$$
 \boxed{
 \text{easily solvable state relation}
 \Rightarrow
 \text{predictability}
 }
-\]
+$$
 
 ### One-dimensional affine dynamics
 
 The map
 
-\[
+$$
 T(x)=ax+c\pmod m
-\]
+$$
 
 is an affine transformation on the residue ring
 
-\[
+$$
 \mathbb Z_m.
-\]
+$$
 
 Repeated application gives
 
-\[
+$$
 S_1=T(S_0),
-\]
+$$
 
-\[
+$$
 S_2=T(T(S_0)),
-\]
+$$
 
 and so on.
 
-If \(a-1\) is invertible modulo \(m\), one can even write the closed form
+If $a-1$ is invertible modulo $m$, one can even write the closed form
 
-\[
+$$
 S_n
 \equiv
 a^nS_0
@@ -135,18 +129,18 @@ a^nS_0
 c
 \frac{a^n-1}{a-1}
 \pmod m.
-\]
+$$
 
-But this geometric-series expression is not universally valid in that form because division by \(a-1\) requires invertibility modulo \(m\).
+But this geometric-series expression is not universally valid in that form because division by $a-1$ requires invertibility modulo $m$.
 
 A safer recurrence-based statement is enough for cryptanalysis:
 
-\[
+$$
 S_{i+1}-S_i
 \equiv
 a(S_i-S_{i-1})
 \pmod m.
-\]
+$$
 
 The first differences therefore follow a multiplicative congruence.
 
@@ -158,21 +152,21 @@ A crucial modeling distinction is often omitted in toy discussions.
 
 The attack
 
-\[
+$$
 S_0,S_1,S_2
 \longrightarrow
 a,c
-\]
+$$
 
 assumes the observer sees **consecutive internal states**, or output values equal to those states.
 
 A practical generator might instead expose
 
-\[
+$$
 Y_i=g(S_i)
-\]
+$$
 
-for some transformation \(g\), perhaps:
+for some transformation $g$, perhaps:
 
 - truncation;
 - bit extraction;
@@ -194,79 +188,79 @@ Throughout this article, unless stated otherwise, the observed outputs are the f
 
 Assume the attacker knows:
 
-\[
+$$
 m
-\]
+$$
 
 and observes three consecutive states:
 
-\[
+$$
 S_0,S_1,S_2.
-\]
+$$
 
 The recurrence gives:
 
-\[
+$$
 S_1
 \equiv
 aS_0+c
 \pmod m,
-\]
+$$
 
-\[
+$$
 S_2
 \equiv
 aS_1+c
 \pmod m.
-\]
+$$
 
 Subtract the equations:
 
-\[
+$$
 S_2-S_1
 \equiv
 a(S_1-S_0)
 \pmod m.
-\]
+$$
 
 Define:
 
-\[
+$$
 \Delta_0=S_1-S_0,
-\]
+$$
 
-\[
+$$
 \Delta_1=S_2-S_1.
-\]
+$$
 
 Then:
 
-\[
+$$
 \Delta_1
 \equiv
 a\Delta_0
 \pmod m.
-\]
+$$
 
 ### The invertible case
 
 If:
 
-\[
+$$
 \gcd(\Delta_0,m)=1,
-\]
+$$
 
-then \(\Delta_0\) has a unique multiplicative inverse modulo \(m\).
+then $\Delta_0$ has a unique multiplicative inverse modulo $m$.
 
 Multiply both sides by:
 
-\[
+$$
 \Delta_0^{-1}.
-\]
+$$
 
 We obtain:
 
-\[
+$$
 \boxed{
 a
 \equiv
@@ -274,11 +268,11 @@ a
 \Delta_0^{-1}
 \pmod m
 }
-\]
+$$
 
 or explicitly:
 
-\[
+$$
 \boxed{
 a
 \equiv
@@ -286,33 +280,33 @@ a
 (S_1-S_0)^{-1}
 \pmod m.
 }
-\]
+$$
 
-Once \(a\) is known, recover \(c\) from:
+Once $a$ is known, recover $c$ from:
 
-\[
+$$
 S_1
 \equiv
 aS_0+c
 \pmod m,
-\]
+$$
 
 so:
 
-\[
+$$
 \boxed{
 c
 \equiv
 S_1-aS_0
 \pmod m.
 }
-\]
+$$
 
-This corrects a common indexing mistake in informal notes: the second recurrence must be based on \(S_1\),
+This corrects a common indexing mistake in informal notes: the second recurrence must be based on $S_1$,
 
-\[
+$$
 S_2\equiv aS_1+c\pmod m,
-\]
+$$
 
 not on some later state.
 
@@ -320,23 +314,23 @@ not on some later state.
 
 The unknowns are:
 
-\[
+$$
 a,\qquad c.
-\]
+$$
 
 Two transition equations supply two modular constraints:
 
-\[
+$$
 S_1-aS_0-c\equiv0\pmod m,
-\]
+$$
 
-\[
+$$
 S_2-aS_1-c\equiv0\pmod m.
-\]
+$$
 
-Subtracting removes \(c\), leaving one equation for \(a\).
+Subtracting removes $c$, leaving one equation for $a$.
 
-If the relevant coefficient is invertible, the solution is unique modulo \(m\).
+If the relevant coefficient is invertible, the solution is unique modulo $m$.
 
 So the cryptanalytic weakness is not a subtle statistical bias.
 
@@ -346,17 +340,17 @@ It is direct algebra.
 
 Take:
 
-\[
+$$
 m=2^{31},
-\]
+$$
 
-\[
+$$
 a=1103515245,
-\]
+$$
 
-\[
+$$
 c=12345,
-\]
+$$
 
 and some unknown seed.
 
@@ -364,39 +358,39 @@ Suppose three consecutive full states are visible.
 
 The attacker computes:
 
-\[
+$$
 \Delta_0=S_1-S_0,
-\]
+$$
 
-\[
+$$
 \Delta_1=S_2-S_1.
-\]
+$$
 
-When \(\Delta_0\) is invertible modulo \(m\),
+When $\Delta_0$ is invertible modulo $m$,
 
-\[
+$$
 a
 =
 \Delta_1\Delta_0^{-1}\bmod m.
-\]
+$$
 
 Then:
 
-\[
+$$
 c
 =
 S_1-aS_0\bmod m.
-\]
+$$
 
 Every future state follows deterministically.
 
 ### Parameter recovery is state recovery in practice
 
-Once \(a,c,m\) are known and one current state \(S_i\) is known,
+Once $a,c,m$ are known and one current state $S_i$ is known,
 
-\[
+$$
 S_{i+1}=aS_i+c\pmod m
-\]
+$$
 
 predicts the future exactly.
 
@@ -412,27 +406,27 @@ Current state plus recovered recurrence is enough.
 
 The formula
 
-\[
+$$
 a
 \equiv
 \Delta_1\Delta_0^{-1}
 \pmod m
-\]
+$$
 
 silently assumes:
 
-\[
+$$
 \gcd(\Delta_0,m)=1.
-\]
+$$
 
 If:
 
-\[
+$$
 g=
 \gcd(\Delta_0,m)
 >
 1,
-\]
+$$
 
 then ordinary modular division is invalid.
 
@@ -440,55 +434,55 @@ But parameter recovery does not necessarily fail.
 
 Instead, we must solve the linear congruence:
 
-\[
+$$
 \Delta_0 a
 \equiv
 \Delta_1
 \pmod m.
-\]
+$$
 
 ### Solvability condition
 
 The congruence:
 
-\[
+$$
 Ax\equiv B\pmod m
-\]
+$$
 
 has a solution if and only if:
 
-\[
+$$
 \gcd(A,m)\mid B.
-\]
+$$
 
 So define:
 
-\[
+$$
 g=\gcd(\Delta_0,m).
-\]
+$$
 
-A multiplier \(a\) exists only if:
+A multiplier $a$ exists only if:
 
-\[
+$$
 g\mid\Delta_1.
-\]
+$$
 
 For a genuine LCG trace this consistency condition should hold, assuming the observations are correct.
 
 ### Reduce the congruence
 
-Divide by \(g\):
+Divide by $g$:
 
-\[
+$$
 \frac{\Delta_0}{g}a
 \equiv
 \frac{\Delta_1}{g}
 \pmod{\frac{m}{g}}.
-\]
+$$
 
 Now:
 
-\[
+$$
 \gcd
 \left(
 \frac{\Delta_0}{g},
@@ -496,40 +490,40 @@ Now:
 \right)
 =
 1,
-\]
+$$
 
 so the reduced coefficient is invertible.
 
 Let:
 
-\[
+$$
 m'=\frac{m}{g},
-\]
+$$
 
-\[
+$$
 A'=\frac{\Delta_0}{g},
-\]
+$$
 
-\[
+$$
 B'=\frac{\Delta_1}{g}.
-\]
+$$
 
 Then one solution is:
 
-\[
+$$
 a_0
 \equiv
 B'(A')^{-1}
 \pmod{m'}.
-\]
+$$
 
-But this is not necessarily unique modulo \(m\).
+But this is not necessarily unique modulo $m$.
 
 ### Multiple multiplier candidates
 
-The original congruence has exactly \(g\) residue-class solutions modulo \(m\):
+The original congruence has exactly $g$ residue-class solutions modulo $m$:
 
-\[
+$$
 \boxed{
 a
 =
@@ -537,16 +531,16 @@ a_0+km',
 \qquad
 k=0,\ldots,g-1.
 }
-\]
+$$
 
 Each candidate multiplier determines a candidate increment:
 
-\[
+$$
 c
 \equiv
 S_1-aS_0
 \pmod m.
-\]
+$$
 
 Additional observed states can be used to test which candidates reproduce the sequence.
 
@@ -564,17 +558,17 @@ It is:
 
 Many historical LCGs use:
 
-\[
+$$
 m=2^w.
-\]
+$$
 
-Then an integer is invertible modulo \(m\) if and only if it is odd.
+Then an integer is invertible modulo $m$ if and only if it is odd.
 
 So whenever:
 
-\[
+$$
 S_1-S_0
-\]
+$$
 
 is even, the simple inverse does not exist.
 
@@ -584,20 +578,20 @@ That makes the caveat operationally important, not merely theoretical.
 
 Suppose candidate pairs are:
 
-\[
+$$
 (a_1,c_1),
 \ldots,
 (a_g,c_g).
-\]
+$$
 
-Given another observed state \(S_3\), test:
+Given another observed state $S_3$, test:
 
-\[
+$$
 S_3
 \stackrel{?}{\equiv}
 a_jS_2+c_j
 \pmod m.
-\]
+$$
 
 Wrong candidates are discarded.
 
@@ -605,7 +599,7 @@ A few more observations usually collapse the candidate set rapidly.
 
 This is a recurring theme in state-recovery attacks:
 
-\[
+$$
 \boxed{
 \text{non-uniqueness from one equation}
 +
@@ -613,7 +607,7 @@ This is a recurring theme in state-recovery attacks:
 \rightarrow
 \text{unique recurrence}
 }
-\]
+$$
 
 ---
 
@@ -621,129 +615,129 @@ This is a recurring theme in state-recovery attacks:
 
 The known-modulus attack is already devastating.
 
-But even when \(m\) is hidden, the LCG recurrence leaves strong integer divisibility fingerprints.
+But even when $m$ is hidden, the LCG recurrence leaves strong integer divisibility fingerprints.
 
 Assume several consecutive full states are visible:
 
-\[
+$$
 S_0,S_1,S_2,\ldots
-\]
+$$
 
-but \(a,c,m\) are unknown.
+but $a,c,m$ are unknown.
 
 ### First differences
 
 Define:
 
-\[
+$$
 t_i
 =
 S_{i+1}-S_i
-\]
+$$
 
 as ordinary integers.
 
 From the recurrence:
 
-\[
+$$
 S_{i+1}
 \equiv
 aS_i+c
 \pmod m,
-\]
+$$
 
 we get:
 
-\[
+$$
 S_{i+2}-S_{i+1}
 \equiv
 a(S_{i+1}-S_i)
 \pmod m.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 t_{i+1}
 \equiv
 at_i
 \pmod m.
-\]
+$$
 
 ### Eliminate the multiplier
 
 We have:
 
-\[
+$$
 t_{i+1}\equiv at_i\pmod m,
-\]
+$$
 
 and:
 
-\[
+$$
 t_{i+2}\equiv at_{i+1}\pmod m.
-\]
+$$
 
-Multiply the first relation by \(t_{i+1}\):
+Multiply the first relation by $t_{i+1}$:
 
-\[
+$$
 t_{i+1}^2
 \equiv
 at_it_{i+1}
 \pmod m.
-\]
+$$
 
-Multiply the second by \(t_i\):
+Multiply the second by $t_i$:
 
-\[
+$$
 t_it_{i+2}
 \equiv
 at_it_{i+1}
 \pmod m.
-\]
+$$
 
 Subtract:
 
-\[
+$$
 t_it_{i+2}
 -
 t_{i+1}^2
 \equiv
 0
 \pmod m.
-\]
+$$
 
 Define:
 
-\[
+$$
 z_i
 =
 t_it_{i+2}
 -
 t_{i+1}^2.
-\]
+$$
 
 Then:
 
-\[
+$$
 \boxed{
 m\mid z_i.
 }
-\]
+$$
 
-Every nonzero \(z_i\) is an integer multiple of the hidden modulus.
+Every nonzero $z_i$ is an integer multiple of the hidden modulus.
 
 ### Use a GCD
 
 Compute several such values:
 
-\[
+$$
 z_0,z_1,z_2,\ldots
-\]
+$$
 
 and then:
 
-\[
+$$
 g
 =
 \gcd(
@@ -752,60 +746,60 @@ g
 |z_2|,
 \ldots
 ).
-\]
+$$
 
-Because every \(z_i\) is divisible by \(m\),
+Because every $z_i$ is divisible by $m$,
 
-\[
+$$
 m\mid g.
-\]
+$$
 
 In favorable traces, the GCD collapses to:
 
-\[
+$$
 g=m.
-\]
+$$
 
 In other cases it may yield:
 
-- a multiple of \(m\);
+- a multiple of $m$;
 - zero for degenerate observations;
 - a value requiring factorization or validation.
 
-So the GCD method is a candidate-modulus recovery method, not a magical theorem that every trace returns \(m\) immediately.
+So the GCD method is a candidate-modulus recovery method, not a magical theorem that every trace returns $m$ immediately.
 
 ### Validate the candidate
 
-Once a candidate modulus \(\hat m\) is obtained:
+Once a candidate modulus $\hat m$ is obtained:
 
-1. recover candidate \(a,c\);
+1. recover candidate $a,c$;
 2. check that all observed states satisfy
 
-   \[
+   $$
    S_{i+1}
    \equiv
    aS_i+c
    \pmod{\hat m};
-   \]
+   $$
 
 3. reject factors or multiples that do not reproduce the complete trace;
 4. if necessary, gather more outputs.
 
 This is a good general cryptanalytic workflow:
 
-\[
+$$
 \text{derive algebraic invariant}
 \rightarrow
 \text{recover candidate}
 \rightarrow
 \text{validate globally}.
-\]
+$$
 
 ### Degenerate cases
 
 The method can fail or become ambiguous when:
 
-- some \(z_i=0\);
+- some $z_i=0$;
 - too few outputs are available;
 - outputs are truncated;
 - the generator output is transformed;
@@ -818,13 +812,13 @@ Those are modeling constraints, not cryptographic salvation.
 
 The important lesson is:
 
-\[
+$$
 \boxed{
 \text{secret parameters}
 \neq
 \text{secure generator}
 }
-\]
+$$
 
 if those parameters are algebraically recoverable from output.
 
@@ -838,57 +832,57 @@ Security should reside in a secret key/state protected by a hard problem or well
 
 An LCG lives in a finite state space of size:
 
-\[
+$$
 m.
-\]
+$$
 
 Therefore every sequence must eventually repeat.
 
 The maximum possible period is:
 
-\[
+$$
 m.
-\]
+$$
 
 For a **mixed LCG** with:
 
-\[
+$$
 c\neq0,
-\]
+$$
 
-the Hull–Dobell theorem characterizes exactly when every seed lies on a full-period cycle of length \(m\).
+the Hull–Dobell theorem characterizes exactly when every seed lies on a full-period cycle of length $m$.
 
 The recurrence:
 
-\[
+$$
 S_{i+1}=aS_i+c\pmod m
-\]
+$$
 
-has full period \(m\) if and only if all three conditions hold:
+has full period $m$ if and only if all three conditions hold:
 
 1. 
 
-   \[
+   $$
    \gcd(c,m)=1;
-   \]
+   $$
 
-2. every prime factor \(p\) of \(m\) divides:
+2. every prime factor $p$ of $m$ divides:
 
-   \[
+   $$
    a-1;
-   \]
+   $$
 
 3. if:
 
-   \[
+   $$
    4\mid m,
-   \]
+   $$
 
    then:
 
-   \[
+   $$
    4\mid(a-1).
-   \]
+   $$
 
 These conditions are elegant and useful.
 
@@ -898,36 +892,36 @@ They are **not a cryptographic security theorem**.
 
 Let:
 
-\[
+$$
 m=2^w.
-\]
+$$
 
 The only prime factor is:
 
-\[
+$$
 2.
-\]
+$$
 
 For a full-period mixed LCG:
 
-- \(c\) must be odd;
-- \(a-1\) must be divisible by \(4\) when \(w\ge2\).
+- $c$ must be odd;
+- $a-1$ must be divisible by $4$ when $w\ge2$.
 
 Equivalently:
 
-\[
+$$
 a\equiv1\pmod4,
-\]
+$$
 
-\[
+$$
 c\equiv1\pmod2.
-\]
+$$
 
 That can give a period of:
 
-\[
+$$
 2^w.
-\]
+$$
 
 But the recurrence remains affine.
 
@@ -950,14 +944,14 @@ A sequence can visit every state before repeating and still be completely predic
 
 For power-of-two moduli, low-order bits of LCGs often have much shorter periods than the full state.
 
-For example, modulo \(2\), the recurrence reduces to:
+For example, modulo $2$, the recurrence reduces to:
 
-\[
+$$
 S_{i+1}
 \equiv
 aS_i+c
 \pmod2.
-\]
+$$
 
 That tiny recurrence can be highly regular even when the complete 32-bit or 64-bit state has a long period.
 
@@ -973,13 +967,13 @@ LCG outputs also exhibit lattice structure in higher-dimensional tuples.
 
 Points such as
 
-\[
+$$
 \left(
 \frac{S_i}{m},
 \frac{S_{i+1}}{m},
 \ldots
 \right)
-\]
+$$
 
 do not fill the continuous cube arbitrarily.
 
@@ -997,15 +991,15 @@ Cryptographic state recovery is an even stronger objection: the recurrence itsel
 
 Suppose someone builds a stream cipher by taking LCG states as keystream words:
 
-\[
+$$
 KS_i=S_i.
-\]
+$$
 
 Encryption is:
 
-\[
+$$
 C_i=P_i\oplus KS_i.
-\]
+$$
 
 This immediately combines two weaknesses:
 
@@ -1014,11 +1008,11 @@ This immediately combines two weaknesses:
 
 ### Known plaintext exposes keystream
 
-If the attacker knows \(P_i\) and observes \(C_i\), then:
+If the attacker knows $P_i$ and observes $C_i$, then:
 
-\[
+$$
 KS_i=C_i\oplus P_i.
-\]
+$$
 
 So known plaintext can reveal generator outputs.
 
@@ -1034,39 +1028,39 @@ An LCG does not have that protection.
 
 If:
 
-\[
+$$
 KS_0=S_0,
 \quad
 KS_1=S_1,
 \quad
 KS_2=S_2
-\]
+$$
 
-are recovered and \(m\) is known, then in the invertible-difference case:
+are recovered and $m$ is known, then in the invertible-difference case:
 
-\[
+$$
 a
 \equiv
 (S_2-S_1)
 (S_1-S_0)^{-1}
 \pmod m,
-\]
+$$
 
-\[
+$$
 c
 \equiv
 S_1-aS_0
 \pmod m.
-\]
+$$
 
 Then:
 
-\[
+$$
 KS_3
 =
 aS_2+c
 \pmod m.
-\]
+$$
 
 The attacker predicts the next keystream block.
 
@@ -1076,9 +1070,9 @@ A stream cipher should make ciphertext computationally indistinguishable from ap
 
 If the attacker can predict future keystream, then future plaintext follows:
 
-\[
+$$
 P_i=C_i\oplus KS_i.
-\]
+$$
 
 The failure is fundamental.
 
@@ -1088,11 +1082,11 @@ No amount of histogram testing repairs it.
 
 One might try to hide:
 
-\[
+$$
 a,\ c,\ m.
-\]
+$$
 
-But as the previous section showed, the modulus itself may be recoverable, and then \(a,c\) can follow.
+But as the previous section showed, the modulus itself may be recoverable, and then $a,c$ can follow.
 
 "Security by secret algorithm parameters" is not a substitute for a keyed cryptographic design.
 
@@ -1119,7 +1113,7 @@ The correct conclusion is:
 
 The companion lab can make three different points:
 
-1. recover \(a,c\) when \(m\) is known and the state difference is invertible;
+1. recover $a,c$ when $m$ is known and the state difference is invertible;
 2. enumerate multiplier candidates when the inverse does not exist;
 3. reconstruct an unknown modulus from several outputs.
 
@@ -1235,11 +1229,11 @@ def solve_multiplier_candidates(
     ]
 ```
 
-Each candidate \(a\) yields:
+Each candidate $a$ yields:
 
-\[
+$$
 c=S_1-aS_0\pmod m.
-\]
+$$
 
 Use later observations to filter. The deterministic example used for this article deliberately produces two multiplier candidates that both survive one more observed transition, which is a useful reminder that parameter uniqueness and output predictability are different questions.
 
@@ -1290,19 +1284,19 @@ def recover_modulus_candidate(
     )
 ```
 
-For a favorable raw-state trace, the result may equal \(m\) exactly.
+For a favorable raw-state trace, the result may equal $m$ exactly.
 
-If it yields a multiple of \(m\), candidate factors can be tested against the complete sequence.
+If it yields a multiple of $m$, candidate factors can be tested against the complete sequence.
 
 ### Deterministic test parameters
 
 A small reproducible experiment can use:
 
-\[
+$$
 m=2^{31}-1,
-\]
+$$
 
-with chosen \(a,c,S_0\) satisfying the test conditions.
+with chosen $a,c,S_0$ satisfying the test conditions.
 
 The goal is not to imitate a production PRNG.
 
@@ -1329,33 +1323,33 @@ That qualification is part of doing cryptanalysis correctly.
 
 A linear congruential generator is mathematically elegant:
 
-\[
+$$
 S_{i+1}
 =
 aS_i+c
 \pmod m.
-\]
+$$
 
 Its simplicity is useful for teaching because nearly every important distinction in pseudorandomness becomes visible.
 
 With known modulus and three full consecutive states:
 
-\[
+$$
 S_0,S_1,S_2,
-\]
+$$
 
 subtracting the recurrence gives:
 
-\[
+$$
 S_2-S_1
 \equiv
 a(S_1-S_0)
 \pmod m.
-\]
+$$
 
 When the first difference is invertible:
 
-\[
+$$
 \boxed{
 a
 \equiv
@@ -1363,33 +1357,33 @@ a
 (S_1-S_0)^{-1}
 \pmod m
 }
-\]
+$$
 
 and:
 
-\[
+$$
 \boxed{
 c
 \equiv
 S_1-aS_0
 \pmod m.
 }
-\]
+$$
 
 When the inverse does not exist, recovery becomes a modular linear-congruence problem with potentially several candidate multipliers rather than a dead end.
 
 When the modulus is unknown, first differences satisfy:
 
-\[
+$$
 t_{i+1}
 \equiv
 at_i
 \pmod m,
-\]
+$$
 
 which implies:
 
-\[
+$$
 \boxed{
 t_it_{i+2}
 -
@@ -1397,7 +1391,7 @@ t_{i+1}^2
 \equiv0
 \pmod m.
 }
-\]
+$$
 
 GCDs of these integer multiples can reveal a candidate modulus.
 
@@ -1409,31 +1403,31 @@ It is not cryptographic security.
 
 The central distinction is:
 
-\[
+$$
 \boxed{
 \text{long cycle}
 \neq
 \text{hard-to-predict sequence}
 }
-\]
+$$
 
 and the attack reason is structural:
 
-\[
+$$
 \boxed{
 \text{the recurrence is efficiently solvable}.
 }
-\]
+$$
 
 This makes the LCG the ideal first weak generator for the series.
 
 The next step is more interesting.
 
-An LFSR can also have an enormous period, but instead of affine arithmetic modulo \(m\), its structure lives in:
+An LFSR can also have an enormous period, but instead of affine arithmetic modulo $m$, its structure lives in:
 
-\[
+$$
 \mathbb F_2.
-\]
+$$
 
 That brings us to:
 
@@ -1446,11 +1440,11 @@ That brings us to:
 
 The mathematics becomes richer, but the cryptographic lesson remains familiar:
 
-\[
+$$
 \boxed{
 \text{linearity leaves equations for the attacker}.
 }
-\]
+$$
 
 
 ---

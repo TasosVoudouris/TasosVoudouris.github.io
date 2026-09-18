@@ -126,7 +126,7 @@ $$
 b=As+e.
 $$
 
-Replace scalar entries modulo \(q\) by elements of a polynomial quotient ring
+Replace scalar entries modulo $q$ by elements of a polynomial quotient ring
 
 $$
 R_q.
@@ -156,7 +156,7 @@ At first sight, the formula has barely changed.
 
 But every entry now represents an entire polynomial containing hundreds of modular coefficients.
 
-So a small matrix over \(R_q\) implicitly represents a much larger structured linear transformation over \(\mathbb Z_q\).
+So a small matrix over $R_q$ implicitly represents a much larger structured linear transformation over $\mathbb Z_q$.
 
 This is the bridge between the theory of LWE and practical post-quantum cryptography.
 
@@ -164,7 +164,7 @@ This is the bridge between the theory of LWE and practical post-quantum cryptogr
 
 ## 2. The common polynomial-ring setting
 
-Both ML-KEM and ML-DSA use degree-\(256\) negacyclic polynomial arithmetic.
+Both ML-KEM and ML-DSA use degree-$256$ negacyclic polynomial arithmetic.
 
 Conceptually, their rings have the form
 
@@ -200,7 +200,7 @@ q=8380417.
 }
 $$
 
-So even though both schemes operate using \(256\)-coefficient polynomial objects, they do not use the same finite arithmetic environment.
+So even though both schemes operate using $256$-coefficient polynomial objects, they do not use the same finite arithmetic environment.
 
 This is important.
 
@@ -216,7 +216,7 @@ $$
 \mathbb Z_q[X]/(X^{256}+1),
 $$
 
-but with different \(q\), different distributions, different module dimensions, and different cryptographic operations.
+but with different $q$, different distributions, different module dimensions, and different cryptographic operations.
 
 ---
 
@@ -228,7 +228,7 @@ $$
 A\in\mathbb Z_q^{N\times N}.
 $$
 
-Explicitly storing \(A\) could require approximately
+Explicitly storing $A$ could require approximately
 
 $$
 N^2\log_2q
@@ -242,7 +242,7 @@ First, ring multiplication compresses large structured transformations into poly
 
 Second, the public matrices themselves can often be generated pseudorandomly from a short seed.
 
-Thus an implementation need not transmit every coefficient of \(A\).
+Thus an implementation need not transmit every coefficient of $A$.
 
 Instead:
 
@@ -258,7 +258,7 @@ $$
 
 The public key can therefore contain:
 
-* a seed defining \(A\);
+* a seed defining $A$;
 * a much smaller set of module elements carrying the actual noisy public relation.
 
 This is one of the engineering reasons module lattices became practical.
@@ -313,14 +313,14 @@ $$
 
 Here:
 
-* \(ek\) is the **encapsulation key** and may be public;
-* \(dk\) is the **decapsulation key** and must remain secret.
+* $ek$ is the **encapsulation key** and may be public;
+* $dk$ is the **decapsulation key** and must remain secret.
 
 ---
 
 ### Encapsulation
 
-A sender uses \(ek\):
+A sender uses $ek$:
 
 $$
 (c,K)
@@ -330,8 +330,8 @@ $$
 
 The sender obtains:
 
-* a ciphertext \(c\);
-* a shared secret \(K\).
+* a ciphertext $c$;
+* a shared secret $K$.
 
 The ciphertext is transmitted.
 
@@ -409,9 +409,9 @@ $$
 
 are small module vectors.
 
-The matrix \(A\) is pseudorandomly generated.
+The matrix $A$ is pseudorandomly generated.
 
-The secret \(s\) and error \(e\) are sampled from small distributions.
+The secret $s$ and error $e$ are sampled from small distributions.
 
 Thus the public relation is precisely the Module-LWE picture developed in the previous chapters:
 
@@ -451,7 +451,7 @@ $$
 t=As+e.
 $$
 
-To encrypt an encoded message \(\mu\), sample another short vector \(y\), together with small errors
+To encrypt an encoded message $\mu$, sample another short vector $y$, together with small errors
 
 $$
 e_1,
@@ -509,7 +509,7 @@ e_2
 \mu.
 $$
 
-The receiver knows \(s\), so compute
+The receiver knows $s$, so compute
 
 $$
 v-s^Tu.
@@ -693,7 +693,7 @@ $$
 t=As+e.
 $$
 
-Given ciphertext \(c\), decapsulation first obtains a candidate internal message
+Given ciphertext $c$, decapsulation first obtains a candidate internal message
 
 $$
 m'.
@@ -705,9 +705,9 @@ $$
 (K',r')
 $$
 
-from \(m'\) and public-key-related data.
+from $m'$ and public-key-related data.
 
-Using \(r'\), it recomputes the ciphertext that *should* have been produced:
+Using $r'$, it recomputes the ciphertext that *should* have been produced:
 
 $$
 c'
@@ -787,11 +787,11 @@ The remaining parameters change.
 
 | Parameter     | ML-KEM-512 | ML-KEM-768 | ML-KEM-1024 |
 | ------------- | ---------: | ---------: | ----------: |
-| \(k\)         |          2 |          3 |           4 |
-| \(\eta_1\)    |          3 |          2 |           2 |
-| \(\eta_2\)    |          2 |          2 |           2 |
-| \(d_u\)       |         10 |         10 |          11 |
-| \(d_v\)       |          4 |          4 |           5 |
+| $k$         |          2 |          3 |           4 |
+| $\eta_1$    |          3 |          2 |           2 |
+| $\eta_2$    |          2 |          2 |           2 |
+| $d_u$       |         10 |         10 |          11 |
+| $d_v$       |          4 |          4 |           5 |
 | NIST category |          1 |          3 |           5 |
 
 The names
@@ -906,7 +906,7 @@ This should immediately look familiar.
 
 It is an MLWE-style relation.
 
-The public value \(t\), however, is not stored directly.
+The public value $t$, however, is not stored directly.
 
 Instead it is decomposed:
 
@@ -940,7 +940,7 @@ $$
 }
 $$
 
-where \(\rho\) is the seed used to regenerate \(A\).
+where $\rho$ is the seed used to regenerate $A$.
 
 The private key contains the information needed for signing, including
 
@@ -989,7 +989,7 @@ $$
 w=Ay.
 $$
 
-The high-order part of \(w\) acts as the commitment:
+The high-order part of $w$ acts as the commitment:
 
 $$
 w_1
@@ -1035,7 +1035,7 @@ $$
 z=y+c s_1
 $$
 
-may depend subtly on the secret \(s_1\).
+may depend subtly on the secret $s_1$.
 
 If every candidate response were released, repeated signatures could reveal information about the secret.
 
@@ -1077,7 +1077,7 @@ $$
 
 ### 3. Compute challenge
 
-Hash the message representation and \(w_1\):
+Hash the message representation and $w_1$:
 
 $$
 \widetilde c
@@ -1085,7 +1085,7 @@ $$
 H(\mu\parallel w_1).
 $$
 
-Derive from \(\widetilde c\) a sparse challenge polynomial
+Derive from $\widetilde c$ a sparse challenge polynomial
 
 $$
 c.
@@ -1097,7 +1097,7 @@ $$
 \{-1,0,1\}
 $$
 
-and its Hamming weight is controlled by the parameter \(\tau\).
+and its Hamming weight is controlled by the parameter $\tau$.
 
 ### 4. Form response
 
@@ -1111,7 +1111,7 @@ $$
 
 ### 5. Check bounds
 
-The signer verifies that \(z\) and several low-order quantities remain inside carefully selected bounds.
+The signer verifies that $z$ and several low-order quantities remain inside carefully selected bounds.
 
 For example, one central condition is conceptually
 
@@ -1187,7 +1187,7 @@ w'
 Az-c\,2^dt_1.
 $$
 
-Substitute \(z\):
+Substitute $z$:
 
 $$
 w'
@@ -1241,7 +1241,7 @@ $$
 
 This equation is the heart of ML-DSA verification.
 
-The large secret-dependent \(As_1\) contribution cancels.
+The large secret-dependent $As_1$ contribution cancels.
 
 What remains is the original commitment
 
@@ -1251,7 +1251,7 @@ $$
 
 plus controlled small corrections.
 
-The hint \(h\) enables the verifier to reconstruct the same relevant high-order information
+The hint $h$ enables the verifier to reconstruct the same relevant high-order information
 
 $$
 w_1
@@ -1275,7 +1275,7 @@ $$
 }
 $$
 
-It also verifies the required norm bounds on \(z\).
+It also verifies the required norm bounds on $z$.
 
 That is the module-lattice analogue of the familiar Schnorr verification mechanism.
 
@@ -1289,9 +1289,9 @@ $$
 z=y+c s_1
 $$
 
-contains the private vector \(s_1\).
+contains the private vector $s_1$.
 
-Even though \(y\) acts as a mask, the resulting distribution can be statistically influenced by the secret near the boundaries of the allowed region.
+Even though $y$ acts as a mask, the resulting distribution can be statistically influenced by the secret near the boundaries of the allowed region.
 
 Therefore the signer must not release every computed response.
 
@@ -1343,7 +1343,7 @@ t
 2^dt_1+t_0.
 $$
 
-Only \(t_1\) is included in the public key.
+Only $t_1$ is included in the public key.
 
 This reduces public-key size.
 
@@ -1357,7 +1357,7 @@ are also decomposed into high and low parts.
 
 Why?
 
-Because signature verification does not need all exact coefficients of \(w\).
+Because signature verification does not need all exact coefficients of $w$.
 
 It needs a stable coarse representation.
 
@@ -1421,7 +1421,7 @@ $$
 
 Unlike ML-KEM's names, these labels expose the matrix dimensions.
 
-For ML-DSA-\(k\ell\),
+For ML-DSA-$k\ell$,
 
 $$
 A\in R_q^{k\times\ell}.
@@ -1429,11 +1429,11 @@ $$
 
 Thus:
 
-| Parameter set | \((k,\ell)\) | NIST category |
+| Parameter set | $(k,\ell)$ | NIST category |
 | ------------- | -----------: | ------------: |
-| ML-DSA-44     |    \((4,4)\) |             2 |
-| ML-DSA-65     |    \((6,5)\) |             3 |
-| ML-DSA-87     |    \((8,7)\) |             5 |
+| ML-DSA-44     |    $(4,4)$ |             2 |
+| ML-DSA-65     |    $(6,5)$ |             3 |
+| ML-DSA-87     |    $(8,7)$ |             5 |
 
 All use
 
@@ -1480,9 +1480,9 @@ They regulate quantities such as:
 * low-bit decomposition;
 * maximum hint weight.
 
-So increasing an ML-DSA security level is not simply “make \(q\) larger.”
+So increasing an ML-DSA security level is not simply “make $q$ larger.”
 
-In fact, \(q\) remains fixed.
+In fact, $q$ remains fixed.
 
 The security/performance profile changes through the complete parameter set.
 
@@ -1606,7 +1606,7 @@ $$
 512\nmid(q-1).
 $$
 
-Thus \(\mathbb F_{3329}\) does not contain the primitive \(512\)-th root required for complete linear splitting of
+Thus $\mathbb F_{3329}$ does not contain the primitive $512$-th root required for complete linear splitting of
 
 $$
 X^{256}+1.
@@ -1622,7 +1622,7 @@ $$
 q=8380417.
 $$
 
-The standard uses a primitive \(512\)-th root of unity modulo \(q\).
+The standard uses a primitive $512$-th root of unity modulo $q$.
 
 Thus its NTT structure differs.
 

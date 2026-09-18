@@ -34,7 +34,7 @@ This distinction becomes increasingly important as we move toward cryptography.
 
 Two equations that look completely different may describe isomorphic elliptic curves.
 
-Conversely, two curves may have the same \(j\)-invariant and therefore become isomorphic over an algebraic closure while remaining non-isomorphic over the original base field.
+Conversely, two curves may have the same $j$-invariant and therefore become isomorphic over an algebraic closure while remaining non-isomorphic over the original base field.
 
 And sometimes we deliberately replace the usual Weierstrass equation by another model — such as a **Montgomery curve** — because that model exposes arithmetic better suited to implementation.
 
@@ -65,21 +65,21 @@ $$
 - [1. One elliptic curve, many equations](#1-one-elliptic-curve-many-equations)
 - [2. Changes of variables in Weierstrass form](#2-changes-of-variables-in-weierstrass-form)
 - [3. Isomorphisms over a field](#3-isomorphisms-over-a-field)
-- [4. Isomorphism over (K) versus over (\overline K)](#4-isomorphism-over-k-versus-over-overline-k)
-- [5. The (j)-invariant](#5-the-j-invariant)
-- [6. Why (j) is invariant](#6-why-j-is-invariant)
-- [7. What the (j)-invariant classifies](#7-what-the-j-invariant-classifies)
-- [8. Special values (j=0) and (j=1728)](#8-special-values-j0-and-j1728)
-- [9. Constructing a curve from a prescribed (j)](#9-constructing-a-curve-from-a-prescribed-j)
-- [10. Twists: same (j), different curve over (K)](#10-twists-same-j-different-curve-over-k)
-- [11. (j)-invariants over finite fields](#11-j-invariants-over-finite-fields)
+- [4. Isomorphism over $K$ versus over $\overline K$](#4-isomorphism-over-kkk-versus-over-koverline-kk)
+- [5. The $j$-invariant](#5-the-jjj-invariant)
+- [6. Why $j$ is invariant](#6-why-jjj-is-invariant)
+- [7. What the $j$-invariant classifies](#7-what-the-jjj-invariant-classifies)
+- [8. Special values $j=0$ and $j=1728$](#8-special-values-j0j0j0-and-j1728j1728j1728)
+- [9. Constructing a curve from a prescribed $j$](#9-constructing-a-curve-from-a-prescribed-jjj)
+- [10. Twists: same $j$, different curve over $K$](#10-twists-same-jjj-different-curve-over-kkk)
+- [11. $j$-invariants over finite fields](#11-jjj-invariants-over-finite-fields)
 - [12. Why different curve models exist](#12-why-different-curve-models-exist)
 - [13. Montgomery curves](#13-montgomery-curves)
 - [14. Montgomery group law](#14-montgomery-group-law)
-- [15. Montgomery (x)-coordinate arithmetic](#15-montgomery-x-coordinate-arithmetic)
+- [15. Montgomery $x$-coordinate arithmetic](#15-montgomery-xxx-coordinate-arithmetic)
 - [16. Differential addition and the Montgomery ladder](#16-differential-addition-and-the-montgomery-ladder)
 - [17. Curve25519 as a concrete example](#17-curve25519-as-a-concrete-example)
-- [18. Montgomery (j)-invariant](#18-montgomery-j-invariant)
+- [18. Montgomery $j$-invariant](#18-montgomery-jjj-invariant)
 - [19. Montgomery to short Weierstrass form](#19-montgomery-to-short-weierstrass-form)
 - [20. When can a Weierstrass curve have Montgomery form?](#20-when-can-a-weierstrass-curve-have-montgomery-form)
 - [21. Isomorphism is not the same as isogeny](#21-isomorphism-is-not-the-same-as-isogeny)
@@ -89,8 +89,6 @@ $$
 - [Further reading](#further-reading)
 
 ---
-
-<a id="many-equations"></a>
 
 ## 1. One elliptic curve, many equations
 
@@ -202,7 +200,7 @@ au^2x'
 b.
 $$
 
-Dividing by \(u^6\),
+Dividing by $u^6$,
 
 $$
 y'^2
@@ -268,13 +266,13 @@ $$
 
 be elliptic curves.
 
-An isomorphism over \(K\),
+An isomorphism over $K$,
 
 $$
 \phi:E_1\longrightarrow E_2,
 $$
 
-is an algebraic map defined over \(K\), possessing an algebraic inverse defined over \(K\), and satisfying
+is an algebraic map defined over $K$, possessing an algebraic inverse defined over $K$, and satisfying
 
 $$
 \phi(\mathcal O_{E_1})
@@ -300,11 +298,11 @@ But one must always specify **over which field** the isomorphism exists.
 
 <a id="base-vs-closure"></a>
 
-## 4. Isomorphism over \(K\) versus over \(\overline K\)
+## 4. Isomorphism over $K$ versus over $\overline K$
 
-Suppose two elliptic curves are defined over \(K\).
+Suppose two elliptic curves are defined over $K$.
 
-They may fail to be isomorphic over \(K\), yet become isomorphic after extending the field to its algebraic closure
+They may fail to be isomorphic over $K$, yet become isomorphic after extending the field to its algebraic closure
 
 $$
 \overline K.
@@ -334,9 +332,9 @@ $$
 \sqrt d
 $$
 
-that does not belong to \(K\).
+that does not belong to $K$.
 
-Once we extend \(K\) so that \(\sqrt d\) exists, the transformation becomes available.
+Once we extend $K$ so that $\sqrt d$ exists, the transformation becomes available.
 
 This phenomenon is the basis of the theory of **twists**.
 
@@ -344,7 +342,7 @@ This phenomenon is the basis of the theory of **twists**.
 
 <a id="j-invariant"></a>
 
-## 5. The \(j\)-invariant
+## 5. The $j$-invariant
 
 For a short Weierstrass curve
 
@@ -359,7 +357,7 @@ $$
 4a^3+27b^2\neq0,
 $$
 
-the \(j\)-invariant is
+the $j$-invariant is
 
 $$
 \boxed{
@@ -379,7 +377,7 @@ $$
 
 this may equivalently be related to the classical Weierstrass invariants.
 
-The crucial property is that \(j(E)\) is unchanged by elliptic-curve isomorphism.
+The crucial property is that $j(E)$ is unchanged by elliptic-curve isomorphism.
 
 ---
 
@@ -439,7 +437,7 @@ print(E.j_invariant())
 
 <a id="why-j-invariant"></a>
 
-## 6. Why \(j\) is invariant
+## 6. Why $j$ is invariant
 
 Under
 
@@ -499,7 +497,7 @@ j(E')=j(E).
 }
 $$
 
-So \(j\) survives the coordinate change.
+So $j$ survives the coordinate change.
 
 This is exactly what an invariant should do.
 
@@ -507,7 +505,7 @@ This is exactly what an invariant should do.
 
 <a id="j-classification"></a>
 
-## 7. What the \(j\)-invariant classifies
+## 7. What the $j$-invariant classifies
 
 The fundamental theorem is:
 
@@ -521,7 +519,7 @@ j(E_1)=j(E_2).
 }
 $$
 
-Thus, over an algebraic closure, the \(j\)-invariant completely determines the isomorphism class of an elliptic curve.
+Thus, over an algebraic closure, the $j$-invariant completely determines the isomorphism class of an elliptic curve.
 
 Very roughly,
 
@@ -533,21 +531,21 @@ j
 }
 $$
 
-This is why \(j\) appears naturally in the **moduli theory** of elliptic curves.
+This is why $j$ appears naturally in the **moduli theory** of elliptic curves.
 
 But one must keep the word *geometric* in mind.
 
-Two curves with the same \(j\)-invariant may still fail to be isomorphic over the original field \(K\).
+Two curves with the same $j$-invariant may still fail to be isomorphic over the original field $K$.
 
 ---
 
 <a id="special-j"></a>
 
-## 8. Special values \(j=0\) and \(j=1728\)
+## 8. Special values $j=0$ and $j=1728$
 
-Two \(j\)-values occur as exceptional cases throughout elliptic-curve theory.
+Two $j$-values occur as exceptional cases throughout elliptic-curve theory.
 
-### \(j=0\)
+### $j=0$
 
 If
 
@@ -580,7 +578,7 @@ $$
 
 ---
 
-### \(j=1728\)
+### $j=1728$
 
 If
 
@@ -645,7 +643,7 @@ This is why these values repeatedly require special handling.
 
 <a id="curve-from-j"></a>
 
-## 9. Constructing a curve from a prescribed \(j\)
+## 9. Constructing a curve from a prescribed $j$
 
 For
 
@@ -653,7 +651,7 @@ $$
 j\neq0,1728,
 $$
 
-one possible model with the desired \(j\)-invariant is
+one possible model with the desired $j$-invariant is
 
 $$
 \boxed{
@@ -668,9 +666,9 @@ x^3
 }
 $$
 
-Substitution into the \(j\)-formula recovers the prescribed value.
+Substitution into the $j$-formula recovers the prescribed value.
 
-This shows that \(j\) is not merely something computed *from* a curve.
+This shows that $j$ is not merely something computed *from* a curve.
 
 It can also be used to select a representative of a geometric isomorphism class.
 
@@ -698,7 +696,7 @@ must be handled separately because the formula above degenerates.
 
 <a id="twists"></a>
 
-## 10. Twists: same \(j\), different curve over \(K\)
+## 10. Twists: same $j$, different curve over $K$
 
 Consider
 
@@ -722,7 +720,7 @@ y^2=x^3+d^2ax+d^3b.
 }
 $$
 
-Its \(j\)-invariant is unchanged:
+Its $j$-invariant is unchanged:
 
 $$
 \boxed{
@@ -740,7 +738,7 @@ $$
 
 the two curves become isomorphic.
 
-But if \(d\) is not a square in \(K\), they need not be isomorphic over \(K\).
+But if $d$ is not a square in $K$, they need not be isomorphic over $K$.
 
 So
 
@@ -766,7 +764,7 @@ $$
 
 <a id="j-finite-fields"></a>
 
-## 11. \(j\)-invariants over finite fields
+## 11. $j$-invariants over finite fields
 
 Exactly the same distinction appears over
 
@@ -774,7 +772,7 @@ $$
 \mathbb F_q.
 $$
 
-Curves with the same \(j\)-invariant become isomorphic over
+Curves with the same $j$-invariant become isomorphic over
 
 $$
 \overline{\mathbb F}_q,
@@ -788,7 +786,7 @@ $$
 
 Quadratic twists provide the standard example.
 
-For odd \(q\), if \(E'\) is the nontrivial quadratic twist of \(E\), then
+For odd $q$, if $E'$ is the nontrivial quadratic twist of $E$, then
 
 $$
 \boxed{
@@ -844,7 +842,7 @@ Different models can offer:
 * faster doubling;
 * fewer exceptional cases;
 * unified formulas;
-* \(x\)-coordinate-only arithmetic;
+* $x$-coordinate-only arithmetic;
 * convenient projective coordinates;
 * more regular constant-time algorithms.
 
@@ -866,7 +864,7 @@ The model determines which arithmetic structure is easiest to exploit safely and
 
 ## 13. Montgomery curves
 
-A **Montgomery curve** over a field \(K\) has equation
+A **Montgomery curve** over a field $K$ has equation
 
 $$
 \boxed{
@@ -905,7 +903,7 @@ $$
 
 ---
 
-### A built-in point of order \(2\)
+### A built-in point of order $2$
 
 Set
 
@@ -919,7 +917,7 @@ $$
 By^2=0.
 $$
 
-Since \(B\neq0\),
+Since $B\neq0$,
 
 $$
 y=0.
@@ -945,7 +943,7 @@ $$
 }
 $$
 
-Every Montgomery curve therefore contains a rational point of order \(2\).
+Every Montgomery curve therefore contains a rational point of order $2$.
 
 This already places a restriction on which elliptic curves can admit Montgomery form over a particular base field.
 
@@ -1030,9 +1028,9 @@ The underlying group law has not.
 
 <a id="x-coordinate-arithmetic"></a>
 
-## 15. Montgomery \(x\)-coordinate arithmetic
+## 15. Montgomery $x$-coordinate arithmetic
 
-The real computational advantage of Montgomery form is its support for efficient arithmetic without explicitly maintaining \(y\)-coordinates.
+The real computational advantage of Montgomery form is its support for efficient arithmetic without explicitly maintaining $y$-coordinates.
 
 Suppose we know
 
@@ -1114,9 +1112,9 @@ $$
 -P
 $$
 
-have the same \(x\)-coordinate.
+have the same $x$-coordinate.
 
-So \(x\)-only arithmetic naturally operates on the quotient
+So $x$-only arithmetic naturally operates on the quotient
 
 $$
 E/\{\pm1\}.
@@ -1150,7 +1148,7 @@ $$
 R_1-R_0=P.
 $$
 
-Since \(x(P)\) is known, the ladder always has the differential information required by \(\operatorname{xADD}\).
+Since $x(P)$ is known, the ladder always has the differential information required by $\operatorname{xADD}$.
 
 A ladder step performs combinations of
 
@@ -1218,7 +1216,7 @@ A=486662,
 B=1.
 $$
 
-A standard base \(u\)-coordinate is
+A standard base $u$-coordinate is
 
 $$
 \boxed{
@@ -1252,7 +1250,7 @@ The exposed computational representation is deliberately narrower.
 
 <a id="montgomery-j"></a>
 
-## 18. Montgomery \(j\)-invariant
+## 18. Montgomery $j$-invariant
 
 For
 
@@ -1261,7 +1259,7 @@ M_{A,B}:
 By^2=x^3+Ax^2+x,
 $$
 
-the \(j\)-invariant is
+the $j$-invariant is
 
 $$
 \boxed{
@@ -1273,11 +1271,11 @@ j(M_{A,B})
 }
 $$
 
-Notice that \(B\) does not appear.
+Notice that $B$ does not appear.
 
-Over an algebraic closure, \(B\) can be absorbed by rescaling \(y\).
+Over an algebraic closure, $B$ can be absorbed by rescaling $y$.
 
-Therefore the geometric isomorphism class depends on \(A\), while \(B\) may affect whether a particular isomorphism is defined over the base field.
+Therefore the geometric isomorphism class depends on $A$, while $B$ may affect whether a particular isomorphism is defined over the base field.
 
 Once again:
 
@@ -1372,9 +1370,9 @@ E:
 y^2=x^3+ax+b
 $$
 
-over a field \(K\) of characteristic different from \(2\) and \(3\).
+over a field $K$ of characteristic different from $2$ and $3$.
 
-For \(E\) to admit a Montgomery model over \(K\), we need a root
+For $E$ to admit a Montgomery model over $K$, we need a root
 
 $$
 \boxed{
@@ -1394,7 +1392,7 @@ $$
 (\alpha,0)
 $$
 
-is a \(K\)-rational point of order \(2\).
+is a $K$-rational point of order $2$.
 
 We additionally require
 
@@ -1404,7 +1402,7 @@ $$
 }
 $$
 
-to be a square in \(K\).
+to be a square in $K$.
 
 Suppose
 
@@ -1420,7 +1418,7 @@ $$
 (\alpha,0)
 $$
 
-to the distinguished Montgomery \(2\)-torsion point
+to the distinguished Montgomery $2$-torsion point
 
 $$
 (0,0)
@@ -1442,7 +1440,7 @@ $$
 }
 $$
 
-A \(K\)-rational point of order \(4\) provides an important sufficient condition, but rational \(4\)-torsion should not be stated as the general necessary-and-sufficient criterion.
+A $K$-rational point of order $4$ provides an important sufficient condition, but rational $4$-torsion should not be stated as the general necessary-and-sufficient criterion.
 
 ---
 
@@ -1478,7 +1476,7 @@ but it need not possess an inverse morphism.
 
 Its kernel can contain several points.
 
-An isomorphism is precisely a degree-\(1\) isogeny.
+An isomorphism is precisely a degree-$1$ isogeny.
 
 Thus
 
@@ -1492,9 +1490,9 @@ $$
 
 but not conversely.
 
-Two isomorphic elliptic curves have the same \(j\)-invariant.
+Two isomorphic elliptic curves have the same $j$-invariant.
 
-Two merely isogenous curves may have different \(j\)-invariants.
+Two merely isogenous curves may have different $j$-invariants.
 
 This distinction becomes central when we later study isogenies and endomorphism rings.
 
@@ -1522,7 +1520,7 @@ Useful because it is:
 Useful for:
 
 * differential addition;
-* \(x\)-coordinate arithmetic;
+* $x$-coordinate arithmetic;
 * Montgomery ladder scalar multiplication;
 * regular implementation structure.
 
@@ -1680,7 +1678,7 @@ $$
 \overline K.
 $$
 
-The \(j\)-invariant classifies this geometric layer:
+The $j$-invariant classifies this geometric layer:
 
 $$
 \boxed{

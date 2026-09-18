@@ -26,7 +26,7 @@ draft: false
 
 - [Why Dual_EC_DRBG Is a Different Kind of Failure](#why-dual_ec_drbg-is-a-different-kind-of-failure)
 - [The Simplified Elliptic-Curve Generator](#the-simplified-elliptic-curve-generator)
-- [The Hidden Relation Between (P) and (Q)](#the-hidden-relation-between-p-and-q)
+- [The Hidden Relation Between $P$ and $Q$](#the-hidden-relation-between-ppp-and-qqq)
 - [Why Truncation Does Not Remove the Trapdoor](#why-truncation-does-not-remove-the-trapdoor)
 - [State Compromise, Prediction, and What the Attack Actually Gives](#state-compromise-prediction-and-what-the-attack-actually-gives)
 - [Parameter Provenance and the Meaning of a Verifiable Setup](#parameter-provenance-and-the-meaning-of-a-verifiable-setup)
@@ -64,9 +64,9 @@ Dual_EC_DRBG introduces a very different lesson.
 
 Its core is based on elliptic-curve scalar multiplication, a primitive associated with a hard mathematical problem:
 
-\[
+$$
 \text{ECDLP}.
-\]
+$$
 
 At first sight this looks reassuring.
 
@@ -78,11 +78,11 @@ Dual_EC_DRBG demonstrates that a generator can be built from a hard mathematical
 
 The central question becomes:
 
-\[
+$$
 \boxed{
 \text{Who generated the public parameters, and what do they know about them?}
 }
-\]
+$$
 
 That is a different security boundary from:
 
@@ -110,49 +110,49 @@ It should be studied, not deployed.
 
 Let:
 
-\[
+$$
 E/\mathbb F_p
-\]
+$$
 
 be an elliptic curve.
 
 Let:
 
-\[
+$$
 P,Q\in E(\mathbb F_p)
-\]
+$$
 
 be public points in a large prime-order subgroup.
 
 Let the internal state be an integer:
 
-\[
+$$
 s_i.
-\]
+$$
 
 A simplified Dual_EC-style round can be written as:
 
-\[
+$$
 s_{i+1}
 =
 x(s_iP),
-\]
+$$
 
 where:
 
-\[
+$$
 x(R)
-\]
+$$
 
-means "take the affine \(x\)-coordinate of point \(R\)."
+means "take the affine $x$-coordinate of point $R$."
 
 The output is derived from:
 
-\[
+$$
 r_i
 =
 x(s_iQ),
-\]
+$$
 
 or equivalently with an index shift one can view the output as derived from the updated state.
 
@@ -160,39 +160,39 @@ The exact historical standard includes additional details, state-management rule
 
 For understanding the trapdoor, however, the essential structure is:
 
-\[
+$$
 \boxed{
 \text{state path uses }P
 }
-\]
+$$
 
 while:
 
-\[
+$$
 \boxed{
 \text{output path uses }Q.
 }
-\]
+$$
 
 ### Why this looks one-way
 
 Suppose an observer sees the point:
 
-\[
+$$
 R=s_iQ.
-\]
+$$
 
 Recovering:
 
-\[
+$$
 s_i
-\]
+$$
 
 from:
 
-\[
+$$
 Q,\ R=s_iQ
-\]
+$$
 
 is an instance of the elliptic-curve discrete logarithm problem.
 
@@ -204,33 +204,33 @@ So a naive security argument might say:
 
 That statement misses the role of the second point:
 
-\[
+$$
 P.
-\]
+$$
 
-The relationship between \(P\) and \(Q\) is critical.
+The relationship between $P$ and $Q$ is critical.
 
 ### The actual P-256 output shape
 
-In the historical P-256 instantiation, the internal state was a 256-bit integer associated with elliptic-curve \(x\)-coordinates.
+In the historical P-256 instantiation, the internal state was a 256-bit integer associated with elliptic-curve $x$-coordinates.
 
-The generator did not return the entire \(x\)-coordinate from the output point.
+The generator did not return the entire $x$-coordinate from the output point.
 
 For the common maximum-output setting, it returned up to:
 
-\[
+$$
 30\text{ bytes}
 =
 240\text{ bits}
-\]
+$$
 
-from a 256-bit \(x\)-coordinate.
+from a 256-bit $x$-coordinate.
 
 So:
 
-\[
+$$
 16
-\]
+$$
 
 most-significant bits were omitted.
 
@@ -242,39 +242,39 @@ That turns out to be the crucial issue.
 
 ---
 
-## The Hidden Relation Between \(P\) and \(Q\)
+## The Hidden Relation Between $P$ and $Q$
 
 Assume the public points are not unrelated.
 
 Suppose some party knows a secret scalar:
 
-\[
+$$
 e
-\]
+$$
 
 such that:
 
-\[
+$$
 \boxed{
 P=eQ.
 }
-\]
+$$
 
 This is the convention used in this article.
 
 Equivalent literature often writes:
 
-\[
+$$
 Q=dP
-\]
+$$
 
-for a secret \(d\), in which case:
+for a secret $d$, in which case:
 
-\[
+$$
 e=d^{-1}\pmod n
-\]
+$$
 
-for subgroup order \(n\).
+for subgroup order $n$.
 
 The two descriptions express the same hidden relation.
 
@@ -282,27 +282,27 @@ The two descriptions express the same hidden relation.
 
 Suppose the generator exposes enough information to reconstruct a candidate output point:
 
-\[
+$$
 R=s_iQ.
-\]
+$$
 
 An ordinary observer knows:
 
-\[
+$$
 Q
-\]
+$$
 
 and:
 
-\[
+$$
 R.
-\]
+$$
 
-Recovering \(s_i\) would require solving:
+Recovering $s_i$ would require solving:
 
-\[
+$$
 R=s_iQ,
-\]
+$$
 
 which is ECDLP.
 
@@ -310,77 +310,77 @@ which is ECDLP.
 
 The party knowing:
 
-\[
+$$
 P=eQ
-\]
+$$
 
 does not need to solve ECDLP.
 
 Simply compute:
 
-\[
+$$
 eR.
-\]
+$$
 
 Since:
 
-\[
+$$
 R=s_iQ,
-\]
+$$
 
 we get:
 
-\[
+$$
 eR
 =
 e(s_iQ).
-\]
+$$
 
 Scalar multiplication is associative:
 
-\[
+$$
 e(s_iQ)
 =
 s_i(eQ).
-\]
+$$
 
 Because:
 
-\[
+$$
 eQ=P,
-\]
+$$
 
 we obtain:
 
-\[
+$$
 \boxed{
 eR=s_iP.
 }
-\]
+$$
 
-Take the \(x\)-coordinate:
+Take the $x$-coordinate:
 
-\[
+$$
 x(eR)
 =
 x(s_iP).
-\]
+$$
 
 But the state update is:
 
-\[
+$$
 s_{i+1}
 =
 x(s_iP).
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 s_{i+1}=x(eR).
 }
-\]
+$$
 
 The trapdoor holder has transformed an output point into the next internal state using one known scalar multiplication.
 
@@ -410,7 +410,7 @@ trapdoor holder:
 
 So:
 
-\[
+$$
 \boxed{
 \text{hard primitive}
 +
@@ -418,24 +418,24 @@ So:
 \neq
 \text{hard state recovery}.
 }
-\]
+$$
 
 ### Why the relation is invisible
 
-Given arbitrary public points \(P,Q\) in a prime-order group, there always exists some scalar \(e\) satisfying:
+Given arbitrary public points $P,Q$ in a prime-order group, there always exists some scalar $e$ satisfying:
 
-\[
+$$
 P=eQ
-\]
+$$
 
 as long as both generate the same subgroup.
 
-But finding that scalar from only \(P,Q\) is itself an ECDLP.
+But finding that scalar from only $P,Q$ is itself an ECDLP.
 
 So users cannot easily tell whether:
 
-- nobody knows \(e\);
-- the parameter generator deliberately chose \(e\) and then constructed \(P,Q\);
+- nobody knows $e$;
+- the parameter generator deliberately chose $e$ and then constructed $P,Q$;
 - the relation was generated transparently and then forgotten.
 
 That is why **parameter provenance** matters.
@@ -444,7 +444,7 @@ That is why **parameter provenance** matters.
 
 ## Why Truncation Does Not Remove the Trapdoor
 
-The generator did not reveal the entire output-point \(x\)-coordinate.
+The generator did not reveal the entire output-point $x$-coordinate.
 
 That complicates the attack.
 
@@ -454,9 +454,9 @@ It does not eliminate it.
 
 For the common P-256 maximum-output configuration:
 
-\[
+$$
 x(R)
-\]
+$$
 
 is approximately 256 bits.
 
@@ -464,17 +464,17 @@ The generator returned 240 bits.
 
 Therefore the attacker must recover:
 
-\[
+$$
 16
-\]
+$$
 
 missing bits.
 
 The naive candidate count is at most:
 
-\[
+$$
 2^{16}=65536.
-\]
+$$
 
 That is tiny compared with ECDLP complexity.
 
@@ -482,80 +482,80 @@ That is tiny compared with ECDLP complexity.
 
 Let the published 240-bit value be:
 
-\[
+$$
 u.
-\]
+$$
 
 For each candidate:
 
-\[
+$$
 h\in\{0,\ldots,2^{16}-1\},
-\]
+$$
 
 construct:
 
-\[
+$$
 x_h
 =
 h\cdot2^{240}+u.
-\]
+$$
 
 Discard candidates outside the field:
 
-\[
+$$
 x_h\ge p.
-\]
+$$
 
-### Step 2: test whether the \(x\)-coordinate lies on the curve
+### Step 2: test whether the $x$-coordinate lies on the curve
 
 For a short Weierstrass curve:
 
-\[
+$$
 y^2
 =
 x^3+ax+b
 \pmod p.
-\]
+$$
 
-For each candidate \(x_h\), compute:
+For each candidate $x_h$, compute:
 
-\[
+$$
 v
 =
 x_h^3+ax_h+b
 \pmod p.
-\]
+$$
 
-The candidate corresponds to a curve point only if \(v\) is a quadratic residue.
+The candidate corresponds to a curve point only if $v$ is a quadratic residue.
 
 If so, there are usually two points:
 
-\[
+$$
 (x_h,y)
-\]
+$$
 
 and:
 
-\[
+$$
 (x_h,-y).
-\]
+$$
 
-So many of the \(2^{16}\) candidates disappear immediately.
+So many of the $2^{16}$ candidates disappear immediately.
 
 ### Step 3: apply the trapdoor
 
-For every candidate point \(R_h\), compute:
+For every candidate point $R_h$, compute:
 
-\[
+$$
 eR_h.
-\]
+$$
 
 Then derive:
 
-\[
+$$
 s'=
 x(eR_h).
-\]
+$$
 
 Each candidate gives a possible next generator state.
 
@@ -563,9 +563,9 @@ Each candidate gives a possible next generator state.
 
 Use:
 
-\[
+$$
 s'
-\]
+$$
 
 to predict the next Dual_EC output.
 
@@ -609,21 +609,21 @@ But a trapdoor changes the complexity model.
 
 Without the hidden relation:
 
-\[
+$$
 \text{recover state}
 \approx
 \text{ECDLP-like problem}.
-\]
+$$
 
 With the hidden relation:
 
-\[
+$$
 \text{recover state}
 \approx
 \text{enumerate omitted bits}
 +
 \text{cheap EC operations}.
-\]
+$$
 
 That is an enormous gap.
 
@@ -644,25 +644,25 @@ It is clearer to ask explicit state-compromise questions.
 
 Suppose the attacker learns:
 
-\[
+$$
 s_{i+1}.
-\]
+$$
 
 Because the generator is deterministic, the attacker can compute:
 
-\[
+$$
 s_{i+2}
 =
 x(s_{i+1}P),
-\]
+$$
 
 then:
 
-\[
+$$
 s_{i+3}
 =
 x(s_{i+2}P),
-\]
+$$
 
 and so on.
 
@@ -676,23 +676,23 @@ Knowing current state does not automatically imply that previous states can be r
 
 The state update:
 
-\[
+$$
 s_{i+1}=x(s_iP)
-\]
+$$
 
 is intended to be one-way.
 
 So:
 
-\[
+$$
 s_{i+1}
-\]
+$$
 
 does not trivially reveal:
 
-\[
+$$
 s_i.
-\]
+$$
 
 This distinction is why generator security literature separates future prediction from backtracking-style properties.
 
@@ -715,16 +715,16 @@ Therefore one should not summarize a DRBG with a vague phrase such as:
 
 The right questions are explicit:
 
-1. If state \(S_i\) is compromised, can earlier output be reconstructed?
+1. If state $S_i$ is compromised, can earlier output be reconstructed?
 2. Can future output be predicted?
 3. After fresh entropy enters, when is security restored?
 4. Can public output itself cause state compromise?
 
 Dual_EC_DRBG is especially serious because the hidden relation can make the answer to question 4:
 
-\[
+$$
 \boxed{\text{yes}.}
-\]
+$$
 
 ---
 
@@ -732,7 +732,7 @@ Dual_EC_DRBG is especially serious because the hidden relation can make the answ
 
 The mathematical trapdoor only helps someone who knows the hidden relation.
 
-So where did \(P\) and \(Q\) come from?
+So where did $P$ and $Q$ come from?
 
 That question is part of the security definition.
 
@@ -740,9 +740,9 @@ That question is part of the security definition.
 
 Cryptographers often call values:
 
-\[
+$$
 P,Q
-\]
+$$
 
 "public parameters."
 
@@ -833,7 +833,7 @@ It appeared alongside:
 
 ### Public warning before the major controversy
 
-In 2007, Dan Shumow and Niels Ferguson publicly presented the possibility that the \(P,Q\) relationship could provide a trapdoor.
+In 2007, Dan Shumow and Niels Ferguson publicly presented the possibility that the $P,Q$ relationship could provide a trapdoor.
 
 The concern was mathematical:
 
@@ -880,7 +880,7 @@ Several claims should be separated carefully.
 
 **Mathematically established:**
 
-- a hidden relation between \(P\) and \(Q\) can create a state-prediction trapdoor;
+- a hidden relation between $P$ and $Q$ can create a state-prediction trapdoor;
 - the historical truncation was small enough that a trapdoor holder could enumerate missing bits;
 - practical exploitability depends on how output is exposed and on implementation/protocol details.
 
@@ -893,7 +893,7 @@ Several claims should be separated carefully.
 
 **More sensitive attribution question:**
 
-- whether the standardized \(P,Q\) values were intentionally chosen to embed a trapdoor, and who possessed it.
+- whether the standardized $P,Q$ values were intentionally chosen to embed a trapdoor, and who possessed it.
 
 Public reporting and later historical research strongly shaped the controversy, but an educational article should distinguish the mathematical vulnerability from claims about intent.
 
@@ -917,73 +917,73 @@ It reproduces only the hidden-relation mechanism.
 
 Use:
 
-\[
+$$
 E:
 y^2=x^3+497x+1768
 \pmod{9739}.
-\]
+$$
 
 Take the public point:
 
-\[
+$$
 Q=(1804,5368).
-\]
+$$
 
-For this toy curve, \(Q\) has order:
+For this toy curve, $Q$ has order:
 
-\[
+$$
 9735.
-\]
+$$
 
 Choose a secret trapdoor scalar:
 
-\[
+$$
 e=7.
-\]
+$$
 
 Define:
 
-\[
+$$
 P=eQ.
-\]
+$$
 
 The resulting point is:
 
-\[
+$$
 P=(3882,6883).
-\]
+$$
 
-The public sees \(P,Q\).
+The public sees $P,Q$.
 
 The trapdoor holder also remembers:
 
-\[
+$$
 e=7.
-\]
+$$
 
 ### Toy generator
 
-Given state \(s\):
+Given state $s$:
 
-\[
+$$
 r=x(sQ),
-\]
+$$
 
 publish only the lowest 8 bits:
 
-\[
+$$
 \operatorname{out}(s)
 =
 r\bmod2^8.
-\]
+$$
 
 Update state as:
 
-\[
+$$
 s'
 =
 x(sP).
-\]
+$$
 
 This mirrors the important Dual_EC relationship:
 
@@ -998,27 +998,27 @@ while using tiny parameters.
 
 Let:
 
-\[
+$$
 s_0=1234.
-\]
+$$
 
 The toy generator produces:
 
-\[
+$$
 \operatorname{out}(s_0)=66.
-\]
+$$
 
 The hidden next state is:
 
-\[
+$$
 s_1=x(s_0P)=9364.
-\]
+$$
 
 The next published byte is:
 
-\[
+$$
 \operatorname{out}(s_1)=199.
-\]
+$$
 
 ### Trapdoor reconstruction
 
@@ -1032,65 +1032,65 @@ for the first output.
 
 Because only the low 8 bits are retained, enumerate all field values:
 
-\[
+$$
 x
 =
 66+256h
-\]
+$$
 
 with:
 
-\[
+$$
 0\le x<9739.
-\]
+$$
 
 There are only:
 
-\[
+$$
 38
-\]
+$$
 
 numeric candidates.
 
-For each \(x\), test whether:
+For each $x$, test whether:
 
-\[
+$$
 x^3+497x+1768
-\]
+$$
 
-has a square root modulo \(9739\).
+has a square root modulo $9739$.
 
 In this example, only:
 
-\[
+$$
 40
-\]
+$$
 
-point candidates remain when both signs of \(y\) are counted.
+point candidates remain when both signs of $y$ are counted.
 
 The trapdoor holder computes:
 
-\[
+$$
 eR
-\]
+$$
 
-for every point candidate \(R\).
+for every point candidate $R$.
 
-Taking \(x(eR)\) gives candidate next states.
+Taking $x(eR)$ gives candidate next states.
 
 Because:
 
-\[
+$$
 x(R)=x(-R),
-\]
+$$
 
 the two signs often collapse to the same candidate state.
 
 In this run there are only:
 
-\[
+$$
 20
-\]
+$$
 
 distinct next-state candidates.
 
@@ -1102,9 +1102,9 @@ Now compare each candidate against the next observed output:
 
 Only:
 
-\[
+$$
 \boxed{9364}
-\]
+$$
 
 survives.
 
@@ -1241,11 +1241,11 @@ The point of the demonstration is not the small curve.
 
 It is the identity:
 
-\[
+$$
 \boxed{
 e(sQ)=sP.
 }
-\]
+$$
 
 Once that relation is known, the hard discrete-logarithm problem is no longer the attack path.
 
@@ -1279,11 +1279,11 @@ That does not imply that state recovery is as hard as ECDLP.
 
 The relevant question is:
 
-\[
+$$
 \boxed{
 \text{What is the best attack given all structure?}
 }
-\]
+$$
 
 A trapdoor changes the best attack completely.
 
@@ -1303,9 +1303,9 @@ For security-critical constants, ask:
 
 Removing 16 bits sounds substantial only until the attack is written explicitly:
 
-\[
+$$
 2^{16}
-\]
+$$
 
 candidates is small.
 
@@ -1347,13 +1347,13 @@ It does not prove that the primitive's design assumptions are sound.
 
 This is the same distinction we have emphasized throughout CryptoCave:
 
-\[
+$$
 \boxed{
 \text{correct implementation}
 \neq
 \text{secure design}.
 }
-\]
+$$
 
 ---
 
@@ -1371,13 +1371,13 @@ The answer is now much richer than:
 
 We began with:
 
-\[
+$$
 G:\{0,1\}^s
 \rightarrow
 \{0,1\}^{\ell},
 \qquad
 \ell>s.
-\]
+$$
 
 The core idea was computational indistinguishability.
 
@@ -1389,60 +1389,60 @@ Security means efficient adversaries cannot exploit the deterministic structure.
 
 The LCG showed:
 
-\[
+$$
 S_{i+1}
 =
 aS_i+c
 \pmod m.
-\]
+$$
 
 A long period does not help when a few states reveal:
 
-\[
+$$
 a,\ c,
-\]
+$$
 
 and possibly even:
 
-\[
+$$
 m.
-\]
+$$
 
 Lesson:
 
-\[
+$$
 \boxed{
 \text{statistical quality}
 \neq
 \text{state-recovery resistance}.
 }
-\]
+$$
 
 ### Part 03 — Linear Feedback Shift Registers
 
 LFSRs moved the recurrence into:
 
-\[
+$$
 \mathbb F_2.
-\]
+$$
 
 Primitive polynomials gave beautiful maximal periods:
 
-\[
+$$
 2^m-1.
-\]
+$$
 
 Yet Berlekamp–Massey exposed the minimal linear recurrence.
 
 Lesson:
 
-\[
+$$
 \boxed{
 \text{maximal period}
 \neq
 \text{cryptographic unpredictability}.
 }
-\]
+$$
 
 ### Part 04 — Geffe Generator
 
@@ -1450,25 +1450,25 @@ The Geffe generator introduced nonlinearity.
 
 But:
 
-\[
+$$
 \Pr[F=Y]
 =
 \Pr[F=Z]
 =
 \frac34.
-\]
+$$
 
 Correlation split one large state-search problem into several small ones.
 
 Lesson:
 
-\[
+$$
 \boxed{
 \text{nonlinearity}
 \neq
 \text{correlation immunity}.
 }
-\]
+$$
 
 ### Part 05 — RC4
 
@@ -1480,13 +1480,13 @@ But measurable biases remained.
 
 Lesson:
 
-\[
+$$
 \boxed{
 \text{complex-looking dynamics}
 \neq
 \text{ideal pseudorandomness}.
 }
-\]
+$$
 
 ### Part 06 — ChaCha20
 
@@ -1503,7 +1503,7 @@ It also reminded us that even a strong primitive fails under nonce reuse.
 
 Lesson:
 
-\[
+$$
 \boxed{
 \text{secure primitive}
 +
@@ -1511,7 +1511,7 @@ Lesson:
 =
 \text{insecure system}.
 }
-\]
+$$
 
 ### Part 07 — Dual_EC_DRBG
 
@@ -1521,7 +1521,7 @@ A hidden parameter relation can collapse the advertised hard problem.
 
 Lesson:
 
-\[
+$$
 \boxed{
 \text{hard mathematics}
 +
@@ -1529,13 +1529,13 @@ Lesson:
 \neq
 \text{trustworthy pseudorandomness}.
 }
-\]
+$$
 
 ### The complete progression
 
 The series therefore developed through seven distinct failure or design dimensions:
 
-\[
+$$
 \boxed{
 \begin{aligned}
 &\text{computational indistinguishability}\\
@@ -1547,7 +1547,7 @@ The series therefore developed through seven distinct failure or design dimensio
 \rightarrow\;&\text{parameter trust and trapdoors}.
 \end{aligned}
 }
-\]
+$$
 
 This is a much stronger framework for reasoning about random generators than asking:
 
@@ -1555,12 +1555,12 @@ This is a much stronger framework for reasoning about random generators than ask
 
 The mature question is:
 
-\[
+$$
 \boxed{
 \text{What information does output reveal about hidden state,
 under every structural advantage available to the adversary?}
 }
-\]
+$$
 
 ---
 
@@ -1570,51 +1570,51 @@ Dual_EC_DRBG is one of the clearest examples of why cryptographic security canno
 
 The simplified generator uses:
 
-\[
+$$
 s_{i+1}=x(s_iP)
-\]
+$$
 
 for state evolution and:
 
-\[
+$$
 r_i=x(s_iQ)
-\]
+$$
 
 for output generation.
 
-If nobody knows a useful relation between \(P\) and \(Q\), recovering state from output appears tied to difficult elliptic-curve inversion problems.
+If nobody knows a useful relation between $P$ and $Q$, recovering state from output appears tied to difficult elliptic-curve inversion problems.
 
 But if a party knows:
 
-\[
+$$
 P=eQ,
-\]
+$$
 
 then from an output point:
 
-\[
+$$
 R=s_iQ
-\]
+$$
 
 it can compute:
 
-\[
+$$
 eR=s_iP.
-\]
+$$
 
-Taking the \(x\)-coordinate immediately yields the state-update value:
+Taking the $x$-coordinate immediately yields the state-update value:
 
-\[
+$$
 \boxed{
 s_{i+1}=x(eR).
 }
-\]
+$$
 
 No ECDLP is solved.
 
 Historical P-256 output truncation omitted only 16 bits in the maximum-output configuration.
 
-The trapdoor holder can enumerate those candidates, lift candidate \(x\)-coordinates to curve points, apply the hidden scalar relation, and validate predicted state against later output.
+The trapdoor holder can enumerate those candidates, lift candidate $x$-coordinates to curve points, apply the hidden scalar relation, and validate predicted state against later output.
 
 That transforms an intended high-security inversion problem into a manageable candidate search.
 
@@ -1638,11 +1638,11 @@ The deepest lesson is not merely:
 
 It is:
 
-\[
+$$
 \boxed{
 \text{cryptographic assurance includes the provenance of parameters and standards}.
 }
-\]
+$$
 
 A strong primitive needs:
 
@@ -1660,11 +1660,11 @@ The mathematics changed.
 
 The central cryptanalytic question did not:
 
-\[
+$$
 \boxed{
 \text{What hidden structure turns observed output into knowledge of internal state?}
 }
-\]
+$$
 
 
 Return to the Randomness & Stream Ciphers series index.

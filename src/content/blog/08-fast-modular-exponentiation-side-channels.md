@@ -40,7 +40,7 @@ And in all of these cases, the exponent may contain hundreds or thousands of bit
 
 So an obvious question appears:
 
-> Are we literally multiplying the base by itself \(e\) times?
+> Are we literally multiplying the base by itself $e$ times?
 
 Fortunately, no.
 
@@ -78,11 +78,11 @@ That is our first side-channel question.
 
 Suppose we want to compute
 
-\[
+$$
 7^{13}\bmod 23.
-\]
+$$
 
-A direct implementation could repeatedly multiply by \(7\):
+A direct implementation could repeatedly multiply by $7$:
 
 ```python
 def pow_naive(base, exponent, modulus):
@@ -96,9 +96,9 @@ def pow_naive(base, exponent, modulus):
 
 For
 
-\[
+$$
 e=13,
-\]
+$$
 
 this is perfectly manageable.
 
@@ -106,9 +106,9 @@ But imagine instead that the exponent is a 2048-bit RSA private exponent.
 
 Its numerical value may be on the order of
 
-\[
+$$
 2^{2048}.
-\]
+$$
 
 Performing one multiplication for every integer step up to that exponent is completely impossible.
 
@@ -116,51 +116,51 @@ The important observation is that the exponent can be represented in binary.
 
 For example,
 
-\[
+$$
 13=(1101)_2.
-\]
+$$
 
 Equivalently,
 
-\[
+$$
 13=8+4+1.
-\]
+$$
 
 Therefore,
 
-\[
+$$
 7^{13}
 =
 7^8\cdot7^4\cdot7.
-\]
+$$
 
 The powers
 
-\[
+$$
 7,\quad
 7^2,\quad
 7^4,\quad
 7^8,\quad
 7^{16},\ldots
-\]
+$$
 
 are easy to generate because each one is obtained by squaring the previous value.
 
 That changes the complexity dramatically.
 
-If the exponent \(e\) has bit length
+If the exponent $e$ has bit length
 
-\[
+$$
 \ell=\lfloor\log_2 e\rfloor+1,
-\]
+$$
 
 then square-and-multiply performs work proportional to roughly
 
-\[
+$$
 O(\ell)=O(\log e)
-\]
+$$
 
-modular multiplications rather than \(O(e)\).
+modular multiplications rather than $O(e)$.
 
 That is the reason modular exponentiation remains practical even when the exponent itself is enormous.
 
@@ -193,9 +193,9 @@ modulus = 23
 
 Since
 
-\[
+$$
 13=(1101)_2,
-\]
+$$
 
 the algorithm processes the bit string:
 
@@ -205,20 +205,20 @@ the algorithm processes the bit string:
 
 Rather than making each bit a large subsection, it is easier to inspect the entire computation as one trace:
 
-| Bit | Operation(s) | Result modulo \(23\) |
+| Bit | Operation(s) | Result modulo $23$ |
 | ---: | --- | ---: |
-| `1` | square \(1^2\), then multiply by \(7\) | \(7\) |
-| `1` | square \(7^2=49\equiv3\), then multiply by \(7\) | \(21\) |
-| `0` | square \(21^2=441\equiv4\) | \(4\) |
-| `1` | square \(4^2=16\), then multiply by \(7\) | \(20\) |
+| `1` | square $1^2$, then multiply by $7$ | $7$ |
+| `1` | square $7^2=49\equiv3$, then multiply by $7$ | $21$ |
+| `0` | square $21^2=441\equiv4$ | $4$ |
+| `1` | square $4^2=16$, then multiply by $7$ | $20$ |
 
 Thus,
 
-\[
+$$
 \boxed{
 7^{13}\equiv20\pmod{23}
 }
-\]
+$$
 
 and Python confirms it:
 
@@ -255,9 +255,9 @@ def traced_square_and_multiply(base, exponent, modulus):
 
 For
 
-\[
+$$
 e=13=(1101)_2,
-\]
+$$
 
 the operation trace is:
 
@@ -294,9 +294,9 @@ The final mathematical answer can remain completely correct while the **computat
 
 Nothing is wrong with
 
-\[
+$$
 7^{13}\bmod23.
-\]
+$$
 
 Nothing is wrong with binary exponentiation as mathematics.
 
@@ -311,13 +311,13 @@ when `bit` belongs to a secret exponent.
 
 The secret influences the execution path:
 
-\[
+$$
 \boxed{
 \text{secret bit}
 \longrightarrow
 \text{different operation pattern}
 }
-\]
+$$
 
 and if the operation pattern becomes observable, information about the secret may become observable as well.
 
@@ -329,27 +329,27 @@ The number of additional multiplications is equal to the number of `1` bits in t
 
 If
 
-\[
+$$
 \operatorname{wt}(e)
-\]
+$$
 
-denotes the Hamming weight of the binary representation of \(e\), then
+denotes the Hamming weight of the binary representation of $e$, then
 
-\[
+$$
 N_M=\operatorname{wt}(e).
-\]
+$$
 
 For
 
-\[
+$$
 13=(1101)_2,
-\]
+$$
 
 we have
 
-\[
+$$
 \operatorname{wt}(13)=3,
-\]
+$$
 
 so the trace contains three additional multiplications.
 
@@ -420,11 +420,11 @@ The attacker collects observations, builds hypotheses about secret-dependent beh
 
 But the security problem begins exactly where our tiny implementation reveals it:
 
-\[
+$$
 \text{secret state}
 \longrightarrow
 \text{observable behavior}.
-\]
+$$
 
 This is the point where implementation details become part of the cryptographic threat model.
 
@@ -468,11 +468,11 @@ That is directionally correct, but it is not a complete solution.
 
 The real objective is broader:
 
-\[
+$$
 \boxed{
 \text{secret data should not create exploitable attacker-observable variation}
 }
-\]
+$$
 
 For secret-dependent arithmetic, we therefore care about more than source-code branches.
 
@@ -634,9 +634,9 @@ exponent = 9
 
 Since
 
-\[
+$$
 9=(1001)_2,
-\]
+$$
 
 predict the trace before running the program.
 
@@ -656,9 +656,9 @@ exponent = 15
 
 with
 
-\[
+$$
 15=(1111)_2.
-\]
+$$
 
 Now every bit causes both operations:
 
@@ -670,9 +670,9 @@ Compare the following quantities:
 
 | Exponent | Binary | Bit length | Hamming weight | Extra multiplies |
 | ---: | --- | ---: | ---: | ---: |
-| \(9\) | `1001` | 4 | 2 | 2 |
-| \(13\) | `1101` | 4 | 3 | 3 |
-| \(15\) | `1111` | 4 | 4 | 4 |
+| $9$ | `1001` | 4 | 2 | 2 |
+| $13$ | `1101` | 4 | 3 | 3 |
+| $15$ | `1111` | 4 | 4 | 4 |
 
 The number of squarings remains tied to the bit length.
 
@@ -682,18 +682,18 @@ Again, this table is a **teaching model**, not a complete model of a real timing
 
 Its purpose is to reveal the dependency:
 
-\[
+$$
 \text{secret exponent}
 \rightarrow
 \text{operation schedule}.
-\]
+$$
 
 ### Reader checkpoint
 
 At this point you should be able to explain:
 
-1. Why repeated multiplication takes \(O(e)\) work.
-2. Why binary exponentiation takes only \(O(\log e)\) modular operations.
+1. Why repeated multiplication takes $O(e)$ work.
+2. Why binary exponentiation takes only $O(\log e)$ modular operations.
 3. Why the binary representation of the exponent controls square-and-multiply.
 4. Why a `1` bit produces an extra multiplication in the simple implementation.
 5. Why secret-dependent control flow creates a potential side channel.
@@ -782,11 +782,11 @@ A secure mathematical construction implemented with secret-dependent leakage can
 
 So:
 
-\[
+$$
 \boxed{
 \text{the implementation is part of the cryptographic system}
 }
-\]
+$$
 
 The next article stays close to modular exponentiation but changes the failure model.
 

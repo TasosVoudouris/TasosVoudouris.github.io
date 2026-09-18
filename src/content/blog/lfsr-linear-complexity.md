@@ -145,14 +145,6 @@ draft: false
 
 ## Table of Contents
 
-- [Recurrence model](#recurrence-model)
-- [The all-zero state](#the-all-zero-state)
-- [Period](#period)
-- [Recovering the recurrence from bits](#recovering-the-recurrence-from-bits)
-- [Linear complexity](#linear-complexity)
-- [Combining LFSRs](#combining-lfsrs)
-- [Executable experiment](#executable-experiment)
-- [The point is not to build a real cipher. It is to expose the exact linear structure cryptanalysis sees.](#the-point-is-not-to-build-a-real-cipher-it-is-to-expose-the-exact-linear-structure-cryptanalysis-sees)
 - [LFSRs as Linear Dynamical Systems over GF(2)](#lfsrs-as-linear-dynamical-systems-over-gf2)
 - [Connection Polynomials, State Conventions, and the Zero State](#connection-polynomials-state-conventions-and-the-zero-state)
 - [Periods, Primitive Polynomials, and m-Sequences](#periods-primitive-polynomials-and-m-sequences)
@@ -170,21 +162,21 @@ draft: false
 
 A **Linear Feedback Shift Register (LFSR)** is a finite-state generator whose update rule is linear over the binary field
 
-\[
+$$
 \mathbb F_2=\{0,1\}.
-\]
+$$
 
 Its arithmetic is:
 
-\[
+$$
 1+1=0,
-\]
+$$
 
 so addition is exactly XOR.
 
 That makes the implementation cheap:
 
-- store \(m\) state bits;
+- store $m$ state bits;
 - XOR selected taps;
 - shift the register;
 - insert the feedback bit.
@@ -201,23 +193,23 @@ and still be unsuitable as a cryptographic keystream generator by itself because
 
 ### Recurrence model
 
-For an order-\(m\) binary LFSR, let
+For an order-$m$ binary LFSR, let
 
-\[
+$$
 p_0,p_1,\ldots,p_{m-1}\in\mathbb F_2
-\]
+$$
 
 be the recurrence coefficients.
 
 A sequence
 
-\[
+$$
 s_0,s_1,s_2,\ldots
-\]
+$$
 
 satisfies
 
-\[
+$$
 \boxed{
 s_{i+m}
 =
@@ -225,37 +217,37 @@ s_{i+m}
 p_j s_{i+j}
 \pmod 2.
 }
-\]
+$$
 
-Because arithmetic is in \(\mathbb F_2\), this is equivalent to XORing the selected previous bits.
+Because arithmetic is in $\mathbb F_2$, this is equivalent to XORing the selected previous bits.
 
 If, for example,
 
-\[
+$$
 m=4
-\]
+$$
 
 and the recurrence is
 
-\[
+$$
 s_{i+4}
 =
 s_i
 \oplus
 s_{i+1},
-\]
+$$
 
 then:
 
-\[
+$$
 p_0=1,\quad p_1=1,\quad p_2=p_3=0.
-\]
+$$
 
 ### The state as a vector
 
-Define the state at time \(i\) as:
+Define the state at time $i$ as:
 
-\[
+$$
 X_i
 =
 \begin{bmatrix}
@@ -265,27 +257,27 @@ s_{i+1}\\
 s_{i+m-1}
 \end{bmatrix}
 \in\mathbb F_2^m.
-\]
+$$
 
 Then the entire update can be written as:
 
-\[
+$$
 X_{i+1}=AX_i,
-\]
+$$
 
-where \(A\) is a companion-style binary matrix.
+where $A$ is a companion-style binary matrix.
 
 For the recurrence
 
-\[
+$$
 s_{i+m}
 =
 p_0s_i+p_1s_{i+1}+\cdots+p_{m-1}s_{i+m-1},
-\]
+$$
 
 one convenient state-transition matrix is
 
-\[
+$$
 A=
 \begin{bmatrix}
 0&1&0&\cdots&0\\
@@ -294,17 +286,17 @@ A=
 0&0&0&\cdots&1\\
 p_0&p_1&p_2&\cdots&p_{m-1}
 \end{bmatrix}.
-\]
+$$
 
 This matrix viewpoint is important because it makes the linearity explicit:
 
-\[
+$$
 A(X+Y)=AX+AY.
-\]
+$$
 
 The generator is not merely "implemented with XOR."
 
-Its entire state evolution is a linear dynamical system over \(\mathbb F_2\).
+Its entire state evolution is a linear dynamical system over $\mathbb F_2$.
 
 ### Why this matters cryptographically
 
@@ -312,13 +304,13 @@ If an attacker observes enough output bits and those bits are directly related t
 
 Cryptanalysis becomes:
 
-\[
+$$
 \text{recover unknown state/recurrence}
-\]
+$$
 
 by solving a linear system.
 
-No brute-force search over all \(2^m\) states is required in the basic raw-output model.
+No brute-force search over all $2^m$ states is required in the basic raw-output model.
 
 That is the central weakness.
 
@@ -330,15 +322,15 @@ A recurrence is often represented by a **connection polynomial**.
 
 For
 
-\[
+$$
 s_{i+m}
 =
 p_0s_i+p_1s_{i+1}+\cdots+p_{m-1}s_{i+m-1},
-\]
+$$
 
 a common convention is
 
-\[
+$$
 P(X)
 =
 X^m
@@ -347,9 +339,9 @@ p_{m-1}X^{m-1}
 +\cdots+
 p_1X
 +p_0.
-\]
+$$
 
-The leading coefficient is \(1\), so the polynomial is monic.
+The leading coefficient is $1$, so the polynomial is monic.
 
 ### Conventions differ
 
@@ -403,17 +395,17 @@ But their tap masks are not interchangeable without conversion.
 
 Because the recurrence is linear,
 
-\[
+$$
 0+0+\cdots+0=0.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 (0,\ldots,0)
 \longmapsto
 (0,\ldots,0).
-\]
+$$
 
 The all-zero state is an absorbing fixed point.
 
@@ -421,7 +413,7 @@ This is why maximal-length LFSRs exclude it.
 
 The correct statement is:
 
-> a maximal-length LFSR cycles through all \(2^m-1\) nonzero states.
+> a maximal-length LFSR cycles through all $2^m-1$ nonzero states.
 
 It is **not** correct to say:
 
@@ -431,9 +423,9 @@ Individual output bits are frequently zero.
 
 What is special is the complete state:
 
-\[
+$$
 X_i=0^m.
-\]
+$$
 
 Once reached, it never leaves.
 
@@ -441,9 +433,9 @@ Once reached, it never leaves.
 
 Suppose a maximal-length nonzero state cycle ever reached:
 
-\[
+$$
 0^m.
-\]
+$$
 
 Then every subsequent state would remain zero.
 
@@ -453,9 +445,9 @@ That contradicts the existence of a nonzero cycle.
 
 Hence:
 
-\[
+$$
 0^m
-\]
+$$
 
 is outside the maximal nonzero orbit.
 
@@ -463,67 +455,67 @@ is outside the maximal nonzero orbit.
 
 ## Periods, Primitive Polynomials, and m-Sequences
 
-An \(m\)-bit register has:
+An $m$-bit register has:
 
-\[
+$$
 2^m
-\]
+$$
 
 possible states.
 
 Because the zero state is absorbing, a nonzero cycle can contain at most:
 
-\[
+$$
 2^m-1
-\]
+$$
 
 states.
 
-But an arbitrary degree-\(m\) LFSR does **not** automatically achieve that maximum.
+But an arbitrary degree-$m$ LFSR does **not** automatically achieve that maximum.
 
 ### Maximum possible period
 
 The maximum nonzero period is:
 
-\[
+$$
 \boxed{
 2^m-1.
 }
-\]
+$$
 
 An LFSR achieving this period is called a **maximal-length LFSR**, and its output sequence is commonly called an **m-sequence**.
 
-The key algebraic condition is that the connection polynomial be **primitive over \(\mathbb F_2\)**.
+The key algebraic condition is that the connection polynomial be **primitive over $\mathbb F_2$**.
 
 ### Irreducible is not enough
 
-A degree-\(m\) polynomial may be irreducible over \(\mathbb F_2\) without being primitive.
+A degree-$m$ polynomial may be irreducible over $\mathbb F_2$ without being primitive.
 
 Primitive is stronger.
 
-If \(\alpha\) is a root of an irreducible polynomial of degree \(m\), then:
+If $\alpha$ is a root of an irreducible polynomial of degree $m$, then:
 
-\[
+$$
 \alpha\in\mathbb F_{2^m}.
-\]
+$$
 
 The nonzero elements of that field form a multiplicative group of order:
 
-\[
+$$
 2^m-1.
-\]
+$$
 
 The polynomial is primitive if its root has multiplicative order exactly:
 
-\[
+$$
 2^m-1.
-\]
+$$
 
-Equivalently, \(\alpha\) generates:
+Equivalently, $\alpha$ generates:
 
-\[
+$$
 \mathbb F_{2^m}^{\times}.
-\]
+$$
 
 That full multiplicative order is what produces the maximal state period.
 
@@ -531,53 +523,53 @@ That full multiplicative order is what produces the maximal state period.
 
 Let
 
-\[
+$$
 N=2^m-1.
-\]
+$$
 
-For an irreducible degree-\(m\) polynomial \(P(X)\), primitiveness can be tested by verifying that for every prime divisor \(q\) of \(N\),
+For an irreducible degree-$m$ polynomial $P(X)$, primitiveness can be tested by verifying that for every prime divisor $q$ of $N$,
 
-\[
+$$
 X^{N/q}\not\equiv1\pmod{P(X)},
-\]
+$$
 
 while:
 
-\[
+$$
 X^N\equiv1\pmod{P(X)}.
-\]
+$$
 
-The exact computational method is polynomial arithmetic over \(\mathbb F_2\).
+The exact computational method is polynomial arithmetic over $\mathbb F_2$.
 
 This is a finite-field order test, not a visual property of the generated bits.
 
-### Example: \(x^4+x+1\)
+### Example: $x^4+x+1$
 
 The polynomial
 
-\[
+$$
 P(X)=X^4+X+1
-\]
+$$
 
-is primitive over \(\mathbb F_2\).
+is primitive over $\mathbb F_2$.
 
 A nonzero state under a matching LFSR convention therefore has period:
 
-\[
+$$
 2^4-1=15.
-\]
+$$
 
 So all 15 nonzero states occur before the register repeats.
 
 ### Example: a nonprimitive polynomial
 
-A degree-\(m\) polynomial that is reducible or irreducible-but-nonprimitive may produce a shorter cycle.
+A degree-$m$ polynomial that is reducible or irreducible-but-nonprimitive may produce a shorter cycle.
 
 Thus the statement:
 
-\[
+$$
 \text{"m-stage LFSR has period }2^m-1"
-\]
+$$
 
 is false without the primitive-polynomial and nonzero-seed conditions.
 
@@ -585,33 +577,33 @@ is false without the primitive-polynomial and nonzero-seed conditions.
 
 Over one full period of an m-sequence:
 
-- the number of \(1\) bits is:
+- the number of $1$ bits is:
 
-  \[
+  $$
   2^{m-1};
-  \]
+  $$
 
-- the number of \(0\) bits is:
+- the number of $0$ bits is:
 
-  \[
+  $$
   2^{m-1}-1.
-  \]
+  $$
 
 So the sequence is almost perfectly balanced.
 
 That sounds attractive statistically.
 
-It is still completely generated by a length-\(m\) linear recurrence.
+It is still completely generated by a length-$m$ linear recurrence.
 
 This is an ideal example of the distinction:
 
-\[
+$$
 \boxed{
 \text{excellent statistics}
 \neq
 \text{cryptographic unpredictability}.
 }
-\]
+$$
 
 ### Run and autocorrelation properties
 
@@ -635,37 +627,37 @@ For a raw LFSR, the answer is yes.
 
 ## Recovering the Recurrence from Observed Bits
 
-Suppose the LFSR order \(m\) is known.
+Suppose the LFSR order $m$ is known.
 
 The recurrence is:
 
-\[
+$$
 s_{i+m}
 =
 \sum_{j=0}^{m-1}
 p_js_{i+j}
 \pmod2.
-\]
+$$
 
 The unknowns are:
 
-\[
+$$
 p_0,p_1,\ldots,p_{m-1}.
-\]
+$$
 
-Every new observed output bit provides a linear equation over \(\mathbb F_2\).
+Every new observed output bit provides a linear equation over $\mathbb F_2$.
 
 ### Matrix formulation
 
-Using \(2m\) consecutive bits:
+Using $2m$ consecutive bits:
 
-\[
+$$
 s_0,s_1,\ldots,s_{2m-1},
-\]
+$$
 
 we can write:
 
-\[
+$$
 \begin{bmatrix}
 s_0&s_1&\cdots&s_{m-1}\\
 s_1&s_2&\cdots&s_m\\
@@ -685,31 +677,31 @@ s_{m+1}\\
 \vdots\\
 s_{2m-1}
 \end{bmatrix}
-\]
+$$
 
 over:
 
-\[
+$$
 \mathbb F_2.
-\]
+$$
 
 Call this:
 
-\[
+$$
 Ap=b.
-\]
+$$
 
 If:
 
-\[
+$$
 \operatorname{rank}(A)=m,
-\]
+$$
 
 then the recurrence coefficients are uniquely determined.
 
 ### Gaussian elimination over GF(2)
 
-Ordinary Gaussian elimination adapts perfectly to \(\mathbb F_2\).
+Ordinary Gaussian elimination adapts perfectly to $\mathbb F_2$.
 
 The arithmetic rules are:
 
@@ -727,37 +719,37 @@ This is often dramatically faster than generic matrix arithmetic for binary syst
 
 ### Rank deficiency
 
-The \(2m\)-bit observation window does **not** automatically guarantee a unique recurrence of order exactly \(m\).
+The $2m$-bit observation window does **not** automatically guarantee a unique recurrence of order exactly $m$.
 
 The matrix may be rank deficient.
 
 That can happen when:
 
-- the actual linear complexity is below \(m\);
+- the actual linear complexity is below $m$;
 - the sequence fragment is degenerate;
 - the assumed order is larger than necessary.
 
 So the correct statement is:
 
-> \(2m\) consecutive bits can provide \(m\) linear equations for the \(m\) coefficients, and recovery succeeds uniquely when the resulting system has full rank.
+> $2m$ consecutive bits can provide $m$ linear equations for the $m$ coefficients, and recovery succeeds uniquely when the resulting system has full rank.
 
 This rank caveat is important.
 
 ### State recovery once recurrence is known
 
-If the recurrence has order \(m\), then any \(m\) consecutive bits form enough state to generate the future sequence.
+If the recurrence has order $m$, then any $m$ consecutive bits form enough state to generate the future sequence.
 
-For example, after recovering \(p\), store:
+For example, after recovering $p$, store:
 
-\[
+$$
 (s_i,\ldots,s_{i+m-1}).
-\]
+$$
 
 Then compute:
 
-\[
+$$
 s_{i+m}
-\]
+$$
 
 from the recurrence, shift, and repeat.
 
@@ -777,21 +769,21 @@ The answer is captured by **linear complexity**.
 
 ### Definition
 
-The linear complexity \(L(s)\) of a finite or periodic binary sequence is the length of the shortest LFSR capable of generating it.
+The linear complexity $L(s)$ of a finite or periodic binary sequence is the length of the shortest LFSR capable of generating it.
 
 If:
 
-\[
+$$
 L(s)=L,
-\]
+$$
 
-then there exists a degree-\(L\) connection polynomial
+then there exists a degree-$L$ connection polynomial
 
-\[
+$$
 C(X)
 =
 1+c_1X+\cdots+c_LX^L
-\]
+$$
 
 such that the sequence obeys the corresponding recurrence.
 
@@ -803,17 +795,17 @@ A long period does not imply high linear complexity.
 
 A sequence might repeat only after an enormous number of steps but still obey a relatively short linear recurrence.
 
-If the linear complexity is \(L\), then roughly \(2L\) consecutive sequence bits are sufficient for Berlekamp–Massey to recover the minimal recurrence in the standard exact setting.
+If the linear complexity is $L$, then roughly $2L$ consecutive sequence bits are sufficient for Berlekamp–Massey to recover the minimal recurrence in the standard exact setting.
 
 That gives the core cryptanalytic lesson:
 
-\[
+$$
 \boxed{
 \text{low linear complexity}
 \Rightarrow
 \text{efficient recurrence recovery}.
 }
-\]
+$$
 
 ### Berlekamp–Massey intuition
 
@@ -823,7 +815,7 @@ It maintains a candidate connection polynomial.
 
 At each position, it computes a **discrepancy**:
 
-\[
+$$
 d_n
 =
 s_n
@@ -831,21 +823,21 @@ s_n
 \sum_{i=1}^{L}
 c_i s_{n-i}
 \pmod2.
-\]
+$$
 
 If:
 
-\[
+$$
 d_n=0,
-\]
+$$
 
 the current recurrence correctly predicts that bit.
 
 If:
 
-\[
+$$
 d_n=1,
-\]
+$$
 
 the current recurrence failed, so the algorithm updates the connection polynomial using information from a previous discrepancy.
 
@@ -896,25 +888,25 @@ def berlekamp_massey(bits):
     return L, C[:L + 1]
 ```
 
-For a true order-\(m\) maximal LFSR sequence, sufficiently many exact output bits should recover:
+For a true order-$m$ maximal LFSR sequence, sufficiently many exact output bits should recover:
 
-\[
+$$
 L=m.
-\]
+$$
 
 ### Recurrence convention
 
 If Berlekamp–Massey returns:
 
-\[
+$$
 C(X)
 =
 1+c_1X+\cdots+c_LX^L,
-\]
+$$
 
 then the sequence satisfies:
 
-\[
+$$
 s_n
 =
 c_1s_{n-1}
@@ -922,7 +914,7 @@ c_1s_{n-1}
 c_2s_{n-2}
 \oplus\cdots\oplus
 c_Ls_{n-L}
-\]
+$$
 
 under the convention used by the implementation.
 
@@ -936,7 +928,7 @@ It is easy to fit a recurrence to the same data used to derive it.
 
 The meaningful experiment is:
 
-1. use the first \(N\) bits for recovery;
+1. use the first $N$ bits for recovery;
 2. reconstruct the recurrence;
 3. predict later unseen bits;
 4. compare with the generator.
@@ -949,21 +941,21 @@ If the predictions match, the attack has crossed from model fitting into genuine
 
 Suppose a raw LFSR output is used as a keystream:
 
-\[
+$$
 KS_i=s_i.
-\]
+$$
 
 The stream cipher computes:
 
-\[
+$$
 C_i=P_i\oplus s_i.
-\]
+$$
 
 If the attacker learns enough keystream bits through known plaintext:
 
-\[
+$$
 s_i=C_i\oplus P_i,
-\]
+$$
 
 then the linear recurrence can be reconstructed.
 
@@ -973,49 +965,49 @@ After that, future keystream bits are predictable.
 
 The full attack path is:
 
-\[
+$$
 \text{known plaintext}
-\]
+$$
 
-\[
+$$
 \Downarrow
-\]
+$$
 
-\[
+$$
 \text{recover keystream bits}
-\]
+$$
 
-\[
+$$
 \Downarrow
-\]
+$$
 
-\[
+$$
 \text{solve linear recurrence}
-\]
+$$
 
-\[
+$$
 \Downarrow
-\]
+$$
 
-\[
+$$
 \text{recover linear complexity/state}
-\]
+$$
 
-\[
+$$
 \Downarrow
-\]
+$$
 
-\[
+$$
 \text{predict future keystream}
-\]
+$$
 
-\[
+$$
 \Downarrow
-\]
+$$
 
-\[
+$$
 \text{recover future plaintext}.
-\]
+$$
 
 The weakness is not that an LFSR "looks repetitive."
 
@@ -1023,33 +1015,33 @@ A good maximal LFSR can look statistically excellent.
 
 The failure is:
 
-\[
+$$
 \boxed{
 \text{the keystream lies in a low-dimensional linear model}.
 }
-\]
+$$
 
 ### Huge period does not save it
 
 Suppose:
 
-\[
+$$
 m=128.
-\]
+$$
 
 A primitive polynomial gives period:
 
-\[
+$$
 2^{128}-1.
-\]
+$$
 
 That is astronomically large.
 
 Yet the state contains only:
 
-\[
+$$
 128
-\]
+$$
 
 bits and the output satisfies a length-128 linear recurrence.
 
@@ -1057,13 +1049,13 @@ Under the direct-output model, a modest amount of exact output can recover that 
 
 So:
 
-\[
+$$
 \boxed{
 2^{128}\text{-scale period}
 \neq
 128\text{-bit cryptographic security}.
 }
-\]
+$$
 
 Period measures when a sequence repeats.
 
@@ -1071,13 +1063,13 @@ Cryptographic security measures what an efficient adversary can infer before rep
 
 ### State size is not automatically security level
 
-An \(m\)-bit LFSR has \(m\) state bits.
+An $m$-bit LFSR has $m$ state bits.
 
 But if its output exposes enough linear information to solve for those state bits in polynomial time, then the attack cost is nowhere near:
 
-\[
+$$
 2^m.
-\]
+$$
 
 State-space size matters only when exhaustive search is the best attack.
 
@@ -1091,13 +1083,13 @@ Historical stream-cipher designs often combined several LFSRs.
 
 Let the component sequences be:
 
-\[
+$$
 x_i^{(1)},x_i^{(2)},\ldots,x_i^{(r)}.
-\]
+$$
 
 A Boolean combining function produces:
 
-\[
+$$
 z_i
 =
 f(
@@ -1106,9 +1098,9 @@ x_i^{(2)},
 \ldots,
 x_i^{(r)}
 ).
-\]
+$$
 
-If \(f\) is nonlinear, then \(z_i\) is no longer a simple linear combination of the register outputs.
+If $f$ is nonlinear, then $z_i$ is no longer a simple linear combination of the register outputs.
 
 That is an improvement over one raw LFSR.
 
@@ -1120,15 +1112,15 @@ A Boolean combining function can be nonlinear but still correlate strongly with 
 
 For example, suppose:
 
-\[
+$$
 \Pr[
 f(X_1,\ldots,X_r)=X_1
 ]
 =
 \frac34.
-\]
+$$
 
-Then the output leaks statistical information about \(X_1\).
+Then the output leaks statistical information about $X_1$.
 
 An attacker can exploit enough output bits to identify candidate states of the first LFSR.
 
@@ -1175,13 +1167,13 @@ The safe educational statement is:
 
 The next article studies a classic example:
 
-\[
+$$
 z
 =
 (x_1\land x_2)
 \oplus
 (\neg x_1\land x_3).
-\]
+$$
 
 This is a nonlinear multiplexer-like function.
 
@@ -1189,13 +1181,13 @@ Yet the output is correlated with two component sequences.
 
 That makes the Geffe generator an ideal demonstration that:
 
-\[
+$$
 \boxed{
 \text{nonlinear}
 \neq
 \text{correlation resistant}.
 }
-\]
+$$
 
 ---
 
@@ -1212,17 +1204,17 @@ The companion lab can verify four different claims:
 
 Use the recurrence:
 
-\[
+$$
 s_{i+4}
 =
 s_i\oplus s_{i+1},
-\]
+$$
 
 corresponding to:
 
-\[
+$$
 P(X)=X^4+X+1.
-\]
+$$
 
 A direct sequence generator is:
 
@@ -1264,9 +1256,9 @@ seed   = [1, 0, 0, 0]
 
 the recurrence is:
 
-\[
+$$
 s_{i+4}=s_i\oplus s_{i+1}.
-\]
+$$
 
 ### Lab B: detect the state period
 
@@ -1307,9 +1299,9 @@ def state_period(
 
 For the primitive degree-4 recurrence and nonzero seed:
 
-\[
+$$
 \text{period}=15.
-\]
+$$
 
 For:
 
@@ -1323,11 +1315,11 @@ the state immediately maps to itself.
 
 Build the system:
 
-\[
+$$
 Ap=b
-\]
+$$
 
-from \(2m\) observed bits.
+from $2m$ observed bits.
 
 One compact GF(2) solver is:
 
@@ -1412,9 +1404,9 @@ L, connection = (
 
 For the degree-4 m-sequence we expect:
 
-\[
+$$
 L=4.
-\]
+$$
 
 Then use the recovered recurrence to predict bits that were not passed to Berlekamp–Massey.
 
@@ -1444,7 +1436,7 @@ An LFSR is one of the cleanest examples of elegant mathematics and poor standalo
 
 Its sequence satisfies:
 
-\[
+$$
 \boxed{
 s_{i+m}
 =
@@ -1452,21 +1444,21 @@ s_{i+m}
 p_js_{i+j}
 \pmod2.
 }
-\]
+$$
 
 Its state transition is linear:
 
-\[
+$$
 X_{i+1}=AX_i.
-\]
+$$
 
-A primitive degree-\(m\) connection polynomial and a nonzero seed can produce the maximal period:
+A primitive degree-$m$ connection polynomial and a nonzero seed can produce the maximal period:
 
-\[
+$$
 \boxed{
 2^m-1.
 }
-\]
+$$
 
 Such m-sequences have excellent classical statistical properties.
 
@@ -1474,15 +1466,15 @@ But those properties do not hide the recurrence.
 
 When the order is known, enough observed bits produce a linear system over:
 
-\[
+$$
 \mathbb F_2.
-\]
+$$
 
 When the shortest order is unknown, Berlekamp–Massey recovers the minimal recurrence and its linear complexity.
 
 This creates the key distinction:
 
-\[
+$$
 \boxed{
 \text{long period}
 \neq
@@ -1490,7 +1482,7 @@ This creates the key distinction:
 \neq
 \text{cryptographic security}.
 }
-\]
+$$
 
 For a raw LFSR, linear complexity is small by construction.
 
@@ -1519,12 +1511,12 @@ LFSR:
 
 Both teach the same principle:
 
-\[
+$$
 \boxed{
 \text{if the output exposes enough solvable equations,
 the generator is predictable}.
 }
-\]
+$$
 
 The next article makes the problem subtler.
 
@@ -1536,11 +1528,11 @@ Yet statistical correlation survives.
 
 That leads to a new cryptanalytic idea:
 
-\[
+$$
 \boxed{
 \text{correlation attacks}.
 }
-\]
+$$
 
 
 ---

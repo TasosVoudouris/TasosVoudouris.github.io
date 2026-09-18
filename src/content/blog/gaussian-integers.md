@@ -23,15 +23,15 @@ draft: false
 
 The ordinary integers form only one arithmetic universe.
 
-A natural enlargement is obtained by adjoining a square root of \(-1\):
+A natural enlargement is obtained by adjoining a square root of $-1$:
 
-\[
+$$
 i^2=-1.
-\]
+$$
 
 This gives the ring of **Gaussian integers**:
 
-\[
+$$
 \boxed{
 \mathbb Z[i]
 =
@@ -40,9 +40,9 @@ a+bi:
 a,b\in\mathbb Z
 \}.
 }
-\]
+$$
 
-At first this looks like a simple two-dimensional version of \(\mathbb Z\).
+At first this looks like a simple two-dimensional version of $\mathbb Z$.
 
 But something much deeper survives.
 
@@ -57,21 +57,21 @@ We still have:
 
 The crucial function making this possible is the norm:
 
-\[
+$$
 \boxed{
 N(a+bi)=a^2+b^2.
 }
-\]
+$$
 
 Geometrically, this is squared Euclidean distance from the origin.
 
 Arithmetically, it is multiplicative.
 
-That combination makes \(\mathbb Z[i]\) one of the cleanest examples of geometry controlling arithmetic.
+That combination makes $\mathbb Z[i]$ one of the cleanest examples of geometry controlling arithmetic.
 
 The central progression is:
 
-\[
+$$
 \boxed{
 \text{Gaussian integer}
 \rightarrow
@@ -85,7 +85,7 @@ The central progression is:
 \rightarrow
 \text{prime splitting}.
 }
-\]
+$$
 
 ---
 
@@ -110,33 +110,33 @@ The central progression is:
 
 A Gaussian integer has the form:
 
-\[
+$$
 z=a+bi,
 \qquad
 a,b\in\mathbb Z.
-\]
+$$
 
 Addition and multiplication are inherited from the complex numbers:
 
-\[
+$$
 (a+bi)+(c+di)
 =
 (a+c)+(b+d)i,
-\]
+$$
 
 and:
 
-\[
+$$
 (a+bi)(c+di)
 =
 (ac-bd)+(ad+bc)i.
-\]
+$$
 
 Because both coefficients remain integers:
 
-\[
+$$
 \mathbb Z[i]
-\]
+$$
 
 is closed under these operations.
 
@@ -148,41 +148,41 @@ It is therefore a commutative ring.
 
 For:
 
-\[
+$$
 z=a+bi,
-\]
+$$
 
 define the complex conjugate:
 
-\[
+$$
 \boxed{
 \overline z=a-bi.
 }
-\]
+$$
 
 Conjugation satisfies:
 
-\[
+$$
 \overline{z+w}
 =
 \overline z+\overline w
-\]
+$$
 
 and:
 
-\[
+$$
 \boxed{
 \overline{zw}
 =
 \overline z\,\overline w.
 }
-\]
+$$
 
 Also:
 
-\[
+$$
 \overline{\overline z}=z.
-\]
+$$
 
 ---
 
@@ -190,57 +190,57 @@ Also:
 
 Define:
 
-\[
+$$
 \boxed{
 N(z)
 =
 z\overline z.
 }
-\]
+$$
 
 For:
 
-\[
+$$
 z=a+bi,
-\]
+$$
 
 we obtain:
 
-\[
+$$
 N(z)
 =
 (a+bi)(a-bi)
 =
 a^2+b^2.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 N(a+bi)=a^2+b^2.
 }
-\]
+$$
 
 The norm takes values in:
 
-\[
+$$
 \mathbb Z_{\ge0}.
-\]
+$$
 
 Moreover:
 
-\[
+$$
 N(z)=0
 \iff
 z=0.
-\]
+$$
 
 Geometrically:
 
-\[
+$$
 N(z)=|z|^2.
-\]
+$$
 
 So the norm is the **squared Euclidean length** of the corresponding lattice point.
 
@@ -250,17 +250,17 @@ So the norm is the **squared Euclidean length** of the corresponding lattice poi
 
 One of the central facts is:
 
-\[
+$$
 \boxed{
 N(zw)
 =
 N(z)N(w).
 }
-\]
+$$
 
 Indeed:
 
-\[
+$$
 \begin{aligned}
 N(zw)
 &=
@@ -272,13 +272,13 @@ z\overline z\,w\overline w\\
 &=
 N(z)N(w).
 \end{aligned}
-\]
+$$
 
 This converts multiplication inside:
 
-\[
+$$
 \mathbb Z[i]
-\]
+$$
 
 into multiplication of ordinary nonnegative integers.
 
@@ -290,49 +290,49 @@ That makes the norm a powerful arithmetic invariant.
 
 If:
 
-\[
+$$
 \alpha\mid\beta
-\]
+$$
 
 in:
 
-\[
+$$
 \mathbb Z[i],
-\]
+$$
 
 then:
 
-\[
+$$
 \beta=\alpha\gamma
-\]
+$$
 
 for some:
 
-\[
+$$
 \gamma\in\mathbb Z[i].
-\]
+$$
 
 Taking norms:
 
-\[
+$$
 N(\beta)
 =
 N(\alpha)N(\gamma).
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 N(\alpha)\mid N(\beta)
 }
-\]
+$$
 
 inside:
 
-\[
+$$
 \mathbb Z.
-\]
+$$
 
 The converse is not generally true.
 
@@ -344,51 +344,51 @@ Norm divisibility is therefore a necessary condition for Gaussian divisibility, 
 
 An element:
 
-\[
+$$
 u\in\mathbb Z[i]
-\]
+$$
 
 is a unit if there exists:
 
-\[
+$$
 v\in\mathbb Z[i]
-\]
+$$
 
 such that:
 
-\[
+$$
 uv=1.
-\]
+$$
 
 Taking norms:
 
-\[
+$$
 N(u)N(v)=1.
-\]
+$$
 
 Since the norms are nonnegative integers:
 
-\[
+$$
 N(u)=1.
-\]
+$$
 
 Thus:
 
-\[
+$$
 a^2+b^2=1.
-\]
+$$
 
 The only integer solutions are:
 
-\[
+$$
 (\pm1,0),
 \qquad
 (0,\pm1).
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 \mathbb Z[i]^\times
 =
@@ -396,7 +396,7 @@ Therefore:
 1,-1,i,-i
 \}.
 }
-\]
+$$
 
 ---
 
@@ -404,26 +404,26 @@ Therefore:
 
 Two Gaussian integers:
 
-\[
+$$
 \alpha,
 \beta
-\]
+$$
 
 are **associates** if:
 
-\[
+$$
 \alpha=u\beta
-\]
+$$
 
 for a unit:
 
-\[
+$$
 u\in\{1,-1,i,-i\}.
-\]
+$$
 
 Thus:
 
-\[
+$$
 z,
 \quad
 -z,
@@ -431,39 +431,39 @@ z,
 iz,
 \quad
 -iz
-\]
+$$
 
 all represent the same factor up to multiplication by a unit.
 
 For example:
 
-\[
+$$
 2+i
-\]
+$$
 
 has associates:
 
-\[
+$$
 2+i,
-\]
+$$
 
-\[
+$$
 -2-i,
-\]
+$$
 
-\[
+$$
 -1+2i,
-\]
+$$
 
-\[
+$$
 1-2i.
-\]
+$$
 
 All have the same norm:
 
-\[
+$$
 5.
-\]
+$$
 
 ---
 
@@ -471,35 +471,35 @@ All have the same norm:
 
 Suppose:
 
-\[
+$$
 d
-\]
+$$
 
 is a gcd of:
 
-\[
+$$
 \alpha,\beta.
-\]
+$$
 
 Then:
 
-\[
+$$
 id
-\]
+$$
 
 divides both as well.
 
 Likewise:
 
-\[
+$$
 -d
-\]
+$$
 
 and:
 
-\[
+$$
 -id.
-\]
+$$
 
 Therefore Gaussian gcds are not naturally represented by one unique element.
 
@@ -507,9 +507,9 @@ Instead they are unique **up to multiplication by a unit**.
 
 This is analogous to ordinary integer gcds being unique up to sign before we impose the convention:
 
-\[
+$$
 \gcd(a,b)>0.
-\]
+$$
 
 ---
 
@@ -519,49 +519,49 @@ The crucial theorem is that Gaussian integers admit Euclidean division.
 
 Let:
 
-\[
+$$
 \alpha,\beta\in\mathbb Z[i],
 \qquad
 \beta\neq0.
-\]
+$$
 
 We want:
 
-\[
+$$
 \boxed{
 \alpha
 =
 q\beta+r
 }
-\]
+$$
 
 with:
 
-\[
+$$
 q,r\in\mathbb Z[i]
-\]
+$$
 
 and:
 
-\[
+$$
 \boxed{
 N(r)<N(\beta).
 }
-\]
+$$
 
 ---
 
-### Divide in \(\mathbb C\)
+### Divide in $\mathbb C$
 
 Compute:
 
-\[
+$$
 \frac{\alpha}{\beta}.
-\]
+$$
 
 Using conjugation:
 
-\[
+$$
 \boxed{
 \frac{\alpha}{\beta}
 =
@@ -571,78 +571,78 @@ Using conjugation:
 N(\beta)
 }.
 }
-\]
+$$
 
 This is generally a complex number, not a Gaussian integer.
 
 Write:
 
-\[
+$$
 \frac{\alpha}{\beta}
 =
 x+yi,
 \qquad
 x,y\in\mathbb R.
-\]
+$$
 
 Choose integers:
 
-\[
+$$
 m,n
-\]
+$$
 
 nearest to:
 
-\[
+$$
 x,y.
-\]
+$$
 
 Then define:
 
-\[
+$$
 \boxed{
 q=m+ni.
 }
-\]
+$$
 
-Geometrically, \(q\) is a nearest point of the square lattice:
+Geometrically, $q$ is a nearest point of the square lattice:
 
-\[
+$$
 \mathbb Z[i]
 \subset\mathbb C.
-\]
+$$
 
 Finally:
 
-\[
+$$
 \boxed{
 r=\alpha-q\beta.
 }
-\]
+$$
 
 ---
 
 ### Why the remainder gets smaller
 
-Because \(m\) and \(n\) are nearest integers:
+Because $m$ and $n$ are nearest integers:
 
-\[
+$$
 |x-m|
 \le
 \frac12
-\]
+$$
 
 and:
 
-\[
+$$
 |y-n|
 \le
 \frac12.
-\]
+$$
 
 Hence:
 
-\[
+$$
 \left|
 \frac{\alpha}{\beta}-q
 \right|^2
@@ -650,60 +650,60 @@ Hence:
 \frac14+\frac14
 =
 \frac12.
-\]
+$$
 
 But:
 
-\[
+$$
 r
 =
 \beta
 \left(
 \frac{\alpha}{\beta}-q
 \right).
-\]
+$$
 
 Therefore:
 
-\[
+$$
 N(r)
 =
 N(\beta)
 \left|
 \frac{\alpha}{\beta}-q
 \right|^2.
-\]
+$$
 
 So:
 
-\[
+$$
 N(r)
 \le
 \frac12N(\beta).
-\]
+$$
 
 Since:
 
-\[
+$$
 \beta\neq0,
-\]
+$$
 
 we obtain:
 
-\[
+$$
 \boxed{
 N(r)<N(\beta).
 }
-\]
+$$
 
 Thus:
 
-\[
+$$
 \boxed{
 \mathbb Z[i]
 \text{ is a Euclidean domain with Euclidean function }N.
 }
-\]
+$$
 
 ---
 
@@ -711,29 +711,29 @@ Thus:
 
 Let:
 
-\[
+$$
 \alpha=7+5i
-\]
+$$
 
 and:
 
-\[
+$$
 \beta=3+2i.
-\]
+$$
 
 First:
 
-\[
+$$
 N(\beta)
 =
 3^2+2^2
 =
 13.
-\]
+$$
 
 Now:
 
-\[
+$$
 \frac{\alpha}{\beta}
 =
 \frac{
@@ -741,85 +741,85 @@ Now:
 }{
 13
 }.
-\]
+$$
 
 The numerator is:
 
-\[
+$$
 (7+5i)(3-2i)
 =
 31+i.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \frac{\alpha}{\beta}
 =
 \frac{31}{13}
 +
 \frac1{13}i.
-\]
+$$
 
 Numerically:
 
-\[
+$$
 \frac{\alpha}{\beta}
 \approx
 2.3846+0.0769i.
-\]
+$$
 
 The nearest Gaussian integer is:
 
-\[
+$$
 q=2.
-\]
+$$
 
 Hence:
 
-\[
+$$
 r
 =
 (7+5i)-2(3+2i).
-\]
+$$
 
 So:
 
-\[
+$$
 \boxed{
 r=1+i.
 }
-\]
+$$
 
 Its norm is:
 
-\[
+$$
 N(r)=2.
-\]
+$$
 
 Since:
 
-\[
+$$
 2<13,
-\]
+$$
 
 the Euclidean condition holds:
 
-\[
+$$
 \boxed{
 N(r)<N(\beta).
 }
-\]
+$$
 
 Thus:
 
-\[
+$$
 \boxed{
 7+5i
 =
 2(3+2i)+(1+i).
 }
-\]
+$$
 
 ---
 
@@ -827,47 +827,47 @@ Thus:
 
 Once Euclidean division exists, the Euclidean algorithm works almost exactly as over:
 
-\[
+$$
 \mathbb Z.
-\]
+$$
 
 Given:
 
-\[
+$$
 \alpha,\beta\in\mathbb Z[i],
 \qquad
 \beta\neq0,
-\]
+$$
 
 perform:
 
-\[
+$$
 \alpha
 =
 q_0\beta+r_1,
-\]
+$$
 
 then:
 
-\[
+$$
 \beta
 =
 q_1r_1+r_2,
-\]
+$$
 
 then:
 
-\[
+$$
 r_1
 =
 q_2r_2+r_3,
-\]
+$$
 
 and continue.
 
 The norms strictly decrease:
 
-\[
+$$
 N(\beta)
 >
 N(r_1)
@@ -875,7 +875,7 @@ N(r_1)
 N(r_2)
 >
 \cdots.
-\]
+$$
 
 Since norms are nonnegative integers, the process terminates.
 
@@ -887,25 +887,25 @@ The last nonzero remainder is a gcd, up to multiplication by a unit.
 
 The Extended Euclidean Algorithm also works in:
 
-\[
+$$
 \mathbb Z[i].
-\]
+$$
 
 Therefore there exist:
 
-\[
+$$
 x,y\in\mathbb Z[i]
-\]
+$$
 
 such that:
 
-\[
+$$
 \boxed{
 \gcd(\alpha,\beta)
 =
 x\alpha+y\beta.
 }
-\]
+$$
 
 Again, the gcd is understood up to multiplication by a Gaussian unit.
 
@@ -915,7 +915,7 @@ Again, the gcd is understood up to multiplication by a Gaussian unit.
 
 We now obtain the standard implication chain:
 
-\[
+$$
 \boxed{
 \text{Euclidean domain}
 \Longrightarrow
@@ -923,16 +923,16 @@ We now obtain the standard implication chain:
 \Longrightarrow
 \text{UFD}.
 }
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 \mathbb Z[i]
 \text{ is a unique factorization domain}.
 }
-\]
+$$
 
 Every nonzero nonunit Gaussian integer can be factored into Gaussian primes.
 
@@ -943,69 +943,69 @@ The factorization is unique up to:
 
 ---
 
-### Example: factoring \(5\)
+### Example: factoring $5$
 
 Inside:
 
-\[
+$$
 \mathbb Z,
-\]
+$$
 
 the integer:
 
-\[
+$$
 5
-\]
+$$
 
 is prime.
 
 But in:
 
-\[
+$$
 \mathbb Z[i],
-\]
+$$
 
 we have:
 
-\[
+$$
 \boxed{
 5
 =
 (2+i)(2-i).
 }
-\]
+$$
 
 Indeed:
 
-\[
+$$
 (2+i)(2-i)
 =
 4+1
 =
 5.
-\]
+$$
 
 Moreover:
 
-\[
+$$
 N(2+i)
 =
 5.
-\]
+$$
 
-Because \(5\) is an ordinary rational prime, \(2+i\) cannot factor nontrivially in \(\mathbb Z[i]\).
+Because $5$ is an ordinary rational prime, $2+i$ cannot factor nontrivially in $\mathbb Z[i]$.
 
 Thus:
 
-\[
+$$
 2+i
-\]
+$$
 
 and:
 
-\[
+$$
 2-i
-\]
+$$
 
 are Gaussian primes.
 
@@ -1019,9 +1019,9 @@ This is the beginning of **prime splitting**.
 
 A Gaussian integer:
 
-\[
+$$
 \pi=a+bi
-\]
+$$
 
 is a **Gaussian prime** if it is a nonzero nonunit whose only divisors are units and associates.
 
@@ -1033,15 +1033,15 @@ There is a complete classification.
 
 Suppose:
 
-\[
+$$
 a\neq0,
 \qquad
 b\neq0.
-\]
+$$
 
 Then:
 
-\[
+$$
 \boxed{
 a+bi
 \text{ is Gaussian prime}
@@ -1049,33 +1049,33 @@ a+bi
 a^2+b^2
 \text{ is an ordinary prime}.
 }
-\]
+$$
 
 For example:
 
-\[
+$$
 2+i
-\]
+$$
 
 has:
 
-\[
+$$
 N(2+i)=5,
-\]
+$$
 
 so it is Gaussian prime.
 
 Similarly:
 
-\[
+$$
 3+2i
-\]
+$$
 
 has:
 
-\[
+$$
 N(3+2i)=13,
-\]
+$$
 
 so it is Gaussian prime.
 
@@ -1085,26 +1085,26 @@ so it is Gaussian prime.
 
 Suppose:
 
-\[
+$$
 \pi=p
-\]
+$$
 
 is an ordinary positive rational prime regarded as a Gaussian integer.
 
 Then:
 
-\[
+$$
 \boxed{
 p
 \text{ remains Gaussian prime}
 \iff
 p\equiv3\pmod4.
 }
-\]
+$$
 
 So:
 
-\[
+$$
 3,
 \quad
 7,
@@ -1113,15 +1113,15 @@ So:
 \quad
 19,
 \ldots
-\]
+$$
 
 remain prime in:
 
-\[
+$$
 \mathbb Z[i].
-\]
+$$
 
-By contrast, primes congruent to \(1\pmod4\) split.
+By contrast, primes congruent to $1\pmod4$ split.
 
 ---
 
@@ -1129,9 +1129,9 @@ By contrast, primes congruent to \(1\pmod4\) split.
 
 Let:
 
-\[
+$$
 p
-\]
+$$
 
 be an ordinary rational prime.
 
@@ -1141,61 +1141,61 @@ There are three cases.
 
 If:
 
-\[
+$$
 \boxed{
 p\equiv1\pmod4,
 }
-\]
+$$
 
 then:
 
-\[
+$$
 p
-\]
+$$
 
 splits:
 
-\[
+$$
 \boxed{
 p
 =
 \pi\overline\pi
 }
-\]
+$$
 
 for a Gaussian prime:
 
-\[
+$$
 \pi=a+bi.
-\]
+$$
 
 Equivalently:
 
-\[
+$$
 \boxed{
 p=a^2+b^2.
 }
-\]
+$$
 
 Example:
 
-\[
+$$
 5
 =
 2^2+1^2
 =
 (2+i)(2-i).
-\]
+$$
 
 Also:
 
-\[
+$$
 13
 =
 3^2+2^2
 =
 (3+2i)(3-2i).
-\]
+$$
 
 ---
 
@@ -1203,84 +1203,84 @@ Also:
 
 If:
 
-\[
+$$
 \boxed{
 p\equiv3\pmod4,
 }
-\]
+$$
 
-then \(p\) remains prime in:
+then $p$ remains prime in:
 
-\[
+$$
 \mathbb Z[i].
-\]
+$$
 
 Such a prime is called **inert** in this extension.
 
 For example:
 
-\[
+$$
 3,
 \quad
 7,
 \quad
 11
-\]
+$$
 
 do not acquire nontrivial Gaussian factorizations.
 
 ---
 
-#### The prime \(2\)
+#### The prime $2$
 
 The prime:
 
-\[
+$$
 2
-\]
+$$
 
 behaves differently.
 
 We have:
 
-\[
+$$
 (1+i)^2
 =
 1+2i+i^2
 =
 2i.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 2
 =
 -i(1+i)^2.
 }
-\]
+$$
 
 Since multiplication by:
 
-\[
+$$
 -i
-\]
+$$
 
-changes only by a unit, \(2\) is essentially the square of the Gaussian prime:
+changes only by a unit, $2$ is essentially the square of the Gaussian prime:
 
-\[
+$$
 1+i.
-\]
+$$
 
 Thus:
 
-\[
+$$
 \boxed{
 2
 \text{ ramifies in }\mathbb Z[i].
 }
-\]
+$$
 
 ---
 
@@ -1288,30 +1288,30 @@ Thus:
 
 The complete behavior is:
 
-\[
+$$
 \boxed{
 p\equiv1\pmod4
 \Longrightarrow
 p\text{ splits},
 }
-\]
+$$
 
-\[
+$$
 \boxed{
 p\equiv3\pmod4
 \Longrightarrow
 p\text{ remains prime},
 }
-\]
+$$
 
 and:
 
-\[
+$$
 \boxed{
 2
 \text{ ramifies}.
 }
-\]
+$$
 
 This is one of the simplest examples of a general theme in algebraic number theory:
 
@@ -1323,46 +1323,46 @@ This is one of the simplest examples of a general theme in algebraic number theo
 
 The splitting criterion has several equivalent interpretations.
 
-For an odd rational prime \(p\):
+For an odd rational prime $p$:
 
-\[
+$$
 \boxed{
 p\equiv1\pmod4
 }
-\]
+$$
 
 is equivalent to:
 
-\[
+$$
 \boxed{
 p=a^2+b^2
 }
-\]
+$$
 
 for integers:
 
-\[
+$$
 a,b.
-\]
+$$
 
 It is also equivalent to:
 
-\[
+$$
 \boxed{
 x^2\equiv-1\pmod p
 }
-\]
+$$
 
 having a solution.
 
 And this is equivalent to:
 
-\[
+$$
 \boxed{
 -1
 \text{ being a quadratic residue modulo }p.
 }
-\]
+$$
 
 ---
 
@@ -1370,118 +1370,118 @@ And this is equivalent to:
 
 Suppose:
 
-\[
+$$
 p
 =
 \pi\overline\pi
-\]
+$$
 
 with:
 
-\[
+$$
 \pi=a+bi.
-\]
+$$
 
 Taking norms:
 
-\[
+$$
 N(\pi)
 =
 a^2+b^2.
-\]
+$$
 
 Since:
 
-\[
+$$
 N(p)=p^2
-\]
+$$
 
 and:
 
-\[
+$$
 N(\pi)N(\overline\pi)
 =
 N(\pi)^2,
-\]
+$$
 
 we obtain:
 
-\[
+$$
 N(\pi)=p.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 p=a^2+b^2.
 }
-\]
+$$
 
 ---
 
-### Why \(-1\) appears
+### Why $-1$ appears
 
 Suppose:
 
-\[
+$$
 p=a^2+b^2
-\]
+$$
 
 and:
 
-\[
+$$
 b\not\equiv0\pmod p.
-\]
+$$
 
 Then:
 
-\[
+$$
 a^2
 \equiv
 -b^2
 \pmod p.
-\]
+$$
 
 Multiply by:
 
-\[
+$$
 b^{-2}.
-\]
+$$
 
 We obtain:
 
-\[
+$$
 \left(
 ab^{-1}
 \right)^2
 \equiv
 -1
 \pmod p.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 -1
 \text{ is a quadratic residue mod }p.
 }
-\]
+$$
 
 Euler's criterion gives:
 
-\[
+$$
 \left(
 \frac{-1}{p}
 \right)
 =
 (-1)^{(p-1)/2}.
-\]
+$$
 
 Hence:
 
-\[
+$$
 \boxed{
 \left(
 \frac{-1}{p}
@@ -1489,47 +1489,47 @@ Hence:
 \iff
 p\equiv1\pmod4.
 }
-\]
+$$
 
 So several apparently different statements collapse into one structure:
 
-\[
+$$
 \boxed{
 p\equiv1\pmod4
 }
-\]
+$$
 
-\[
+$$
 \Updownarrow
-\]
+$$
 
-\[
+$$
 \boxed{
 x^2\equiv-1\pmod p
 \text{ is solvable}
 }
-\]
+$$
 
-\[
+$$
 \Updownarrow
-\]
+$$
 
-\[
+$$
 \boxed{
 p=a^2+b^2
 }
-\]
+$$
 
-\[
+$$
 \Updownarrow
-\]
+$$
 
-\[
+$$
 \boxed{
 p
 \text{ splits in }\mathbb Z[i].
 }
-\]
+$$
 
 This is a powerful example of the same arithmetic fact appearing simultaneously as:
 
@@ -1543,66 +1543,66 @@ This is a powerful example of the same arithmetic fact appearing simultaneously 
 
 Suppose:
 
-\[
+$$
 p\equiv1\pmod4.
-\]
+$$
 
 If we find:
 
-\[
+$$
 x^2\equiv-1\pmod p,
-\]
+$$
 
 then inside:
 
-\[
+$$
 \mathbb Z[i],
-\]
+$$
 
 we have:
 
-\[
+$$
 p\mid x^2+1.
-\]
+$$
 
 But:
 
-\[
+$$
 x^2+1
 =
 (x+i)(x-i).
-\]
+$$
 
 A Gaussian gcd such as:
 
-\[
+$$
 \boxed{
 \gcd_{\mathbb Z[i]}(
 p,
 x+i
 )
 }
-\]
+$$
 
 can recover a nontrivial Gaussian factor:
 
-\[
+$$
 a+bi
-\]
+$$
 
 of norm:
 
-\[
+$$
 p.
-\]
+$$
 
-Thus the Euclidean algorithm in \(\mathbb Z[i]\) can be used computationally to transform a modular square root of \(-1\) into a representation:
+Thus the Euclidean algorithm in $\mathbb Z[i]$ can be used computationally to transform a modular square root of $-1$ into a representation:
 
-\[
+$$
 \boxed{
 p=a^2+b^2.
 }
-\]
+$$
 
 This is a particularly elegant interaction between modular arithmetic and Gaussian gcd computation.
 
@@ -1612,11 +1612,11 @@ This is a particularly elegant interaction between modular arithmetic and Gaussi
 
 Gaussian arithmetic can be implemented using integer pairs:
 
-\[
+$$
 a+bi
 \longleftrightarrow
 (a,b).
-\]
+$$
 
 For educational code, this avoids relying on complex floating-point arithmetic.
 
@@ -1705,9 +1705,9 @@ Using floating point is unnecessary and can become unsafe for very large values.
 
 We can instead round an exact rational:
 
-\[
+$$
 \frac{a}{b}
-\]
+$$
 
 using integer arithmetic.
 
@@ -1740,19 +1740,19 @@ When the value is exactly halfway between two integers, either nearest integer i
 
 Let:
 
-\[
+$$
 \alpha=a+bi
-\]
+$$
 
 and:
 
-\[
+$$
 \beta=c+di.
-\]
+$$
 
 Then:
 
-\[
+$$
 \frac{\alpha}{\beta}
 =
 \frac{
@@ -1760,19 +1760,19 @@ Then:
 }{
 c^2+d^2
 }.
-\]
+$$
 
 The real numerator is:
 
-\[
+$$
 ac+bd,
-\]
+$$
 
 and the imaginary numerator is:
 
-\[
+$$
 bc-ad.
-\]
+$$
 
 Therefore:
 
@@ -1827,13 +1827,13 @@ def gaussian_divmod(
 
 The explicit assertion checks the central mathematical invariant:
 
-\[
+$$
 \boxed{
 r=0
 \quad\text{or}\quad
 N(r)<N(\beta).
 }
-\]
+$$
 
 ---
 
@@ -1865,7 +1865,7 @@ N(beta) = 13
 
 and therefore:
 
-\[
+$$
 \boxed{
 7+5i
 =
@@ -1873,7 +1873,7 @@ and therefore:
 +
 (1+i).
 }
-\]
+$$
 
 ---
 
@@ -1899,31 +1899,31 @@ def gaussian_gcd(
 
 The output is a gcd up to multiplication by one of:
 
-\[
+$$
 1,-1,i,-i.
-\]
+$$
 
 So different correct implementations may return different associates.
 
 For example:
 
-\[
+$$
 2+i,
-\]
+$$
 
-\[
+$$
 -2-i,
-\]
+$$
 
-\[
+$$
 -1+2i,
-\]
+$$
 
 or:
 
-\[
+$$
 1-2i
-\]
+$$
 
 may represent the same gcd class.
 
@@ -1944,11 +1944,11 @@ assert (
 
 This directly validates:
 
-\[
+$$
 \boxed{
 N(zw)=N(z)N(w).
 }
-\]
+$$
 
 ---
 
@@ -2006,83 +2006,83 @@ The exhaustive test verifies that the implementation respects that theorem over 
 
 The Gaussian integers sit inside:
 
-\[
+$$
 \mathbb C
-\]
+$$
 
 as the square lattice:
 
-\[
+$$
 \boxed{
 \mathbb Z^2.
 }
-\]
+$$
 
 The point:
 
-\[
+$$
 (a,b)
-\]
+$$
 
 corresponds to:
 
-\[
+$$
 a+bi.
-\]
+$$
 
 The norm:
 
-\[
+$$
 N(a+bi)
 =
 a^2+b^2
-\]
+$$
 
 is squared Euclidean distance.
 
 Euclidean division asks us to compute:
 
-\[
+$$
 \frac{\alpha}{\beta}
-\]
+$$
 
 and replace it by a nearby lattice point:
 
-\[
+$$
 q\in\mathbb Z[i].
-\]
+$$
 
 So the arithmetic algorithm:
 
-\[
+$$
 \boxed{
 \alpha=q\beta+r
 }
-\]
+$$
 
 is generated by a geometric operation:
 
-\[
+$$
 \boxed{
 \text{nearest lattice point}.
 }
-\]
+$$
 
 That is why the Gaussian integers provide such a useful conceptual bridge between:
 
-\[
+$$
 \text{number theory},
-\]
+$$
 
-\[
+$$
 \text{algebra},
-\]
+$$
 
 and:
 
-\[
+$$
 \text{lattice geometry}.
-\]
+$$
 
 ---
 
@@ -2092,131 +2092,131 @@ The entire article can be compressed into one chain.
 
 Begin with:
 
-\[
+$$
 \boxed{
 \mathbb Z[i].
 }
-\]
+$$
 
 Conjugation gives:
 
-\[
+$$
 z\mapsto\overline z.
-\]
+$$
 
 Together they produce the norm:
 
-\[
+$$
 \boxed{
 N(z)=z\overline z.
 }
-\]
+$$
 
 The norm is multiplicative:
 
-\[
+$$
 N(zw)=N(z)N(w).
-\]
+$$
 
 It also provides Euclidean descent:
 
-\[
+$$
 \boxed{
 N(r)<N(\beta).
 }
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 \mathbb Z[i]
 \text{ is Euclidean}.
 }
-\]
+$$
 
 Hence:
 
-\[
+$$
 \boxed{
 \mathbb Z[i]
 \text{ is a PID}.
 }
-\]
+$$
 
 Hence:
 
-\[
+$$
 \boxed{
 \mathbb Z[i]
 \text{ is a UFD}.
 }
-\]
+$$
 
 Unique factorization then allows us to understand rational primes inside the larger ring:
 
-\[
+$$
 \boxed{
 p\equiv1\pmod4
 \Rightarrow
 \text{split},
 }
-\]
+$$
 
-\[
+$$
 \boxed{
 p\equiv3\pmod4
 \Rightarrow
 \text{inert},
 }
-\]
+$$
 
-\[
+$$
 \boxed{
 2
 \Rightarrow
 \text{ramified}.
 }
-\]
+$$
 
 And for odd primes:
 
-\[
+$$
 \boxed{
 p\equiv1\pmod4
 }
-\]
+$$
 
-\[
+$$
 \Updownarrow
-\]
+$$
 
-\[
+$$
 \boxed{
 p=a^2+b^2
 }
-\]
+$$
 
-\[
+$$
 \Updownarrow
-\]
+$$
 
-\[
+$$
 \boxed{
 x^2\equiv-1\pmod p
 \text{ is solvable}.
 }
-\]
+$$
 
 This is an early example of a principle that becomes central in algebraic number theory:
 
-\[
+$$
 \boxed{
 \text{congruence information}
 \longleftrightarrow
 \text{factorization in extension rings}.
 }
-\]
+$$
 
 ---
 
@@ -2226,27 +2226,27 @@ This is an early example of a principle that becomes central in algebraic number
 
 For:
 
-\[
+$$
 z=4-7i,
-\]
+$$
 
 compute:
 
-\[
+$$
 \overline z
-\]
+$$
 
 and:
 
-\[
+$$
 N(z).
-\]
+$$
 
 Verify:
 
-\[
+$$
 z\overline z=N(z).
-\]
+$$
 
 ---
 
@@ -2254,27 +2254,27 @@ z\overline z=N(z).
 
 Let:
 
-\[
+$$
 z=2+i,
 \qquad
 w=1+3i.
-\]
+$$
 
 Compute:
 
-\[
+$$
 N(z),
 \qquad
 N(w),
 \qquad
 N(zw),
-\]
+$$
 
 and verify:
 
-\[
+$$
 N(zw)=N(z)N(w).
-\]
+$$
 
 ---
 
@@ -2282,21 +2282,21 @@ N(zw)=N(z)N(w).
 
 Solve:
 
-\[
+$$
 a^2+b^2=1
-\]
+$$
 
 over:
 
-\[
+$$
 a,b\in\mathbb Z.
-\]
+$$
 
 Use the solutions to derive:
 
-\[
+$$
 \mathbb Z[i]^\times.
-\]
+$$
 
 ---
 
@@ -2304,15 +2304,15 @@ Use the solutions to derive:
 
 List all associates of:
 
-\[
+$$
 3+2i.
-\]
+$$
 
 Verify that they all have norm:
 
-\[
+$$
 13.
-\]
+$$
 
 ---
 
@@ -2320,29 +2320,29 @@ Verify that they all have norm:
 
 Divide:
 
-\[
+$$
 7+5i
-\]
+$$
 
 by:
 
-\[
+$$
 3+2i.
-\]
+$$
 
-Find Gaussian integers \(q,r\) satisfying:
+Find Gaussian integers $q,r$ satisfying:
 
-\[
+$$
 7+5i
 =
 q(3+2i)+r
-\]
+$$
 
 and verify:
 
-\[
+$$
 N(r)<13.
-\]
+$$
 
 ---
 
@@ -2350,17 +2350,17 @@ N(r)<13.
 
 Show:
 
-\[
+$$
 5
 =
 (2+i)(2-i).
-\]
+$$
 
 Explain why:
 
-\[
+$$
 2+i
-\]
+$$
 
 is Gaussian prime.
 
@@ -2370,21 +2370,21 @@ is Gaussian prime.
 
 Explain why:
 
-\[
+$$
 7
-\]
+$$
 
 remains prime in:
 
-\[
+$$
 \mathbb Z[i].
-\]
+$$
 
 Use:
 
-\[
+$$
 7\equiv3\pmod4.
-\]
+$$
 
 ---
 
@@ -2392,15 +2392,15 @@ Use:
 
 Verify:
 
-\[
+$$
 2=-i(1+i)^2.
-\]
+$$
 
 Why does multiplication by:
 
-\[
+$$
 -i
-\]
+$$
 
 not change the essential prime factorization?
 
@@ -2410,7 +2410,7 @@ not change the essential prime factorization?
 
 Write each splitting prime as a sum of two squares:
 
-\[
+$$
 5,
 \qquad
 13,
@@ -2418,37 +2418,37 @@ Write each splitting prime as a sum of two squares:
 17,
 \qquad
 29.
-\]
+$$
 
 Use the representations to produce Gaussian factorizations.
 
 ---
 
-### Exercise 10 — Square root of \(-1\)
+### Exercise 10 — Square root of $-1$
 
 For:
 
-\[
+$$
 p=13,
-\]
+$$
 
 find:
 
-\[
+$$
 x
-\]
+$$
 
 such that:
 
-\[
+$$
 x^2\equiv-1\pmod{13}.
-\]
+$$
 
 Relate your answer to:
 
-\[
+$$
 13=3^2+2^2.
-\]
+$$
 
 ---
 
@@ -2456,7 +2456,7 @@ Relate your answer to:
 
 Determine whether each Gaussian integer is prime:
 
-\[
+$$
 3,
 \qquad
 5,
@@ -2466,7 +2466,7 @@ Determine whether each Gaussian integer is prime:
 4+i,
 \qquad
 3+2i.
-\]
+$$
 
 Use the Gaussian-prime classification rather than trial division.
 
@@ -2478,15 +2478,15 @@ Implement Gaussian Euclidean division.
 
 For many small random inputs verify both:
 
-\[
+$$
 \alpha=q\beta+r
-\]
+$$
 
 and:
 
-\[
+$$
 N(r)<N(\beta).
-\]
+$$
 
 Why is this a validation of the implementation rather than a proof of the theorem?
 
@@ -2497,75 +2497,75 @@ Why is this a validation of the implementation rather than a proof of the theore
 You should now be able to explain:
 
 1. What:
-   \[
+   $$
    \mathbb Z[i]
-   \]
+   $$
    is.
 2. How Gaussian conjugation works.
 3. Why:
-   \[
+   $$
    N(a+bi)=a^2+b^2.
-   \]
+   $$
 4. Why the norm is multiplicative.
 5. Why divisibility in:
-   \[
+   $$
    \mathbb Z[i]
-   \]
+   $$
    implies divisibility of norms.
 6. Why:
    
-   \[
+   $$
    \mathbb Z[i]^\times
    =
    \{\pm1,\pm i\}.
-   \]
+   $$
    
 7. What associates are.
 8. Why Gaussian gcds are unique only up to units.
 9.  How Euclidean division is performed by rounding:
-   \[
+   $$
    \alpha/\beta
-   \]
+   $$
    to a nearby Gaussian integer.
 10. Why:
-    \[
+    $$
     N(r)<N(\beta).
-    \]
+    $$
 11. Why:
-    \[
+    $$
     \mathbb Z[i]
-    \]
+    $$
     is a Euclidean domain.
 12. Why Euclidean structure implies unique factorization.
 13. What a Gaussian prime is.
 14. How to classify Gaussian primes.
 15. Why primes:
-    \[
+    $$
     p\equiv1\pmod4
-    \]
+    $$
     split.
 16. Why primes:
-    \[
+    $$
     p\equiv3\pmod4
-    \]
+    $$
     remain prime.
 17. Why:
-    \[
+    $$
     2
-    \]
+    $$
     ramifies.
 18. Why splitting primes are exactly the odd primes representable as:
-    \[
+    $$
     a^2+b^2.
-    \]
+    $$
 19. Why splitting is equivalent to solvability of:
-    \[
+    $$
     x^2\equiv-1\pmod p.
-    \]
+    $$
 20. How Gaussian gcd computation can recover a representation:
-    \[
+    $$
     p=a^2+b^2.
-    \]
+    $$
 21. Why exact integer arithmetic is preferable to floating-point division in an implementation of Gaussian Euclidean division.
 22. How nearest-lattice-point geometry produces an arithmetic algorithm.
 
@@ -2573,9 +2573,9 @@ The Gaussian integers show that enlarging the integers does not necessarily dest
 
 In this case it reveals new arithmetic structure that was invisible inside:
 
-\[
+$$
 \mathbb Z
-\]
+$$
 
 alone.
 
@@ -2594,7 +2594,7 @@ A standard reference for Gaussian integers, quadratic residues, sums of two squa
 A classical treatment of sums of two squares, primes, and related arithmetic.
 
 **David A. Cox**,  
-*Primes of the Form \(x^2+ny^2\).*
+*Primes of the Form $x^2+ny^2$.*
 
 An excellent deeper study of the relationship between prime representation, quadratic forms, and splitting in algebraic extensions.
 
@@ -2614,15 +2614,15 @@ Useful for the computational perspective on Euclidean algorithms, modular arithm
 
 This article showed that the congruence class:
 
-\[
+$$
 p\bmod4
-\]
+$$
 
 can determine whether a prime splits in:
 
-\[
+$$
 \mathbb Z[i].
-\]
+$$
 
 That already suggests a deeper question:
 
@@ -2630,11 +2630,11 @@ That already suggests a deeper question:
 
 The next article introduces functions that do exactly that.
 
-A **Dirichlet character** assigns algebraic values to residue classes modulo \(q\) while preserving multiplication.
+A **Dirichlet character** assigns algebraic values to residue classes modulo $q$ while preserving multiplication.
 
 From those characters we obtain exponential sums such as:
 
-\[
+$$
 \boxed{
 \tau(\chi)
 =
@@ -2642,22 +2642,22 @@ From those characters we obtain exponential sums such as:
 \chi(a)
 e^{2\pi ia/q},
 }
-\]
+$$
 
 the **Gauss sums**.
 
 This takes us from arithmetic in one extension ring to the interaction between:
 
-\[
+$$
 \boxed{
 \text{multiplicative residue structure}
 }
-\]
+$$
 
 and:
 
-\[
+$$
 \boxed{
 \text{additive Fourier structure}.
 }
-\]
+$$

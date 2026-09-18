@@ -40,9 +40,9 @@ draft: false
 
 The previous article ended with an important structural fact about SHA-256:
 
-\[
+$$
 \operatorname{SHA256}(M)
-\]
+$$
 
 is the final chaining state of a Merkle–Damgård iteration.
 
@@ -50,13 +50,13 @@ That observation is not, by itself, a weakness in SHA-256.
 
 It becomes dangerous when an application invents the wrong keyed construction.
 
-Suppose a server holds a secret key \(K\) and authenticates an attacker-visible message \(M\) using
+Suppose a server holds a secret key $K$ and authenticates an attacker-visible message $M$ using
 
-\[
+$$
 t
 =
 \operatorname{SHA256}(K\|M).
-\]
+$$
 
 This is often called a **secret-prefix MAC**.
 
@@ -78,13 +78,13 @@ For Merkle–Damgård hashes such as SHA-256, the construction exposes enough st
 
 The attacker can transform a valid pair
 
-\[
+$$
 (M,t)
-\]
+$$
 
 into a different message
 
-\[
+$$
 M'
 =
 M
@@ -92,11 +92,11 @@ M
 P(K\|M)
 \|
 X
-\]
+$$
 
 and compute a corresponding valid tag
 
-\[
+$$
 t'
 =
 \operatorname{SHA256}
@@ -109,20 +109,20 @@ P(K\|M)
 \|
 X
 ),
-\]
+$$
 
-without learning the bytes of \(K\).
+without learning the bytes of $K$.
 
 Here:
 
-- \(P(\cdot)\) is the SHA-256 padding that the legitimate hash already processed;
-- \(X\) is an attacker-chosen suffix.
+- $P(\cdot)$ is the SHA-256 padding that the legitimate hash already processed;
+- $X$ is an attacker-chosen suffix.
 
-The attack is possible because the original digest \(t\) is the state reached **after** the server has processed
+The attack is possible because the original digest $t$ is the state reached **after** the server has processed
 
-\[
+$$
 K\|M\|P(K\|M).
-\]
+$$
 
 The attacker resumes from that state and processes the suffix as if they were the hash implementation continuing normally.
 
@@ -141,25 +141,25 @@ The primitive can remain secure according to its standard collision and preimage
 
 That distinction is exactly why the earlier articles separated:
 
-\[
+$$
 \text{hash security}
-\]
+$$
 
 from:
 
-\[
+$$
 \text{protocol security}.
-\]
+$$
 
 ### What the attacker needs
 
 The classical attack needs:
 
-- the visible message \(M\);
-- a valid tag \(t=\operatorname{SHA256}(K\|M)\);
-- a chosen suffix \(X\);
+- the visible message $M$;
+- a valid tag $t=\operatorname{SHA256}(K\|M)$;
+- a chosen suffix $X$;
 - knowledge of the hash algorithm and encoding;
-- the byte length of \(K\), or a manageable set of plausible lengths.
+- the byte length of $K$, or a manageable set of plausible lengths.
 
 The actual key bytes are not needed.
 
@@ -185,9 +185,9 @@ If a verifier reveals which candidate is accepted, the correct key length is dis
 
 Suppose the attacker determines:
 
-\[
+$$
 |K|=15.
-\]
+$$
 
 This does not reveal any of the 15 secret bytes.
 
@@ -205,9 +205,9 @@ To understand the attack precisely, we need to reconstruct the padding that SHA-
 
 Let:
 
-\[
+$$
 L=|K|+|M|
-\]
+$$
 
 be the original byte length.
 
@@ -221,23 +221,23 @@ such that the total padded length is a multiple of 64 bytes.
 
 The padding length is:
 
-\[
+$$
 1+z+8
-\]
+$$
 
-bytes, where \(z\) is chosen so that:
+bytes, where $z$ is chosen so that:
 
-\[
+$$
 L+1+z\equiv56\pmod{64}.
-\]
+$$
 
 Equivalently:
 
-\[
+$$
 z
 =
 (56-(L+1)\bmod64)\bmod64.
-\]
+$$
 
 ### Concrete example
 
@@ -250,25 +250,25 @@ original = b"comment=hello&role=user"
 
 The secret is:
 
-\[
+$$
 |K|=15
-\]
+$$
 
 bytes.
 
 The visible message is:
 
-\[
+$$
 |M|=23
-\]
+$$
 
 bytes.
 
 Therefore:
 
-\[
+$$
 L=15+23=38.
-\]
+$$
 
 SHA-256 padding begins with:
 
@@ -278,19 +278,19 @@ SHA-256 padding begins with:
 
 and then needs 17 zero bytes because:
 
-\[
+$$
 38+1+17=56.
-\]
+$$
 
 The final 8-byte length field encodes:
 
-\[
+$$
 8L
 =
 304
 =
 \texttt{0x130}
-\]
+$$
 
 bits.
 
@@ -312,17 +312,17 @@ That is:
 
 for:
 
-\[
+$$
 26
-\]
+$$
 
 padding bytes.
 
 The original secret-prefixed stream therefore occupies:
 
-\[
+$$
 38+26=64
-\]
+$$
 
 bytes after padding.
 
@@ -409,13 +409,13 @@ Another parser may reject the non-printable padding bytes before any useful inte
 
 Therefore:
 
-\[
+$$
 \boxed{
 \text{cryptographic forgery}
 \neq
 \text{guaranteed application exploit}
 }
-\]
+$$
 
 The parser and message format are part of the threat model.
 
@@ -423,21 +423,21 @@ The parser and message format are part of the threat model.
 
 A SHA-256 digest is 32 bytes:
 
-\[
+$$
 256\text{ bits}.
-\]
+$$
 
 Internally, that is:
 
-\[
+$$
 8\times32
-\]
+$$
 
 state bits grouped as:
 
-\[
+$$
 h_0,h_1,\ldots,h_7.
-\]
+$$
 
 So a published digest can be parsed as:
 
@@ -464,75 +464,75 @@ That is the central mechanism of the attack.
 
 Write the original padded secret-prefixed message as:
 
-\[
+$$
 B_1,B_2,\ldots,B_r.
-\]
+$$
 
 The legitimate server computes:
 
-\[
+$$
 h_0=IV,
-\]
+$$
 
-\[
+$$
 h_i=f(h_{i-1},B_i),
-\]
+$$
 
 and publishes:
 
-\[
+$$
 t=h_r.
-\]
+$$
 
 The attacker learns:
 
-\[
+$$
 h_r
-\]
+$$
 
 directly from the tag.
 
-Now choose suffix \(X\).
+Now choose suffix $X$.
 
 The attacker computes the final padding required for the **extended logical message length**, splits:
 
-\[
+$$
 X\|P'
-\]
+$$
 
 into blocks:
 
-\[
+$$
 C_1,C_2,\ldots,C_s,
-\]
+$$
 
 and continues:
 
-\[
+$$
 h_{r+1}
 =
 f(h_r,C_1),
-\]
+$$
 
-\[
+$$
 h_{r+2}
 =
 f(h_{r+1},C_2),
-\]
+$$
 
 and so on until:
 
-\[
+$$
 t'
 =
 h_{r+s}.
-\]
+$$
 
 The new tag is therefore calculated without:
 
-- \(K\),
-- the original compression history before \(h_r\),
-- inversion of \(f\).
+- $K$,
+- the original compression history before $h_r$,
+- inversion of $f$.
 
 The attacker simply uses the forward compression function.
 
@@ -542,11 +542,11 @@ After the original glue padding, the hash state corresponds to a message length 
 
 For the running example:
 
-\[
+$$
 |K|+|M|+|P(K\|M)|
 =
 64.
-\]
+$$
 
 If the suffix is:
 
@@ -556,9 +556,9 @@ suffix = b"&role=admin"
 
 then SHA-256 must eventually encode the total logical length:
 
-\[
+$$
 64+|X|
-\]
+$$
 
 before the final extension padding is added.
 
@@ -1002,9 +1002,9 @@ Classic Merkle–Damgård hashes with exposed final chaining state are the stand
 
 When misused as:
 
-\[
+$$
 H(K\|M),
-\]
+$$
 
 the direct continuation attack applies.
 
@@ -1029,9 +1029,9 @@ SHA-512 is also an iterated SHA-2 construction and exposes its complete chaining
 
 The same general secret-prefix continuation issue applies when it is misused as:
 
-\[
+$$
 \operatorname{SHA512}(K\|M).
-\]
+$$
 
 The mechanics differ because SHA-512 uses:
 
@@ -1065,9 +1065,9 @@ Therefore the classic Merkle–Damgård length-extension attack described here d
 
 But:
 
-\[
+$$
 \operatorname{SHA3\!-\!256}(K\|M)
-\]
+$$
 
 should still not be invented as an application MAC.
 
@@ -1115,11 +1115,11 @@ The table should not be interpreted as a recommendation to invent keyed variants
 
 The safe rule is simpler:
 
-\[
+$$
 \boxed{
 \text{use a standardized MAC construction}
 }
-\]
+$$
 
 ---
 
@@ -1127,13 +1127,13 @@ The safe rule is simpler:
 
 HMAC does not authenticate a message by computing:
 
-\[
+$$
 H(K\|M).
-\]
+$$
 
 Its structure is:
 
-\[
+$$
 \operatorname{HMAC}_K(M)
 =
 H
@@ -1146,63 +1146,63 @@ H(
 M
 )
 \right),
-\]
+$$
 
 where:
 
-- \(K_0\) is the normalized block-sized key,
+- $K_0$ is the normalized block-sized key,
 - `ipad` is byte `0x36` repeated to the hash block size,
 - `opad` is byte `0x5c` repeated to the hash block size.
 
 For SHA-256, the block size is:
 
-\[
+$$
 B=64\text{ bytes}.
-\]
+$$
 
 ### Key normalization
 
 If:
 
-\[
+$$
 |K|>B,
-\]
+$$
 
 HMAC first hashes the key:
 
-\[
+$$
 K'=H(K).
-\]
+$$
 
-If the resulting key is shorter than \(B\), it is padded with zeros to make the block-sized \(K_0\).
+If the resulting key is shorter than $B$, it is padded with zeros to make the block-sized $K_0$.
 
 The inner hash is:
 
-\[
+$$
 H(
 (K_0\oplus\text{ipad})
 \|
 M
 ).
-\]
+$$
 
 The outer hash then authenticates that inner digest:
 
-\[
+$$
 H(
 (K_0\oplus\text{opad})
 \|
 \text{inner digest}
 ).
-\]
+$$
 
 ### Why the published HMAC tag is different
 
 The secret-prefix attack relied on the published value being exactly the state after hashing:
 
-\[
+$$
 K\|M\|\operatorname{pad}(K\|M).
-\]
+$$
 
 HMAC does not publish that inner state.
 
@@ -1244,7 +1244,7 @@ An attacker could imagine continuing the outer SHA-256 state represented by the 
 
 But the result would represent something structurally like:
 
-\[
+$$
 H(
 (K_0\oplus\text{opad})
 \|
@@ -1254,11 +1254,11 @@ H(
 \|
 X
 ).
-\]
+$$
 
-That is not the HMAC definition for any forged message \(M'\), because a legitimate HMAC must have the outer input:
+That is not the HMAC definition for any forged message $M'$, because a legitimate HMAC must have the outer input:
 
-\[
+$$
 (K_0\oplus\text{opad})
 \|
 H(
@@ -1266,7 +1266,7 @@ H(
 \|
 M'
 ).
-\]
+$$
 
 The nested keyed structure breaks the simple continuation equivalence.
 
@@ -1303,9 +1303,9 @@ The attack is short enough to fit in a few dozen lines of Python, but the engine
 
 Do not use:
 
-\[
+$$
 H(K\|M)
-\]
+$$
 
 as a homemade MAC.
 
@@ -1466,17 +1466,17 @@ The most important misconceptions can be reduced to five statements.
 
 Length extension is one of the clearest demonstrations of a core cryptographic principle:
 
-\[
+$$
 \boxed{
 \text{a secure primitive can be used in an insecure construction}
 }
-\]
+$$
 
 SHA-256 can remain secure as a collision- and preimage-resistant hash while:
 
-\[
+$$
 \operatorname{SHA256}(K\|M)
-\]
+$$
 
 fails as a MAC.
 
@@ -1488,29 +1488,29 @@ The attack works because three facts line up:
 
 Given:
 
-\[
+$$
 t
 =
 \operatorname{SHA256}(K\|M),
-\]
+$$
 
 the attacker guesses:
 
-\[
+$$
 |K|,
-\]
+$$
 
 constructs:
 
-\[
+$$
 P(K\|M),
-\]
+$$
 
-parses \(t\) as the eight SHA-256 state words, and continues the compression function over an attacker-chosen suffix \(X\).
+parses $t$ as the eight SHA-256 state words, and continues the compression function over an attacker-chosen suffix $X$.
 
 The forged message is:
 
-\[
+$$
 M'
 =
 M
@@ -1518,13 +1518,13 @@ M
 P(K\|M)
 \|
 X,
-\]
+$$
 
 and the attacker computes the correct tag for:
 
-\[
+$$
 K\|M'.
-\]
+$$
 
 No key recovery occurs.
 
@@ -1549,7 +1549,7 @@ and the correct 15-byte key-length guess produces a valid forged secret-prefix t
 
 Replacing the construction with HMAC changes the structure:
 
-\[
+$$
 H(K\|M)
 \quad\longrightarrow\quad
 H(
@@ -1561,7 +1561,7 @@ H(
 M
 )
 ).
-\]
+$$
 
 The public tag is no longer the directly reusable chaining state of the secret-prefixed message that the attacker needs.
 
@@ -1569,7 +1569,7 @@ That is the conceptual bridge to the next stages of the series.
 
 We now understand:
 
-\[
+$$
 \text{hash function}
 \rightarrow
 \text{iterated construction}
@@ -1577,7 +1577,7 @@ We now understand:
 \text{structural misuse}
 \rightarrow
 \text{need for a standardized MAC}.
-\]
+$$
 
 The next article moves to the other major modern hash architecture—**sponge constructions, Keccak, and SHA-3**—where the internal state and output interface are designed very differently from Merkle–Damgård.
 

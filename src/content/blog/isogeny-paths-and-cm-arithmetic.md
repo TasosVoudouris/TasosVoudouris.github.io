@@ -62,7 +62,7 @@ Its kernel, degree, separability, and interaction with endomorphism rings reveal
 At the computational level, isogenies lead naturally to:
 
 * modular polynomials;
-* \(j\)-invariant neighborhoods;
+* $j$-invariant neighborhoods;
 * isogeny graphs;
 * isogeny paths;
 * complex multiplication;
@@ -93,10 +93,10 @@ $$
 - [1. From isomorphisms to isogenies](#1-from-isomorphisms-to-isogenies)
 - [2. Definition of an isogeny](#2-definition-of-an-isogeny)
 - [3. Kernel, degree, and separability](#3-kernel-degree-and-separability)
-- [4. Quotients and Vélu’s formulas](#4-quotients-and-vélus-formulas)
+- [4. Quotients and Vélu's formulas](#4-quotients-and-vélus-formulas)
 - [5. Dual isogenies](#5-dual-isogenies)
 - [Endomorphism rings](#endomorphism-rings)
-- [7. Isogenies and (j)-invariants](#7-isogenies-and-j-invariants)
+- [7. Isogenies and $j$-invariants](#7-isogenies-and-jjj-invariants)
 - [8. Classical modular polynomials](#8-classical-modular-polynomials)
 - [9. Computing isogeny neighbors](#9-computing-isogeny-neighbors)
 - [Isogeny graphs](#isogeny-graphs)
@@ -122,8 +122,6 @@ $$
 
 ---
 
-<a id="from-isomorphisms"></a>
-
 ## 1. From isomorphisms to isogenies
 
 Chapter VII distinguished an elliptic curve from the equation used to represent it.
@@ -140,7 +138,7 @@ Thus an isomorphism merely changes the representation of the same elliptic-curve
 
 An isogeny is more general.
 
-It may collapse several points of \(E_1\) to the same point of \(E_2\).
+It may collapse several points of $E_1$ to the same point of $E_2$.
 
 Its kernel may therefore be nontrivial.
 
@@ -154,7 +152,7 @@ $$
 }
 $$
 
-Every elliptic-curve isomorphism is an isogeny of degree \(1\).
+Every elliptic-curve isomorphism is an isogeny of degree $1$.
 
 But most isogenies are not isomorphisms.
 
@@ -171,7 +169,7 @@ E_1,
 E_2
 $$
 
-be elliptic curves over a field \(K\).
+be elliptic curves over a field $K$.
 
 An **isogeny**
 
@@ -217,7 +215,7 @@ This combination of geometry and algebra is what makes isogenies so useful.
 
 ---
 
-### Example: multiplication by \(n\)
+### Example: multiplication by $n$
 
 The map
 
@@ -302,7 +300,7 @@ $$
 G\subset E
 $$
 
-is a cyclic subgroup of order \(\ell\), then under suitable hypotheses there is a separable isogeny
+is a cyclic subgroup of order $\ell$, then under suitable hypotheses there is a separable isogeny
 
 $$
 \boxed{
@@ -338,7 +336,7 @@ $$
 
 ### Inseparable isogenies
 
-In characteristic \(p\), not every isogeny is separable.
+In characteristic $p$, not every isogeny is separable.
 
 The Frobenius map is the standard example.
 
@@ -355,7 +353,7 @@ $$
 
 Only the separable degree is directly measured by the number of geometric kernel points.
 
-This is the same phenomenon we encountered when studying \(p\)-torsion.
+This is the same phenomenon we encountered when studying $p$-torsion.
 
 ---
 
@@ -390,7 +388,7 @@ But cryptographic and computational applications require explicit equations.
 
 **Vélu's formulas** provide them.
 
-Given the points of \(G\), Vélu's construction computes:
+Given the points of $G$, Vélu's construction computes:
 
 1. an equation for
 
@@ -469,7 +467,7 @@ $$
 \phi:E_1\rightarrow E_2
 $$
 
-of degree \(m\) has a **dual isogeny**
+of degree $m$ has a **dual isogeny**
 
 $$
 \boxed{
@@ -599,9 +597,9 @@ Over finite fields, the endomorphism ring is richer still.
 
 <a id="j-isogenies"></a>
 
-## 7. Isogenies and \(j\)-invariants
+## 7. Isogenies and $j$-invariants
 
-An isomorphism preserves the \(j\)-invariant.
+An isomorphism preserves the $j$-invariant.
 
 Therefore,
 
@@ -615,7 +613,7 @@ $$
 j(E_1)=j(E_2).
 $$
 
-But isogenous curves need not have equal \(j\)-invariants.
+But isogenous curves need not have equal $j$-invariants.
 
 This gives a useful viewpoint.
 
@@ -625,9 +623,9 @@ $$
 j(E).
 $$
 
-Then an isogeny becomes a relation between different \(j\)-values.
+Then an isogeny becomes a relation between different $j$-values.
 
-For fixed degree \(\ell\),
+For fixed degree $\ell$,
 
 $$
 \boxed{
@@ -637,7 +635,7 @@ j(E_2)
 }
 $$
 
-whenever an \(\ell\)-isogeny exists.
+whenever an $\ell$-isogeny exists.
 
 This leads directly to modular polynomials.
 
@@ -647,7 +645,7 @@ This leads directly to modular polynomials.
 
 ## 8. Classical modular polynomials
 
-For a positive integer \(N\), the classical modular polynomial
+For a positive integer $N$, the classical modular polynomial
 
 $$
 \boxed{
@@ -655,7 +653,7 @@ $$
 }
 $$
 
-encodes pairs of elliptic curves connected by a cyclic isogeny of degree \(N\).
+encodes pairs of elliptic curves connected by a cyclic isogeny of degree $N$.
 
 For prime
 
@@ -671,7 +669,7 @@ $$
 }
 $$
 
-when the two geometric isomorphism classes are connected by a cyclic \(\ell\)-isogeny.
+when the two geometric isomorphism classes are connected by a cyclic $\ell$-isogeny.
 
 Thus
 
@@ -685,7 +683,7 @@ turns an isogeny relation into a polynomial equation.
 
 This is extremely powerful.
 
-Rather than explicitly constructing all possible degree-\(\ell\) kernels, we can solve a polynomial equation in the \(j\)-invariant.
+Rather than explicitly constructing all possible degree-$\ell$ kernels, we can solve a polynomial equation in the $j$-invariant.
 
 ---
 
@@ -709,7 +707,7 @@ $$
 E_1\rightarrow E_2
 $$
 
-is an \(\ell\)-isogeny, then its dual gives an \(\ell\)-isogeny
+is an $\ell$-isogeny, then its dual gives an $\ell$-isogeny
 
 $$
 E_2\rightarrow E_1.
@@ -729,7 +727,7 @@ $$
 j=j(E).
 $$
 
-To find its \(\ell\)-isogenous neighbors, evaluate
+To find its $\ell$-isogenous neighbors, evaluate
 
 $$
 \boxed{
@@ -774,7 +772,7 @@ $$
 \mathbb F_q,
 $$
 
-roots that lie in \(\mathbb F_q\) correspond to \(j\)-invariants of neighboring curves defined over the base field, subject to the usual care concerning twists and multiplicities.
+roots that lie in $\mathbb F_q$ correspond to $j$-invariants of neighboring curves defined over the base field, subject to the usual care concerning twists and multiplicities.
 
 This is the computational principle used by the companion script.
 
@@ -786,8 +784,8 @@ This is the computational principle used by the companion script.
 
 Fix:
 
-* a finite field \(\mathbb F_q\);
-* a prime \(\ell\neq\operatorname{char}\mathbb F_q\).
+* a finite field $\mathbb F_q$;
+* a prime $\ell\neq\operatorname{char}\mathbb F_q$.
 
 Construct a graph whose vertices are elliptic-curve isomorphism classes, usually represented by
 
@@ -795,7 +793,7 @@ $$
 j\text{-invariants}.
 $$
 
-Connect two vertices when an \(\ell\)-isogeny exists.
+Connect two vertices when an $\ell$-isogeny exists.
 
 Thus:
 
@@ -853,7 +851,7 @@ $$
 0\leq i<n.
 $$
 
-Thus each step represents an \(\ell\)-isogeny.
+Thus each step represents an $\ell$-isogeny.
 
 Composition produces an isogeny whose degree is, in the separable generic situation,
 
@@ -913,7 +911,7 @@ The structure of an isogeny graph depends strongly on whether the curves are ord
 
 ### Ordinary curves
 
-Ordinary \(\ell\)-isogeny components often exhibit the famous **isogeny-volcano** structure.
+Ordinary $\ell$-isogeny components often exhibit the famous **isogeny-volcano** structure.
 
 Very roughly, one sees:
 
@@ -1023,7 +1021,7 @@ D\equiv0
 \pmod4.
 $$
 
-If \(D\) is a **fundamental discriminant**, then the order is the full ring of integers
+If $D$ is a **fundamental discriminant**, then the order is the full ring of integers
 
 $$
 \mathcal O_K
@@ -1031,7 +1029,7 @@ $$
 
 of the imaginary quadratic field.
 
-For nonfundamental \(D\), we instead obtain a nonmaximal order
+For nonfundamental $D$, we instead obtain a nonmaximal order
 
 $$
 \mathcal O_D
@@ -1111,7 +1109,7 @@ $$
 
 This is the **CM norm equation**.
 
-It may be understood by writing an element of the quadratic order with trace \(t\) and norm \(p\).
+It may be understood by writing an element of the quadratic order with trace $t$ and norm $p$.
 
 Thus the equation connects:
 
@@ -1155,7 +1153,7 @@ t^2
 4p
 $$
 
-when \(v\neq0\).
+when $v\neq0$.
 
 Hence
 
@@ -1179,7 +1177,7 @@ $$
 
 be an imaginary quadratic field.
 
-A prime \(p\) can:
+A prime $p$ can:
 
 * split;
 * remain inert;
@@ -1191,7 +1189,7 @@ $$
 p\nmid D,
 $$
 
-splitting is controlled by whether \(D\) is a quadratic residue modulo \(p\).
+splitting is controlled by whether $D$ is a quadratic residue modulo $p$.
 
 When
 
@@ -1209,7 +1207,7 @@ $$
 }
 $$
 
-This produces ideals of norm \(p\).
+This produces ideals of norm $p$.
 
 Norm equations provide a computational route to primes compatible with a chosen CM discriminant.
 
@@ -1263,7 +1261,7 @@ The class number measures how far the order is from unique factorization at the 
 
 But in CM elliptic-curve theory it also has a geometric interpretation.
 
-Roughly speaking, it counts the different CM \(j\)-invariants associated with the order.
+Roughly speaking, it counts the different CM $j$-invariants associated with the order.
 
 This is why class numbers naturally appear in algorithms that enumerate CM curves.
 
@@ -1295,7 +1293,7 @@ $$
 D<0,
 $$
 
-positive-definite primitive quadratic forms of discriminant \(D\), modulo proper equivalence, correspond to ideal classes of the quadratic order
+positive-definite primitive quadratic forms of discriminant $D$, modulo proper equivalence, correspond to ideal classes of the quadratic order
 
 $$
 \mathcal O_D.
@@ -1325,7 +1323,7 @@ b^2-4pc=D
 }
 $$
 
-can therefore represent arithmetic information associated with a prime \(p\).
+can therefore represent arithmetic information associated with a prime $p$.
 
 This is the mathematical basis of the script's `prime_form` routine.
 
@@ -1335,7 +1333,7 @@ This is the mathematical basis of the script's `prime_form` routine.
 
 ## Hilbert class polynomials
 
-For a negative discriminant \(D\), define the class polynomial
+For a negative discriminant $D$, define the class polynomial
 
 $$
 \boxed{
@@ -1360,7 +1358,7 @@ $$
 }
 $$
 
-Thus the class number determines how many CM \(j\)-invariants appear.
+Thus the class number determines how many CM $j$-invariants appear.
 
 This polynomial gives a powerful route from algebraic number theory to explicit elliptic curves.
 
@@ -1378,7 +1376,7 @@ $$
 
 with controlled Frobenius arithmetic.
 
-Choose a negative discriminant \(D\) and solve
+Choose a negative discriminant $D$ and solve
 
 $$
 \boxed{
@@ -1392,7 +1390,7 @@ $$
 H_D(X).
 $$
 
-Reduce it modulo \(p\).
+Reduce it modulo $p$.
 
 Find a root
 
@@ -1400,7 +1398,7 @@ $$
 j\in\mathbb F_p.
 $$
 
-Construct an elliptic curve with that \(j\)-invariant.
+Construct an elliptic curve with that $j$-invariant.
 
 The possible curve orders are then
 
@@ -1492,7 +1490,7 @@ The companion script combines two related but distinct computational themes.
 
 It uses modular polynomials to:
 
-* find neighboring \(j\)-invariants;
+* find neighboring $j$-invariants;
 * test adjacency;
 * explore paths.
 
@@ -1565,7 +1563,7 @@ $$
 }
 $$
 
-Thus it finds candidate \(\ell\)-isogenous neighboring \(j\)-invariants.
+Thus it finds candidate $\ell$-isogenous neighboring $j$-invariants.
 
 Conceptually:
 
@@ -1628,7 +1626,7 @@ j^{(1)}
 j_1
 $$
 
-of length \(n\), where every consecutive pair satisfies
+of length $n$, where every consecutive pair satisfies
 
 $$
 \Phi_\ell(j_i,j_{i+1})=0.
@@ -1660,16 +1658,16 @@ It represents the trace/norm relation of an imaginary-quadratic element associat
 
 When the appropriate CM hypotheses hold, a solution connects:
 
-* the prime \(p\);
-* the discriminant \(D\);
-* the Frobenius trace \(t\);
-* the conductor-related factor \(v\).
+* the prime $p$;
+* the discriminant $D$;
+* the Frobenius trace $t$;
+* the conductor-related factor $v$.
 
 ---
 
 ### `next_split_prime(D, t0)`
 
-This searches for a prime \(p\) compatible with the selected discriminant through the CM norm relation.
+This searches for a prime $p$ compatible with the selected discriminant through the CM norm relation.
 
 Such primes are useful when constructing curves using class polynomials.
 
@@ -1713,9 +1711,9 @@ h(D).
 }
 $$
 
-More precisely, it measures the class number of the imaginary quadratic order of discriminant \(D\).
+More precisely, it measures the class number of the imaginary quadratic order of discriminant $D$.
 
-If \(D\) is fundamental, this is the class number of the maximal order of
+If $D$ is fundamental, this is the class number of the maximal order of
 
 $$
 \mathbb Q(\sqrt D).
@@ -1743,7 +1741,7 @@ b^2-4pc=D.
 }
 $$
 
-Such a form has discriminant \(D\) and links prime representation with the quadratic-form/class-group description of the order.
+Such a form has discriminant $D$ and links prime representation with the quadratic-form/class-group description of the order.
 
 This gives a concrete computational bridge:
 
@@ -1962,14 +1960,14 @@ $$
 When reviewing the script, useful questions include:
 
 1. Which modular polynomials are hardcoded?
-2. Are they interpreted over \(\mathbb Z\) and then reduced into the active field?
+2. Are they interpreted over $\mathbb Z$ and then reduced into the active field?
 3. How are root multiplicities handled?
 4. Does `isogeny_nbrs` return only roots in the base field?
 5. How is immediate dual-edge backtracking avoided?
 6. What search strategy is used by `isogeny_path`?
-7. Does the norm-equation routine assume \(D\) is fundamental?
+7. Does the norm-equation routine assume $D$ is fundamental?
 8. Does `class_number(D)` handle nonmaximal orders or only field discriminants?
-9. How does `prime_form` select \(b\)?
+9. How does `prime_form` select $b$?
 10. Are all quadratic forms reduced to canonical representatives?
 11. How do the CM functions relate to the modular-polynomial graph functions?
 12. Which parts are educational reference code rather than scalable production algorithms?
@@ -2000,7 +1998,7 @@ $$
 }
 $$
 
-A cyclic subgroup of order \(\ell\) gives an \(\ell\)-isogeny.
+A cyclic subgroup of order $\ell$ gives an $\ell$-isogeny.
 
 The resulting geometric relation can be compressed into one polynomial equation:
 
@@ -2066,7 +2064,7 @@ b^2-4ac=D.
 }
 $$
 
-Class polynomials encode CM \(j\)-invariants:
+Class polynomials encode CM $j$-invariants:
 
 $$
 \boxed{
@@ -2260,7 +2258,7 @@ E[n]=\ker[n].
 }
 $$
 
-Over characteristic not dividing \(n\),
+Over characteristic not dividing $n$,
 
 $$
 \boxed{
@@ -2270,7 +2268,7 @@ E[n]
 }
 $$
 
-Nagell–Lutz and Mazur showed how surprisingly constrained rational torsion over \(\mathbb Q\) can be.
+Nagell–Lutz and Mazur showed how surprisingly constrained rational torsion over $\mathbb Q$ can be.
 
 ---
 
@@ -2304,11 +2302,11 @@ The Frobenius endomorphism became one of the central objects of the entire theor
 
 ---
 
-### VII — Models, Isomorphisms, and the \(j\)-Invariant
+### VII — Models, Isomorphisms, and the $j$-Invariant
 
 We separated the abstract curve from its coordinate representation.
 
-The \(j\)-invariant gave
+The $j$-invariant gave
 
 $$
 \boxed{
@@ -2447,7 +2445,7 @@ Finally, finite subgroups became maps between curves.
 
 Isogenies became edges.
 
-\(j\)-invariants became vertices.
+$j$-invariants became vertices.
 
 Modular polynomials encoded adjacency.
 
@@ -2685,7 +2683,7 @@ Useful references for this final chapter and the series as a whole include:
 * Jacques Vélu, work on explicit isogeny formulas.
 * David Kohel, work on endomorphism rings and isogeny volcanoes.
 * Andrew V. Sutherland, work on modular polynomials, isogeny volcanoes, CM methods, and point counting.
-* David Cox, **Primes of the Form \(x^2+ny^2\)**, for quadratic forms and complex multiplication.
+* David Cox, **Primes of the Form $x^2+ny^2$**, for quadratic forms and complex multiplication.
 * René Schoof, work on elliptic-curve point counting.
 * Andrew V. Sutherland, **18.783 Elliptic Curves** lecture material.
 * NIST IR 8545 for the historical status of SIKE and the fourth round of the NIST PQC process.

@@ -28,14 +28,14 @@ Jacobi sums take a different approach.
 
 They correlate **two multiplicative characters directly**:
 
-\[
+$$
 \boxed{
 J(\chi,\lambda)
 =
 \sum_{x\in\mathbb F_q}
 \chi(x)\lambda(1-x).
 }
-\]
+$$
 
 At first this looks like a small variation on the character sums developed in the previous article.
 
@@ -51,7 +51,7 @@ Jacobi sums encode:
 
 They therefore provide a natural bridge:
 
-\[
+$$
 \boxed{
 \text{character theory}
 \rightarrow
@@ -59,17 +59,17 @@ They therefore provide a natural bridge:
 \rightarrow
 \text{finite-field geometry}.
 }
-\]
+$$
 
 Throughout this article, multiplicative characters are extended to the whole field using the convention:
 
-\[
+$$
 \boxed{
 \chi(0)=0.
 }
-\]
+$$
 
-This convention matters whenever trivial characters or the values \(x=0,1\) occur.
+This convention matters whenever trivial characters or the values $x=0,1$ occur.
 
 ---
 
@@ -81,14 +81,6 @@ This convention matters whenever trivial characters or the values \(x=0,1\) occu
 - [Counting finite-field equations with characters](#counting-finite-field-equations-with-characters)
 - [Curves and Frobenius point counts](#curves-and-frobenius-point-counts)
 - [Square-root cancellation and Weil bounds](#square-root-cancellation-and-weil-bounds)
-- [\[
-\boxed${
-\left|
-#E(\mathbb F_q)](#boxedleftemathbb-f_q)
-- [\[
-\boxed${
-\left|
-#C(\mathbb F_q)](#boxedleftcmathbb-f_q)
 - [Computational verification and the role of the archived worksheets](#computational-verification-and-the-role-of-the-archived-worksheets)
 - [The structural picture](#the-structural-picture)
 - [Practice and checkpoint](#practice-and-checkpoint)
@@ -101,87 +93,87 @@ This convention matters whenever trivial characters or the values \(x=0,1\) occu
 
 Let:
 
-\[
+$$
 \chi,\lambda:
 \mathbb F_q^\times
 \rightarrow
 \mathbb C^\times
-\]
+$$
 
 be multiplicative characters.
 
 Extend them to:
 
-\[
+$$
 \mathbb F_q
-\]
+$$
 
 by setting:
 
-\[
+$$
 \chi(0)=\lambda(0)=0.
-\]
+$$
 
 The **Jacobi sum** is:
 
-\[
+$$
 \boxed{
 J(\chi,\lambda)
 =
 \sum_{x\in\mathbb F_q}
 \chi(x)\lambda(1-x).
 }
-\]
+$$
 
 The expression measures how often the multiplicative behavior of:
 
-\[
+$$
 x
-\]
+$$
 
 correlates with that of:
 
-\[
+$$
 1-x.
-\]
+$$
 
 Unlike a Gauss sum, no additive character appears explicitly.
 
 Yet additive structure is still present through the relation:
 
-\[
+$$
 x+(1-x)=1.
-\]
+$$
 
 So Jacobi sums are still mixing addition and multiplication, but in a different way.
 
 ---
 
-### Why the values \(0\) and \(1\) matter
+### Why the values $0$ and $1$ matter
 
 At:
 
-\[
+$$
 x=0,
-\]
+$$
 
 the first factor is:
 
-\[
+$$
 \chi(0)=0.
-\]
+$$
 
 At:
 
-\[
+$$
 x=1,
-\]
+$$
 
 the second factor is:
 
-\[
+$$
 \lambda(0)=0.
-\]
+$$
 
 Thus, under our convention, both endpoint terms vanish.
 
@@ -195,28 +187,28 @@ Therefore character conventions should always be stated before identities are us
 
 Substitute:
 
-\[
+$$
 y=1-x.
-\]
+$$
 
 Then:
 
-\[
+$$
 J(\chi,\lambda)
 =
 \sum_y
 \chi(1-y)\lambda(y).
-\]
+$$
 
-Since multiplication in \(\mathbb C\) is commutative:
+Since multiplication in $\mathbb C$ is commutative:
 
-\[
+$$
 \boxed{
 J(\chi,\lambda)
 =
 J(\lambda,\chi).
 }
-\]
+$$
 
 So Jacobi sums are symmetric in their two characters.
 
@@ -226,74 +218,74 @@ So Jacobi sums are symmetric in their two characters.
 
 Let:
 
-\[
+$$
 \varepsilon
-\]
+$$
 
 denote the trivial multiplicative character:
 
-\[
+$$
 \varepsilon(x)=1
 \qquad
 (x\neq0),
-\]
+$$
 
 extended by:
 
-\[
+$$
 \varepsilon(0)=0.
-\]
+$$
 
-If \(\chi\) is nontrivial, then:
+If $\chi$ is nontrivial, then:
 
-\[
+$$
 \begin{aligned}
 J(\chi,\varepsilon)
 &=
 \sum_x
 \chi(x)\varepsilon(1-x).
 \end{aligned}
-\]
+$$
 
 The factor:
 
-\[
+$$
 \varepsilon(1-x)
-\]
+$$
 
-removes the term \(x=1\).
+removes the term $x=1$.
 
 Therefore:
 
-\[
+$$
 J(\chi,\varepsilon)
 =
 \sum_{x\neq1}\chi(x).
-\]
+$$
 
 But:
 
-\[
+$$
 \sum_x\chi(x)=0
-\]
+$$
 
 for a nontrivial character.
 
 Hence:
 
-\[
+$$
 \boxed{
 J(\chi,\varepsilon)=-1.
 }
-\]
+$$
 
 Likewise:
 
-\[
+$$
 \boxed{
 J(\varepsilon,\chi)=-1.
 }
-\]
+$$
 
 These exceptional cases are exactly why nontriviality assumptions must accompany the clean Gauss-sum identity.
 
@@ -303,49 +295,49 @@ These exceptional cases are exactly why nontriviality assumptions must accompany
 
 Suppose:
 
-\[
+$$
 \lambda=\chi^{-1}
-\]
+$$
 
-with \(\chi\) nontrivial.
+with $\chi$ nontrivial.
 
 Then:
 
-\[
+$$
 \chi\lambda=\varepsilon.
-\]
+$$
 
 The standard quotient formula involving:
 
-\[
+$$
 G(\chi\lambda)
-\]
+$$
 
 cannot be applied in its ordinary nontrivial form.
 
 Instead:
 
-\[
+$$
 \boxed{
 J(\chi,\chi^{-1})
 =
 -\chi(-1).
 }
-\]
+$$
 
 In particular:
 
-\[
+$$
 \boxed{
 |J(\chi,\chi^{-1})|=1.
 }
-\]
+$$
 
 This is very different from the generic square-root magnitude:
 
-\[
+$$
 \sqrt q.
-\]
+$$
 
 ---
 
@@ -353,40 +345,40 @@ This is very different from the generic square-root magnitude:
 
 Let:
 
-\[
+$$
 \Psi
-\]
+$$
 
 be a fixed nontrivial additive character of:
 
-\[
+$$
 \mathbb F_q.
-\]
+$$
 
 Recall the Gauss sum:
 
-\[
+$$
 G(\chi)
 =
 \sum_{x\in\mathbb F_q}
 \chi(x)\Psi(x).
-\]
+$$
 
 Suppose:
 
-\[
+$$
 \chi,
 \qquad
 \lambda,
 \qquad
 \chi\lambda
-\]
+$$
 
 are all nontrivial.
 
 Then:
 
-\[
+$$
 \boxed{
 J(\chi,\lambda)
 =
@@ -396,7 +388,7 @@ G(\chi)G(\lambda)
 G(\chi\lambda)
 }.
 }
-\]
+$$
 
 This is the fundamental bridge between Gauss sums and Jacobi sums.
 
@@ -406,114 +398,114 @@ This is the fundamental bridge between Gauss sums and Jacobi sums.
 
 Start with:
 
-\[
+$$
 G(\chi)G(\lambda).
-\]
+$$
 
 Expanding:
 
-\[
+$$
 G(\chi)G(\lambda)
 =
 \sum_{x,y\in\mathbb F_q}
 \chi(x)\lambda(y)
 \Psi(x+y).
-\]
+$$
 
 Group the terms according to:
 
-\[
+$$
 t=x+y.
-\]
+$$
 
 For:
 
-\[
+$$
 t\neq0,
-\]
+$$
 
 write:
 
-\[
+$$
 x=tu,
-\]
+$$
 
 and:
 
-\[
+$$
 y=t(1-u).
-\]
+$$
 
 Then:
 
-\[
+$$
 \chi(x)
 =
 \chi(t)\chi(u),
-\]
+$$
 
 and:
 
-\[
+$$
 \lambda(y)
 =
 \lambda(t)\lambda(1-u).
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \chi(x)\lambda(y)
 =
 (\chi\lambda)(t)
 \chi(u)\lambda(1-u).
-\]
+$$
 
 So the inner sum becomes:
 
-\[
+$$
 \sum_u
 \chi(u)\lambda(1-u)
 =
 J(\chi,\lambda).
-\]
+$$
 
 Hence:
 
-\[
+$$
 G(\chi)G(\lambda)
 =
 J(\chi,\lambda)
 \sum_{t\neq0}
 (\chi\lambda)(t)\Psi(t).
-\]
+$$
 
 Because:
 
-\[
+$$
 \chi\lambda
-\]
+$$
 
 is nontrivial, the last sum is:
 
-\[
+$$
 G(\chi\lambda).
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 G(\chi)G(\lambda)
 =
 J(\chi,\lambda)
 G(\chi\lambda).
 }
-\]
+$$
 
 Solving for the Jacobi sum gives:
 
-\[
+$$
 \boxed{
 J(\chi,\lambda)
 =
@@ -523,7 +515,7 @@ G(\chi)G(\lambda)
 G(\chi\lambda)
 }.
 }
-\]
+$$
 
 ---
 
@@ -531,23 +523,23 @@ G(\chi\lambda)
 
 From the previous article:
 
-\[
+$$
 |G(\chi)|=\sqrt q
-\]
+$$
 
 for every nontrivial multiplicative character.
 
 Therefore, when:
 
-\[
+$$
 \chi,
 \lambda,
 \chi\lambda
-\]
+$$
 
 are all nontrivial:
 
-\[
+$$
 |J(\chi,\lambda)|
 =
 \frac{
@@ -555,15 +547,15 @@ are all nontrivial:
 }{
 \sqrt q
 }.
-\]
+$$
 
 Hence:
 
-\[
+$$
 \boxed{
 |J(\chi,\lambda)|=\sqrt q.
 }
-\]
+$$
 
 So the same square-root cancellation that appears in Gauss sums reappears in Jacobi sums.
 
@@ -577,31 +569,31 @@ Therefore Jacobi sums belong naturally to cyclotomic fields.
 
 If the characters have order dividing:
 
-\[
+$$
 m,
-\]
+$$
 
 then their values lie in:
 
-\[
+$$
 \mathbb Q(\zeta_m),
-\]
+$$
 
 where:
 
-\[
+$$
 \zeta_m=e^{2\pi i/m}.
-\]
+$$
 
 Consequently:
 
-\[
+$$
 \boxed{
 J(\chi,\lambda)
 \in
 \mathbb Z[\zeta_m]
 }
-\]
+$$
 
 in the standard algebraic-integer setting.
 
@@ -613,35 +605,35 @@ This is where Jacobi sums begin to interact directly with cyclotomy.
 
 Let:
 
-\[
+$$
 m\mid(q-1).
-\]
+$$
 
 Because:
 
-\[
+$$
 \mathbb F_q^\times
-\]
+$$
 
 is cyclic, choose a generator:
 
-\[
+$$
 g.
-\]
+$$
 
-The subgroup of \(m\)-th powers is:
+The subgroup of $m$-th powers is:
 
-\[
+$$
 \boxed{
 C_0
 =
 \langle g^m\rangle.
 }
-\]
+$$
 
 Its cosets are:
 
-\[
+$$
 \boxed{
 C_j
 =
@@ -649,15 +641,15 @@ g^jC_0,
 \qquad
 j=0,\ldots,m-1.
 }
-\]
+$$
 
-These are the **cyclotomic classes of order \(m\)**.
+These are the **cyclotomic classes of order $m$**.
 
 They partition:
 
-\[
+$$
 \mathbb F_q^\times.
-\]
+$$
 
 ---
 
@@ -665,38 +657,38 @@ They partition:
 
 For:
 
-\[
+$$
 m=2,
-\]
+$$
 
 there are two classes.
 
 The first:
 
-\[
+$$
 C_0
-\]
+$$
 
 contains the quadratic residues.
 
 The second:
 
-\[
+$$
 C_1
-\]
+$$
 
 contains the quadratic nonresidues.
 
 The quadratic character records exactly which class an element belongs to:
 
-\[
+$$
 \chi(x)
 =
 \begin{cases}
 1,&x\in C_0,\\
 -1,&x\in C_1.
 \end{cases}
-\]
+$$
 
 Thus the Legendre-symbol viewpoint is the first nontrivial example of cyclotomy.
 
@@ -706,51 +698,51 @@ Thus the Legendre-symbol viewpoint is the first nontrivial example of cyclotomy.
 
 Let:
 
-\[
+$$
 \chi
-\]
+$$
 
-have exact order \(m\).
+have exact order $m$.
 
 Choose:
 
-\[
+$$
 \zeta_m=e^{2\pi i/m}
-\]
+$$
 
 and normalize:
 
-\[
+$$
 \chi(g)=\zeta_m.
-\]
+$$
 
 Then:
 
-\[
+$$
 x\in C_j
-\]
+$$
 
 implies:
 
-\[
+$$
 \boxed{
 \chi(x)=\zeta_m^j.
 }
-\]
+$$
 
 Characters therefore encode cyclotomic classes using roots of unity.
 
 Instead of storing a class label:
 
-\[
+$$
 j,
-\]
+$$
 
 we store the Fourier-like value:
 
-\[
+$$
 \zeta_m^j.
-\]
+$$
 
 ---
 
@@ -758,7 +750,7 @@ we store the Fourier-like value:
 
 Classical cyclotomy studies counts such as:
 
-\[
+$$
 \boxed{
 (i,j)
 =
@@ -767,7 +759,7 @@ x\in C_i:
 x+1\in C_j
 \}.
 }
-\]
+$$
 
 These are called **cyclotomic numbers**.
 
@@ -775,13 +767,13 @@ They measure correlations between multiplicative classes after an additive shift
 
 Compare this with a Jacobi sum:
 
-\[
+$$
 J(\chi^a,\chi^b)
 =
 \sum_x
 \chi^a(x)
 \chi^b(1-x).
-\]
+$$
 
 The structural resemblance is not accidental.
 
@@ -791,7 +783,7 @@ Jacobi sums encode those same correlations through roots of unity.
 
 Schematically:
 
-\[
+$$
 \boxed{
 \text{cyclotomic counts}
 \quad
@@ -799,7 +791,7 @@ Schematically:
 \quad
 \text{Jacobi sums via finite Fourier transforms}.
 }
-\]
+$$
 
 This explains why classical tables of cyclotomic numbers and modern character-sum computations often contain the same arithmetic information in different forms.
 
@@ -815,13 +807,13 @@ This often transforms a difficult-looking counting problem into a sum that can b
 
 That transition:
 
-\[
+$$
 \boxed{
 \text{indicator function}
 \rightarrow
 \text{character expansion}
 }
-\]
+$$
 
 is one of the recurring techniques of computational number theory.
 
@@ -835,31 +827,31 @@ This turns equations involving powers into character sums.
 
 ---
 
-### Detecting \(m\)-th powers
+### Detecting $m$-th powers
 
 Assume:
 
-\[
+$$
 m\mid(q-1)
-\]
+$$
 
-and let \(\chi\) be a character of exact order \(m\).
+and let $\chi$ be a character of exact order $m$.
 
 For:
 
-\[
+$$
 a\in\mathbb F_q^\times,
-\]
+$$
 
-the element \(a\) is an \(m\)-th power exactly when:
+the element $a$ is an $m$-th power exactly when:
 
-\[
+$$
 \chi(a)=1.
-\]
+$$
 
 The indicator function is:
 
-\[
+$$
 \boxed{
 \mathbf 1_{(\mathbb F_q^\times)^m}(a)
 =
@@ -867,61 +859,61 @@ The indicator function is:
 \sum_{j=0}^{m-1}
 \chi^j(a).
 }
-\]
+$$
 
 Indeed, if:
 
-\[
+$$
 \chi(a)=1,
-\]
+$$
 
 the sum is:
 
-\[
+$$
 m.
-\]
+$$
 
-Otherwise it is a geometric sum of nontrivial \(m\)-th roots of unity and equals:
+Otherwise it is a geometric sum of nontrivial $m$-th roots of unity and equals:
 
-\[
+$$
 0.
-\]
+$$
 
 This formula is for:
 
-\[
+$$
 a\neq0.
-\]
+$$
 
-The value \(a=0\) must be treated separately under our convention:
+The value $a=0$ must be treated separately under our convention:
 
-\[
+$$
 \chi(0)=0.
-\]
+$$
 
 ---
 
-### Number of \(m\)-th roots
+### Number of $m$-th roots
 
 Because:
 
-\[
+$$
 m\mid(q-1),
-\]
+$$
 
-a nonzero \(m\)-th power has exactly \(m\) roots in:
+a nonzero $m$-th power has exactly $m$ roots in:
 
-\[
+$$
 \mathbb F_q^\times.
-\]
+$$
 
 Therefore, for:
 
-\[
+$$
 a\neq0,
-\]
+$$
 
-\[
+$$
 \boxed{
 \#\{
 y\in\mathbb F_q:
@@ -931,19 +923,19 @@ y^m=a
 \sum_{j=0}^{m-1}
 \chi^j(a).
 }
-\]
+$$
 
 For:
 
-\[
+$$
 a=0,
-\]
+$$
 
 there is exactly one solution:
 
-\[
+$$
 y=0.
-\]
+$$
 
 This small endpoint correction is important in exact counting formulas.
 
@@ -951,17 +943,17 @@ This small endpoint correction is important in exact counting formulas.
 
 ### Quadratic case
 
-For odd \(q\), let:
+For odd $q$, let:
 
-\[
+$$
 \eta
-\]
+$$
 
 be the quadratic character.
 
 Then:
 
-\[
+$$
 \boxed{
 \#\{
 y:
@@ -970,25 +962,25 @@ y^2=a
 =
 1+\eta(a)
 }
-\]
+$$
 
 for every:
 
-\[
+$$
 a\in\mathbb F_q,
-\]
+$$
 
 using:
 
-\[
+$$
 \eta(0)=0.
-\]
+$$
 
 Indeed:
 
-- if \(a=0\), there is one solution;
-- if \(a\) is a nonzero square, there are two;
-- if \(a\) is a nonsquare, there are none.
+- if $a=0$, there is one solution;
+- if $a$ is a nonzero square, there are two;
+- if $a$ is a nonsquare, there are none.
 
 This tiny formula is extremely powerful.
 
@@ -998,36 +990,36 @@ This tiny formula is extremely powerful.
 
 Consider:
 
-\[
+$$
 x^2+y^2=1
-\]
+$$
 
 over an odd finite field:
 
-\[
+$$
 \mathbb F_q.
-\]
+$$
 
-For each fixed \(x\), the number of possible \(y\) is:
+For each fixed $x$, the number of possible $y$ is:
 
-\[
+$$
 1+\eta(1-x^2).
-\]
+$$
 
 Therefore:
 
-\[
+$$
 N
 =
 \sum_{x\in\mathbb F_q}
 \left(
 1+\eta(1-x^2)
 \right).
-\]
+$$
 
 So:
 
-\[
+$$
 \boxed{
 N
 =
@@ -1036,30 +1028,30 @@ q
 \sum_{x\in\mathbb F_q}
 \eta(1-x^2).
 }
-\]
+$$
 
 The character sum can be evaluated:
 
-\[
+$$
 \sum_x
 \eta(1-x^2)
 =
 -\eta(-1).
-\]
+$$
 
 Hence:
 
-\[
+$$
 \boxed{
 N
 =
 q-\eta(-1).
 }
-\]
+$$
 
 Therefore:
 
-\[
+$$
 N=
 \begin{cases}
 q-1,
@@ -1070,17 +1062,17 @@ q+1,
 &
 -1\text{ is a nonsquare}.
 \end{cases}
-\]
+$$
 
 For a prime field:
 
-\[
+$$
 \mathbb F_p,
-\]
+$$
 
 this becomes:
 
-\[
+$$
 \boxed{
 N=
 \begin{cases}
@@ -1093,7 +1085,7 @@ p+1,
 p\equiv3\pmod4.
 \end{cases}
 }
-\]
+$$
 
 A geometric counting problem has become a character-sum identity.
 
@@ -1103,37 +1095,37 @@ A geometric counting problem has become a character-sum identity.
 
 Now consider:
 
-\[
+$$
 x^m+y^m=1.
-\]
+$$
 
 Instead of enumerating all:
 
-\[
+$$
 q^2
-\]
+$$
 
-pairs \((x,y)\), we can express the number of \(m\)-th roots using characters.
+pairs $(x,y)$, we can express the number of $m$-th roots using characters.
 
 This leads to sums involving terms such as:
 
-\[
+$$
 \chi^a(x)\chi^b(1-x),
-\]
+$$
 
 which are precisely Jacobi sums:
 
-\[
+$$
 \boxed{
 J(\chi^a,\chi^b).
 }
-\]
+$$
 
 Thus equations of the form:
 
-\[
+$$
 x^m+y^m=1
-\]
+$$
 
 naturally generate Jacobi sums.
 
@@ -1147,11 +1139,11 @@ This is the mathematical meaning behind the older computational experiments invo
 
 They are all different manifestations of the same principle:
 
-\[
+$$
 \boxed{
 \text{count solutions by replacing power conditions with characters}.
 }
-\]
+$$
 
 ---
 
@@ -1161,26 +1153,26 @@ Character sums become especially powerful when the finite-field equation defines
 
 Consider a curve:
 
-\[
+$$
 C:
 y^2=f(x)
-\]
+$$
 
 over an odd finite field:
 
-\[
+$$
 \mathbb F_q.
-\]
+$$
 
-For every \(x\), the number of \(y\)-coordinates is:
+For every $x$, the number of $y$-coordinates is:
 
-\[
+$$
 1+\eta(f(x)).
-\]
+$$
 
 Therefore the number of affine points is:
 
-\[
+$$
 \boxed{
 \#C_{\mathrm{aff}}(\mathbb F_q)
 =
@@ -1189,7 +1181,7 @@ q
 \sum_{x\in\mathbb F_q}
 \eta(f(x)).
 }
-\]
+$$
 
 So point counting becomes character summation.
 
@@ -1199,28 +1191,28 @@ So point counting becomes character summation.
 
 Let:
 
-\[
+$$
 E:
 y^2=x^3+Ax+B
-\]
+$$
 
 over:
 
-\[
+$$
 \mathbb F_q
-\]
+$$
 
 with odd characteristic and nonzero discriminant.
 
 There is one projective point at infinity:
 
-\[
+$$
 \mathcal O.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 \#E(\mathbb F_q)
 =
@@ -1231,29 +1223,29 @@ q+1
 x^3+Ax+B
 ).
 }
-\]
+$$
 
 By definition:
 
-\[
+$$
 \boxed{
 \#E(\mathbb F_q)
 =
 q+1-t,
 }
-\]
+$$
 
 where:
 
-\[
+$$
 t
-\]
+$$
 
 is the Frobenius trace.
 
 Comparing the two formulas:
 
-\[
+$$
 \boxed{
 t
 =
@@ -1263,7 +1255,7 @@ t
 x^3+Ax+B
 ).
 }
-\]
+$$
 
 Thus the Frobenius trace is itself encoded by a character sum.
 
@@ -1273,84 +1265,84 @@ Thus the Frobenius trace is itself encoded by a character sum.
 
 Consider:
 
-\[
+$$
 E:
 y^2=x^3+x+1
-\]
+$$
 
 over:
 
-\[
+$$
 \mathbb F_5.
-\]
+$$
 
 For each:
 
-\[
+$$
 x=0,1,2,3,4,
-\]
+$$
 
 compute:
 
-\[
+$$
 f(x)=x^3+x+1.
-\]
+$$
 
-Modulo \(5\):
+Modulo $5$:
 
-\[
+$$
 f(0)=1,
-\]
+$$
 
-\[
+$$
 f(1)=3,
-\]
+$$
 
-\[
+$$
 f(2)=1,
-\]
+$$
 
-\[
+$$
 f(3)=1,
-\]
+$$
 
-\[
+$$
 f(4)=4.
-\]
+$$
 
-The quadratic character modulo \(5\) satisfies:
+The quadratic character modulo $5$ satisfies:
 
-\[
+$$
 \eta(1)=1,
 \qquad
 \eta(3)=-1,
 \qquad
 \eta(4)=1.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \sum_x\eta(f(x))
 =
 1-1+1+1+1
 =
 3.
-\]
+$$
 
 Hence:
 
-\[
+$$
 \#E(\mathbb F_5)
 =
 5+1+3
 =
 9.
-\]
+$$
 
 So:
 
-\[
+$$
 \boxed{
 t
 =
@@ -1358,21 +1350,21 @@ t
 =
 -3.
 }
-\]
+$$
 
 Equivalently:
 
-\[
+$$
 t=-3
-\]
+$$
 
 follows directly from:
 
-\[
+$$
 t
 =
 -\sum_x\eta(f(x)).
-\]
+$$
 
 ---
 
@@ -1382,21 +1374,21 @@ For diagonal curves and Fermat-type curves, the character sums often organize na
 
 For example, curves related to:
 
-\[
+$$
 x^m+y^m=z^m
-\]
+$$
 
-over fields containing the relevant \(m\)-th roots of unity admit point-count formulas involving:
+over fields containing the relevant $m$-th roots of unity admit point-count formulas involving:
 
-\[
+$$
 J(\chi^a,\chi^b).
-\]
+$$
 
 At a deeper level, these Jacobi sums appear in the numerator of the zeta function of the curve.
 
 So the progression is:
 
-\[
+$$
 \boxed{
 \text{equation}
 \rightarrow
@@ -1406,7 +1398,7 @@ So the progression is:
 \rightarrow
 \text{Frobenius information}.
 }
-\]
+$$
 
 This is one of the clearest places where elementary-looking finite sums begin to encode arithmetic geometry.
 
@@ -1420,19 +1412,19 @@ But they should not be confused with general-purpose elliptic-curve point-counti
 
 For arbitrary elliptic curves, important algorithms include:
 
-\[
+$$
 \boxed{
 \text{Schoof}
 }
-\]
+$$
 
 and its practical extensions such as:
 
-\[
+$$
 \boxed{
 \text{SEA}
 }
-\]
+$$
 
 —the Schoof–Elkies–Atkin method.
 
@@ -1440,19 +1432,19 @@ These algorithms obtain Frobenius information through torsion and modular-polyno
 
 So:
 
-\[
+$$
 \boxed{
 \text{character-sum formula}
 }
-\]
+$$
 
 and:
 
-\[
+$$
 \boxed{
 \text{efficient general point-counting algorithm}
 }
-\]
+$$
 
 are related goals but not the same computational method.
 
@@ -1462,31 +1454,31 @@ are related goals but not the same computational method.
 
 A naive character sum over:
 
-\[
+$$
 q
-\]
+$$
 
 field elements could have magnitude as large as:
 
-\[
+$$
 q.
-\]
+$$
 
 But nontrivial algebraic structure frequently forces much stronger cancellation.
 
 We already saw:
 
-\[
+$$
 |G(\chi)|=\sqrt q
-\]
+$$
 
 and, in the generic Jacobi-sum case:
 
-\[
+$$
 \boxed{
 |J(\chi,\lambda)|=\sqrt q.
 }
-\]
+$$
 
 This square-root scale is not an accident.
 
@@ -1498,31 +1490,31 @@ It belongs to a much larger phenomenon.
 
 For an elliptic curve:
 
-\[
+$$
 E/\mathbb F_q,
-\]
+$$
 
 write:
 
-\[
+$$
 \#E(\mathbb F_q)
 =
 q+1-t.
-\]
+$$
 
 Hasse's theorem states:
 
-\[
+$$
 \boxed{
 |t|
 \le
 2\sqrt q.
 }
-\]
+$$
 
 Equivalently:
 
-\[
+$$
 \boxed{
 \left|
 \#E(\mathbb F_q)
@@ -1532,21 +1524,21 @@ Equivalently:
 \le
 2\sqrt q.
 }
-\]
+$$
 
 For:
 
-\[
+$$
 y^2=f(x),
-\]
+$$
 
-where \(f\) is the cubic defining an elliptic curve:
+where $f$ is the cubic defining an elliptic curve:
 
-\[
+$$
 t
 =
 -\sum_x\eta(f(x)).
-\]
+$$
 
 Thus Hasse's theorem becomes a deep cancellation statement about that quadratic character sum.
 
@@ -1556,60 +1548,60 @@ Thus Hasse's theorem becomes a deep cancellation statement about that quadratic 
 
 For our curve over:
 
-\[
+$$
 \mathbb F_5,
-\]
+$$
 
 we found:
 
-\[
+$$
 t=-3.
-\]
+$$
 
 Hasse gives:
 
-\[
+$$
 |t|
 \le
 2\sqrt5.
-\]
+$$
 
 Numerically:
 
-\[
+$$
 2\sqrt5
 \approx4.472.
-\]
+$$
 
 Indeed:
 
-\[
+$$
 3<4.472.
-\]
+$$
 
 So the computed point count:
 
-\[
+$$
 9
-\]
+$$
 
 lies inside the Hasse interval:
 
-\[
+$$
 5+1-2\sqrt5
 \le
 \#E(\mathbb F_5)
 \le
 5+1+2\sqrt5.
-\]
+$$
 
 ---
 
 ### Higher genus
 
-For a smooth projective curve \(C\) of genus \(g\):
+For a smooth projective curve $C$ of genus $g$:
 
-\[
+$$
 \boxed{
 \left|
 \#C(\mathbb F_q)
@@ -1619,23 +1611,23 @@ For a smooth projective curve \(C\) of genus \(g\):
 \le
 2g\sqrt q.
 }
-\]
+$$
 
 This is the curve case of the Weil bounds.
 
 For:
 
-\[
+$$
 g=1,
-\]
+$$
 
 we recover Hasse's bound.
 
 The error scale:
 
-\[
+$$
 \sqrt q
-\]
+$$
 
 is again the same structural scale already visible in Gauss and Jacobi sums.
 
@@ -1645,30 +1637,30 @@ is again the same structural scale already visible in Gauss and Jacobi sums.
 
 Suppose we have:
 
-\[
+$$
 S
 =
 \sum_{x\in\mathbb F_q}
 u_x
-\]
+$$
 
 with:
 
-\[
+$$
 |u_x|\le1.
-\]
+$$
 
 The trivial estimate gives:
 
-\[
+$$
 |S|\le q.
-\]
+$$
 
 A bound of order:
 
-\[
+$$
 \sqrt q
-\]
+$$
 
 is dramatically smaller.
 
@@ -1676,7 +1668,7 @@ It says that the oscillating phases cancel almost completely.
 
 This is one of the most important recurring themes in character-sum theory:
 
-\[
+$$
 \boxed{
 \text{algebraic structure}
 \rightarrow
@@ -1684,7 +1676,7 @@ This is one of the most important recurring themes in character-sum theory:
 \rightarrow
 \text{cancellation}.
 }
-\]
+$$
 
 ---
 
@@ -1734,12 +1726,12 @@ def jacobi_sum(
 
 The mathematical definition is almost literally executable:
 
-\[
+$$
 J(\chi,\lambda)
 =
 \sum_x
 \chi(x)\lambda(1-x).
-\]
+$$
 
 ---
 
@@ -1747,21 +1739,21 @@ J(\chi,\lambda)
 
 If:
 
-\[
+$$
 \chi,
 \lambda,
 \chi\lambda
-\]
+$$
 
 are all nontrivial, we expect:
 
-\[
+$$
 \boxed{
 |J(\chi,\lambda)|
 =
 \sqrt q.
 }
-\]
+$$
 
 A floating-point test might use:
 
@@ -1807,15 +1799,15 @@ right = (
 
 Then compare:
 
-\[
+$$
 \boxed{
 J(\chi,\lambda)
 }
-\]
+$$
 
 with:
 
-\[
+$$
 \boxed{
 \frac{
 G(\chi)G(\lambda)
@@ -1823,15 +1815,15 @@ G(\chi)G(\lambda)
 G(\chi\lambda)
 }.
 }
-\]
+$$
 
 This test should only run when:
 
-\[
+$$
 \chi,
 \lambda,
 \chi\lambda
-\]
+$$
 
 satisfy the required nontriviality conditions.
 
@@ -1852,15 +1844,15 @@ For example:
 
 may mathematically mean exactly:
 
-\[
+$$
 -1.
-\]
+$$
 
 For exact experimentation, a computer algebra system can represent roots of unity in a cyclotomic field:
 
-\[
+$$
 \mathbb Q(\zeta_m).
-\]
+$$
 
 Then Jacobi sums can be manipulated as exact algebraic integers rather than approximate complex numbers.
 
@@ -1874,10 +1866,10 @@ For small fields, direct enumeration provides a useful reference implementation.
 
 For:
 
-\[
+$$
 E:
 y^2=f(x),
-\]
+$$
 
 one may count:
 
@@ -1894,9 +1886,9 @@ for x in field:
 
 This is intentionally inefficient:
 
-\[
+$$
 O(q^2).
-\]
+$$
 
 But for small fields it gives a ground truth against which a character-sum implementation can be tested.
 
@@ -1917,7 +1909,7 @@ for x in field:
 
 because:
 
-\[
+$$
 \boxed{
 \#E(\mathbb F_q)
 =
@@ -1926,15 +1918,15 @@ q+1
 \sum_x
 \eta(f(x)).
 }
-\]
+$$
 
 This requires only:
 
-\[
+$$
 O(q)
-\]
+$$
 
-character evaluations rather than checking all \(q^2\) pairs.
+character evaluations rather than checking all $q^2$ pairs.
 
 It is still not a modern large-field elliptic-curve point-counting algorithm, but it clearly demonstrates the computational value of the character viewpoint.
 
@@ -1944,31 +1936,31 @@ It is still not a modern large-field elliptic-curve point-counting algorithm, bu
 
 The repeated experiments can therefore be consolidated into four conceptual operations:
 
-\[
+$$
 \boxed{
 \text{classify multiplicative residue classes},
 }
-\]
+$$
 
-\[
+$$
 \boxed{
 \text{encode them with characters},
 }
-\]
+$$
 
-\[
+$$
 \boxed{
 \text{correlate them with Gauss/Jacobi sums},
 }
-\]
+$$
 
 and:
 
-\[
+$$
 \boxed{
 \text{convert character correlations into counts}.
 }
-\]
+$$
 
 That is the durable mathematical content.
 
@@ -1984,26 +1976,26 @@ The individual plots and worksheets are computational evidence and provenance fo
 
 The article begins with:
 
-\[
+$$
 \boxed{
 J(\chi,\lambda)
 =
 \sum_x
 \chi(x)\lambda(1-x).
 }
-\]
+$$
 
 When:
 
-\[
+$$
 \chi,
 \lambda,
 \chi\lambda
-\]
+$$
 
 are nontrivial:
 
-\[
+$$
 \boxed{
 J(\chi,\lambda)
 =
@@ -2013,41 +2005,41 @@ G(\chi)G(\lambda)
 G(\chi\lambda)
 }.
 }
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 |J(\chi,\lambda)|
 =
 \sqrt q.
 }
-\]
+$$
 
-Characters of order \(m\) encode the cyclotomic classes:
+Characters of order $m$ encode the cyclotomic classes:
 
-\[
+$$
 C_0,\ldots,C_{m-1}.
-\]
+$$
 
 Jacobi sums then encode correlations between those classes under additive shifts.
 
 Those same character correlations count solutions to equations such as:
 
-\[
+$$
 x^m+y^m=1.
-\]
+$$
 
 For curves:
 
-\[
+$$
 y^2=f(x),
-\]
+$$
 
 we obtain:
 
-\[
+$$
 \boxed{
 \#C_{\mathrm{aff}}(\mathbb F_q)
 =
@@ -2056,21 +2048,21 @@ q
 \sum_x
 \eta(f(x)).
 }
-\]
+$$
 
 For elliptic curves:
 
-\[
+$$
 \boxed{
 \#E(\mathbb F_q)
 =
 q+1-t,
 }
-\]
+$$
 
 with:
 
-\[
+$$
 \boxed{
 t
 =
@@ -2078,19 +2070,19 @@ t
 \sum_x
 \eta(f(x)).
 }
-\]
+$$
 
 Finally:
 
-\[
+$$
 \boxed{
 |t|\le2\sqrt q.
 }
-\]
+$$
 
 So the complete chain is:
 
-\[
+$$
 \boxed{
 \text{characters}
 \rightarrow
@@ -2102,7 +2094,7 @@ So the complete chain is:
 \rightarrow
 \text{Frobenius traces}.
 }
-\]
+$$
 
 This is one of the most important conceptual transitions in computational number theory: finite algebraic sums begin to encode geometric information.
 
@@ -2114,30 +2106,30 @@ This is one of the most important conceptual transitions in computational number
 
 Let:
 
-\[
+$$
 \eta
-\]
+$$
 
 be the quadratic character over:
 
-\[
+$$
 \mathbb F_5.
-\]
+$$
 
 Compute:
 
-\[
+$$
 J(\eta,\eta)
 =
 \sum_{x\in\mathbb F_5}
 \eta(x)\eta(1-x).
-\]
+$$
 
 Compare your answer with:
 
-\[
+$$
 -\eta(-1).
-\]
+$$
 
 ---
 
@@ -2145,13 +2137,13 @@ Compare your answer with:
 
 Suppose:
 
-\[
+$$
 \lambda=\chi^{-1}.
-\]
+$$
 
 Why can we not directly use:
 
-\[
+$$
 J(\chi,\lambda)
 =
 \frac{
@@ -2159,15 +2151,15 @@ G(\chi)G(\lambda)
 }{
 G(\chi\lambda)
 }
-\]
+$$
 
 with the ordinary nontrivial Gauss-sum magnitude theorem?
 
 What does:
 
-\[
+$$
 \chi\lambda
-\]
+$$
 
 become?
 
@@ -2177,25 +2169,25 @@ become?
 
 Assume:
 
-\[
+$$
 \chi,
 \lambda,
 \chi\lambda
-\]
+$$
 
 are all nontrivial.
 
 Use:
 
-\[
+$$
 |G(\rho)|=\sqrt q
-\]
+$$
 
 to prove:
 
-\[
+$$
 |J(\chi,\lambda)|=\sqrt q.
-\]
+$$
 
 ---
 
@@ -2203,25 +2195,25 @@ to prove:
 
 Let:
 
-\[
+$$
 \mathbb F_{13}^\times
 =
 \langle g\rangle.
-\]
+$$
 
 For:
 
-\[
+$$
 m=3,
-\]
+$$
 
 describe the three cyclotomic classes:
 
-\[
+$$
 C_0,
 C_1,
 C_2.
-\]
+$$
 
 How many elements does each contain?
 
@@ -2229,17 +2221,17 @@ How many elements does each contain?
 
 ### Exercise 5 — Character indicator
 
-Let \(\chi\) have order \(m\).
+Let $\chi$ have order $m$.
 
 For:
 
-\[
+$$
 a\neq0,
-\]
+$$
 
 prove:
 
-\[
+$$
 \frac1m
 \sum_{j=0}^{m-1}
 \chi^j(a)
@@ -2253,7 +2245,7 @@ a\text{ is an }m\text{-th power},
 &
 \text{otherwise}.
 \end{cases}
-\]
+$$
 
 ---
 
@@ -2261,25 +2253,25 @@ a\text{ is an }m\text{-th power},
 
 Let:
 
-\[
+$$
 \eta
-\]
+$$
 
 be the quadratic character.
 
 Verify:
 
-\[
+$$
 \#\{
 y:y^2=a
 \}
 =
 1+\eta(a)
-\]
+$$
 
 for:
 
-- \(a=0\);
+- $a=0$;
 - a nonzero square;
 - a nonsquare.
 
@@ -2289,21 +2281,21 @@ for:
 
 Over:
 
-\[
+$$
 \mathbb F_7,
-\]
+$$
 
 count the solutions of:
 
-\[
+$$
 x^2+y^2=1.
-\]
+$$
 
 Compare the direct count with:
 
-\[
+$$
 7-\eta(-1).
-\]
+$$
 
 ---
 
@@ -2311,28 +2303,28 @@ Compare the direct count with:
 
 For:
 
-\[
+$$
 E:
 y^2=x^3+x+1
-\]
+$$
 
 over:
 
-\[
+$$
 \mathbb F_5,
-\]
+$$
 
 verify directly that:
 
-\[
+$$
 \#E(\mathbb F_5)=9.
-\]
+$$
 
 Then compute:
 
-\[
+$$
 t=5+1-9.
-\]
+$$
 
 Check Hasse's bound.
 
@@ -2342,27 +2334,27 @@ Check Hasse's bound.
 
 For:
 
-\[
+$$
 E:
 y^2=f(x),
-\]
+$$
 
 derive:
 
-\[
+$$
 t
 =
 -\sum_x
 \eta(f(x))
-\]
+$$
 
 from:
 
-\[
+$$
 \#E(\mathbb F_q)
 =
 q+1-t.
-\]
+$$
 
 ---
 
@@ -2370,15 +2362,15 @@ q+1-t.
 
 For an elliptic curve over:
 
-\[
+$$
 \mathbb F_{101},
-\]
+$$
 
 determine the Hasse interval in which:
 
-\[
+$$
 \#E(\mathbb F_{101})
-\]
+$$
 
 must lie.
 
@@ -2389,16 +2381,16 @@ must lie.
 Compare the computational work of:
 
 1. checking all:
-   \[
+   $$
    (x,y)\in\mathbb F_q^2;
-   \]
+   $$
 2. evaluating:
-   \[
+   $$
    \eta(f(x))
-   \]
-   once for every \(x\).
+   $$
+   once for every $x$.
 
-What are the respective naive operation counts as functions of \(q\)?
+What are the respective naive operation counts as functions of $q$?
 
 ---
 
@@ -2417,27 +2409,27 @@ What kinds of numerical artifacts disappear in the exact computation?
 You should now be able to explain:
 
 1. What a Jacobi sum is.
-2. Why the extension convention at \(0\) matters.
+2. Why the extension convention at $0$ matters.
 3. Why:
-   \[
+   $$
    J(\chi,\lambda)=J(\lambda,\chi).
-   \]
+   $$
 4. Why:
-   \[
+   $$
    J(\chi,\varepsilon)=-1
-   \]
-   for nontrivial \(\chi\).
+   $$
+   for nontrivial $\chi$.
 5. Why:
    
-   \[
+   $$
    J(\chi,\chi^{-1})
    =
    -\chi(-1).
-   \]
+   $$
 
 6. Under which hypotheses:
    
-   \[
+   $$
    J(\chi,\lambda)
    =
    \frac{
@@ -2445,32 +2437,32 @@ You should now be able to explain:
    }{
    G(\chi\lambda)
    }.
-   \]
+   $$
    
 7. Why generic nontrivial Jacobi sums have magnitude:
-   \[
+   $$
    \sqrt q.
-   \]
+   $$
 8. What cyclotomic classes are.
 9.  How multiplicative characters encode those classes.
 10. What classical cyclotomic numbers count.
 11. Why Jacobi sums encode cyclotomic correlations.
-12. How characters detect \(m\)-th powers.
+12. How characters detect $m$-th powers.
 13. How power equations can be converted into character sums.
 14. Why:
-    \[
+    $$
     \#\{y:y^2=a\}=1+\eta(a).
-    \]
+    $$
 15. How to count:
-    \[
+    $$
     x^2+y^2=1
-    \]
+    $$
     with a quadratic character.
 16. Why Jacobi sums arise naturally from Fermat-type equations.
 17. How:
-    \[
+    $$
     y^2=f(x)
-    \]
+    $$
     leads to a quadratic-character sum.
 18. Why the Frobenius trace of an elliptic curve can be expressed as a character sum.
 19. What Hasse's bound states.
@@ -2482,10 +2474,10 @@ Jacobi sums make an important conceptual transition possible.
 
 An expression built from roots of unity:
 
-\[
+$$
 \sum_x
 \chi(x)\lambda(1-x)
-\]
+$$
 
 can ultimately tell us how many geometric points exist on a curve over a finite field.
 
@@ -2531,60 +2523,60 @@ A deeper route into roots of unity, cyclotomic fields, and their arithmetic stru
 
 The first five articles have now moved through several layers of computational number theory:
 
-\[
+$$
 \text{arithmetic functions}
-\]
+$$
 
-\[
+$$
 \downarrow
-\]
+$$
 
-\[
+$$
 \text{prime distribution}
-\]
+$$
 
-\[
+$$
 \downarrow
-\]
+$$
 
-\[
+$$
 \text{Gaussian integers}
-\]
+$$
 
-\[
+$$
 \downarrow
-\]
+$$
 
-\[
+$$
 \text{Gauss sums}
-\]
+$$
 
-\[
+$$
 \downarrow
-\]
+$$
 
-\[
+$$
 \text{Jacobi sums and point counting}.
-\]
+$$
 
 The next article returns from finite-field character sums to integral arithmetic, but with a much richer object than a single integer.
 
 We study expressions of the form:
 
-\[
+$$
 \boxed{
 ax^2+bxy+cy^2,
 }
-\]
+$$
 
 the **binary quadratic forms**.
 
 Their discriminants, equivalence classes, composition laws, and connections with ideals lead to another major idea:
 
-\[
+$$
 \boxed{
 \text{the class group}.
 }
-\]
+$$
 
 This provides a new way to study representation problems and norm equations, and opens the door toward the arithmetic of quadratic number fields.

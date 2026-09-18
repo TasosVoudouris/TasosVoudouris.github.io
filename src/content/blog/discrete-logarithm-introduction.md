@@ -53,37 +53,37 @@ The common pattern is simple.
 
 There is a group operation that is easy to iterate:
 
-\[
+$$
 x
 \longmapsto
 g^x
-\]
+$$
 
 in multiplicative notation, or:
 
-\[
+$$
 x
 \longmapsto
 [x]P
-\]
+$$
 
 in additive elliptic-curve notation.
 
 The inverse problem is intended to be difficult:
 
-\[
+$$
 g^x=h
 \quad\Longrightarrow\quad
 \text{recover }x,
-\]
+$$
 
 or:
 
-\[
+$$
 Q=[x]P
 \quad\Longrightarrow\quad
 \text{recover }x.
-\]
+$$
 
 This is the discrete logarithm problem.
 
@@ -91,15 +91,15 @@ The phrase **discrete logarithm** is an analogy with ordinary logarithms.
 
 Over the positive real numbers:
 
-\[
+$$
 a^x=b
-\]
+$$
 
 can be inverted using:
 
-\[
+$$
 x=\log_a b.
-\]
+$$
 
 In a finite cyclic group, exponentiation remains easy, but there is no corresponding efficient general-purpose logarithm algorithm known for well-chosen cryptographic groups.
 
@@ -117,111 +117,111 @@ A group can be written additively or multiplicatively.
 
 In an additive group:
 
-\[
+$$
 a+0=a,
-\]
+$$
 
-and the inverse of \(a\) is:
+and the inverse of $a$ is:
 
-\[
+$$
 -a
-\]
+$$
 
 such that:
 
-\[
+$$
 a+(-a)=0.
-\]
+$$
 
 Repeated addition is written:
 
-\[
+$$
 [n]P
 =
 \underbrace{
 P+\cdots+P
 }_{n\text{ times}}.
-\]
+$$
 
 Elliptic-curve groups are normally written this way.
 
 In a multiplicative group:
 
-\[
+$$
 a\cdot1=a,
-\]
+$$
 
 and the inverse is:
 
-\[
+$$
 a^{-1}
-\]
+$$
 
 such that:
 
-\[
+$$
 aa^{-1}=1.
-\]
+$$
 
 Repeated multiplication is exponentiation:
 
-\[
+$$
 g^n.
-\]
+$$
 
 Finite-field DLPs are usually written multiplicatively.
 
-### The multiplicative group modulo \(n\)
+### The multiplicative group modulo $n$
 
-For a positive integer \(n\), define:
+For a positive integer $n$, define:
 
-\[
+$$
 (\mathbb Z/n\mathbb Z)^\times
 =
 \{a\bmod n:\gcd(a,n)=1\}.
-\]
+$$
 
-These are exactly the residue classes that possess multiplicative inverses modulo \(n\).
+These are exactly the residue classes that possess multiplicative inverses modulo $n$.
 
 For example:
 
-\[
+$$
 (\mathbb Z/15\mathbb Z)^\times
 =
 \{1,2,4,7,8,11,13,14\}.
-\]
+$$
 
 Its order is:
 
-\[
+$$
 \varphi(15)=8.
-\]
+$$
 
 The individual element orders are:
 
-\[
+$$
 \operatorname{ord}(1)=1,
-\]
+$$
 
-\[
+$$
 \operatorname{ord}(2)=4,
-\]
+$$
 
-\[
+$$
 \operatorname{ord}(4)=2,
-\]
+$$
 
 and similarly for the remaining elements.
 
 By Lagrange's theorem:
 
-\[
+$$
 \boxed{
 \operatorname{ord}(g)
 \mid
 |G|.
 }
-\]
+$$
 
 So every element order divides the group order.
 
@@ -229,17 +229,17 @@ So every element order divides the group order.
 
 A useful correction is that:
 
-\[
+$$
 (\mathbb Z/n\mathbb Z)^\times
-\]
+$$
 
 is not always cyclic.
 
 For:
 
-\[
+$$
 n=15,
-\]
+$$
 
 the group has order 8, but no element has order 8.
 
@@ -251,59 +251,59 @@ This matters because a DLP is always really a problem inside the cyclic subgroup
 
 When:
 
-\[
+$$
 p
-\]
+$$
 
 is prime,
 
-\[
+$$
 \mathbb Z/p\mathbb Z
-\]
+$$
 
 is the finite field:
 
-\[
+$$
 \mathbb F_p.
-\]
+$$
 
 Its nonzero elements form the multiplicative group:
 
-\[
+$$
 \mathbb F_p^\times.
-\]
+$$
 
 This group has order:
 
-\[
+$$
 p-1.
-\]
+$$
 
 Moreover:
 
-\[
+$$
 \mathbb F_p^\times
-\]
+$$
 
 is cyclic.
 
-Therefore there exists at least one element \(g\) such that:
+Therefore there exists at least one element $g$ such that:
 
-\[
+$$
 \langle g\rangle
 =
 \mathbb F_p^\times.
-\]
+$$
 
-Such a \(g\) is called a generator or primitive element.
+Such a $g$ is called a generator or primitive element.
 
 Because the group is cyclic:
 
-\[
+$$
 \mathbb F_p^\times
 \cong
 \mathbb Z/(p-1)\mathbb Z.
-\]
+$$
 
 This is an abstract group isomorphism.
 
@@ -313,33 +313,33 @@ It is not a canonical identification of field elements with exponents.
 
 For:
 
-\[
+$$
 g\in G,
-\]
+$$
 
-the order of \(g\) is the smallest positive integer \(r\) such that:
+the order of $g$ is the smallest positive integer $r$ such that:
 
-\[
+$$
 g^r=1
-\]
+$$
 
 in multiplicative notation.
 
 The generated subgroup is:
 
-\[
+$$
 \langle g\rangle
 =
 \{1,g,g^2,\ldots,g^{r-1}\}.
-\]
+$$
 
 Its size is exactly:
 
-\[
+$$
 r=\operatorname{ord}(g).
-\]
+$$
 
-This is the correct modulus for discrete logarithms to the base \(g\).
+This is the correct modulus for discrete logarithms to the base $g$.
 
 Not necessarily the order of the full ambient group.
 
@@ -349,23 +349,23 @@ A cryptographic protocol does not always choose a generator of the entire group.
 
 It may deliberately choose a subgroup:
 
-\[
+$$
 G=\langle g\rangle
-\]
+$$
 
 of large prime order:
 
-\[
+$$
 q.
-\]
+$$
 
 For finite-field Diffie–Hellman one commonly works in a large prime-order subgroup of:
 
-\[
+$$
 \mathbb F_p^\times.
-\]
+$$
 
-The security-critical quantity for generic attacks is then the subgroup order \(q\), not merely the field modulus \(p\).
+The security-critical quantity for generic attacks is then the subgroup order $q$, not merely the field modulus $p$.
 
 This also explains why small-subgroup checks and public-key validation matter in real protocols.
 
@@ -375,105 +375,105 @@ This also explains why small-subgroup checks and public-key validation matter in
 
 Let:
 
-\[
+$$
 G=\langle g\rangle
-\]
+$$
 
-be a finite cyclic group generated by \(g\).
+be a finite cyclic group generated by $g$.
 
 Let:
 
-\[
+$$
 n=\operatorname{ord}(g).
-\]
+$$
 
 Given:
 
-\[
+$$
 h\in\langle g\rangle,
-\]
+$$
 
 the **Discrete Logarithm Problem (DLP)** is:
 
-> Find \(x\) such that
+> Find $x$ such that
 
-\[
+$$
 \boxed{
 g^x=h.
 }
-\]
+$$
 
-The value \(x\) is called the discrete logarithm of \(h\) to the base \(g\), often written:
+The value $x$ is called the discrete logarithm of $h$ to the base $g$, often written:
 
-\[
+$$
 x=\log_g h.
-\]
+$$
 
-### The logarithm is defined modulo the order of \(g\)
+### The logarithm is defined modulo the order of $g$
 
 If:
 
-\[
+$$
 g^x=h,
-\]
+$$
 
 then:
 
-\[
+$$
 g^{x+n}
 =
 g^xg^n
 =
 h.
-\]
+$$
 
 Therefore all exponents:
 
-\[
+$$
 x+kn
-\]
+$$
 
 for:
 
-\[
+$$
 k\in\mathbb Z
-\]
+$$
 
 represent the same group element.
 
 So the discrete logarithm is naturally defined modulo:
 
-\[
+$$
 \boxed{
 \operatorname{ord}(g).
 }
-\]
+$$
 
-If \(g\) generates the entire group, then:
+If $g$ generates the entire group, then:
 
-\[
+$$
 \operatorname{ord}(g)=|G|.
-\]
+$$
 
-If \(g\) generates only a proper subgroup, then the logarithm is defined modulo the subgroup order instead.
+If $g$ generates only a proper subgroup, then the logarithm is defined modulo the subgroup order instead.
 
 ### Existence of a solution
 
 A solution exists if and only if:
 
-\[
+$$
 h\in\langle g\rangle.
-\]
+$$
 
-If \(g\) is a generator of all of \(G\), then every:
+If $g$ is a generator of all of $G$, then every:
 
-\[
+$$
 h\in G
-\]
+$$
 
-has a discrete logarithm to base \(g\).
+has a discrete logarithm to base $g$.
 
-If \(g\) is not a generator of the full group, some elements may have no logarithm to that base.
+If $g$ is not a generator of the full group, some elements may have no logarithm to that base.
 
 This is more precise than saying merely:
 
@@ -481,41 +481,41 @@ This is more precise than saying merely:
 
 The actual DLP instance lives inside:
 
-\[
+$$
 \langle g\rangle.
-\]
+$$
 
 ### Uniqueness
 
 Inside:
 
-\[
+$$
 0\le x<n,
-\]
+$$
 
 the solution is unique.
 
 Equivalently:
 
-\[
+$$
 g^x=g^y
-\]
+$$
 
 if and only if:
 
-\[
+$$
 x\equiv y\pmod n.
-\]
+$$
 
 So the right statement is:
 
-\[
+$$
 \boxed{
 \log_g h
 \text{ is unique modulo }
 \operatorname{ord}(g).
 }
-\]
+$$
 
 ---
 
@@ -523,108 +523,108 @@ So the right statement is:
 
 Small examples make the group-order distinction very clear.
 
-### Example 1: \(3^x\equiv5\pmod{11}\)
+### Example 1: $3^x\equiv5\pmod{11}$
 
 Consider:
 
-\[
+$$
 3^x\equiv5\pmod{11}.
-\]
+$$
 
 Compute successive powers:
 
-\[
+$$
 3^0\equiv1,
-\]
+$$
 
-\[
+$$
 3^1\equiv3,
-\]
+$$
 
-\[
+$$
 3^2\equiv9,
-\]
+$$
 
-\[
+$$
 3^3\equiv5,
-\]
+$$
 
-\[
+$$
 3^4\equiv4,
-\]
+$$
 
-\[
+$$
 3^5\equiv1
 \pmod{11}.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \operatorname{ord}_{11}(3)=5.
-\]
+$$
 
 So:
 
-\[
+$$
 3
-\]
+$$
 
 is **not** a generator of:
 
-\[
+$$
 \mathbb F_{11}^{\times},
-\]
+$$
 
 because that group has order:
 
-\[
+$$
 10.
-\]
+$$
 
 The subgroup generated by 3 is:
 
-\[
+$$
 \langle3\rangle
 =
 \{1,3,9,5,4\}.
-\]
+$$
 
 Since:
 
-\[
+$$
 5\in\langle3\rangle,
-\]
+$$
 
 the DLP has a solution:
 
-\[
+$$
 x=3.
-\]
+$$
 
 But the important statement is:
 
-\[
+$$
 \boxed{
 x\equiv3\pmod5.
 }
-\]
+$$
 
 So:
 
-\[
+$$
 x=8
-\]
+$$
 
 also works because:
 
-\[
+$$
 8\equiv3\pmod5.
-\]
+$$
 
 Indeed:
 
-\[
+$$
 3^8
 =
 3^{3+5}
@@ -633,157 +633,157 @@ Indeed:
 \equiv
 5
 \pmod{11}.
-\]
+$$
 
 This example is useful because it shows that logarithm uniqueness is controlled by:
 
-\[
+$$
 \operatorname{ord}(3)=5,
-\]
+$$
 
-not by the ambient group order \(10\).
+not by the ambient group order $10$.
 
 ### Example 2: a generator modulo 11
 
 Now take:
 
-\[
+$$
 g=2.
-\]
+$$
 
 Its powers modulo 11 are:
 
-\[
+$$
 2^0\equiv1,
-\]
+$$
 
-\[
+$$
 2^1\equiv2,
-\]
+$$
 
-\[
+$$
 2^2\equiv4,
-\]
+$$
 
-\[
+$$
 2^3\equiv8,
-\]
+$$
 
-\[
+$$
 2^4\equiv5,
-\]
+$$
 
-\[
+$$
 2^5\equiv10,
-\]
+$$
 
-\[
+$$
 2^6\equiv9,
-\]
+$$
 
-\[
+$$
 2^7\equiv7,
-\]
+$$
 
-\[
+$$
 2^8\equiv3,
-\]
+$$
 
-\[
+$$
 2^9\equiv6,
-\]
+$$
 
-\[
+$$
 2^{10}\equiv1.
-\]
+$$
 
 So:
 
-\[
+$$
 \operatorname{ord}_{11}(2)=10.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 2
-\]
+$$
 
 generates all of:
 
-\[
+$$
 \mathbb F_{11}^{\times}.
-\]
+$$
 
 For example:
 
-\[
+$$
 2^x\equiv5\pmod{11}
-\]
+$$
 
 has:
 
-\[
+$$
 x\equiv4\pmod{10}.
-\]
+$$
 
 ### Example 3: subgroup DLP
 
 Take:
 
-\[
+$$
 p=23.
-\]
+$$
 
 The multiplicative group:
 
-\[
+$$
 \mathbb F_{23}^{\times}
-\]
+$$
 
 has order:
 
-\[
+$$
 22.
-\]
+$$
 
 The element:
 
-\[
+$$
 g=2
-\]
+$$
 
 has order:
 
-\[
+$$
 11.
-\]
+$$
 
 So it generates a prime-order subgroup:
 
-\[
+$$
 G=\langle2\rangle
-\]
+$$
 
 with:
 
-\[
+$$
 |G|=11.
-\]
+$$
 
 Now:
 
-\[
+$$
 2^3\equiv8\pmod{23}.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \log_2 8
 \equiv3
 \pmod{11}.
-\]
+$$
 
 This is conceptually closer to how finite-field cryptography is usually organized: choose a large subgroup with a well-controlled order.
 
@@ -795,27 +795,27 @@ Now replace multiplication in a finite field by point addition on an elliptic cu
 
 Let:
 
-\[
+$$
 E/\mathbb F_q
-\]
+$$
 
 be an elliptic curve over a finite field.
 
 Let:
 
-\[
+$$
 P\in E(\mathbb F_q)
-\]
+$$
 
 have order:
 
-\[
+$$
 n.
-\]
+$$
 
-The subgroup generated by \(P\) is:
+The subgroup generated by $P$ is:
 
-\[
+$$
 \langle P\rangle
 =
 \{
@@ -825,57 +825,57 @@ P,
 \ldots,
 [n-1]P
 \},
-\]
+$$
 
 where:
 
-\[
+$$
 \mathcal O
-\]
+$$
 
 is the point at infinity.
 
 Given:
 
-\[
+$$
 Q\in\langle P\rangle,
-\]
+$$
 
 the **Elliptic-Curve Discrete Logarithm Problem (ECDLP)** is:
 
-> Find \(x\) such that
+> Find $x$ such that
 
-\[
+$$
 \boxed{
 Q=[x]P.
 }
-\]
+$$
 
 Again:
 
-\[
+$$
 x
-\]
+$$
 
 is unique modulo:
 
-\[
+$$
 \operatorname{ord}(P)=n.
-\]
+$$
 
 ### Additive notation does not change the underlying problem
 
 The classical DLP asks:
 
-\[
+$$
 h=g^x.
-\]
+$$
 
 The ECDLP asks:
 
-\[
+$$
 Q=[x]P.
-\]
+$$
 
 These are the same abstract problem in two different cyclic groups.
 
@@ -885,65 +885,65 @@ The notation changes because the group law changes.
 
 It is not necessary for:
 
-\[
+$$
 E(\mathbb F_q)
-\]
+$$
 
 itself to have prime order.
 
 In practice one commonly uses a large prime-order subgroup:
 
-\[
+$$
 \langle P\rangle
-\]
+$$
 
 with:
 
-\[
+$$
 \operatorname{ord}(P)=n
-\]
+$$
 
 prime or almost prime, together with a small cofactor.
 
-So the cryptographic DLP lives in the subgroup generated by \(P\), just as finite-field protocols often work in a subgroup of:
+So the cryptographic DLP lives in the subgroup generated by $P$, just as finite-field protocols often work in a subgroup of:
 
-\[
+$$
 \mathbb F_p^\times.
-\]
+$$
 
 ### Why scalar multiplication is easy
 
 Given:
 
-\[
+$$
 x
-\]
+$$
 
 and:
 
-\[
+$$
 P,
-\]
+$$
 
 one can compute:
 
-\[
+$$
 [x]P
-\]
+$$
 
 efficiently using algorithms such as double-and-add.
 
 The number of group operations is:
 
-\[
+$$
 O(\log x).
-\]
+$$
 
 So the forward map:
 
-\[
+$$
 x\mapsto[x]P
-\]
+$$
 
 is efficient.
 
@@ -970,23 +970,23 @@ work in essentially any cyclic group.
 
 If the subgroup order is:
 
-\[
+$$
 n,
-\]
+$$
 
 their generic complexity is roughly:
 
-\[
+$$
 O(\sqrt n)
-\]
+$$
 
 group operations.
 
 Baby-step giant-step also uses roughly:
 
-\[
+$$
 O(\sqrt n)
-\]
+$$
 
 memory.
 
@@ -996,13 +996,13 @@ Pollard rho reduces the memory requirement dramatically while retaining square-r
 
 Suppose:
 
-\[
+$$
 n
 =
 \prod_i p_i^{e_i}.
-\]
+$$
 
-Pohlig–Hellman reduces the DLP modulo \(n\) to DLPs in the prime-power factors.
+Pohlig–Hellman reduces the DLP modulo $n$ to DLPs in the prime-power factors.
 
 As a result, security is dominated by the largest prime factor of the group order.
 
@@ -1014,15 +1014,15 @@ This is why subgroup order selection matters.
 
 In:
 
-\[
+$$
 \mathbb F_p^\times
-\]
+$$
 
 and more general finite fields:
 
-\[
+$$
 \mathbb F_{p^k}^\times,
-\]
+$$
 
 the elements have algebraic representations that enable **index-calculus** techniques.
 
@@ -1030,9 +1030,9 @@ These methods can be subexponential.
 
 That means finite-field DLP security is not determined only by the generic:
 
-\[
+$$
 O(\sqrt n)
-\]
+$$
 
 bound.
 
@@ -1091,39 +1091,39 @@ Instead, cryptographic constructions use related assumptions.
 
 Let:
 
-\[
+$$
 G=\langle g\rangle.
-\]
+$$
 
 Alice chooses:
 
-\[
+$$
 a,
-\]
+$$
 
 and publishes:
 
-\[
+$$
 A=g^a.
-\]
+$$
 
 Bob chooses:
 
-\[
+$$
 b,
-\]
+$$
 
 and publishes:
 
-\[
+$$
 B=g^b.
-\]
+$$
 
 Both derive:
 
-\[
+$$
 g^{ab}.
-\]
+$$
 
 The protocol's security is related to computational Diffie–Hellman and decisional Diffie–Hellman assumptions, not merely to the statement "DLP is hard."
 
@@ -1139,15 +1139,15 @@ Again, its proof model is more specific than raw DLP hardness.
 
 Signature schemes use a secret scalar and public group element:
 
-\[
+$$
 Q=[x]P
-\]
+$$
 
 or:
 
-\[
+$$
 y=g^x.
-\]
+$$
 
 But signature security also depends critically on:
 
@@ -1173,29 +1173,29 @@ So "based on ECDLP" is a useful first approximation, but not a complete security
 
 A mature cryptographic description should distinguish:
 
-\[
+$$
 \text{DLP}
-\]
+$$
 
 from:
 
-\[
+$$
 \text{CDH},
-\]
+$$
 
-\[
+$$
 \text{DDH},
-\]
+$$
 
-\[
+$$
 \text{signature unforgeability},
-\]
+$$
 
 and:
 
-\[
+$$
 \text{protocol security}.
-\]
+$$
 
 The hard mathematical problem is one layer.
 
@@ -1333,26 +1333,26 @@ assert solutions == [
 
 This confirms:
 
-\[
+$$
 x\equiv3\pmod5.
-\]
+$$
 
 ### Subgroup membership
 
 A target outside:
 
-\[
+$$
 \langle3\rangle
-\]
+$$
 
 has no discrete logarithm to base 3.
 
 For example:
 
-\[
+$$
 2\notin
 \{1,3,9,5,4\}.
-\]
+$$
 
 So:
 
@@ -1373,51 +1373,51 @@ This is a valuable test because it prevents the common mistake of assuming every
 
 Use the toy curve:
 
-\[
+$$
 E:
 y^2=x^3+2x+3
 \pmod{97}.
-\]
+$$
 
 Take:
 
-\[
+$$
 P=(3,6).
-\]
+$$
 
 For this curve:
 
-\[
+$$
 \operatorname{ord}(P)=5.
-\]
+$$
 
 Compute:
 
-\[
+$$
 Q=[2]P.
-\]
+$$
 
 The result is:
 
-\[
+$$
 Q=(80,10).
-\]
+$$
 
 So the ECDLP instance:
 
-\[
+$$
 Q=[x]P
-\]
+$$
 
 has:
 
-\[
+$$
 \boxed{
 x\equiv2\pmod5.
 }
-\]
+$$
 
-A brute-force educational solver can simply add \(P\) repeatedly until it reaches \(Q\).
+A brute-force educational solver can simply add $P$ repeatedly until it reaches $Q$.
 
 This is not cryptographically secure.
 
@@ -1435,17 +1435,17 @@ The important distinction is between **generic algorithms** and **representation
 
 Try:
 
-\[
+$$
 1,g,g^2,g^3,\ldots
-\]
+$$
 
 until the target is reached.
 
 Cost:
 
-\[
+$$
 O(n)
-\]
+$$
 
 group operations in the worst case.
 
@@ -1455,21 +1455,21 @@ This is the baseline.
 
 Shanks' baby-step giant-step algorithm trades memory for time.
 
-For subgroup order \(n\):
+For subgroup order $n$:
 
-\[
+$$
 \boxed{
 O(\sqrt n)
 }
-\]
+$$
 
 time and:
 
-\[
+$$
 \boxed{
 O(\sqrt n)
 }
-\]
+$$
 
 memory.
 
@@ -1479,9 +1479,9 @@ The algorithm is generic.
 
 Pollard rho also targets square-root complexity:
 
-\[
+$$
 O(\sqrt n)
-\]
+$$
 
 expected group operations, but with negligible memory compared with baby-step giant-step.
 
@@ -1491,17 +1491,17 @@ This makes it the most important generic benchmark for ECDLP.
 
 If:
 
-\[
+$$
 n
-\]
+$$
 
 factors into small prime powers, solve smaller DLPs modulo those factors and reconstruct the answer.
 
 This is why:
 
-\[
+$$
 \operatorname{ord}(g)
-\]
+$$
 
 must contain a large prime factor.
 
@@ -1542,7 +1542,7 @@ Part 06 — ECDLP Algorithms and Generic-Group Attacks
 
 The exact later organization can adapt to the material, but the conceptual split should remain:
 
-\[
+$$
 \boxed{
 \text{group order structure}
 +
@@ -1550,7 +1550,7 @@ The exact later organization can adapt to the material, but the conceptual split
 \Rightarrow
 \text{best attack}.
 }
-\]
+$$
 
 ---
 
@@ -1560,71 +1560,71 @@ The discrete logarithm problem is fundamentally a problem about cyclic groups.
 
 Let:
 
-\[
+$$
 G=\langle g\rangle
-\]
+$$
 
 and:
 
-\[
+$$
 n=\operatorname{ord}(g).
-\]
+$$
 
 Given:
 
-\[
+$$
 h\in\langle g\rangle,
-\]
+$$
 
 the DLP asks for:
 
-\[
+$$
 x
-\]
+$$
 
 such that:
 
-\[
+$$
 \boxed{
 g^x=h.
 }
-\]
+$$
 
 The solution is unique modulo:
 
-\[
+$$
 n.
-\]
+$$
 
 That detail matters.
 
 In the example:
 
-\[
+$$
 3^x\equiv5\pmod{11},
-\]
+$$
 
 the base 3 has order 5, not 10.
 
 Therefore:
 
-\[
+$$
 \boxed{
 x\equiv3\pmod5,
 }
-\]
+$$
 
 which explains both:
 
-\[
+$$
 x=3
-\]
+$$
 
 and:
 
-\[
+$$
 x=8.
-\]
+$$
 
 When the base generates the full group, the logarithm is defined modulo the full group order.
 
@@ -1632,9 +1632,9 @@ When it generates only a subgroup, the DLP lives inside that subgroup.
 
 The elliptic-curve version changes notation:
 
-\[
+$$
 Q=[x]P,
-\]
+$$
 
 but not the abstract problem.
 
@@ -1652,12 +1652,12 @@ That difference explains the security-per-bit advantage of ECC in the classical 
 
 The most important idea to carry into the rest of the series is therefore:
 
-\[
+$$
 \boxed{
 \text{DLP difficulty depends not only on group size,
 but also on group order and group representation}.
 }
-\]
+$$
 
 So before asking:
 
@@ -1676,11 +1676,11 @@ Those questions determine whether a discrete-logarithm instance is cryptographic
 
 The next article can now move from the definition to the first real time-memory tradeoff:
 
-\[
+$$
 \boxed{
 \text{Baby-Step Giant-Step}.
 }
-\]
+$$
 
 ---
 

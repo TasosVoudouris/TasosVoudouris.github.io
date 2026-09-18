@@ -27,25 +27,25 @@ Factoring polynomials over finite fields is one of the central computational pro
 
 Given:
 
-\[
+$$
 f(x)\in\mathbb F_q[x],
-\]
+$$
 
 the goal is to recover irreducible polynomials:
 
-\[
+$$
 f_1(x),\ldots,f_r(x)
-\]
+$$
 
 and multiplicities:
 
-\[
+$$
 e_1,\ldots,e_r
-\]
+$$
 
 such that:
 
-\[
+$$
 \boxed{
 f(x)
 =
@@ -53,21 +53,21 @@ c
 \prod_{i=1}^{r}
 f_i(x)^{e_i},
 }
-\]
+$$
 
 where:
 
-\[
+$$
 c\in\mathbb F_q^\times
-\]
+$$
 
-and each \(f_i\) is monic and irreducible.
+and each $f_i$ is monic and irreducible.
 
 Unlike integer factorization, finite-field polynomial factorization has a particularly clean structural decomposition.
 
 The standard conceptual pipeline is:
 
-\[
+$$
 \boxed{
 \text{Squarefree Factorization}
 \rightarrow
@@ -75,7 +75,7 @@ The standard conceptual pipeline is:
 \rightarrow
 \text{Equal-Degree Factorization}.
 }
-\]
+$$
 
 These three stages solve different problems:
 
@@ -107,15 +107,15 @@ The same Frobenius structure developed throughout this series now becomes an alg
 
 Suppose:
 
-\[
+$$
 f(x)\in\mathbb F_q[x].
-\]
+$$
 
-Before trying to split \(f\) directly into irreducible factors, we simplify the problem structurally.
+Before trying to split $f$ directly into irreducible factors, we simplify the problem structurally.
 
 The full pipeline is:
 
-\[
+$$
 \boxed{
 f
 \longrightarrow
@@ -127,7 +127,7 @@ f
 \longrightarrow
 \text{irreducible factors}.
 }
-\]
+$$
 
 ---
 
@@ -135,32 +135,32 @@ f
 
 Transform:
 
-\[
+$$
 f
-\]
+$$
 
 into components:
 
-\[
+$$
 f_1,
 f_2,\ldots
-\]
+$$
 
-such that each \(f_i\) is squarefree and represents factors occurring with a particular multiplicity.
+such that each $f_i$ is squarefree and represents factors occurring with a particular multiplicity.
 
 The main tools are:
 
-\[
+$$
 f'(x)
-\]
+$$
 
 and:
 
-\[
+$$
 \gcd(f,f').
-\]
+$$
 
-Characteristic \(p\) requires additional care because derivatives can vanish identically.
+Characteristic $p$ requires additional care because derivatives can vanish identically.
 
 ---
 
@@ -170,25 +170,25 @@ Take a squarefree polynomial.
 
 Separate it into:
 
-\[
+$$
 F_1F_2F_3\cdots
-\]
+$$
 
 where:
 
-\[
+$$
 F_d
-\]
+$$
 
-is the product of all irreducible factors of degree exactly \(d\).
+is the product of all irreducible factors of degree exactly $d$.
 
 The main tool is:
 
-\[
+$$
 \boxed{
 x^{q^d}-x.
 }
-\]
+$$
 
 ---
 
@@ -196,40 +196,40 @@ x^{q^d}-x.
 
 Now suppose:
 
-\[
+$$
 F_d
 =
 g_1g_2\cdots g_r
-\]
+$$
 
 where every:
 
-\[
+$$
 g_i
-\]
+$$
 
-is irreducible of the same degree \(d\).
+is irreducible of the same degree $d$.
 
 Randomized splitting algorithms such as Cantor–Zassenhaus separate these factors using:
 
-\[
+$$
 \text{modular exponentiation}
 +
 \text{GCD}.
-\]
+$$
 
 At the end:
 
-\[
+$$
 \boxed{
 f
 =
 \prod_i
 g_i^{e_i}
 }
-\]
+$$
 
-with all \(g_i\) irreducible.
+with all $g_i$ irreducible.
 
 ---
 
@@ -237,32 +237,32 @@ with all \(g_i\) irreducible.
 
 A polynomial:
 
-\[
+$$
 f(x)
-\]
+$$
 
 is **squarefree** if no irreducible factor occurs more than once.
 
 Thus:
 
-\[
+$$
 f
 =
 f_1f_2\cdots f_r
-\]
+$$
 
-with distinct irreducible \(f_i\).
+with distinct irreducible $f_i$.
 
 Equivalently:
 
-\[
+$$
 \boxed{
 f
 \text{ is squarefree}
 \iff
 \gcd(f,f')=1
 }
-\]
+$$
 
 for a nonzero polynomial over a field.
 
@@ -272,45 +272,45 @@ for a nonzero polynomial over a field.
 
 Suppose:
 
-\[
+$$
 f(x)
 =
 g(x)^e h(x),
-\]
+$$
 
 where:
 
-\[
+$$
 e\ge2
-\]
+$$
 
 and:
 
-\[
+$$
 g\nmid h.
-\]
+$$
 
 Differentiate:
 
-\[
+$$
 f'
 =
 e g^{e-1}g'h
 +
 g^e h'.
-\]
+$$
 
-Both terms contain a large power of \(g\), so:
+Both terms contain a large power of $g$, so:
 
-\[
+$$
 g
-\]
+$$
 
 appears in:
 
-\[
+$$
 \gcd(f,f').
-\]
+$$
 
 Thus repeated factors leave a detectable footprint in the derivative.
 
@@ -318,83 +318,83 @@ Thus repeated factors leave a detectable footprint in the derivative.
 
 ### Example
 
-Consider over a field of characteristic not equal to \(2\) or \(3\):
+Consider over a field of characteristic not equal to $2$ or $3$:
 
-\[
+$$
 f(x)
 =
 (x-1)^2(x+2)^3.
-\]
+$$
 
 Then:
 
-\[
+$$
 \gcd(f,f')
-\]
+$$
 
 contains:
 
-\[
+$$
 (x-1)(x+2)^2.
-\]
+$$
 
 Dividing:
 
-\[
+$$
 \frac{f}{\gcd(f,f')}
-\]
+$$
 
 produces:
 
-\[
+$$
 (x-1)(x+2),
-\]
+$$
 
 the squarefree product of the distinct factors.
 
 A complete squarefree factorization goes further and recovers the multiplicities:
 
-\[
+$$
 2
 \quad\text{and}\quad
 3.
-\]
+$$
 
 ---
 
-### The characteristic-\(p\) complication
+### The characteristic-$p$ complication
 
-In characteristic \(p\), derivatives behave differently.
+In characteristic $p$, derivatives behave differently.
 
 Consider:
 
-\[
+$$
 f(x)
 =
 g(x^p).
-\]
+$$
 
-Then all nonzero exponents are divisible by \(p\).
+Then all nonzero exponents are divisible by $p$.
 
 Since:
 
-\[
+$$
 \frac{d}{dx}x^{pi}
 =
 pi\,x^{pi-1}
 =
 0
-\]
+$$
 
-in characteristic \(p\),
+in characteristic $p$,
 
-\[
+$$
 \boxed{
 f'(x)=0.
 }
-\]
+$$
 
-This does **not** imply that \(f\) is constant.
+This does **not** imply that $f$ is constant.
 
 ---
 
@@ -402,87 +402,87 @@ This does **not** imply that \(f\) is constant.
 
 Over:
 
-\[
+$$
 \mathbb F_2,
-\]
+$$
 
 consider:
 
-\[
+$$
 f(x)
 =
 x^4+x^2+1.
-\]
+$$
 
 Its derivative is:
 
-\[
+$$
 f'(x)
 =
 4x^3+2x
 =
 0.
-\]
+$$
 
 But:
 
-\[
+$$
 f(x)
 =
 (x^2+x+1)^2.
-\]
+$$
 
 So derivative zero is actually evidence of a hidden Frobenius power.
 
 ---
 
-### Extracting a \(p\)-th root
+### Extracting a $p$-th root
 
 Finite fields are perfect.
 
-Therefore every coefficient has a unique \(p\)-th root.
+Therefore every coefficient has a unique $p$-th root.
 
 If:
 
-\[
+$$
 f(x)
 =
 \sum_i
 a_i x^{pi},
-\]
+$$
 
 then:
 
-\[
+$$
 f(x)
 =
 g(x)^p
-\]
+$$
 
 for:
 
-\[
+$$
 \boxed{
 g(x)
 =
 \sum_i
 a_i^{1/p}x^i.
 }
-\]
+$$
 
 Over:
 
-\[
+$$
 \mathbb F_p,
-\]
+$$
 
 the coefficient extraction is especially simple because:
 
-\[
+$$
 a^p=a.
-\]
+$$
 
-So one divides all polynomial exponents by \(p\).
+So one divides all polynomial exponents by $p$.
 
 ---
 
@@ -490,31 +490,31 @@ So one divides all polynomial exponents by \(p\).
 
 For:
 
-\[
+$$
 f'(x)\neq0,
-\]
+$$
 
 compute:
 
-\[
+$$
 c=\gcd(f,f')
-\]
+$$
 
 and:
 
-\[
+$$
 w=\frac{f}{c}.
-\]
+$$
 
-The polynomial \(w\) contains the squarefree contribution from factors whose multiplicities are not divisible by the characteristic.
+The polynomial $w$ contains the squarefree contribution from factors whose multiplicities are not divisible by the characteristic.
 
 Repeated GCD and division steps recover the different multiplicity classes.
 
-If a residual component becomes a \(p\)-th power, extract its \(p\)-th root and recurse, multiplying the recovered multiplicities by \(p\).
+If a residual component becomes a $p$-th power, extract its $p$-th root and recurse, multiplying the recovered multiplicities by $p$.
 
-So in characteristic \(p\), squarefree factorization is more accurately viewed as:
+So in characteristic $p$, squarefree factorization is more accurately viewed as:
 
-\[
+$$
 \boxed{
 \text{derivatives}
 +
@@ -522,7 +522,7 @@ So in characteristic \(p\), squarefree factorization is more accurately viewed a
 +
 \text{Frobenius root extraction}.
 }
-\]
+$$
 
 This is another place where positive characteristic changes an algorithm fundamentally.
 
@@ -532,41 +532,41 @@ This is another place where positive characteristic changes an algorithm fundame
 
 Now assume:
 
-\[
+$$
 f(x)\in\mathbb F_q[x]
-\]
+$$
 
 is monic and squarefree.
 
 Suppose its irreducible factorization is:
 
-\[
+$$
 f
 =
 g_1g_2\cdots g_r.
-\]
+$$
 
-We do not yet know the individual \(g_i\).
+We do not yet know the individual $g_i$.
 
 The goal of **Distinct-Degree Factorization (DDF)** is to group factors according to their degree.
 
 We want:
 
-\[
+$$
 \boxed{
 f
 =
 F_1F_2F_3\cdots
 }
-\]
+$$
 
 where:
 
-\[
+$$
 F_d
-\]
+$$
 
-is the product of all irreducible factors of \(f\) having degree exactly \(d\).
+is the product of all irreducible factors of $f$ having degree exactly $d$.
 
 ---
 
@@ -574,57 +574,57 @@ is the product of all irreducible factors of \(f\) having degree exactly \(d\).
 
 Recall:
 
-\[
+$$
 \boxed{
 x^{q^d}-x
 }
-\]
+$$
 
 is the product of every monic irreducible polynomial over:
 
-\[
+$$
 \mathbb F_q
-\]
+$$
 
-whose degree divides \(d\).
+whose degree divides $d$.
 
 Therefore:
 
-\[
+$$
 \gcd
 \left(
 f,
 x^{q^d}-x
 \right)
-\]
+$$
 
-selects from \(f\) all irreducible factors whose degrees divide \(d\).
+selects from $f$ all irreducible factors whose degrees divide $d$.
 
-This does **not**, by itself, mean degree exactly \(d\).
+This does **not**, by itself, mean degree exactly $d$.
 
 It includes degrees:
 
-\[
+$$
 e\mid d.
-\]
+$$
 
 ---
 
-### How DDF gets exact degree \(d\)
+### How DDF gets exact degree $d$
 
 The algorithm processes degrees in increasing order.
 
-At stage \(d\), all factors of degree:
+At stage $d$, all factors of degree:
 
-\[
+$$
 1,2,\ldots,d-1
-\]
+$$
 
 that could have appeared earlier have already been removed.
 
 Therefore:
 
-\[
+$$
 \boxed{
 \gcd
 \left(
@@ -632,9 +632,9 @@ f_{\text{remaining}},
 x^{q^d}-x
 \right)
 }
-\]
+$$
 
-contains exactly the degree-\(d\) factors remaining.
+contains exactly the degree-$d$ factors remaining.
 
 This ordering is essential.
 
@@ -644,77 +644,77 @@ This ordering is essential.
 
 As in the Rabin irreducibility test, we do not construct:
 
-\[
+$$
 x^{q^d}
-\]
+$$
 
 as an enormous polynomial.
 
 Instead define:
 
-\[
+$$
 h_0=x
-\]
+$$
 
 and repeatedly compute:
 
-\[
+$$
 \boxed{
 h_d
 =
 h_{d-1}^q
 \bmod f.
 }
-\]
+$$
 
 Then:
 
-\[
+$$
 h_d
 =
 x^{q^d}
 \bmod f.
-\]
+$$
 
 The DDF step becomes:
 
-\[
+$$
 \boxed{
 g_d
 =
 \gcd(f,h_d-x).
 }
-\]
+$$
 
 If:
 
-\[
+$$
 g_d\neq1,
-\]
+$$
 
 we extract it and replace:
 
-\[
+$$
 f
 \leftarrow
 \frac{f}{g_d}.
-\]
+$$
 
 ---
 
-### Worked example over \(\mathbb F_2\)
+### Worked example over $\mathbb F_2$
 
 Consider:
 
-\[
+$$
 f(x)
 =
 x^6+x^4+x+1.
-\]
+$$
 
 It factors as:
 
-\[
+$$
 \boxed{
 f(x)
 =
@@ -722,17 +722,17 @@ f(x)
 (x^2+x+1)
 (x^3+x+1).
 }
-\]
+$$
 
 So the irreducible factors have degrees:
 
-\[
+$$
 1,
 \quad
 2,
 \quad
 3.
-\]
+$$
 
 Suppose we do not know this factorization.
 
@@ -742,50 +742,50 @@ Suppose we do not know this factorization.
 
 For:
 
-\[
+$$
 q=2,
-\]
+$$
 
 compute:
 
-\[
+$$
 x^2-x.
-\]
+$$
 
 In characteristic two:
 
-\[
+$$
 x^2-x
 =
 x^2+x.
-\]
+$$
 
 Then:
 
-\[
+$$
 \gcd(
 f,
 x^2+x
 )
 =
 x+1.
-\]
+$$
 
 So:
 
-\[
+$$
 \boxed{
 F_1=x+1.
 }
-\]
+$$
 
 Remove it.
 
 The remaining polynomial is:
 
-\[
+$$
 x^5+x^4+1.
-\]
+$$
 
 ---
 
@@ -793,50 +793,50 @@ x^5+x^4+1.
 
 Now use:
 
-\[
+$$
 x^{2^2}-x
 =
 x^4-x.
-\]
+$$
 
 Again in characteristic two:
 
-\[
+$$
 x^4-x
 =
 x^4+x.
-\]
+$$
 
 Then:
 
-\[
+$$
 \gcd(
 x^5+x^4+1,
 x^4+x
 )
 =
 x^2+x+1.
-\]
+$$
 
 Thus:
 
-\[
+$$
 \boxed{
 F_2=x^2+x+1.
 }
-\]
+$$
 
-The remaining factor has degree \(3\):
+The remaining factor has degree $3$:
 
-\[
+$$
 \boxed{
 F_3=x^3+x+1.
 }
-\]
+$$
 
 Here each degree block happens to contain only one irreducible factor.
 
-In general, \(F_d\) may contain many degree-\(d\) irreducibles and must still be split.
+In general, $F_d$ may contain many degree-$d$ irreducibles and must still be split.
 
 That is the job of EDF.
 
@@ -846,29 +846,29 @@ That is the job of EDF.
 
 Suppose:
 
-\[
+$$
 f(x)
 =
 g_1(x)\cdots g_r(x)
-\]
+$$
 
-is squarefree and every \(g_i\) is irreducible of the same degree:
+is squarefree and every $g_i$ is irreducible of the same degree:
 
-\[
+$$
 d.
-\]
+$$
 
 Thus:
 
-\[
+$$
 \deg f=rd.
-\]
+$$
 
 The task is now to recover the individual:
 
-\[
+$$
 g_i.
-\]
+$$
 
 This is **Equal-Degree Factorization (EDF)**.
 
@@ -876,50 +876,50 @@ A standard randomized solution is the Cantor–Zassenhaus method.
 
 ---
 
-### The idea for odd \(q\)
+### The idea for odd $q$
 
 Suppose:
 
-\[
+$$
 q
-\]
+$$
 
 is odd.
 
 Choose a random polynomial:
 
-\[
+$$
 a(x)
-\]
+$$
 
 with degree less than:
 
-\[
+$$
 \deg f.
-\]
+$$
 
 First compute:
 
-\[
+$$
 \gcd(a,f).
-\]
+$$
 
 If this gives a nontrivial factor, we already have a split.
 
 Otherwise compute:
 
-\[
+$$
 \boxed{
 b(x)
 =
 a(x)^{(q^d-1)/2}
 \bmod f(x).
 }
-\]
+$$
 
 Then attempt:
 
-\[
+$$
 \boxed{
 g(x)
 =
@@ -928,21 +928,21 @@ b(x)-1,
 f(x)
 ).
 }
-\]
+$$
 
 If:
 
-\[
+$$
 1<\deg g<\deg f,
-\]
+$$
 
 we have found a nontrivial factorization:
 
-\[
+$$
 f
 =
 g\cdot\frac fg.
-\]
+$$
 
 We recursively split the two pieces.
 
@@ -950,53 +950,53 @@ We recursively split the two pieces.
 
 ### Why the exponent works
 
-Modulo any irreducible degree-\(d\) factor:
+Modulo any irreducible degree-$d$ factor:
 
-\[
+$$
 g_i,
-\]
+$$
 
 the quotient:
 
-\[
+$$
 \mathbb F_q[x]/(g_i)
-\]
+$$
 
 is:
 
-\[
+$$
 \mathbb F_{q^d}.
-\]
+$$
 
 Its multiplicative group has order:
 
-\[
+$$
 q^d-1.
-\]
+$$
 
-For nonzero \(a\):
+For nonzero $a$:
 
-\[
+$$
 a^{(q^d-1)/2}
-\]
+$$
 
-lands among the two square roots of \(1\):
+lands among the two square roots of $1$:
 
-\[
+$$
 \boxed{
 \pm1.
 }
-\]
+$$
 
 Different irreducible components may produce different signs.
 
 The GCD with:
 
-\[
+$$
 b-1
-\]
+$$
 
-collects the components on which the value is \(+1\).
+collects the components on which the value is $+1$.
 
 Thus a random polynomial can separate the Chinese-remainder components of the quotient ring.
 
@@ -1006,28 +1006,28 @@ Thus a random polynomial can separate the Chinese-remainder components of the qu
 
 Because:
 
-\[
+$$
 f=g_1\cdots g_r
-\]
+$$
 
 is squarefree, the Chinese Remainder Theorem gives:
 
-\[
+$$
 \boxed{
 \mathbb F_q[x]/(f)
 \cong
 \prod_{i=1}^{r}
 \mathbb F_q[x]/(g_i).
 }
-\]
+$$
 
 Each component is a copy of:
 
-\[
+$$
 \mathbb F_{q^d}.
-\]
+$$
 
-A random residue class modulo \(f\) therefore behaves componentwise like random field elements.
+A random residue class modulo $f$ therefore behaves componentwise like random field elements.
 
 Exponentiation creates a small-valued signature in each component, and GCD recovers the components sharing that signature.
 
@@ -1039,35 +1039,35 @@ This is the structural reason Cantor–Zassenhaus works.
 
 When:
 
-\[
+$$
 q
-\]
+$$
 
 is even, the exponent:
 
-\[
+$$
 \frac{q^d-1}{2}
-\]
+$$
 
-does not provide the corresponding \(\pm1\) split.
+does not provide the corresponding $\pm1$ split.
 
 Instead, characteristic-two variants use an additive **trace-based split**.
 
 If:
 
-\[
+$$
 q=2^m,
-\]
+$$
 
-then each degree-\(d\) component is:
+then each degree-$d$ component is:
 
-\[
+$$
 \mathbb F_{2^{md}}.
-\]
+$$
 
-For a random element \(a\), compute its absolute trace:
+For a random element $a$, compute its absolute trace:
 
-\[
+$$
 \boxed{
 T(a)
 =
@@ -1075,27 +1075,27 @@ a+a^2+a^{2^2}
 +\cdots+
 a^{2^{md-1}}.
 }
-\]
+$$
 
 Inside each irreducible component:
 
-\[
+$$
 T(a)\in\mathbb F_2
 =
 \{0,1\}.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \gcd(T(a),f)
-\]
+$$
 
 or the complementary trace class can produce a nontrivial split.
 
 So the general principle remains:
 
-\[
+$$
 \boxed{
 \text{random element}
 \rightarrow
@@ -1103,7 +1103,7 @@ So the general principle remains:
 \rightarrow
 \text{GCD split}.
 }
-\]
+$$
 
 Only the invariant changes with the characteristic.
 
@@ -1113,23 +1113,23 @@ Only the invariant changes with the characteristic.
 
 Finding roots of:
 
-\[
+$$
 f(x)\in\mathbb F_q[x]
-\]
+$$
 
 is a special case of polynomial factorization.
 
 A value:
 
-\[
+$$
 a\in\mathbb F_q
-\]
+$$
 
 is a root exactly when:
 
-\[
+$$
 x-a
-\]
+$$
 
 is a factor.
 
@@ -1137,29 +1137,29 @@ Thus root finding means extracting the **degree-one irreducible factors**.
 
 ---
 
-### Using \(x^q-x\)
+### Using $x^q-x$
 
 Every element of:
 
-\[
+$$
 \mathbb F_q
-\]
+$$
 
 is a root of:
 
-\[
+$$
 x^q-x.
-\]
+$$
 
 Indeed:
 
-\[
+$$
 a^q=a.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 r(x)
 =
@@ -1168,27 +1168,27 @@ f(x),
 x^q-x
 )
 }
-\]
+$$
 
-collects the distinct linear factors of \(f\) defined over:
+collects the distinct linear factors of $f$ defined over:
 
-\[
+$$
 \mathbb F_q.
-\]
+$$
 
 Because:
 
-\[
+$$
 x^q-x
-\]
+$$
 
-is squarefree, repeated multiplicities in \(f\) are not preserved by this GCD.
+is squarefree, repeated multiplicities in $f$ are not preserved by this GCD.
 
 Instead:
 
-\[
+$$
 r(x)
-\]
+$$
 
 contains each linear factor once.
 
@@ -1198,56 +1198,56 @@ contains each linear factor once.
 
 If:
 
-\[
+$$
 r(x)=1,
-\]
+$$
 
-then \(f\) has no root in:
+then $f$ has no root in:
 
-\[
+$$
 \mathbb F_q.
-\]
+$$
 
 If:
 
-\[
+$$
 \deg r=k,
-\]
+$$
 
-then \(f\) has exactly:
+then $f$ has exactly:
 
-\[
+$$
 k
-\]
+$$
 
 distinct roots in:
 
-\[
+$$
 \mathbb F_q.
-\]
+$$
 
 To recover the actual roots, factor:
 
-\[
+$$
 r(x)
-\]
+$$
 
 into:
 
-\[
+$$
 \boxed{
 r(x)
 =
 \prod_{i=1}^{k}
 (x-a_i).
 }
-\]
+$$
 
 The values:
 
-\[
+$$
 a_i
-\]
+$$
 
 are the roots.
 
@@ -1267,35 +1267,35 @@ roots = [
 
 But when:
 
-\[
+$$
 q
-\]
+$$
 
 is large, enumerating every field element becomes unattractive.
 
 Then the algebraic approach:
 
-\[
+$$
 \gcd(f,x^q-x)
-\]
+$$
 
 plus polynomial splitting is more appropriate.
 
 So root finding itself has both:
 
-\[
+$$
 \boxed{
 \text{evaluation-based}
 }
-\]
+$$
 
 and:
 
-\[
+$$
 \boxed{
 \text{factorization-based}
 }
-\]
+$$
 
 approaches.
 
@@ -1307,39 +1307,39 @@ Several algorithm names occur around finite-field polynomial arithmetic, and the
 
 ### Rabin irreducibility testing
 
-The Rabin-style criterion asks whether a degree-\(n\) polynomial is irreducible.
+The Rabin-style criterion asks whether a degree-$n$ polynomial is irreducible.
 
 It uses:
 
-\[
+$$
 x^{q^n}\equiv x\pmod f
-\]
+$$
 
 together with:
 
-\[
+$$
 \gcd
 \left(
 f,
 x^{q^{n/\ell}}-x
 \right)=1
-\]
+$$
 
 for prime divisors:
 
-\[
+$$
 \ell\mid n.
-\]
+$$
 
 Its output is essentially:
 
-\[
+$$
 \boxed{
 \text{irreducible}
 \quad\text{or}\quad
 \text{reducible}.
 }
-\]
+$$
 
 It does not by itself constitute the entire factorization pipeline.
 
@@ -1349,38 +1349,38 @@ It does not by itself constitute the entire factorization pipeline.
 
 Berlekamp's method studies the Frobenius-fixed subspace:
 
-\[
+$$
 \boxed{
 \{
 h:
 h^q\equiv h\pmod f
 \}.
 }
-\]
+$$
 
 This becomes a linear-algebra problem over:
 
-\[
+$$
 \mathbb F_q.
-\]
+$$
 
-One constructs a matrix representing Frobenius modulo \(f\) and finds the nullspace of:
+One constructs a matrix representing Frobenius modulo $f$ and finds the nullspace of:
 
-\[
+$$
 Q-I.
-\]
+$$
 
-The resulting Berlekamp algebra contains information that can be used to split \(f\).
+The resulting Berlekamp algebra contains information that can be used to split $f$.
 
 This method gives another striking connection:
 
-\[
+$$
 \boxed{
 \text{polynomial factorization}
 \longleftrightarrow
 \text{linear algebra}.
 }
-\]
+$$
 
 ---
 
@@ -1390,35 +1390,35 @@ Cantor–Zassenhaus uses randomized exponentiation and GCDs.
 
 In the common decomposition:
 
-\[
+$$
 \text{SFF}
 \rightarrow
 \text{DDF}
 \rightarrow
 \text{EDF},
-\]
+$$
 
 Cantor–Zassenhaus is associated especially with the randomized equal-degree splitting stage.
 
 The relevant mechanisms are:
 
-\[
+$$
 \text{Frobenius powers},
-\]
+$$
 
-\[
+$$
 \text{modular exponentiation},
-\]
+$$
 
-\[
+$$
 \text{random sampling},
-\]
+$$
 
 and:
 
-\[
+$$
 \text{GCD}.
-\]
+$$
 
 ---
 
@@ -1426,27 +1426,27 @@ and:
 
 It is therefore useful to separate:
 
-\[
+$$
 \boxed{
 \text{Rabin-style irreducibility testing}
 }
-\]
+$$
 
 from:
 
-\[
+$$
 \boxed{
 \text{Berlekamp factorization}
 }
-\]
+$$
 
 and:
 
-\[
+$$
 \boxed{
 \text{Cantor--Zassenhaus factorization}.
 }
-\]
+$$
 
 Squarefree and distinct-degree factorization are themselves structural stages that may be combined with different final splitting methods.
 
@@ -1521,13 +1521,13 @@ def squarefree_factorization(f):
 
 The important boundary condition is:
 
-\[
+$$
 \boxed{
 f'=0
 }
-\]
+$$
 
-must trigger \(p\)-th-root handling rather than ordinary derivative logic.
+must trigger $p$-th-root handling rather than ordinary derivative logic.
 
 ---
 
@@ -1574,17 +1574,17 @@ def distinct_degree_factorization(f, q):
 
 The exact production implementation requires careful normalization and bookkeeping, but the algebraic mechanism is visible:
 
-\[
+$$
 \boxed{
 \text{Frobenius}
 +
 \text{GCD}.
 }
-\]
+$$
 
 ---
 
-### Equal-degree layer for odd \(q\)
+### Equal-degree layer for odd $q$
 
 A conceptual randomized split is:
 
@@ -1617,11 +1617,11 @@ def split_equal_degree(f, q, d):
 
 The routine is repeated recursively until every returned component has degree:
 
-\[
+$$
 d.
-\]
+$$
 
-For even \(q\), use the corresponding trace-based splitting method instead.
+For even $q$, use the corresponding trace-based splitting method instead.
 
 ---
 
@@ -1631,7 +1631,7 @@ A factorization routine should not merely return factors.
 
 It should verify:
 
-\[
+$$
 \boxed{
 f
 =
@@ -1639,34 +1639,34 @@ c
 \prod_i
 g_i^{e_i}.
 }
-\]
+$$
 
-For each \(g_i\), it should also be possible to verify irreducibility independently.
+For each $g_i$, it should also be possible to verify irreducibility independently.
 
 Useful test properties include:
 
-\[
+$$
 \prod_i
 g_i^{e_i}
 =
 f,
-\]
+$$
 
-\[
+$$
 g_i
 \text{ monic},
-\]
+$$
 
-\[
+$$
 g_i
 \text{ irreducible},
-\]
+$$
 
 and for distinct factors:
 
-\[
+$$
 \gcd(g_i,g_j)=1.
-\]
+$$
 
 This makes the implementation reproducible and auditable.
 
@@ -1676,43 +1676,43 @@ This makes the implementation reproducible and auditable.
 
 The entire computational story can now be summarized as:
 
-\[
+$$
 \boxed{
 f(x)
 }
-\]
+$$
 
 first becomes:
 
-\[
+$$
 \boxed{
 \text{squarefree components}.
 }
-\]
+$$
 
 Each squarefree component becomes:
 
-\[
+$$
 \boxed{
 F_1F_2\cdots
 }
-\]
+$$
 
-where \(F_d\) contains the degree-\(d\) factors.
+where $F_d$ contains the degree-$d$ factors.
 
-Each \(F_d\) is then split into:
+Each $F_d$ is then split into:
 
-\[
+$$
 \boxed{
 g_1g_2\cdots g_r
 }
-\]
+$$
 
-with each \(g_i\) irreducible of degree \(d\).
+with each $g_i$ irreducible of degree $d$.
 
 So:
 
-\[
+$$
 \boxed{
 \text{multiplicity}
 \rightarrow
@@ -1720,11 +1720,11 @@ So:
 \rightarrow
 \text{individual factor}.
 }
-\]
+$$
 
 And the recurring computational primitives are remarkably few:
 
-\[
+$$
 \boxed{
 \text{derivative},
 \quad
@@ -1736,7 +1736,7 @@ And the recurring computational primitives are remarkably few:
 \quad
 \text{random splitting}.
 }
-\]
+$$
 
 The theory developed in Parts I–III has therefore turned into a complete factorization architecture.
 
@@ -1748,23 +1748,23 @@ The theory developed in Parts I–III has therefore turned into a complete facto
 
 Over:
 
-\[
+$$
 \mathbb F_5,
-\]
+$$
 
 consider:
 
-\[
+$$
 f(x)
 =
 (x-1)^2(x+2).
-\]
+$$
 
 Compute conceptually:
 
-\[
+$$
 \gcd(f,f').
-\]
+$$
 
 Which factor is repeated?
 
@@ -1774,27 +1774,27 @@ Which factor is repeated?
 
 Over:
 
-\[
+$$
 \mathbb F_2,
-\]
+$$
 
 consider:
 
-\[
+$$
 f(x)
 =
 x^6+x^2+1.
-\]
+$$
 
 Compute:
 
-\[
+$$
 f'(x).
-\]
+$$
 
-Explain why derivative zero does not mean that \(f\) is constant.
+Explain why derivative zero does not mean that $f$ is constant.
 
-Can \(f\) be written as a square?
+Can $f$ be written as a square?
 
 ---
 
@@ -1802,53 +1802,53 @@ Can \(f\) be written as a square?
 
 For:
 
-\[
+$$
 f(x)
 =
 x^6+x^4+x+1
-\]
+$$
 
 over:
 
-\[
+$$
 \mathbb F_2,
-\]
+$$
 
 verify:
 
-\[
+$$
 \gcd(f,x^2+x)
 =
 x+1.
-\]
+$$
 
-After removing the linear factor, verify that the degree-\(2\) component is:
+After removing the linear factor, verify that the degree-$2$ component is:
 
-\[
+$$
 x^2+x+1.
-\]
+$$
 
 ---
 
 ### Exercise 4 — Degree divisibility
 
-Explain why an irreducible polynomial of degree \(d\) over:
+Explain why an irreducible polynomial of degree $d$ over:
 
-\[
+$$
 \mathbb F_q
-\]
+$$
 
 divides:
 
-\[
+$$
 x^{q^m}-x
-\]
+$$
 
 exactly when:
 
-\[
+$$
 d\mid m.
-\]
+$$
 
 Use the subfield theorem.
 
@@ -1858,21 +1858,21 @@ Use the subfield theorem.
 
 Let:
 
-\[
+$$
 f(x)\in\mathbb F_7[x].
-\]
+$$
 
 Explain why:
 
-\[
+$$
 \gcd(f,x^7-x)
-\]
+$$
 
-contains precisely the distinct linear factors of \(f\) over:
+contains precisely the distinct linear factors of $f$ over:
 
-\[
+$$
 \mathbb F_7.
-\]
+$$
 
 ---
 
@@ -1880,7 +1880,7 @@ contains precisely the distinct linear factors of \(f\) over:
 
 Suppose:
 
-\[
+$$
 \deg
 \gcd(
 f,
@@ -1888,19 +1888,19 @@ x^{11}-x
 )
 =
 4
-\]
+$$
 
 for:
 
-\[
+$$
 f\in\mathbb F_{11}[x].
-\]
+$$
 
-How many distinct roots does \(f\) have in:
+How many distinct roots does $f$ have in:
 
-\[
+$$
 \mathbb F_{11}?
-\]
+$$
 
 ---
 
@@ -1908,11 +1908,11 @@ How many distinct roots does \(f\) have in:
 
 Suppose:
 
-\[
+$$
 f
-\]
+$$
 
-is squarefree of degree \(20\) and is known to be a product of irreducible degree-\(4\) factors.
+is squarefree of degree $20$ and is known to be a product of irreducible degree-$4$ factors.
 
 How many irreducible factors does it contain?
 
@@ -1924,23 +1924,23 @@ What is the EDF target degree?
 
 Suppose:
 
-\[
+$$
 q=7
-\]
+$$
 
 and:
 
-\[
+$$
 d=3.
-\]
+$$
 
 What exponent appears in the odd-characteristic Cantor–Zassenhaus splitting step?
 
 Compute:
 
-\[
+$$
 \frac{q^d-1}{2}.
-\]
+$$
 
 ---
 
@@ -1948,25 +1948,25 @@ Compute:
 
 Suppose:
 
-\[
+$$
 f=g_1g_2
-\]
+$$
 
 with:
 
-\[
+$$
 \gcd(g_1,g_2)=1.
-\]
+$$
 
 Explain why:
 
-\[
+$$
 \mathbb F_q[x]/(f)
 \cong
 \mathbb F_q[x]/(g_1)
 \times
 \mathbb F_q[x]/(g_2).
-\]
+$$
 
 How does this help explain randomized factor splitting?
 
@@ -1976,7 +1976,7 @@ How does this help explain randomized factor splitting?
 
 For each task, identify the relevant concept:
 
-- deciding whether \(f\) is irreducible;
+- deciding whether $f$ is irreducible;
 - removing repeated factors;
 - grouping irreducible factors according to degree;
 - splitting factors of equal degree;
@@ -1984,7 +1984,7 @@ For each task, identify the relevant concept:
 
 Distinguish:
 
-\[
+$$
 \text{Rabin},
 \quad
 \text{SFF},
@@ -1994,7 +1994,7 @@ Distinguish:
 \text{EDF},
 \quad
 \text{root finding}.
-\]
+$$
 
 ---
 
@@ -2004,37 +2004,37 @@ You should now be able to explain:
 
 1. What squarefree factorization accomplishes.
 2. Why:
-   \[
+   $$
    \gcd(f,f')
-   \]
+   $$
    detects repeated factors.
-3. Why derivative zero requires special treatment in characteristic \(p\).
-4. How \(p\)-th-root extraction appears in squarefree factorization.
+3. Why derivative zero requires special treatment in characteristic $p$.
+4. How $p$-th-root extraction appears in squarefree factorization.
 5. What distinct-degree factorization accomplishes.
 6. Why:
-   \[
+   $$
    x^{q^d}-x
-   \]
-   contains irreducibles whose degrees divide \(d\).
-7. Why DDF must remove smaller-degree factors before identifying degree-\(d\) factors exactly.
+   $$
+   contains irreducibles whose degrees divide $d$.
+7. Why DDF must remove smaller-degree factors before identifying degree-$d$ factors exactly.
 8. How Frobenius iteration computes:
-   \[
+   $$
    x^{q^d}\bmod f.
-   \]
+   $$
 9. What equal-degree factorization accomplishes.
 10. Why Cantor–Zassenhaus is randomized.
 11. Why:
-    \[
+    $$
     \frac{q^d-1}{2}
-    \]
-    appears when \(q\) is odd.
+    $$
+    appears when $q$ is odd.
 12. Why characteristic two requires a different splitting mechanism.
 13. How trace can provide that splitting mechanism.
 14. Why root finding is degree-one factorization.
 15. Why:
-    \[
+    $$
     \gcd(f,x^q-x)
-    \]
+    $$
     extracts the distinct base-field roots.
 16. The difference between Rabin irreducibility testing and full factorization.
 17. The role of Berlekamp's algorithm.
@@ -2090,101 +2090,101 @@ The four articles followed a deliberately computational progression.
 
 We began with the classification and construction of finite fields:
 
-\[
+$$
 \boxed{
 \mathbb F_{p^n}
 \cong
 \mathbb F_p[x]/(f).
 }
-\]
+$$
 
 That required understanding:
 
-\[
+$$
 \text{prime fields},
-\]
+$$
 
-\[
+$$
 \text{extension fields},
-\]
+$$
 
 and:
 
-\[
+$$
 \text{irreducible polynomial moduli}.
-\]
+$$
 
 Part II then showed that a finite extension:
 
-\[
+$$
 \mathbb F_{q^n}/\mathbb F_q
-\]
+$$
 
 is governed by one remarkably powerful automorphism:
 
-\[
+$$
 \boxed{
 x\mapsto x^q.
 }
-\]
+$$
 
 From Frobenius we obtained:
 
-\[
+$$
 \text{conjugates},
-\]
+$$
 
-\[
+$$
 \text{minimal polynomials},
-\]
+$$
 
-\[
+$$
 \text{trace},
-\]
+$$
 
-\[
+$$
 \text{norm},
-\]
+$$
 
-\[
+$$
 \text{subfields},
-\]
+$$
 
 and:
 
-\[
+$$
 \text{the cyclic Galois group}.
-\]
+$$
 
 Part III turned Frobenius into an algorithm.
 
 The question:
 
-\[
+$$
 \text{Is }f(x)\text{ irreducible?}
-\]
+$$
 
 became a combination of:
 
-\[
+$$
 \boxed{
 \text{Frobenius powers}
 +
 \text{polynomial GCDs}.
 }
-\]
+$$
 
 That gave us a reliable mechanism for constructing explicit extension fields.
 
 Finally, Part IV solved the broader problem:
 
-\[
+$$
 \text{If }f\text{ is reducible, how do we decompose it?}
-\]
+$$
 
 The answer was the complete pipeline:
 
-\[
+$$
 \boxed{
 \text{SFF}
 \rightarrow
@@ -2192,11 +2192,11 @@ The answer was the complete pipeline:
 \rightarrow
 \text{EDF}.
 }
-\]
+$$
 
 So the entire series can be compressed into one progression:
 
-\[
+$$
 \boxed{
 \text{finite-field existence}
 \rightarrow
@@ -2208,25 +2208,25 @@ So the entire series can be compressed into one progression:
 \rightarrow
 \text{factorization}.
 }
-\]
+$$
 
 The recurring computational objects were:
 
-\[
+$$
 \mathbb F_q,
-\]
+$$
 
-\[
+$$
 \mathbb F_q[x],
-\]
+$$
 
-\[
+$$
 \mathbb F_q[x]/(f),
-\]
+$$
 
 and the recurring operations were:
 
-\[
+$$
 \boxed{
 \text{polynomial arithmetic},
 \quad
@@ -2236,35 +2236,35 @@ and the recurring operations were:
 \quad
 \text{modular exponentiation}.
 }
-\]
+$$
 
 These are not isolated mathematical exercises.
 
 They form infrastructure that reappears throughout:
 
-\[
+$$
 \text{elliptic-curve arithmetic},
-\]
+$$
 
-\[
+$$
 \text{coding theory},
-\]
+$$
 
-\[
+$$
 \text{secret sharing},
-\]
+$$
 
-\[
+$$
 \text{pairings},
-\]
+$$
 
-\[
+$$
 \text{polynomial commitments},
-\]
+$$
 
-\[
+$$
 \text{algebraic cryptanalysis},
-\]
+$$
 
 and many other computational cryptographic systems.
 
@@ -2272,10 +2272,10 @@ The goal of this series was therefore not merely to define finite fields.
 
 It was to reach the point where:
 
-\[
+$$
 \boxed{
 \mathbb F_{q^n}
 }
-\]
+$$
 
 is an object we can construct, represent, validate, analyze, and compute with from first principles.

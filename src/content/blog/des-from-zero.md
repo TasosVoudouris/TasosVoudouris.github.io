@@ -25,7 +25,6 @@ draft: false
 
 ## Table of Contents
 
-- [Why DES still matters](#why-des-still-matters)
 - [DES at a glance](#des-at-a-glance)
 - [The 64-bit key and the 56-bit effective key](#the-64-bit-key-and-the-56-bit-effective-key)
 - [From SPNs to Feistel networks](#from-spns-to-feistel-networks)
@@ -48,30 +47,6 @@ draft: false
 - [What DES teaches us about cipher design](#what-des-teaches-us-about-cipher-design)
 - [Conclusion](#conclusion)
 - [References](#references)
-
-## Why DES still matters
-
-The **Data Encryption Standard (DES)** is no longer a cipher that should be selected for protecting new data. Its effective key size is only 56 bits, and that key space has been practically exhaustible for decades. DES was withdrawn as a U.S. Federal Information Processing Standard in 2005.
-
-That does **not** make DES unimportant.
-
-DES is one of the best ciphers for learning how a real block cipher is assembled from smaller components. It gives us a compact system in which we can study, in one place:
-
-- a **Feistel network**,
-- fixed bit permutations,
-- a nontrivial key schedule,
-- expansion from 32 to 48 bits,
-- key mixing,
-- eight nonlinear S-boxes,
-- diffusion through a fixed P permutation,
-- reversibility without requiring the round function itself to be invertible,
-- and the relationship between design structure and cryptanalysis.
-
-The previous article in this series studied a small **Substitution-Permutation Network (SPN)**. DES gives us the other classical construction paradigm: a **Feistel cipher**.
-
-The most useful way to study DES is therefore not merely to memorize its tables. We will reconstruct the cipher step by step, verify every layer, derive the Feistel equations, implement the full cipher, test it against a standard vector, and then examine why a design that was once a major standard is no longer secure enough today.
-
-> **Scope.** Everything here is educational and analytical. DES should not be used for new cryptographic protection.
 
 ---
 
@@ -118,21 +93,21 @@ Final Permutation (IP^-1)
 64-bit ciphertext
 ```
 
-For round \(i\),
+For round $i$,
 
-\[
+$$
 L_i = R_{i-1},
-\]
+$$
 
 and
 
-\[
+$$
 R_i = L_{i-1} \oplus F(R_{i-1}, K_i),
-\]
+$$
 
-where \(K_i\) is the 48-bit round key and \(F\) is the DES round function.
+where $K_i$ is the 48-bit round key and $F$ is the DES round function.
 
-The important point is that the round function \(F\) does **not** need to be invertible. The Feistel structure itself gives us invertibility.
+The important point is that the round function $F$ does **not** need to be invertible. The Feistel structure itself gives us invertibility.
 
 ---
 
@@ -144,33 +119,33 @@ Both statements refer to different layers of the same representation.
 
 The DES key is supplied as 64 bits:
 
-\[
+$$
 K = k_1k_2\cdots k_{64}.
-\]
+$$
 
 However, eight positions are parity bits. In the traditional DES representation, every eighth bit is used for parity checking:
 
-\[
+$$
 8,\ 16,\ 24,\ 32,\ 40,\ 48,\ 56,\ 64.
-\]
+$$
 
 The **Permuted Choice 1** operation, usually written PC-1, discards these parity positions and permutes the remaining bits.
 
 Therefore,
 
-\[
+$$
 64 \text{ supplied bits}
 \longrightarrow
 56 \text{ effective key bits}.
-\]
+$$
 
 The size of the actual key search space is therefore
 
-\[
+$$
 2^{56},
-\]
+$$
 
-not \(2^{64}\).
+not $2^{64}$.
 
 The parity bits are not secret entropy.
 
@@ -182,35 +157,35 @@ This distinction matters later when we discuss brute-force resistance.
 
 The previous article used an SPN. In an SPN, the whole internal state is repeatedly transformed by invertible layers such as:
 
-\[
+$$
 \text{AddRoundKey}
 \rightarrow
 \text{Substitution}
 \rightarrow
 \text{Permutation}.
-\]
+$$
 
 DES instead splits the state:
 
-\[
+$$
 X = L \parallel R.
-\]
+$$
 
 A Feistel step transforms the pair using
 
-\[
+$$
 (L,R)
 \mapsto
 (R,\ L \oplus F(R,K)).
-\]
+$$
 
-This looks asymmetric: \(F\) is applied only to the right half.
+This looks asymmetric: $F$ is applied only to the right half.
 
 After the transformation, the halves exchange roles. Therefore, over multiple rounds, both sides repeatedly enter the round function.
 
 This construction has a major architectural advantage:
 
-> \(F\) may be nonlinear, lossy, and non-invertible, while the complete Feistel transformation remains invertible.
+> $F$ may be nonlinear, lossy, and non-invertible, while the complete Feistel transformation remains invertible.
 
 This is one of the deepest structural lessons in classical block-cipher design.
 
@@ -222,51 +197,51 @@ A standards-faithful DES encryption can be described as follows.
 
 Let
 
-\[
+$$
 P \in \{0,1\}^{64}
-\]
+$$
 
 be the plaintext block.
 
 First apply the initial permutation:
 
-\[
+$$
 X_0 = IP(P).
-\]
+$$
 
 Split:
 
-\[
+$$
 X_0 = L_0 \parallel R_0,
-\]
+$$
 
 with
 
-\[
+$$
 L_0,R_0 \in \{0,1\}^{32}.
-\]
+$$
 
-For \(i=1,\ldots,16\),
+For $i=1,\ldots,16$,
 
-\[
+$$
 L_i = R_{i-1},
-\]
+$$
 
-\[
+$$
 R_i = L_{i-1} \oplus F(R_{i-1},K_i).
-\]
+$$
 
 After round 16, DES forms the **preoutput**
 
-\[
+$$
 R_{16}\parallel L_{16},
-\]
+$$
 
 and applies the inverse initial permutation:
 
-\[
+$$
 C = IP^{-1}(R_{16}\parallel L_{16}).
-\]
+$$
 
 The final swap is not an arbitrary implementation trick. It is part of the standard representation of the DES transformation.
 
@@ -301,9 +276,9 @@ def permute_bits(bits: str, table: list[int]) -> str:
 
 The convention is:
 
-\[
+$$
 \text{output}[j] = \text{input}[\text{table}[j]-1].
-\]
+$$
 
 This representation avoids an ambiguity that appeared in the original generic `PBox` class, where mappings were stored as input-to-output dictionaries.
 
@@ -370,10 +345,10 @@ Their role is structural.
 
 The main tables are:
 
-- initial permutation \(IP\),
-- final permutation \(IP^{-1}\),
-- expansion \(E\),
-- round permutation \(P\),
+- initial permutation $IP$,
+- final permutation $IP^{-1}$,
+- expansion $E$,
+- round permutation $P$,
 - key permutation PC-1,
 - key selection PC-2.
 
@@ -411,23 +386,23 @@ FP = [
 
 They satisfy
 
-\[
+$$
 FP = IP^{-1}.
-\]
+$$
 
 These permutations are part of the standard, but they are not the source of DES's cryptographic strength.
 
 If we define
 
-\[
+$$
 Y = IP(X),
-\]
+$$
 
 then
 
-\[
+$$
 FP(Y) = X.
-\]
+$$
 
 ### Expansion permutation
 
@@ -435,15 +410,15 @@ The right half has 32 bits, but the round key has 48 bits.
 
 DES therefore expands
 
-\[
+$$
 R \in \{0,1\}^{32}
-\]
+$$
 
 to
 
-\[
+$$
 E(R) \in \{0,1\}^{48}.
-\]
+$$
 
 The table is:
 
@@ -462,7 +437,7 @@ E = [
 
 Notice that some input positions are repeated.
 
-Therefore \(E\) is not a permutation in the strict bijective sense.
+Therefore $E$ is not a permutation in the strict bijective sense.
 
 It is an **expansion mapping**.
 
@@ -483,11 +458,11 @@ P = [
 
 This is a true 32-bit permutation.
 
-The S-boxes provide nonlinearity, while \(P\) redistributes their outputs so that bits produced by one S-box influence different S-boxes in the next round.
+The S-boxes provide nonlinearity, while $P$ redistributes their outputs so that bits produced by one S-box influence different S-boxes in the next round.
 
 The security effect comes from the **composition**:
 
-\[
+$$
 E
 \rightarrow
 \oplus K_i
@@ -495,7 +470,7 @@ E
 S_1,\ldots,S_8
 \rightarrow
 P
-\]
+$$
 
 repeated across many rounds.
 
@@ -541,11 +516,11 @@ So the operation is not an "overwriting compression" operation.
 
 It is better viewed as a **selection permutation**:
 
-\[
+$$
 \{0,1\}^{56}
 \longrightarrow
 \{0,1\}^{48}.
-\]
+$$
 
 Because eight key-state bits are omitted for a particular round, PC-2 is not invertible.
 
@@ -553,69 +528,69 @@ Because eight key-state bits are omitted for a particular round, PC-2 is not inv
 
 ## The DES key schedule
 
-Let the 64-bit supplied key be \(K\).
+Let the 64-bit supplied key be $K$.
 
 First,
 
-\[
+$$
 K^+ = PC1(K),
-\]
+$$
 
 where
 
-\[
+$$
 K^+ \in \{0,1\}^{56}.
-\]
+$$
 
 Then split:
 
-\[
+$$
 K^+ = C_0 \parallel D_0,
-\]
+$$
 
 with
 
-\[
+$$
 |C_0|=|D_0|=28.
-\]
+$$
 
 This point is critical: the halves are **28 bits**, not 32 bits.
 
-For each round \(i\), rotate both halves:
+For each round $i$, rotate both halves:
 
-\[
+$$
 C_i = \operatorname{ROL}_{28}(C_{i-1},s_i),
-\]
+$$
 
-\[
+$$
 D_i = \operatorname{ROL}_{28}(D_{i-1},s_i).
-\]
+$$
 
 The DES rotation schedule is:
 
-\[
+$$
 (1,1,2,2,2,2,2,2,1,2,2,2,2,2,2,1).
-\]
+$$
 
 Equivalently, rounds
 
-\[
+$$
 1,\ 2,\ 9,\ 16
-\]
+$$
 
 rotate by one bit; all other rounds rotate by two.
 
 Finally,
 
-\[
+$$
 K_i = PC2(C_i\parallel D_i),
-\]
+$$
 
 where
 
-\[
+$$
 K_i \in \{0,1\}^{48}.
-\]
+$$
 
 A compact implementation is:
 
@@ -646,21 +621,21 @@ def generate_subkeys(key64: int) -> list[int]:
 
 For the classic test key
 
-\[
+$$
 K=\texttt{0x133457799BBCDFF1},
-\]
+$$
 
 the first round key is
 
-\[
+$$
 K_1=\texttt{0x1B02EFFC7072}.
-\]
+$$
 
 The final round key is
 
-\[
+$$
 K_{16}=\texttt{0xCB3D8B0E17F5}.
-\]
+$$
 
 ---
 
@@ -670,29 +645,29 @@ The DES S-boxes are the nonlinear core of the round function.
 
 Each S-box maps
 
-\[
+$$
 S_i:\{0,1\}^{6}\to\{0,1\}^{4}.
-\]
+$$
 
 There are eight different S-boxes:
 
-\[
+$$
 S_1,S_2,\ldots,S_8.
-\]
+$$
 
 A 48-bit word is divided into eight six-bit blocks:
 
-\[
+$$
 B_1\parallel B_2\parallel\cdots\parallel B_8.
-\]
+$$
 
 Then
 
-\[
+$$
 S(B_1,\ldots,B_8)
 =
 S_1(B_1)\parallel\cdots\parallel S_8(B_8),
-\]
+$$
 
 producing 32 bits.
 
@@ -700,21 +675,21 @@ producing 32 bits.
 
 Let
 
-\[
+$$
 B=b_1b_2b_3b_4b_5b_6.
-\]
+$$
 
 The row uses the outer bits:
 
-\[
+$$
 r=(b_1b_6)_2.
-\]
+$$
 
 The column uses the middle four:
 
-\[
+$$
 c=(b_2b_3b_4b_5)_2.
-\]
+$$
 
 For example, take
 
@@ -729,13 +704,13 @@ row bits    = 00  -> 0
 column bits = 1100 -> 12
 ```
 
-If this block is entering \(S_1\), we look at row 0, column 12.
+If this block is entering $S_1$, we look at row 0, column 12.
 
 Since
 
-\[
+$$
 S_1[0][12]=5,
-\]
+$$
 
 the four-bit output is
 
@@ -819,13 +794,13 @@ The S-boxes are not interchangeable decorative tables. Their nonlinear behavior 
 
 The DES round function is
 
-\[
+$$
 F:\{0,1\}^{32}\times\{0,1\}^{48}\to\{0,1\}^{32}.
-\]
+$$
 
 It has four steps:
 
-\[
+$$
 F(R,K)
 =
 P\Big(
@@ -833,33 +808,33 @@ S\big(
 E(R)\oplus K
 \big)
 \Big).
-\]
+$$
 
 Expanded:
 
 1. **Expansion**
-   \[
+   $$
    R\in\{0,1\}^{32}
    \longrightarrow
    E(R)\in\{0,1\}^{48}
-   \]
+   $$
 
 2. **Key mixing**
-   \[
+   $$
    X=E(R)\oplus K
-   \]
+   $$
 
 3. **S-box substitution**
-   \[
+   $$
    X\in\{0,1\}^{48}
    \longrightarrow
    Y\in\{0,1\}^{32}
-   \]
+   $$
 
 4. **P permutation**
-   \[
+   $$
    F(R,K)=P(Y)
-   \]
+   $$
 
 A direct integer implementation is:
 
@@ -880,9 +855,9 @@ def des_f(right32: int, round_key48: int) -> int:
 
 Notice the operation used to combine the expanded right half with the round key:
 
-\[
+$$
 \boxed{\oplus}
-\]
+$$
 
 It is XOR.
 
@@ -896,46 +871,46 @@ That correction is essential because replacing XOR by `%` produces a reversible 
 
 Consider one Feistel round:
 
-\[
+$$
 L' = R,
-\]
+$$
 
-\[
+$$
 R' = L\oplus F(R,K).
-\]
+$$
 
-Suppose we know \(L'\) and \(R'\).
+Suppose we know $L'$ and $R'$.
 
 From the first equation,
 
-\[
+$$
 R=L'.
-\]
+$$
 
 Substitute into the second:
 
-\[
+$$
 R' = L\oplus F(L',K).
-\]
+$$
 
 Therefore,
 
-\[
+$$
 L=R'\oplus F(L',K).
-\]
+$$
 
 So the original pair is recovered as
 
-\[
+$$
 (L,R)
 =
 \big(
 R'\oplus F(L',K),
 L'
 \big).
-\]
+$$
 
-No inverse of \(F\) is needed.
+No inverse of $F$ is needed.
 
 This is why a Feistel construction can safely use S-box layers that map 6 bits to 4 bits and are therefore individually non-invertible.
 
@@ -945,33 +920,33 @@ The original notes separated a "Mixer" from a "Swapper".
 
 Define only the mixer:
 
-\[
+$$
 M_K(L,R)
 =
 (L\oplus F(R,K),R).
-\]
+$$
 
 Applying it twice gives
 
-\[
+$$
 M_K(M_K(L,R))
 =
 ((L\oplus F(R,K))\oplus F(R,K),R)
 =
 (L,R).
-\]
+$$
 
 Thus
 
-\[
+$$
 M_K^{-1}=M_K.
-\]
+$$
 
 The swap operation
 
-\[
+$$
 S(L,R)=(R,L)
-\]
+$$
 
 is also self-inverse.
 
@@ -985,119 +960,119 @@ This is the rigorous explanation behind the original `Mixer` and `Swapper` abstr
 
 Use the standard test values:
 
-\[
+$$
 P=\texttt{0x0123456789ABCDEF},
-\]
+$$
 
-\[
+$$
 K=\texttt{0x133457799BBCDFF1}.
-\]
+$$
 
 After the initial permutation:
 
-\[
+$$
 IP(P)=\texttt{0xCC00CCFFF0AAF0AA}.
-\]
+$$
 
 Therefore,
 
-\[
+$$
 L_0=\texttt{0xCC00CCFF},
-\]
+$$
 
-\[
+$$
 R_0=\texttt{0xF0AAF0AA}.
-\]
+$$
 
 The first subkey is
 
-\[
+$$
 K_1=\texttt{0x1B02EFFC7072}.
-\]
+$$
 
-### Step 1: expand \(R_0\)
+### Step 1: expand $R_0$
 
-\[
+$$
 E(R_0)
 =
 \texttt{0x7A15557A1555}.
-\]
+$$
 
 ### Step 2: XOR with the subkey
 
-\[
+$$
 E(R_0)\oplus K_1
 =
 \texttt{0x6117BA866527}.
-\]
+$$
 
 Split this into eight six-bit words.
 
 For the first block:
 
-\[
+$$
 B_1=\texttt{011000}.
-\]
+$$
 
 Its row is
 
-\[
+$$
 00_2=0,
-\]
+$$
 
 and its column is
 
-\[
+$$
 1100_2=12.
-\]
+$$
 
 So
 
-\[
+$$
 S_1(B_1)=S_1[0][12]=5.
-\]
+$$
 
 The eight S-box outputs concatenate to
 
-\[
+$$
 \texttt{0x5C82B597}.
-\]
+$$
 
-### Step 3: apply \(P\)
+### Step 3: apply $P$
 
-\[
+$$
 P(\texttt{0x5C82B597})
 =
 \texttt{0x234AA9BB}.
-\]
+$$
 
 Thus
 
-\[
+$$
 F(R_0,K_1)
 =
 \texttt{0x234AA9BB}.
-\]
+$$
 
 ### Step 4: construct the next state
 
-\[
+$$
 L_1=R_0
 =
 \texttt{0xF0AAF0AA}.
-\]
+$$
 
 And
 
-\[
+$$
 R_1
 =
 L_0\oplus F(R_0,K_1).
-\]
+$$
 
 Therefore,
 
-\[
+$$
 R_1
 =
 \texttt{0xCC00CCFF}
@@ -1105,18 +1080,18 @@ R_1
 \texttt{0x234AA9BB}
 =
 \texttt{0xEF4A6544}.
-\]
+$$
 
 So after round 1:
 
-\[
+$$
 (L_1,R_1)
 =
 (
 \texttt{F0AAF0AA},
 \texttt{EF4A6544}
 ).
-\]
+$$
 
 This is the exact point where the abstract Feistel equations become executable state transitions.
 
@@ -1126,7 +1101,7 @@ This is the exact point where the abstract Feistel equations become executable s
 
 For the same test vector, the round keys and states are:
 
-| Round | \(K_i\) | \(L_i\) | \(R_i\) |
+| Round | $K_i$ | $L_i$ | $R_i$ |
 |---:|---|---|---|
 | 1 | `1B02EFFC7072` | `F0AAF0AA` | `EF4A6544` |
 | 2 | `79AED9DBC9E5` | `EF4A6544` | `CC017709` |
@@ -1147,19 +1122,19 @@ For the same test vector, the round keys and states are:
 
 The preoutput is
 
-\[
+$$
 R_{16}\parallel L_{16}
 =
 \texttt{0x0A4CD99543423234}.
-\]
+$$
 
 After the final permutation:
 
-\[
+$$
 \boxed{
 C=\texttt{0x85E813540F0AB405}
 }
-\]
+$$
 
 which matches the standard DES known-answer vector.
 
@@ -1365,9 +1340,9 @@ There are several reasons to prefer this version as the reference implementation
 
 First, it implements the actual DES operation:
 
-\[
+$$
 E(R)\oplus K_i.
-\]
+$$
 
 Second, it splits the 56-bit key state correctly into two 28-bit halves.
 
@@ -1536,9 +1511,9 @@ PC-1 outputs 56 bits.
 
 Those bits must be split into
 
-\[
+$$
 28+28.
-\]
+$$
 
 The original code split at bit 32:
 
@@ -1546,7 +1521,7 @@ The original code split at bit 32:
 l, r = self.key[0:32], self.key[32:]
 ```
 
-which gives \(32+24\).
+which gives $32+24$.
 
 The correct split is:
 
@@ -1562,15 +1537,15 @@ The earlier `DES.encrypt()` iterated over rounds directly.
 
 A standards-faithful DES implementation must apply:
 
-\[
+$$
 IP
-\]
+$$
 
 before the Feistel rounds and
 
-\[
+$$
 IP^{-1}
-\]
+$$
 
 after the final preoutput swap.
 
@@ -1612,11 +1587,11 @@ The swap operation alone does not explain why Feistel is invertible.
 
 The exact equations do:
 
-\[
+$$
 L'=R,
 \qquad
 R'=L\oplus F(R,K).
-\]
+$$
 
 From these equations, the inverse follows algebraically.
 
@@ -1638,17 +1613,17 @@ DES is historically important partly because it illustrates the difference betwe
 
 The effective key space is
 
-\[
+$$
 2^{56}
 =
 72{,}057{,}594{,}037{,}927{,}936.
-\]
+$$
 
 The expected work to find a uniformly random key by exhaustive search is roughly half the key space:
 
-\[
+$$
 2^{55}
-\]
+$$
 
 trials on average.
 
@@ -1666,15 +1641,15 @@ Differential cryptanalysis studies how input differences propagate through a cip
 
 If two inputs differ by
 
-\[
+$$
 \Delta X=X\oplus X',
-\]
+$$
 
 we examine the distribution of
 
-\[
+$$
 \Delta Y=F(X)\oplus F(X').
-\]
+$$
 
 For an S-box, one can build a **difference distribution table (DDT)**.
 
@@ -1702,17 +1677,17 @@ For a **weak key**, all round keys are identical.
 
 This implies the unusual property
 
-\[
+$$
 E_K(E_K(P))=P.
-\]
+$$
 
 There are four standard weak DES keys.
 
-DES also has six pairs of **semi-weak keys**. For a semi-weak pair \(K_1,K_2\),
+DES also has six pairs of **semi-weak keys**. For a semi-weak pair $K_1,K_2$,
 
-\[
+$$
 E_{K_1}(E_{K_2}(P))=P
-\]
+$$
 
 under the corresponding relationship between their round-key schedules.
 
@@ -1726,17 +1701,17 @@ DES has a useful algebraic property.
 
 If
 
-\[
+$$
 E_K(P)=C,
-\]
+$$
 
 then
 
-\[
+$$
 E_{\overline K}(\overline P)
 =
 \overline C,
-\]
+$$
 
 where the bar denotes bitwise complement.
 
@@ -1750,19 +1725,19 @@ The property does not make DES trivially insecure, but it creates symmetry in ex
 
 Even if DES had a much larger key, its 64-bit block size would still be small by modern standards.
 
-A block cipher with \(n\)-bit blocks begins to experience substantial collision probability after on the order of
+A block cipher with $n$-bit blocks begins to experience substantial collision probability after on the order of
 
-\[
+$$
 2^{n/2}
-\]
+$$
 
 random blocks because of the birthday phenomenon.
 
 For DES,
 
-\[
+$$
 2^{64/2}=2^{32}
-\]
+$$
 
 blocks.
 
@@ -1784,7 +1759,7 @@ The best-known construction is Triple DES / TDEA.
 
 A common three-key form is:
 
-\[
+$$
 C
 =
 E_{K_3}
@@ -1794,7 +1769,7 @@ D_{K_2}
 E_{K_1}(P)
 )
 \big).
-\]
+$$
 
 The middle decryption step is historical and supports compatibility conventions; the construction is usually called EDE.
 
@@ -1900,11 +1875,11 @@ A wrong Feistel network may still decrypt itself perfectly.
 
 Therefore:
 
-\[
+$$
 \text{round-trip test}
 \not\Rightarrow
 \text{standards conformance}.
-\]
+$$
 
 Known-answer vectors are essential.
 
@@ -1934,21 +1909,21 @@ In this article we reconstructed DES as an actual cryptographic system rather th
 
 We began with the Feistel equations
 
-\[
+$$
 L_i=R_{i-1},
-\]
+$$
 
-\[
+$$
 R_i=L_{i-1}\oplus F(R_{i-1},K_i),
-\]
+$$
 
 and then built the complete round function
 
-\[
+$$
 F(R,K)
 =
 P(S(E(R)\oplus K)).
-\]
+$$
 
 We examined:
 
@@ -1972,21 +1947,21 @@ We examined:
 
 The central standard vector
 
-\[
+$$
 \texttt{0x0123456789ABCDEF}
-\]
+$$
 
 under
 
-\[
+$$
 \texttt{0x133457799BBCDFF1}
-\]
+$$
 
 produces
 
-\[
+$$
 \boxed{\texttt{0x85E813540F0AB405}}.
-\]
+$$
 
 More importantly, we now understand **why**.
 

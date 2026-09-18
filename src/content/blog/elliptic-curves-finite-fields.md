@@ -94,21 +94,21 @@ and ultimately the finite groups used in practical elliptic-curve cryptography.
 - [1. Elliptic curves over finite fields](#1-elliptic-curves-over-finite-fields)
 - [2. From real curves to finite sets](#2-from-real-curves-to-finite-sets)
 - [3. Enumerating points](#3-enumerating-points)
-- [4. The finite abelian group (E(\mathbb F_p))](#4-the-finite-abelian-group-emathbb-f_p)
-- [5. Point addition over (\mathbb F_p)](#5-point-addition-over-mathbb-f_p)
+- [4. The finite abelian group $E(\mathbb F_p)$](#4-the-finite-abelian-group-efpemathbb-f_pefp)
+- [5. Point addition over $\mathbb F_p$](#5-point-addition-over-fpmathbb-f_pfp)
 - [6. Point doubling and exceptional cases](#6-point-doubling-and-exceptional-cases)
 - [7. A complete finite-field example](#7-a-complete-finite-field-example)
 - [8. Scalar multiplication](#8-scalar-multiplication)
 - [9. The elliptic-curve discrete logarithm problem](#9-the-elliptic-curve-discrete-logarithm-problem)
 - [10. Why point counting matters](#10-why-point-counting-matters)
-- [11. Hasse’s theorem](#11-hasses-theorem)
+- [11. Hasse's theorem](#11-hasses-theorem)
 - [12. The Frobenius endomorphism](#12-the-frobenius-endomorphism)
 - [13. Trace of Frobenius](#13-trace-of-frobenius)
 - [14. Frobenius characteristic equation](#14-frobenius-characteristic-equation)
 - [15. Extension fields](#15-extension-fields)
-- [16. Structure of (E(\mathbb F_q))](#16-structure-of-emathbb-f_q)
+- [16. Structure of $E(\mathbb F_q)$](#16-structure-of-efqemathbb-f_qefq)
 - [17. Point order, subgroups, and cofactors](#17-point-order-subgroups-and-cofactors)
-- [18. Schoof’s algorithm](#18-schoofs-algorithm)
+- [18. Schoof's algorithm](#18-schoofs-algorithm)
 - [19. Why division polynomials appear](#19-why-division-polynomials-appear)
 - [20. Schoof–Elkies–Atkin and later methods](#20-schoofelkiesatkin-and-later-methods)
 - [21. SageMath example](#21-sagemath-example)
@@ -117,8 +117,6 @@ and ultimately the finite groups used in practical elliptic-curve cryptography.
 - [Further reading](#further-reading)
 
 ---
-
-<a id="elliptic-curves-finite-fields"></a>
 
 ## 1. Elliptic curves over finite fields
 
@@ -142,7 +140,7 @@ $$
 0,1,\ldots,p-1
 $$
 
-with addition and multiplication performed modulo \(p\).
+with addition and multiplication performed modulo $p$.
 
 Consider the short Weierstrass equation
 
@@ -184,9 +182,9 @@ $$
 \Delta\neq0
 $$
 
-in \(\mathbb F_p\).
+in $\mathbb F_p$.
 
-This is exactly the same nonsingularity condition studied earlier, now interpreted modulo \(p\).
+This is exactly the same nonsingularity condition studied earlier, now interpreted modulo $p$.
 
 ---
 
@@ -244,7 +242,7 @@ $$
 
 affine pairs to consider.
 
-In reality, only approximately \(p\) of them lie on the curve.
+In reality, only approximately $p$ of them lie on the curve.
 
 The continuous picture disappears.
 
@@ -256,7 +254,7 @@ What remains is the algebra.
 
 The following concepts survive unchanged:
 
-* identity point \(\mathcal O\);
+* identity point $\mathcal O$;
 * inverses;
 * point addition;
 * point doubling;
@@ -289,9 +287,9 @@ $$
 b^{-1}
 $$
 
-is the multiplicative inverse modulo \(p\).
+is the multiplicative inverse modulo $p$.
 
-Because \(\mathbb F_p\) is a field, every nonzero element has such an inverse.
+Because $\mathbb F_p$ is a field, every nonzero element has such an inverse.
 
 ---
 
@@ -299,7 +297,7 @@ Because \(\mathbb F_p\) is a field, every nonzero element has such an inverse.
 
 ## 3. Enumerating points
 
-For small \(p\), points can be found directly.
+For small $p$, points can be found directly.
 
 For each
 
@@ -319,7 +317,7 @@ $$
 r
 $$
 
-is a quadratic residue modulo \(p\).
+is a quadratic residue modulo $p$.
 
 If
 
@@ -333,7 +331,7 @@ $$
 y=0.
 $$
 
-If \(r\neq0\) is a quadratic residue, there are two solutions:
+If $r\neq0$ is a quadratic residue, there are two solutions:
 
 $$
 y
@@ -341,7 +339,7 @@ y
 -y.
 $$
 
-If \(r\) is a quadratic nonresidue, there are no corresponding points.
+If $r$ is a quadratic nonresidue, there are no corresponding points.
 
 Finally include
 
@@ -366,7 +364,7 @@ $$
 
 ### Legendre-symbol form
 
-For odd prime \(p\), define the Legendre symbol
+For odd prime $p$, define the Legendre symbol
 
 $$
 \left(\frac ap\right)
@@ -384,7 +382,7 @@ $$
 \end{cases}
 $$
 
-Then the number of \(y\)-solutions to
+Then the number of $y$-solutions to
 
 $$
 y^2=r
@@ -429,7 +427,7 @@ The remarkable theorem of Hasse makes that precise.
 
 <a id="finite-abelian-group"></a>
 
-## 4. The finite abelian group \(E(\mathbb F_p)\)
+## 4. The finite abelian group $E(\mathbb F_p)$
 
 The set
 
@@ -493,7 +491,7 @@ Every point is torsion.
 
 <a id="point-addition"></a>
 
-## 5. Point addition over \(\mathbb F_p\)
+## 5. Point addition over $\mathbb F_p$
 
 Let
 
@@ -548,7 +546,7 @@ $$
 P+Q=(x_3,y_3).
 $$
 
-The formulas are identical to those over \(\mathbb R\).
+The formulas are identical to those over $\mathbb R$.
 
 Only the arithmetic has changed.
 
@@ -631,7 +629,7 @@ $$
 
 ---
 
-### Doubling a point with \(y=0\)
+### Doubling a point with $y=0$
 
 If
 
@@ -653,7 +651,7 @@ $$
 }
 $$
 
-Such a point has order \(2\).
+Such a point has order $2$.
 
 ---
 
@@ -675,7 +673,7 @@ $$
 Q+\mathcal O=Q,
 $$
 
-not \(P\) unless \(P=Q\).
+not $P$ unless $P=Q$.
 
 ---
 
@@ -704,7 +702,7 @@ $$
 P=(5,1).
 $$
 
-Check that \(P\) lies on the curve:
+Check that $P$ lies on the curve:
 
 $$
 1^2=1.
@@ -720,7 +718,7 @@ $$
 137.
 $$
 
-Modulo \(17\),
+Modulo $17$,
 
 $$
 137\equiv1.
@@ -734,7 +732,7 @@ $$
 
 ---
 
-### Doubling \(P\)
+### Doubling $P$
 
 The slope is
 
@@ -760,7 +758,7 @@ $$
 77\equiv9\pmod{17}.
 $$
 
-The inverse of \(2\) modulo \(17\) is
+The inverse of $2$ modulo $17$ is
 
 $$
 2^{-1}\equiv9
@@ -796,7 +794,7 @@ x_3
 159.
 $$
 
-Modulo \(17\),
+Modulo $17$,
 
 $$
 159\equiv6.
@@ -836,7 +834,7 @@ $$
 P\in E(\mathbb F_p)
 $$
 
-and integer \(n\), define
+and integer $n$, define
 
 $$
 \boxed{
@@ -856,9 +854,9 @@ $$
 [n]P
 $$
 
-using \(n-1\) additions.
+using $n-1$ additions.
 
-Instead, use the binary expansion of \(n\).
+Instead, use the binary expansion of $n$.
 
 For example,
 
@@ -930,7 +928,7 @@ $$
 Q=[n]P,
 $$
 
-recover \(n\).
+recover $n$.
 
 This is the **elliptic-curve discrete logarithm problem**:
 
@@ -998,7 +996,7 @@ $$
 
 is a large prime.
 
-Then \(r\) may be used as the order of a cryptographic subgroup, while
+Then $r$ may be used as the order of a cryptographic subgroup, while
 
 $$
 h
@@ -1064,13 +1062,13 @@ $$
 p.
 $$
 
-This result is much stronger than the trivial upper bound \(p^2+1\).
+This result is much stronger than the trivial upper bound $p^2+1$.
 
 ---
 
-### Why \(p+1\)?
+### Why $p+1$?
 
-For a randomly chosen \(x\in\mathbb F_p\), the value
+For a randomly chosen $x\in\mathbb F_p$, the value
 
 $$
 x^3+ax+b
@@ -1080,11 +1078,11 @@ behaves heuristically roughly like a random field element.
 
 About half the nonzero elements are quadratic residues.
 
-A nonzero quadratic residue gives two \(y\)-values, while a nonresidue gives none.
+A nonzero quadratic residue gives two $y$-values, while a nonresidue gives none.
 
-So the expected contribution per \(x\) is approximately one affine point.
+So the expected contribution per $x$ is approximately one affine point.
 
-With \(p\) possible \(x\)-values plus \(\mathcal O\), one heuristically expects
+With $p$ possible $x$-values plus $\mathcal O$, one heuristically expects
 
 $$
 p+1.
@@ -1136,7 +1134,7 @@ $$
 y^2=x^3+ax+b,
 $$
 
-then raising to the \(p\)-th power gives
+then raising to the $p$-th power gives
 
 $$
 y^{2p}
@@ -1232,7 +1230,7 @@ p+1-t.
 }
 $$
 
-The integer \(t\) is called the **trace of Frobenius**.
+The integer $t$ is called the **trace of Frobenius**.
 
 Hasse's theorem becomes
 
@@ -1242,7 +1240,7 @@ $$
 }
 $$
 
-Thus point counting is equivalent to determining \(t\).
+Thus point counting is equivalent to determining $t$.
 
 Instead of asking
 
@@ -1276,9 +1274,9 @@ $$
 [p]
 $$
 
-means multiplication by \(p\) on the elliptic curve.
+means multiplication by $p$ on the elliptic curve.
 
-This behaves like the characteristic equation of a \(2\times2\) matrix.
+This behaves like the characteristic equation of a $2\times2$ matrix.
 
 Formally, Frobenius has characteristic polynomial
 
@@ -1330,7 +1328,7 @@ $$
 \mathbb F_{p^m}.
 $$
 
-The relevant Frobenius is still generated by the \(p\)-power map, but points rational over
+The relevant Frobenius is still generated by the $p$-power map, but points rational over
 
 $$
 \mathbb F_{p^m}
@@ -1414,7 +1412,7 @@ determines the number of points over every finite extension.
 
 <a id="group-structure"></a>
 
-## 16. Structure of \(E(\mathbb F_q)\)
+## 16. Structure of $E(\mathbb F_q)$
 
 Knowing the cardinality is not the whole story.
 
@@ -1464,7 +1462,7 @@ $$
 P\in E(\mathbb F_q).
 $$
 
-The **order** of \(P\) is the smallest positive integer \(r\) such that
+The **order** of $P$ is the smallest positive integer $r$ such that
 
 $$
 [r]P=\mathcal O.
@@ -1486,15 +1484,15 @@ $$
 hr
 $$
 
-with \(r\) prime.
+with $r$ prime.
 
-Then a point of order \(r\) generates a cyclic subgroup
+Then a point of order $r$ generates a cyclic subgroup
 
 $$
 \langle P\rangle
 $$
 
-of size \(r\).
+of size $r$.
 
 The remaining factor
 
@@ -1543,7 +1541,7 @@ $$
 
 field operations.
 
-But the input size of \(p\) is only approximately
+But the input size of $p$ is only approximately
 
 $$
 \log_2p
@@ -1551,7 +1549,7 @@ $$
 
 bits.
 
-So naive enumeration is exponential in the bit length of \(p\).
+So naive enumeration is exponential in the bit length of $p$.
 
 Schoof's breakthrough was to compute
 
@@ -1571,7 +1569,7 @@ $$
 \#E(\mathbb F_p)=p+1-t,
 $$
 
-it is enough to compute \(t\).
+it is enough to compute $t$.
 
 Hasse gives
 
@@ -1579,7 +1577,7 @@ $$
 |t|\leq2\sqrt p.
 $$
 
-So if we determine \(t\) modulo enough small primes \(\ell\) whose product satisfies
+So if we determine $t$ modulo enough small primes $\ell$ whose product satisfies
 
 $$
 \boxed{
@@ -1587,7 +1585,7 @@ L>4\sqrt p,
 }
 $$
 
-then \(t\) is uniquely determined inside the Hasse interval.
+then $t$ is uniquely determined inside the Hasse interval.
 
 This is exactly where the Chinese Remainder Theorem enters.
 
@@ -1613,11 +1611,11 @@ $$
 t\bmod\ell;
 $$
 
-3. repeat for enough \(\ell\);
+3. repeat for enough $\ell$;
 
 4. combine the residues with the Chinese Remainder Theorem;
 
-5. recover the unique \(t\) satisfying
+5. recover the unique $t$ satisfying
 
 $$
 |t|\leq2\sqrt p;
@@ -1675,13 +1673,13 @@ $$
 
 would be inefficient.
 
-Instead, one uses the \(\ell\)-division polynomial
+Instead, one uses the $\ell$-division polynomial
 
 $$
 \psi_\ell(x).
 $$
 
-Its roots correspond to \(x\)-coordinates of nontrivial \(\ell\)-torsion points.
+Its roots correspond to $x$-coordinates of nontrivial $\ell$-torsion points.
 
 One can therefore compute symbolically in rings such as
 
@@ -1691,7 +1689,7 @@ $$
 }
 $$
 
-The characteristic relation can then be tested modulo \(\ell\) without explicitly constructing every torsion point.
+The characteristic relation can then be tested modulo $\ell$ without explicitly constructing every torsion point.
 
 This is a beautiful reuse of the torsion theory from Chapter V.
 
@@ -1705,7 +1703,7 @@ $$
 E[\ell].
 $$
 
-Chapter VI uses \(E[\ell]\) to understand Frobenius.
+Chapter VI uses $E[\ell]$ to understand Frobenius.
 
 Thus:
 
@@ -1737,7 +1735,7 @@ For practical large-prime curves, however, improved methods are usually used.
 
 ### Schoof–Elkies–Atkin
 
-The **SEA algorithm** improves Schoof by classifying small primes \(\ell\) according to the behavior of the Frobenius characteristic polynomial modulo \(\ell\).
+The **SEA algorithm** improves Schoof by classifying small primes $\ell$ according to the behavior of the Frobenius characteristic polynomial modulo $\ell$.
 
 For an **Elkies prime**, the polynomial
 
@@ -1745,7 +1743,7 @@ $$
 X^2-tX+p
 $$
 
-splits modulo \(\ell\).
+splits modulo $\ell$.
 
 This corresponds to useful eigenspace structure of Frobenius on
 
@@ -1753,9 +1751,9 @@ $$
 E[\ell].
 $$
 
-One can exploit an \(\ell\)-isogeny and work much more efficiently.
+One can exploit an $\ell$-isogeny and work much more efficiently.
 
-For **Atkin primes**, different constraints on \(t\bmod\ell\) are obtained.
+For **Atkin primes**, different constraints on $t\bmod\ell$ are obtained.
 
 SEA is one of the standard practical point-counting techniques for elliptic curves over large prime fields.
 
@@ -1765,7 +1763,7 @@ SEA is one of the standard practical point-counting techniques for elliptic curv
 
 Other important algorithms include:
 
-* Satoh's \(p\)-adic method;
+* Satoh's $p$-adic method;
 * Satoh–Araki;
 * AGM-based methods;
 * Kedlaya's algorithm;
@@ -1780,7 +1778,7 @@ $$
 \mathbb F_{p^m}
 $$
 
-with small \(p\) and large \(m\) may look very different from algorithms optimized for large prime fields.
+with small $p$ and large $m$ may look very different from algorithms optimized for large prime fields.
 
 ---
 
@@ -1836,19 +1834,19 @@ would miss the lower bound.
 
 ## 22. Real versus finite-field curves
 
-| Feature                | Over \(\mathbb R\)      | Over \(\mathbb F_p\)            |
+| Feature                | Over $\mathbb R$      | Over $\mathbb F_p$            |
 | ---------------------- | ----------------------- | ------------------------------- |
 | Point set              | Continuous              | Finite                          |
 | Addition               | Geometric and algebraic | Modular algebra                 |
 | Division               | Real division           | Modular inverse                 |
-| Identity               | \(\mathcal O\)          | \(\mathcal O\)                  |
-| Inverse                | \((x,-y)\)              | \((x,-y\bmod p)\)               |
+| Identity               | $\mathcal O$          | $\mathcal O$                  |
+| Inverse                | $(x,-y)$              | $(x,-y\bmod p)$               |
 | Group size             | Infinite                | Finite                          |
 | Scalar multiplication  | Defined                 | Cryptographically central       |
 | Point counting         | Not finite              | Essential                       |
 | Main tools             | Geometry/calculus       | Algebra/number theory           |
 | Frobenius              | Not the central object  | Fundamental                     |
-| Point-count algorithms | Not applicable          | Schoof, SEA, \(p\)-adic methods |
+| Point-count algorithms | Not applicable          | Schoof, SEA, $p$-adic methods |
 
 The formulas survive.
 
@@ -1985,7 +1983,7 @@ is known, we can begin asking the questions that matter directly for cryptograph
 * What is the order of the base point?
 * What is the cofactor?
 * How do we perform scalar multiplication securely?
-* Why is recovering \(n\) from \(Q=[n]P\) difficult?
+* Why is recovering $n$ from $Q=[n]P$ difficult?
 * Which curves should be avoided?
 * What distinguishes ordinary, supersingular, and anomalous curves?
 
@@ -1999,7 +1997,7 @@ Useful references for the topics in this chapter include:
 
 * Joseph H. Silverman, **The Arithmetic of Elliptic Curves**.
 * Lawrence C. Washington, **Elliptic Curves: Number Theory and Cryptography**.
-* René Schoof, **Elliptic Curves over Finite Fields and the Computation of Square Roots mod \(p\)**.
+* René Schoof, **Elliptic Curves over Finite Fields and the Computation of Square Roots mod $p$**.
 * Noam Elkies, work on elliptic-curve point counting and Elkies primes.
 * A. O. L. Atkin, work underlying the SEA algorithm.
 * Darrel Hankerson, Alfred Menezes, and Scott Vanstone, **Guide to Elliptic Curve Cryptography**.

@@ -28,7 +28,7 @@ To study prime distribution computationally, we need a function that measures ho
 
 That function is:
 
-\[
+$$
 \boxed{
 \pi(x)
 =
@@ -37,45 +37,45 @@ p\le x:
 p\text{ is prime}
 \}.
 }
-\]
+$$
 
 For example:
 
-\[
+$$
 \pi(10)=4,
-\]
+$$
 
 because:
 
-\[
+$$
 2,3,5,7
-\]
+$$
 
-are the four primes not exceeding \(10\).
+are the four primes not exceeding $10$.
 
 The central questions are then:
 
-\[
+$$
 \text{How quickly does }\pi(x)\text{ grow?}
-\]
+$$
 
-\[
+$$
 \text{How accurately can we approximate it?}
-\]
+$$
 
-\[
+$$
 \text{How far apart are consecutive primes?}
-\]
+$$
 
 and, computationally:
 
-\[
+$$
 \text{What can finite experiments actually tell us?}
-\]
+$$
 
 The key distinction throughout this article is:
 
-\[
+$$
 \boxed{
 \text{computation observes},
 \qquad
@@ -83,7 +83,7 @@ The key distinction throughout this article is:
 \qquad
 \text{theorems prove}.
 }
-\]
+$$
 
 ---
 
@@ -107,7 +107,7 @@ The key distinction throughout this article is:
 
 Define:
 
-\[
+$$
 \boxed{
 \pi(x)
 =
@@ -116,31 +116,31 @@ p\le x:
 p\text{ prime}
 \}.
 }
-\]
+$$
 
 The function is a staircase.
 
-It increases by one exactly when \(x\) passes a prime.
+It increases by one exactly when $x$ passes a prime.
 
 For example:
 
-\[
+$$
 \pi(2)=1,
-\]
+$$
 
-\[
+$$
 \pi(10)=4,
-\]
+$$
 
-\[
+$$
 \pi(100)=25,
-\]
+$$
 
 and:
 
-\[
+$$
 \pi(1000)=168.
-\]
+$$
 
 ---
 
@@ -150,21 +150,21 @@ For moderate bounds, the natural computational tool is a sieve.
 
 The Sieve of Eratosthenes generates all primes up to:
 
-\[
+$$
 N
-\]
+$$
 
 and therefore allows us to compute:
 
-\[
+$$
 \pi(x)
-\]
+$$
 
 for every:
 
-\[
+$$
 x\le N.
-\]
+$$
 
 A simple implementation is:
 
@@ -214,11 +214,11 @@ returns:
 
 because:
 
-\[
+$$
 \boxed{
 \pi(10^6)=78\,498.
 }
-\]
+$$
 
 ---
 
@@ -226,15 +226,15 @@ because:
 
 If only the number of primes is required, the sieve can instead maintain a Boolean array and count the surviving entries.
 
-For very large \(x\), however, storing all integers up to \(x\) becomes expensive.
+For very large $x$, however, storing all integers up to $x$ becomes expensive.
 
 More sophisticated prime-counting algorithms can evaluate:
 
-\[
+$$
 \pi(x)
-\]
+$$
 
-without enumerating every prime up to \(x\).
+without enumerating every prime up to $x$.
 
 That distinction becomes important in serious computational number theory.
 
@@ -246,31 +246,31 @@ For the experiments in this article, however, an ordinary sieve is enough.
 
 The central theorem describing the large-scale distribution of primes is the **Prime Number Theorem**:
 
-\[
+$$
 \boxed{
 \pi(x)
 \sim
 \frac{x}{\log x}.
 }
-\]
+$$
 
 Here:
 
-\[
+$$
 \log x
-\]
+$$
 
 means the natural logarithm.
 
 The symbol:
 
-\[
+$$
 \sim
-\]
+$$
 
 has a precise asymptotic meaning:
 
-\[
+$$
 \boxed{
 \lim_{x\rightarrow\infty}
 \frac{
@@ -281,29 +281,29 @@ x/\log x
 =
 1.
 }
-\]
+$$
 
 This is a ratio statement.
 
 It does **not** say:
 
-\[
+$$
 \pi(x)
 =
 \frac{x}{\log x}.
-\]
+$$
 
 It does not even say that the absolute difference:
 
-\[
+$$
 \pi(x)-\frac{x}{\log x}
-\]
+$$
 
 tends to zero.
 
 In fact, both terms grow without bound.
 
-What tends to \(1\) is their **ratio**.
+What tends to $1$ is their **ratio**.
 
 ---
 
@@ -311,35 +311,35 @@ What tends to \(1\) is their **ratio**.
 
 Suppose:
 
-\[
+$$
 A(x)\sim B(x).
-\]
+$$
 
 This means:
 
-\[
+$$
 \frac{A(x)}{B(x)}
 \rightarrow1.
-\]
+$$
 
 Equivalently:
 
-\[
+$$
 A(x)
 =
 B(x)(1+o(1)).
-\]
+$$
 
 So the relative error tends to zero:
 
-\[
+$$
 \frac{
 A(x)-B(x)
 }{
 B(x)
 }
 \rightarrow0.
-\]
+$$
 
 The absolute error may still become very large.
 
@@ -349,25 +349,25 @@ This distinction is essential whenever asymptotic notation is interpreted comput
 
 ### Prime density
 
-Divide the Prime Number Theorem by \(x\):
+Divide the Prime Number Theorem by $x$:
 
-\[
+$$
 \frac{\pi(x)}{x}
 \sim
 \frac1{\log x}.
-\]
+$$
 
-So among the integers up to a large \(x\), the proportion that are prime is approximately:
+So among the integers up to a large $x$, the proportion that are prime is approximately:
 
-\[
+$$
 \boxed{
 \frac1{\log x}.
 }
-\]
+$$
 
 This motivates the informal statement:
 
-> An integer near a large \(x\) behaves as though it has probability roughly \(1/\log x\) of being prime.
+> An integer near a large $x$ behaves as though it has probability roughly $1/\log x$ of being prime.
 
 This is a useful heuristic interpretation.
 
@@ -379,19 +379,19 @@ Primes are constrained by divisibility and congruence conditions, so they are fa
 
 ### Expected spacing
 
-If the local density of primes near \(x\) is roughly:
+If the local density of primes near $x$ is roughly:
 
-\[
+$$
 \frac1{\log x},
-\]
+$$
 
 then the corresponding average spacing is approximately:
 
-\[
+$$
 \boxed{
 \log x.
 }
-\]
+$$
 
 This is the first heuristic connection between the Prime Number Theorem and prime gaps.
 
@@ -405,47 +405,47 @@ Individual gaps fluctuate substantially.
 
 The approximation:
 
-\[
+$$
 \frac{x}{\log x}
-\]
+$$
 
 captures the first-order growth of:
 
-\[
+$$
 \pi(x).
-\]
+$$
 
 But a better approximation over many practical ranges is the **logarithmic integral**:
 
-\[
+$$
 \boxed{
 \operatorname{Li}(x)
 =
 \int_2^x
 \frac{dt}{\log t}.
 }
-\]
+$$
 
 The reason is intuitive.
 
-The approximate prime density is not constant between \(2\) and \(x\).
+The approximate prime density is not constant between $2$ and $x$.
 
 It changes gradually according to:
 
-\[
+$$
 \frac1{\log t}.
-\]
+$$
 
-Instead of using only the density at the endpoint \(x\), the integral accumulates the varying density:
+Instead of using only the density at the endpoint $x$, the integral accumulates the varying density:
 
-\[
+$$
 \boxed{
 \operatorname{Li}(x)
 =
 \int_2^x
 \text{local density approximation}\,dt.
 }
-\]
+$$
 
 ---
 
@@ -453,58 +453,58 @@ Instead of using only the density at the endpoint \(x\), the integral accumulate
 
 Consider several finite scales.
 
-| \(x\) | \(\pi(x)\) | \(x/\log x\) | \(\operatorname{Li}(x)\) |
+| $x$ | $\pi(x)$ | $x/\log x$ | $\operatorname{Li}(x)$ |
 | ---: | ---: | ---: | ---: |
-| \(10\) | \(4\) | \(4.34\) | \(6.17\) |
-| \(100\) | \(25\) | \(21.71\) | \(30.13\) |
-| \(10^3\) | \(168\) | \(144.76\) | \(177.61\) |
-| \(10^4\) | \(1229\) | \(1085.74\) | \(1246.14\) |
-| \(10^5\) | \(9592\) | \(8685.89\) | \(9629.81\) |
-| \(10^6\) | \(78498\) | \(72382.41\) | \(78627.55\) |
+| $10$ | $4$ | $4.34$ | $6.17$ |
+| $100$ | $25$ | $21.71$ | $30.13$ |
+| $10^3$ | $168$ | $144.76$ | $177.61$ |
+| $10^4$ | $1229$ | $1085.74$ | $1246.14$ |
+| $10^5$ | $9592$ | $8685.89$ | $9629.81$ |
+| $10^6$ | $78498$ | $72382.41$ | $78627.55$ |
 
 At:
 
-\[
+$$
 x=10^6,
-\]
+$$
 
 we have:
 
-\[
+$$
 \pi(x)=78\,498,
-\]
+$$
 
 while:
 
-\[
+$$
 \frac{x}{\log x}
 \approx
 72\,382.41,
-\]
+$$
 
 and:
 
-\[
+$$
 \operatorname{Li}(x)
 \approx
 78\,627.55.
-\]
+$$
 
-At this scale, \(\operatorname{Li}(x)\) is numerically much closer.
+At this scale, $\operatorname{Li}(x)$ is numerically much closer.
 
 But this table is **experimental evidence at selected finite values**, not a proof of asymptotic superiority.
 
 ---
 
-### Why \(\operatorname{Li}(x)\) is still not exact
+### Why $\operatorname{Li}(x)$ is still not exact
 
 For many ranges:
 
-\[
+$$
 \operatorname{Li}(x)
 >
 \pi(x).
-\]
+$$
 
 It would be tempting to conclude that this inequality always holds.
 
@@ -512,11 +512,11 @@ That conclusion is false.
 
 A theorem of Littlewood shows that:
 
-\[
+$$
 \boxed{
 \pi(x)-\operatorname{Li}(x)
 }
-\]
+$$
 
 changes sign infinitely often.
 
@@ -524,11 +524,11 @@ The first sign change is known to occur only at an extraordinarily large scale r
 
 This is an excellent warning about computational evidence:
 
-\[
+$$
 \boxed{
 \text{a pattern surviving enormous finite ranges need not be universal}.
 }
-\]
+$$
 
 ---
 
@@ -536,25 +536,25 @@ This is an excellent warning about computational evidence:
 
 The Prime Number Theorem gives:
 
-\[
+$$
 \pi(x)
 \sim
 \operatorname{Li}(x),
-\]
+$$
 
 but it is natural to ask how large the difference can be.
 
 Define the error:
 
-\[
+$$
 \boxed{
 E(x)
 =
 \pi(x)-\operatorname{Li}(x).
 }
-\]
+$$
 
-Understanding \(E(x)\) is deeply connected to the zeros of the Riemann zeta function.
+Understanding $E(x)$ is deeply connected to the zeros of the Riemann zeta function.
 
 ---
 
@@ -562,49 +562,49 @@ Understanding \(E(x)\) is deeply connected to the zeros of the Riemann zeta func
 
 For:
 
-\[
+$$
 \operatorname{Re}(s)>1,
-\]
+$$
 
 the Riemann zeta function is:
 
-\[
+$$
 \boxed{
 \zeta(s)
 =
 \sum_{n=1}^{\infty}
 \frac1{n^s}.
 }
-\]
+$$
 
 Euler discovered its product representation:
 
-\[
+$$
 \boxed{
 \zeta(s)
 =
 \prod_p
 \frac1{1-p^{-s}},
 }
-\]
+$$
 
 where the product is over all primes.
 
 This identity directly connects:
 
-\[
+$$
 \boxed{
 \text{analytic behavior of }\zeta(s)
 }
-\]
+$$
 
 with:
 
-\[
+$$
 \boxed{
 \text{distribution of primes}.
 }
-\]
+$$
 
 ---
 
@@ -612,17 +612,17 @@ with:
 
 The Riemann Hypothesis asserts that every nontrivial zero of:
 
-\[
+$$
 \zeta(s)
-\]
+$$
 
 has real part:
 
-\[
+$$
 \boxed{
 \frac12.
 }
-\]
+$$
 
 Its relevance to prime counting is that the locations of these zeros control oscillations in prime-distribution error terms.
 
@@ -632,7 +632,7 @@ Its relevance to prime counting is that the locations of these zeros control osc
 
 A classical theorem associated with von Koch states that the Riemann Hypothesis is equivalent to an error estimate of the form:
 
-\[
+$$
 \boxed{
 \pi(x)
 =
@@ -642,7 +642,7 @@ O(
 \sqrt{x}\log x
 ).
 }
-\]
+$$
 
 The condition is essential.
 
@@ -650,13 +650,13 @@ We must **not** write this as an unconditional approximation.
 
 Rather:
 
-\[
+$$
 \boxed{
 \text{RH}
 \quad\Longleftrightarrow\quad
 \text{an error bound of this strength}.
 }
-\]
+$$
 
 The Prime Number Theorem itself is unconditional.
 
@@ -664,47 +664,47 @@ The much sharper square-root-scale control is tied to the Riemann Hypothesis.
 
 ---
 
-### What big-\(O\) means here
+### What big-$O$ means here
 
 Writing:
 
-\[
+$$
 E(x)
 =
 O(
 \sqrt{x}\log x
 )
-\]
+$$
 
 means that there exist constants:
 
-\[
+$$
 C>0,
 \qquad
 x_0,
-\]
+$$
 
 such that:
 
-\[
+$$
 |E(x)|
 \le
 C\sqrt{x}\log x
-\]
+$$
 
 for all:
 
-\[
+$$
 x\ge x_0.
-\]
+$$
 
 It does not mean:
 
-\[
+$$
 E(x)
 =
 \sqrt{x}\log x.
-\]
+$$
 
 Again, asymptotic notation describes a growth bound, not an exact formula.
 
@@ -712,40 +712,40 @@ Again, asymptotic notation describes a growth bound, not an exact formula.
 
 ### Weighted prime-counting functions
 
-Analytic number theory often studies weighted versions of \(\pi(x)\).
+Analytic number theory often studies weighted versions of $\pi(x)$.
 
 One important example is Chebyshev's function:
 
-\[
+$$
 \boxed{
 \vartheta(x)
 =
 \sum_{p\le x}\log p.
 }
-\]
+$$
 
 Another is:
 
-\[
+$$
 \boxed{
 \psi(x)
 =
 \sum_{p^k\le x}
 \log p.
 }
-\]
+$$
 
 The Prime Number Theorem is equivalent to:
 
-\[
+$$
 \vartheta(x)\sim x
-\]
+$$
 
 and also to:
 
-\[
+$$
 \psi(x)\sim x.
-\]
+$$
 
 These weighted functions interact particularly cleanly with the zeta function and are therefore central in analytic proofs of results about prime distribution.
 
@@ -755,71 +755,71 @@ These weighted functions interact particularly cleanly with the zeta function an
 
 Let:
 
-\[
+$$
 p_1<p_2<p_3<\cdots
-\]
+$$
 
 be the sequence of prime numbers.
 
-Define the \(n\)-th prime gap by:
+Define the $n$-th prime gap by:
 
-\[
+$$
 \boxed{
 g_n
 =
 p_{n+1}-p_n.
 }
-\]
+$$
 
 For example:
 
-\[
+$$
 2,3,5,7,11,13,\ldots
-\]
+$$
 
 gives gaps:
 
-\[
+$$
 1,2,2,4,2,\ldots
-\]
+$$
 
 Except for:
 
-\[
+$$
 3-2=1,
-\]
+$$
 
-every prime gap is even because every prime greater than \(2\) is odd.
+every prime gap is even because every prime greater than $2$ is odd.
 
 ---
 
-### Average gap near \(x\)
+### Average gap near $x$
 
 The Prime Number Theorem suggests approximately:
 
-\[
+$$
 \frac{x}{\log x}
-\]
+$$
 
-primes below \(x\).
+primes below $x$.
 
 So the mean spacing is of order:
 
-\[
+$$
 \boxed{
 \log x.
 }
-\]
+$$
 
 But this is an average statement.
 
 It does not mean:
 
-\[
+$$
 g_n\approx\log p_n
-\]
+$$
 
-for every \(n\).
+for every $n$.
 
 Some gaps are much smaller.
 
@@ -835,64 +835,64 @@ This has an elementary proof.
 
 Choose:
 
-\[
+$$
 m\ge2
-\]
+$$
 
 and consider:
 
-\[
+$$
 N=(m+1)!.
-\]
+$$
 
 Then:
 
-\[
+$$
 N+2
-\]
+$$
 
-is divisible by \(2\),
+is divisible by $2$,
 
-\[
+$$
 N+3
-\]
+$$
 
-is divisible by \(3\),
+is divisible by $3$,
 
 and in general:
 
-\[
+$$
 N+k
-\]
+$$
 
-is divisible by \(k\) for:
+is divisible by $k$ for:
 
-\[
+$$
 2\le k\le m+1.
-\]
+$$
 
 Thus:
 
-\[
+$$
 \boxed{
 N+2,
 N+3,
 \ldots,
 N+m+1
 }
-\]
+$$
 
 are all composite.
 
-Since \(m\) can be arbitrarily large, arbitrarily long runs of composite numbers exist.
+Since $m$ can be arbitrarily large, arbitrarily long runs of composite numbers exist.
 
 Therefore:
 
-\[
+$$
 \boxed{
 \limsup_{n\to\infty}g_n=\infty.
 }
-\]
+$$
 
 ---
 
@@ -902,59 +902,59 @@ Large gaps exist, but small gaps also occur frequently.
 
 The most famous example is a gap of:
 
-\[
+$$
 2.
-\]
+$$
 
 Pairs such as:
 
-\[
+$$
 (3,5),
-\]
+$$
 
-\[
+$$
 (5,7),
-\]
+$$
 
-\[
+$$
 (11,13),
-\]
+$$
 
-\[
+$$
 (17,19)
-\]
+$$
 
 are **twin primes**.
 
 The Twin Prime Conjecture asks whether:
 
-\[
+$$
 \boxed{
 g_n=2
 }
-\]
+$$
 
 occurs infinitely often.
 
 This remains much stronger than merely showing that some bounded gap occurs infinitely often.
 
-Modern bounded-gap results prove that there exists a fixed finite bound \(B\) such that infinitely many consecutive prime pairs have gap at most \(B\).
+Modern bounded-gap results prove that there exists a fixed finite bound $B$ such that infinitely many consecutive prime pairs have gap at most $B$.
 
 That is a major theorem, but it does not establish the twin-prime case:
 
-\[
+$$
 B=2.
-\]
+$$
 
 ---
 
 ### Heuristics for large gaps
 
-A simple probabilistic model treats primality near \(x\) as occurring with approximate density:
+A simple probabilistic model treats primality near $x$ as occurring with approximate density:
 
-\[
+$$
 \frac1{\log x}.
-\]
+$$
 
 Such models motivate predictions about prime gaps, including logarithmic and squared-logarithmic scales.
 
@@ -964,19 +964,19 @@ Prime divisibility events contain arithmetic correlations that a naive random mo
 
 So one should distinguish carefully between:
 
-\[
+$$
 \boxed{
 \text{PNT-derived average scale}
 }
-\]
+$$
 
 and:
 
-\[
+$$
 \boxed{
 \text{probabilistic models for individual or maximal gaps}.
 }
-\]
+$$
 
 ---
 
@@ -1026,25 +1026,25 @@ This lets us study:
 
 ### A useful comparison experiment
 
-For selected \(x\), compare:
+For selected $x$, compare:
 
-\[
+$$
 \pi(x),
-\]
+$$
 
-\[
+$$
 \frac{x}{\log x},
-\]
+$$
 
 and:
 
-\[
+$$
 \operatorname{Li}(x).
-\]
+$$
 
 One useful relative-error quantity is:
 
-\[
+$$
 \boxed{
 \frac{
 A(x)-\pi(x)
@@ -1052,9 +1052,9 @@ A(x)-\pi(x)
 \pi(x)
 },
 }
-\]
+$$
 
-where \(A(x)\) is an approximation.
+where $A(x)$ is an approximation.
 
 A plot of relative rather than absolute error can make asymptotic behavior much easier to interpret.
 
@@ -1064,17 +1064,17 @@ A plot of relative rather than absolute error can make asymptotic behavior much 
 
 Suppose we plot:
 
-\[
+$$
 \pi(x)
-\]
+$$
 
 and:
 
-\[
+$$
 \frac{x}{\log x}
-\]
+$$
 
-on the same axes for large \(x\).
+on the same axes for large $x$.
 
 Because both functions are large and close relative to their magnitude, the curves may visually overlap.
 
@@ -1082,9 +1082,9 @@ That does not mean the absolute error is small.
 
 Conversely, plotting only:
 
-\[
+$$
 \pi(x)-\frac{x}{\log x}
-\]
+$$
 
 may make the approximation look poor because the absolute difference grows.
 
@@ -1092,19 +1092,19 @@ Both plots can be mathematically correct while emphasizing completely different 
 
 So computational analysis should distinguish:
 
-\[
+$$
 \boxed{
 \text{absolute error}
 }
-\]
+$$
 
 from:
 
-\[
+$$
 \boxed{
 \text{relative error}.
 }
-\]
+$$
 
 ---
 
@@ -1112,23 +1112,23 @@ from:
 
 A histogram of prime gaps up to:
 
-\[
+$$
 10^6
-\]
+$$
 
 may display visible peaks at certain even gaps, including multiples of:
 
-\[
+$$
 6.
-\]
+$$
 
 This reflects arithmetic congruence restrictions and local divisibility structure.
 
-For example, every prime greater than \(3\) satisfies:
+For example, every prime greater than $3$ satisfies:
 
-\[
+$$
 p\equiv\pm1\pmod6.
-\]
+$$
 
 But observing a peak in a finite histogram does not prove that the same gap dominates asymptotically.
 
@@ -1146,17 +1146,17 @@ Not:
 
 Suppose a property holds for every prime below:
 
-\[
+$$
 10^{12}.
-\]
+$$
 
 That may be impressive computational evidence.
 
 But an asymptotic claim concerns:
 
-\[
+$$
 x\rightarrow\infty.
-\]
+$$
 
 No finite cutoff, however large, reaches infinity.
 
@@ -1164,35 +1164,35 @@ This distinction has repeatedly mattered in number theory.
 
 The example:
 
-\[
+$$
 \pi(x)<\operatorname{Li}(x)
-\]
+$$
 
 is particularly instructive: enormous numerical ranges can support a pattern that eventually reverses.
 
 Thus:
 
-\[
+$$
 \boxed{
 \text{computation can discover patterns}
 }
-\]
+$$
 
 and:
 
-\[
+$$
 \boxed{
 \text{computation can test conjectures up to a bound},
 }
-\]
+$$
 
 but:
 
-\[
+$$
 \boxed{
 \text{finite verification alone does not prove an unbounded statement}.
 }
-\]
+$$
 
 ---
 
@@ -1202,25 +1202,25 @@ Prime density has a direct computational consequence in cryptography.
 
 Suppose we want a random prime near some large number:
 
-\[
+$$
 x.
-\]
+$$
 
 The Prime Number Theorem suggests that a random integer of this size is prime with approximate probability:
 
-\[
+$$
 \boxed{
 \frac1{\log x}.
 }
-\]
+$$
 
 Therefore the expected number of random integer trials before finding a prime is roughly:
 
-\[
+$$
 \boxed{
 \log x.
 }
-\]
+$$
 
 ---
 
@@ -1232,57 +1232,57 @@ Roughly half of all integers are odd.
 
 Since almost every prime is odd, conditioning on odd candidates approximately doubles the prime density.
 
-Thus a random odd integer near \(x\) has heuristic prime probability:
+Thus a random odd integer near $x$ has heuristic prime probability:
 
-\[
+$$
 \boxed{
 \frac{2}{\log x}.
 }
-\]
+$$
 
 The expected number of odd candidates is therefore approximately:
 
-\[
+$$
 \boxed{
 \frac{\log x}{2}.
 }
-\]
+$$
 
 ---
 
 ### Example: 2048-bit scale
 
-A \(2048\)-bit integer has size roughly:
+A $2048$-bit integer has size roughly:
 
-\[
+$$
 x\approx2^{2048}.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \log x
 \approx
 2048\log2.
-\]
+$$
 
 Numerically:
 
-\[
+$$
 2048\log2
 \approx
 1419.6.
-\]
+$$
 
 So a uniformly sampled integer at this scale has heuristic prime probability approximately:
 
-\[
+$$
 \frac1{1419.6}.
-\]
+$$
 
 If we sample only odd candidates:
 
-\[
+$$
 \boxed{
 \Pr[
 \text{prime}\mid\text{odd}
@@ -1292,15 +1292,15 @@ If we sample only odd candidates:
 \approx
 0.00141.
 }
-\]
+$$
 
 So the expected number of odd candidates is roughly:
 
-\[
+$$
 \boxed{
 710.
 }
-\]
+$$
 
 This does **not** mean exactly 710 tests are required.
 
@@ -1316,9 +1316,9 @@ Implementations can improve this further by rejecting candidates divisible by sm
 
 For example, instead of sampling arbitrary odd integers, one may immediately reject numbers divisible by:
 
-\[
+$$
 3,5,7,11,\ldots
-\]
+$$
 
 before performing more expensive probable-prime tests.
 
@@ -1346,67 +1346,67 @@ The Prime Number Theorem explains why this search process is feasible in the fir
 
 The central quantity is:
 
-\[
+$$
 \boxed{
 \pi(x).
 }
-\]
+$$
 
 The Prime Number Theorem says:
 
-\[
+$$
 \boxed{
 \pi(x)
 \sim
 \frac{x}{\log x}.
 }
-\]
+$$
 
 A refined approximation is:
 
-\[
+$$
 \boxed{
 \operatorname{Li}(x).
 }
-\]
+$$
 
 The difference:
 
-\[
+$$
 \pi(x)-\operatorname{Li}(x)
-\]
+$$
 
 connects prime counting to the zero structure of:
 
-\[
+$$
 \zeta(s),
-\]
+$$
 
 and the Riemann Hypothesis predicts strong control of that error.
 
 Meanwhile, the density:
 
-\[
+$$
 \frac1{\log x}
-\]
+$$
 
 suggests an average prime spacing of:
 
-\[
+$$
 \log x.
-\]
+$$
 
 This leads naturally to prime gaps:
 
-\[
+$$
 \boxed{
 g_n=p_{n+1}-p_n.
 }
-\]
+$$
 
 The full picture is therefore:
 
-\[
+$$
 \boxed{
 \text{count primes}
 \rightarrow
@@ -1416,31 +1416,31 @@ The full picture is therefore:
 \rightarrow
 \text{study spacing}.
 }
-\]
+$$
 
 At every stage, one must distinguish:
 
-\[
+$$
 \boxed{
 \text{exact data}
 }
-\]
+$$
 
 from:
 
-\[
+$$
 \boxed{
 \text{asymptotic theorem}
 }
-\]
+$$
 
 from:
 
-\[
+$$
 \boxed{
 \text{heuristic model}.
 }
-\]
+$$
 
 That distinction is one of the most important habits in computational number theory.
 
@@ -1452,19 +1452,19 @@ That distinction is one of the most important habits in computational number the
 
 Compute:
 
-\[
+$$
 \pi(10),
 \qquad
 \pi(100),
 \qquad
 \pi(1000).
-\]
+$$
 
 Compare each value with:
 
-\[
+$$
 \frac{x}{\log x}.
-\]
+$$
 
 ---
 
@@ -1472,27 +1472,27 @@ Compare each value with:
 
 For:
 
-\[
+$$
 x=10^6,
-\]
+$$
 
 use:
 
-\[
+$$
 \pi(x)=78\,498
-\]
+$$
 
 and compute the relative error of:
 
-\[
+$$
 \frac{x}{\log x}.
-\]
+$$
 
 Compare it with the relative error of:
 
-\[
+$$
 \operatorname{Li}(x).
-\]
+$$
 
 ---
 
@@ -1500,18 +1500,18 @@ Compare it with the relative error of:
 
 Explain why:
 
-\[
+$$
 \pi(x)
 \sim
 \frac{x}{\log x}
-\]
+$$
 
 does not imply:
 
-\[
+$$
 \pi(x)-\frac{x}{\log x}
 \rightarrow0.
-\]
+$$
 
 ---
 
@@ -1519,9 +1519,9 @@ does not imply:
 
 Near:
 
-\[
+$$
 x=10^{12},
-\]
+$$
 
 estimate the heuristic probability that a randomly chosen integer is prime.
 
@@ -1531,17 +1531,17 @@ Then estimate the probability conditioned on the integer being odd.
 
 ### Exercise 5 — Average gap
 
-Use the Prime Number Theorem to explain why the average prime spacing near \(x\) should be on the order of:
+Use the Prime Number Theorem to explain why the average prime spacing near $x$ should be on the order of:
 
-\[
+$$
 \log x.
-\]
+$$
 
 Why does this not determine any particular:
 
-\[
+$$
 g_n?
-\]
+$$
 
 ---
 
@@ -1549,18 +1549,18 @@ g_n?
 
 Let:
 
-\[
+$$
 N=11!.
-\]
+$$
 
 Show that:
 
-\[
+$$
 N+2,
 N+3,
 \ldots,
 N+11
-\]
+$$
 
 are all composite.
 
@@ -1574,9 +1574,9 @@ What does the Twin Prime Conjecture assert?
 
 Explain the difference between proving infinitely many gaps of size:
 
-\[
+$$
 2
-\]
+$$
 
 and proving infinitely many prime gaps bounded by some unspecified fixed constant.
 
@@ -1586,13 +1586,13 @@ and proving infinitely many prime gaps bounded by some unspecified fixed constan
 
 Explain the logical difference between:
 
-\[
+$$
 \pi(x)\sim\operatorname{Li}(x)
-\]
+$$
 
 and:
 
-\[
+$$
 \pi(x)
 =
 \operatorname{Li}(x)
@@ -1600,7 +1600,7 @@ and:
 O(
 \sqrt{x}\log x
 ).
-\]
+$$
 
 Which statement is unconditional, and which is tied to the Riemann Hypothesis?
 
@@ -1610,15 +1610,15 @@ Which statement is unconditional, and which is tied to the Riemann Hypothesis?
 
 Generate all primes up to:
 
-\[
+$$
 10^6.
-\]
+$$
 
 Construct the sequence:
 
-\[
+$$
 g_n=p_{n+1}-p_n.
-\]
+$$
 
 Plot a histogram.
 
@@ -1630,15 +1630,15 @@ Which observations are data, and which would require a theorem before being stat
 
 ### Exercise 10 — Cryptographic scale
 
-For a random \(1024\)-bit odd integer, estimate the expected number of candidates that must be tested before encountering a prime.
+For a random $1024$-bit odd integer, estimate the expected number of candidates that must be tested before encountering a prime.
 
 Use:
 
-\[
+$$
 \log(2^{1024})
 =
 1024\log2.
-\]
+$$
 
 ---
 
@@ -1647,51 +1647,51 @@ Use:
 You should now be able to explain:
 
 1. What:
-   \[
+   $$
    \pi(x)
-   \]
+   $$
    counts.
-2. How a sieve can compute \(\pi(x)\) over a finite range.
+2. How a sieve can compute $\pi(x)$ over a finite range.
 3. What:
-   \[
+   $$
    \pi(x)\sim\frac{x}{\log x}
-   \]
+   $$
    means precisely.
 4. Why asymptotic equivalence concerns relative rather than absolute error.
 5. Why:
-   \[
+   $$
    1/\log x
-   \]
+   $$
    can be interpreted as an approximate local prime density.
 6. Why that interpretation is heuristic rather than an independent-probability model.
 7. Why:
-   \[
+   $$
    \operatorname{Li}(x)
-   \]
+   $$
    is a natural refinement of:
-   \[
+   $$
    x/\log x.
-   \]
-8. Why finite numerical superiority of \(\operatorname{Li}(x)\) does not itself prove an asymptotic statement.
+   $$
+8. Why finite numerical superiority of $\operatorname{Li}(x)$ does not itself prove an asymptotic statement.
 9. Why:
-   \[
+   $$
    \pi(x)-\operatorname{Li}(x)
-   \]
+   $$
    eventually changes sign.
 10. How the Riemann zeta function is connected to primes through Euler's product.
 11. What role the Riemann Hypothesis plays in prime-counting error estimates.
 12. Why:
-    \[
+    $$
     O(\sqrt{x}\log x)
-    \]
+    $$
     must not be presented as an unconditional PNT error term.
 13. What a prime gap is.
 14. Why all prime gaps after the first are even.
 15. Why prime gaps are unbounded.
-16. Why the mean gap near \(x\) is of scale:
-    \[
+16. Why the mean gap near $x$ is of scale:
+    $$
     \log x.
-    \]
+    $$
 17. What the Twin Prime Conjecture asks.
 18. Why bounded-gap theorems do not by themselves prove the twin-prime conjecture.
 19. Why a finite histogram cannot establish a limiting distribution.
@@ -1703,7 +1703,7 @@ At this point, prime distribution should no longer look like a vague statement t
 
 It has become a quantitative computational problem involving:
 
-\[
+$$
 \boxed{
 \text{counting},
 \quad
@@ -1713,7 +1713,7 @@ It has become a quantitative computational problem involving:
 \quad
 \text{spacing}.
 }
-\]
+$$
 
 ---
 
@@ -1757,7 +1757,7 @@ Part I studied arithmetic functions attached to individual integers.
 
 Part II has moved to the global distribution of primes:
 
-\[
+$$
 \boxed{
 \pi(x),
 \qquad
@@ -1765,30 +1765,30 @@ Part II has moved to the global distribution of primes:
 \qquad
 g_n.
 }
-\]
+$$
 
 The next article changes perspective again.
 
 Instead of studying primes only inside:
 
-\[
+$$
 \mathbb Z,
-\]
+$$
 
 we enlarge the arithmetic universe to numbers of the form:
 
-\[
+$$
 \boxed{
 a+bi,
 \qquad
 a,b\in\mathbb Z.
 }
-\]
+$$
 
 There, ordinary primes may remain prime, split into factors, or behave exceptionally.
 
 This leads to the arithmetic of the **Gaussian integers**:
 
-\[
+$$
 \mathbb Z[i].
-\]
+$$

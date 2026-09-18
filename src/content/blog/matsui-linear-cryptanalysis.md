@@ -46,9 +46,6 @@ The companion implementation is available in [`matsui1.py`](https://github.com/T
 
 - [Foundations and Attack Model](#foundations-and-attack-model)
 - [S-box Approximations and Linear Statistics](#s-box-approximations-and-linear-statistics)
-- [\beta\cdot S(x)
-}](#betacdot-sx)
-- [2^${n-1}](#2n-1)
 - [From Local Relations to Multi-Round Trails](#from-local-relations-to-multi-round-trails)
 - [Matsui’s Algorithms](#matsuis-algorithms)
 - [End-to-End Partial Subkey Recovery](#end-to-end-partial-subkey-recovery)
@@ -64,9 +61,9 @@ Linear cryptanalysis was introduced by Mitsuru Matsui as a statistical cryptanal
 
 The attack does not attempt to replace the cipher by an exact linear function. Instead, it searches for Boolean linear or affine relations that hold with probability measurably different from one half.
 
-For masks \(\alpha\), \(\beta\), and a key mask \(\kappa\), a useful whole-cipher relation may have the form
+For masks $\alpha$, $\beta$, and a key mask $\kappa$, a useful whole-cipher relation may have the form
 
-\[
+$$
 \alpha\cdot M
 \oplus
 \beta\cdot C
@@ -74,11 +71,11 @@ For masks \(\alpha\), \(\beta\), and a key mask \(\kappa\), a useful whole-ciphe
 \kappa\cdot K
 =
 0
-\]
+$$
 
 with probability
 
-\[
+$$
 \Pr[
 \alpha\cdot M
 \oplus
@@ -90,17 +87,17 @@ with probability
 ]
 =
 \frac12+\epsilon,
-\]
+$$
 
 where
 
-\[
+$$
 \epsilon\neq 0
-\]
+$$
 
 is the **bias**.
 
-If the probability were exactly \(1/2\), that particular relation would look balanced and would provide no statistical preference for either parity value.
+If the probability were exactly $1/2$, that particular relation would look balanced and would provide no statistical preference for either parity value.
 
 The high-level attack logic is therefore:
 
@@ -117,71 +114,71 @@ The attack is statistical. One pair proves essentially nothing. The key is kept 
 
 A Boolean map
 
-\[
+$$
 f:\mathrm{GF}(2)^n\rightarrow \mathrm{GF}(2)
-\]
+$$
 
 is linear when
 
-\[
+$$
 f(x\oplus y)=f(x)\oplus f(y)
-\]
+$$
 
-for every \(x,y\).
+for every $x,y$.
 
 Every such function can be written as
 
-\[
+$$
 f(x)=a\cdot x,
-\]
+$$
 
-where \(a\) is a fixed bit mask.
+where $a$ is a fixed bit mask.
 
 An affine Boolean function permits one additional constant:
 
-\[
+$$
 f(x)=a\cdot x\oplus b,
 \qquad
 b\in\{0,1\}.
-\]
+$$
 
 This small distinction matters in linear cryptanalysis. A negative correlation often means that the complementary affine equation is the one that holds more frequently.
 
 For example, the nonlinear Boolean function
 
-\[
+$$
 f(x_1,x_2)=x_1\land x_2
-\]
+$$
 
 equals zero on three of four inputs. Thus the approximation
 
-\[
+$$
 f(x_1,x_2)\approx 0
-\]
+$$
 
 has
 
-\[
+$$
 p=\frac34,
 \qquad
 \epsilon=\frac14,
 \qquad
 C=2\epsilon=\frac12.
-\]
+$$
 
 The function is still nonlinear. "Linear approximation" means statistical correlation, not equality on every input.
 
 ### Masks and binary inner products
 
-For two \(n\)-bit values \(x\) and \(\alpha\),
+For two $n$-bit values $x$ and $\alpha$,
 
-\[
+$$
 \alpha\cdot x
 =
 \bigoplus_{i=0}^{n-1}\alpha_i x_i
 =
 \operatorname{parity}(\alpha\mathbin{\&}x).
-\]
+$$
 
 A `1` in the mask selects a bit. A `0` ignores it.
 
@@ -198,11 +195,11 @@ assert dot(0b1011, 0b1001) == 0
 
 This article uses **zero-based, most-significant-bit-first** positions in prose and P-box helpers. For a 4-bit word
 
-\[
+$$
 x=x_1x_2x_3x_4,
-\]
+$$
 
-code position `0` denotes \(x_1\), the most significant bit.
+code position `0` denotes $x_1$, the most significant bit.
 
 Thus the hexadecimal mask
 
@@ -212,39 +209,39 @@ Thus the hexadecimal mask
 
 selects
 
-\[
+$$
 x_1\oplus x_4.
-\]
+$$
 
 Bit conventions must be stated explicitly. A trail copied from a paper using least-significant-bit-first numbering can become wrong even when the hexadecimal masks still look plausible.
 
 For the following diagram, let
 
-\[
+$$
 \alpha=1001_2,
 \qquad
 \beta=0001_2.
-\]
+$$
 
 Then
 
-\[
+$$
 \alpha\cdot X=x_1\oplus x_4
-\]
+$$
 
 and
 
-\[
+$$
 \beta\cdot S(X)=y_4.
-\]
+$$
 
 ![A masked S-box approximation](/images/cryptanalysis/matsui/linearapprox.png)
 
 The candidate approximation is therefore
 
-\[
+$$
 x_1\oplus x_4=y_4.
-\]
+$$
 
 Its value is not determined by appearance. We must count how often it holds over the complete S-box domain.
 
@@ -254,25 +251,25 @@ Its value is not determined by appearance. We must count how often it holds over
 
 Let
 
-\[
+$$
 S:\mathrm{GF}(2)^n\rightarrow\mathrm{GF}(2)^m.
-\]
+$$
 
-For masks \(\alpha\) and \(\beta\), define
+For masks $\alpha$ and $\beta$, define
 
-\[
+$$
 Z_{\alpha,\beta}(x)
 =
 \alpha\cdot x
 \oplus
 \beta\cdot S(x).
-\]
+$$
 
 The approximation is satisfied when
 
-\[
+$$
 Z_{\alpha,\beta}(x)=0.
-\]
+$$
 
 For a small S-box this can be measured exhaustively:
 
@@ -300,47 +297,47 @@ PRESENT_SBOX = [
 
 For
 
-\[
+$$
 \alpha=9,
 \qquad
 \beta=1,
-\]
+$$
 
 the relation matches on 12 of 16 inputs:
 
-\[
+$$
 p=\frac{12}{16}=\frac34,
-\]
+$$
 
-\[
+$$
 \epsilon
 =
 p-\frac12
 =
 \frac14,
-\]
+$$
 
-\[
+$$
 C=2\epsilon=\frac12.
-\]
+$$
 
 For
 
-\[
+$$
 \alpha=1,
 \qquad
 \beta=5,
-\]
+$$
 
 it matches on only 4 of 16 inputs:
 
-\[
+$$
 p=\frac14,
 \qquad
 \epsilon=-\frac14,
 \qquad
 C=-\frac12.
-\]
+$$
 
 A negative correlation is not "bad" for the attacker. It is just a signal with the opposite sign.
 
@@ -348,7 +345,7 @@ A negative correlation is not "bad" for the attacker. It is just a signal with t
 
 Different books and programs use different LAT conventions. This article stores **centered match counts**:
 
-\[
+$$
 \operatorname{LAT}[\alpha,\beta]
 =
 \#\{
@@ -359,29 +356,29 @@ x:
 \}
 -
 2^{n-1}.
-\]
+$$
 
-If we call the centered entry \(B\), then
+If we call the centered entry $B$, then
 
-\[
+$$
 \text{matches}=2^{n-1}+B,
-\]
+$$
 
-\[
+$$
 p=\frac12+\frac{B}{2^n},
-\]
+$$
 
-\[
+$$
 \epsilon=\frac{B}{2^n},
-\]
+$$
 
-\[
+$$
 W=2B,
-\]
+$$
 
 and
 
-\[
+$$
 C
 =
 \frac{W}{2^n}
@@ -389,7 +386,7 @@ C
 \frac{B}{2^{n-1}}
 =
 2\epsilon.
-\]
+$$
 
 This conversion is worth keeping visible because factor-of-two errors are common when one source prints Walsh coefficients and another prints centered LAT values.
 
@@ -414,27 +411,27 @@ assert lat[0x1][0x5] == -4
 
 The trivial entry
 
-\[
+$$
 (\alpha,\beta)=(0,0)
-\]
+$$
 
-always matches and has centered value \(2^{n-1}\). It must be excluded when ranking useful approximations.
+always matches and has centered value $2^{n-1}$. It must be excluded when ranking useful approximations.
 
-For a bijective \(n\times n\) S-box:
+For a bijective $n\times n$ S-box:
 
-\[
+$$
 \operatorname{LAT}[0,\beta]=0
 \quad
 \text{for }\beta\neq0,
-\]
+$$
 
 and
 
-\[
+$$
 \operatorname{LAT}[\alpha,0]=0
 \quad
 \text{for }\alpha\neq0.
-\]
+$$
 
 A zero LAT entry means that this exact component relation is balanced. It does **not** prove that the entire cipher is resistant to linear cryptanalysis.
 
@@ -442,22 +439,22 @@ A zero LAT entry means that this exact component relation is balanced. It does *
 
 A common vectorial linearity measure is
 
-\[
+$$
 \operatorname{Lin}(S)
 =
 \max_{(\alpha,\beta)\neq(0,0)}
 |W_S(\alpha,\beta)|.
-\]
+$$
 
 One associated vectorial nonlinearity definition is
 
-\[
+$$
 \operatorname{NL}(S)
 =
 2^{n-1}
 -
 \frac{\operatorname{Lin}(S)}{2}.
-\]
+$$
 
 Lower maximum absolute correlation, or equivalently higher nonlinearity under this measure, is one ingredient in resistance to linear cryptanalysis.
 
@@ -479,35 +476,35 @@ An S-box approximation becomes cryptanalytically useful only after we understand
 
 Suppose
 
-\[
+$$
 Y=S(X\oplus K).
-\]
+$$
 
 Define
 
-\[
+$$
 U=X\oplus K.
-\]
+$$
 
 If the keyless relation
 
-\[
+$$
 \alpha\cdot U
 \oplus
 \beta\cdot S(U)
 =
 0
-\]
+$$
 
-holds with probability \(1/2+\epsilon\), then
+holds with probability $1/2+\epsilon$, then
 
-\[
+$$
 \alpha\cdot X
 \oplus
 \beta\cdot Y
 =
 \alpha\cdot K
-\]
+$$
 
 holds with the same probability.
 
@@ -517,19 +514,19 @@ The AddRoundKey operation contributes a **fixed key parity**.
 
 For
 
-\[
+$$
 \alpha=1001_2,
 \qquad
 \beta=0001_2,
-\]
+$$
 
 the relation becomes
 
-\[
+$$
 x_1\oplus x_4\oplus y_4
 =
 k_1\oplus k_4.
-\]
+$$
 
 The key does not change the magnitude of the correlation for a fixed trail. It can change its sign by complementing the relevant Boolean relation.
 
@@ -539,33 +536,33 @@ This becomes more subtle for a **linear hull**, where several trails with key-de
 
 Let
 
-\[
+$$
 Y=L(X)
-\]
+$$
 
-for a binary linear map \(L\).
+for a binary linear map $L$.
 
 Then
 
-\[
+$$
 \beta\cdot Y
 =
 \beta\cdot L(X)
 =
 (L^T\beta)\cdot X.
-\]
+$$
 
 Therefore the corresponding input mask is obtained through the transpose relation.
 
 Depending on whether a source uses row vectors, column vectors, forward masks, or backward masks, the formula may be written differently. The safest implementation check is not to memorize notation but to verify the invariant:
 
-\[
+$$
 \operatorname{dot}(L(x),\beta)
 =
 \operatorname{dot}(x,\alpha)
-\]
+$$
 
-for all \(x\), or at least over a basis.
+for all $x$, or at least over a basis.
 
 ```python
 input_mask = propagate_mask_backwards(
@@ -593,74 +590,74 @@ The output mask of one S-box layer is **not automatically** the input mask of th
 
 ### Chaining approximations: the piling-up lemma
 
-Suppose two compatible Boolean expressions \(Z_1\) and \(Z_2\) have biases
+Suppose two compatible Boolean expressions $Z_1$ and $Z_2$ have biases
 
-\[
+$$
 \epsilon_1,
 \qquad
 \epsilon_2.
-\]
+$$
 
 If the relevant variables are independent, then
 
-\[
+$$
 \Pr[Z_1\oplus Z_2=0]
 =
 p_1p_2
 +
 (1-p_1)(1-p_2)
-\]
+$$
 
 and therefore
 
-\[
+$$
 \Pr[Z_1\oplus Z_2=0]
 =
 \frac12
 +
 2\epsilon_1\epsilon_2.
-\]
+$$
 
-For \(r\) independent expressions,
+For $r$ independent expressions,
 
-\[
+$$
 \epsilon_{\text{total}}
 =
 2^{r-1}
 \prod_{i=1}^{r}\epsilon_i.
-\]
+$$
 
 Since
 
-\[
+$$
 C_i=2\epsilon_i,
-\]
+$$
 
 the correlation form is cleaner:
 
-\[
+$$
 C_{\text{total}}
 =
 \prod_{i=1}^{r}C_i,
-\]
+$$
 
-\[
+$$
 \epsilon_{\text{total}}
 =
 \frac{C_{\text{total}}}{2}.
-\]
+$$
 
 For example,
 
-\[
+$$
 \epsilon_1=+\frac14,
 \qquad
 \epsilon_2=-\frac14
-\]
+$$
 
 gives
 
-\[
+$$
 \epsilon_{\text{total}}
 =
 2
@@ -668,17 +665,17 @@ gives
 \left(-\frac14\right)
 =
 -\frac18.
-\]
+$$
 
 Thus
 
-\[
+$$
 p
 =
 \frac12-\frac18
 =
 \frac38.
-\]
+$$
 
 ![Two chained S-box approximations](/images/cryptanalysis/matsui/moresbox.png)
 
@@ -692,16 +689,16 @@ A **linear trail** fixes the intermediate masks through every round.
 
 Its estimated correlation is the signed product of the active component correlations, with exact propagation through each linear layer.
 
-A **linear hull** fixes only the external masks \((\alpha,\beta)\). Every compatible trail between those masks contributes.
+A **linear hull** fixes only the external masks $(\alpha,\beta)$. Every compatible trail between those masks contributes.
 
-For a fixed key \(K\),
+For a fixed key $K$,
 
-\[
+$$
 C_K(\alpha,\beta)
 =
 \sum_{\tau:\alpha\leadsto\beta}
 C_K(\tau).
-\]
+$$
 
 This is a **signed sum**, not a sum of magnitudes.
 
@@ -731,45 +728,45 @@ The two classical algorithms use the same statistical structure in different way
 
 Suppose a whole-cipher approximation gives
 
-\[
+$$
 \alpha\cdot M
 \oplus
 \beta\cdot C
 =
 \kappa\cdot K
-\]
+$$
 
 with known nonzero correlation sign.
 
 For every known plaintext-ciphertext pair, compute
 
-\[
+$$
 q_i
 =
 \alpha\cdot M_i
 \oplus
 \beta\cdot C_i.
-\]
+$$
 
 Let:
 
-\[
+$$
 T_0
 =
 \#\{i:q_i=0\},
-\]
+$$
 
-\[
+$$
 T_1
 =
 \#\{i:q_i=1\}.
-\]
+$$
 
 If the keyless approximation has positive correlation, the majority value estimates
 
-\[
+$$
 \kappa\cdot K.
-\]
+$$
 
 If the correlation is negative, the interpretation is complemented.
 
@@ -820,9 +817,9 @@ Because the entire 4-bit domain is available, this is an exact toy experiment ra
 
 Several independent key-parity equations can be assembled into a linear system over
 
-\[
+$$
 \mathrm{GF}(2).
-\]
+$$
 
 The rank of that system determines how many independent key bits are constrained. Any remaining entropy still requires additional cryptanalysis or search.
 
@@ -834,41 +831,41 @@ Instead of requiring an approximation to cross the final nonlinear layer, it sto
 
 Suppose the final layer has the form
 
-\[
+$$
 C=S(U)\oplus K_f.
-\]
+$$
 
-For a candidate subkey \(k\),
+For a candidate subkey $k$,
 
-\[
+$$
 U_k
 =
 S^{-1}(C\oplus k).
-\]
+$$
 
 Then compute the candidate-dependent statistic
 
-\[
+$$
 q_i(k)
 =
 \alpha\cdot M_i
 \oplus
 \beta\cdot U_{k,i}.
-\]
+$$
 
 For each candidate define
 
-\[
+$$
 D(k)
 =
 T_0(k)-T_1(k).
-\]
+$$
 
 If the sign is not independently known for the guessed outer-key relation, a natural ranking statistic is
 
-\[
+$$
 |D(k)|.
-\]
+$$
 
 A correct guess should preserve the targeted correlation more strongly than typical wrong guesses.
 
@@ -958,15 +955,15 @@ using:
 
 | Round | S-box input mask | S-box output mask | After P | Active transitions | Correlation |
 |---:|---:|---:|---:|---|---:|
-| 1 | `0x0B00` | `0x0400` | `0x0400` | `B -> 4` | \(+1/2\) |
-| 2 | `0x0400` | `0x0500` | `0x0404` | `4 -> 5` | \(-1/2\) |
-| 3 | `0x0404` | `0x0505` | `0x0505` | two copies of `4 -> 5` | \(+1/4\) |
+| 1 | `0x0B00` | `0x0400` | `0x0400` | `B -> 4` | $+1/2$ |
+| 2 | `0x0400` | `0x0500` | `0x0404` | `4 -> 5` | $-1/2$ |
+| 3 | `0x0404` | `0x0505` | `0x0505` | two copies of `4 -> 5` | $+1/4$ |
 
 There are four active S-box transitions in total.
 
 Their signed correlation product is
 
-\[
+$$
 C_{\text{trail}}
 =
 \left(\frac12\right)
@@ -974,29 +971,29 @@ C_{\text{trail}}
 \left(-\frac12\right)^2
 =
 -\frac1{16}.
-\]
+$$
 
 The corresponding bias estimate is
 
-\[
+$$
 \epsilon_{\text{trail}}
 =
 \frac{C_{\text{trail}}}{2}
 =
 -\frac1{32}.
-\]
+$$
 
-A common heuristic says that detecting bias \(\epsilon\) requires data on the scale
+A common heuristic says that detecting bias $\epsilon$ requires data on the scale
 
-\[
+$$
 N\sim\frac{1}{\epsilon^2}.
-\]
+$$
 
 Here that gives
 
-\[
+$$
 N\sim1024.
-\]
+$$
 
 This is only a scale estimate. Real key-ranking success also depends on the number of candidates, trail/hull effects, score variance, and the desired success probability.
 
@@ -1099,11 +1096,11 @@ assert ranking[0] == actual
 
 This experiment performs
 
-\[
+$$
 256\times8192
 =
 2,097,152
-\]
+$$
 
 candidate/pair partial-decryption evaluations.
 
@@ -1138,19 +1135,19 @@ This distinction is essential. A successful partial-key experiment should never 
 
 For a fixed nonzero bias, statistical detection typically has a scale
 
-\[
+$$
 N=\Theta(\epsilon^{-2})
 =
 \Theta(C^{-2}),
-\]
+$$
 
 up to convention-dependent constants.
 
 Writing
 
-\[
+$$
 N=\frac1{\epsilon^2}
-\]
+$$
 
 as though it were an exact theorem is too strong.
 
@@ -1164,17 +1161,17 @@ The required constant depends on:
 - signal-to-noise behavior,
 - attack advantage.
 
-If \(k\) subkey bits are guessed over \(N\) pairs, a direct Algorithm 2 implementation costs roughly
+If $k$ subkey bits are guessed over $N$ pairs, a direct Algorithm 2 implementation costs roughly
 
-\[
+$$
 O(2^kN)
-\]
+$$
 
 partial operations and stores approximately
 
-\[
+$$
 O(2^k)
-\]
+$$
 
 candidate scores.
 
@@ -1220,7 +1217,7 @@ Important extensions include:
 
 These techniques require more careful statistics, but the core vocabulary remains the same:
 
-\[
+$$
 \boxed{
 \text{masks}
 \rightarrow
@@ -1232,7 +1229,7 @@ These techniques require more careful statistics, but the core vocabulary remain
 \rightarrow
 \text{key ranking}
 }
-\]
+$$
 
 ### Experimental discipline
 
@@ -1292,15 +1289,15 @@ The series began with a toy SPN. At that point, substitution, permutation, repea
 
 Then DES showed a different architecture:
 
-\[
+$$
 \text{Feistel network}
-\]
+$$
 
 where round-function invertibility is not required.
 
 AES returned to the SPN family with much stronger algebraic structure:
 
-\[
+$$
 \text{SubBytes}
 \rightarrow
 \text{ShiftRows}
@@ -1308,25 +1305,25 @@ AES returned to the SPN family with much stronger algebraic structure:
 \text{MixColumns}
 \rightarrow
 \text{AddRoundKey}.
-\]
+$$
 
 The modes article then moved one level upward:
 
-\[
+$$
 \text{block cipher}
 \rightarrow
 \text{message encryption},
-\]
+$$
 
 showing that even a strong primitive can be misused through ECB leakage, CBC malleability, or CTR nonce reuse.
 
 AEAD added the next missing property:
 
-\[
+$$
 \text{confidentiality}
 +
 \text{authentication},
-\]
+$$
 
 and explained why modern cryptographic interfaces should reject tampered ciphertext before releasing plaintext.
 
@@ -1340,7 +1337,7 @@ An S-box exposes a Walsh spectrum and an LAT. A diffusion layer transports masks
 
 Matsui's algorithms then show how a tiny surviving statistical bias can become actual key information:
 
-\[
+$$
 \boxed{
 \text{S-box approximation}
 \rightarrow
@@ -1350,7 +1347,7 @@ Matsui's algorithms then show how a tiny surviving statistical bias can become a
 \rightarrow
 \text{subkey ranking}
 }
-\]
+$$
 
 That is the connection worth carrying forward.
 
@@ -1360,27 +1357,27 @@ We design S-boxes with low correlation because cryptanalysts measure linear corr
 
 The final 16-bit experiment deliberately remains small enough to understand completely:
 
-\[
+$$
 K=\texttt{3A94D63F},
-\]
+$$
 
-\[
+$$
 K_5=\texttt{D63F},
-\]
+$$
 
-\[
+$$
 C_{\text{trail}}=-\frac1{16},
-\]
+$$
 
-\[
+$$
 \epsilon_{\text{trail}}=-\frac1{32},
-\]
+$$
 
 and the selected final-key nibbles are correctly ranked as
 
-\[
+$$
 \boxed{\texttt{0x6F}}.
-\]
+$$
 
 The number itself is not the important result.
 

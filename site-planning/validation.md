@@ -268,3 +268,33 @@ npm run preview
 ```
 
 Do not overlay v6.12 onto an older CryptoCave folder.
+
+## v6.13 math-rendering hotfix
+
+A post-deployment visual review on 2026-09-18 exposed a Markdown/KaTeX delimiter compatibility issue in refreshed long-form material. Many new articles used TeX-style `\\[ ... \\]` and `\\( ... \\)` delimiters. CryptoCave's Astro pipeline uses `remark-math`, which expects `$...$` and `$$...$$`; therefore the TeX-style delimiters were emitted as literal text even though the site compiled successfully.
+
+The hotfix:
+
+- converted supported prose math across the blog corpus from standalone `\\[ ... \\]` to `$$ ... $$`;
+- converted inline `\\( ... \\)` to `$...$` outside fenced/inline code;
+- preserved TeX commands such as `\\\\[4pt]` inside aligned/matrix environments;
+- repaired one pre-existing malformed SPN display block discovered by the delimiter audit;
+- added a preflight rule that rejects unsupported TeX-style Markdown math delimiters in future content;
+- added a standalone `$$` balance check.
+
+Math delimiter audit after the hotfix:
+
+```text
+208 articles checked.
+Unsupported standalone \\[ / \\] delimiters: 0.
+Unsupported inline \\( / \\) delimiters outside code: 0.
+Files with unbalanced standalone $$ delimiters: 0.
+```
+
+The native Astro production build remains the final local release gate:
+
+```bash
+npm ci
+npm run check:content
+npm run build
+```

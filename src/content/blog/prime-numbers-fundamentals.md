@@ -26,35 +26,35 @@ A prime is easy to define.
 
 An integer
 
-\[
+$$
 p>1
-\]
+$$
 
 is prime when its only positive divisors are
 
-\[
+$$
 1
 \qquad\text{and}\qquad
 p.
-\]
+$$
 
 Yet primes control the multiplicative structure of all integers.
 
 For example,
 
-\[
+$$
 100=2^2\cdot5^2,
-\]
+$$
 
-\[
+$$
 986=2\cdot17\cdot29,
-\]
+$$
 
 and
 
-\[
+$$
 10001=73\cdot137.
-\]
+$$
 
 These are not merely possible decompositions.
 
@@ -66,13 +66,13 @@ It tells us that primes are the multiplicative building blocks of the integers.
 
 But it immediately creates a computational tension that matters enormously in cryptography:
 
-\[
+$$
 \boxed{
 \text{a factorization exists uniquely}
 \not\Rightarrow
 \text{the factorization is easy to find}.
 }
-\]
+$$
 
 This distinction lies behind RSA and the classical integer-factorization problem.
 
@@ -80,7 +80,7 @@ At the same time, primes exhibit a remarkable global distribution: although the 
 
 So in this first prime-number reference we will connect three viewpoints:
 
-\[
+$$
 \boxed{
 \text{algebraic structure}
 +
@@ -88,7 +88,7 @@ So in this first prime-number reference we will connect three viewpoints:
 +
 \text{computation}.
 }
-\]
+$$
 
 ---
 
@@ -96,17 +96,15 @@ So in this first prime-number reference we will connect three viewpoints:
 
 - [Prime and composite integers](#prime-and-composite-integers)
 - [Prime versus irreducible](#prime-versus-irreducible)
-- [Euclid’s lemma](#euclids-lemma)
+- [Euclid's lemma](#euclids-lemma)
 - [The Fundamental Theorem of Arithmetic](#the-fundamental-theorem-of-arithmetic)
 - [Why a prime factorization exists](#why-a-prime-factorization-exists)
 - [Why the factorization is unique](#why-the-factorization-is-unique)
 - [Consequences of unique factorization](#consequences-of-unique-factorization)
-- [The (p)-adic valuation](#the-p-adic-valuation)
+- [The $p$-adic valuation](#the-ppp-adic-valuation)
 - [There are infinitely many primes](#there-are-infinitely-many-primes)
 - [Prime gaps](#prime-gaps)
 - [The Prime Number Theorem](#the-prime-number-theorem)
-- [\[
-\frac${B}${\ln B}](#fracbln-b)
 - [A note on the Riemann Hypothesis](#a-note-on-the-riemann-hypothesis)
 - [Prime density and cryptographic prime generation](#prime-density-and-cryptographic-prime-generation)
 - [Generating candidates in Python](#generating-candidates-in-python)
@@ -130,77 +128,77 @@ So in this first prime-number reference we will connect three viewpoints:
 
 An integer
 
-\[
+$$
 p>1
-\]
+$$
 
 is **prime** if its only positive divisors are
 
-\[
+$$
 1
-\]
+$$
 
 and
 
-\[
+$$
 p.
-\]
+$$
 
 An integer
 
-\[
+$$
 n>1
-\]
+$$
 
 that is not prime is **composite**.
 
-Equivalently, \(n\) is composite if it can be written as
+Equivalently, $n$ is composite if it can be written as
 
-\[
+$$
 n=ab
-\]
+$$
 
 with
 
-\[
+$$
 1<a<n
-\]
+$$
 
 and
 
-\[
+$$
 1<b<n.
-\]
+$$
 
 The integer
 
-\[
+$$
 1
-\]
+$$
 
 is neither prime nor composite.
 
 The first few primes are
 
-\[
+$$
 2,3,5,7,11,13,17,19,23,29,31,37,\ldots
-\]
+$$
 
 while the first few composite numbers are
 
-\[
+$$
 4,6,8,9,10,12,14,15,16,18,20,21,\ldots
-\]
+$$
 
-The prime \(2\) is special because it is the only even prime.
+The prime $2$ is special because it is the only even prime.
 
 Every integer
 
-\[
+$$
 n>2
-\]
+$$
 
-that is even is divisible by \(2\), and therefore composite.
+that is even is divisible by $2$, and therefore composite.
 
 ---
 
@@ -210,43 +208,43 @@ Inside the ordinary integers, we often move freely between two descriptions of a
 
 One description is based on factorization.
 
-A positive integer \(p>1\) is irreducible when
+A positive integer $p>1$ is irreducible when
 
-\[
+$$
 p=ab
-\]
+$$
 
 forces one factor to be a unit.
 
-Inside \(\mathbb Z\), the units are
+Inside $\mathbb Z$, the units are
 
-\[
+$$
 \pm1.
-\]
+$$
 
 Another description is based on divisibility.
 
-A nonzero nonunit \(p\) is a **prime element** when:
+A nonzero nonunit $p$ is a **prime element** when:
 
-\[
+$$
 p\mid ab
 \quad\Longrightarrow\quad
 p\mid a
 \text{ or }
 p\mid b.
-\]
+$$
 
 In the integers,
 
-\[
+$$
 \boxed{
 \text{prime}
 \iff
 \text{irreducible}.
 }
-\]
+$$
 
-This equivalence is one of the structural reasons unique factorization works so cleanly in \(\mathbb Z\).
+This equivalence is one of the structural reasons unique factorization works so cleanly in $\mathbb Z$.
 
 But it is not true in every integral domain.
 
@@ -254,53 +252,53 @@ But it is not true in every integral domain.
 
 Consider the ring
 
-\[
+$$
 \mathbb Z[\sqrt{-5}]
 =
 \{
 a+b\sqrt{-5}:
 a,b\in\mathbb Z
 \}.
-\]
+$$
 
 Inside this ring,
 
-\[
+$$
 6
 =
 2\cdot3
-\]
+$$
 
 but also:
 
-\[
+$$
 6
 =
 (1+\sqrt{-5})
 (1-\sqrt{-5}).
-\]
+$$
 
 These are genuinely different factorizations into irreducible elements.
 
 The norm
 
-\[
+$$
 N(a+b\sqrt{-5})
 =
 a^2+5b^2
-\]
+$$
 
 helps show that the relevant factors cannot be decomposed further into nonunits.
 
-So unique factorization can fail outside \(\mathbb Z\).
+So unique factorization can fail outside $\mathbb Z$.
 
 This distinction eventually leads into deeper algebraic number theory, ideals, and class groups.
 
 For the present reference, however, we work primarily inside:
 
-\[
+$$
 \mathbb Z,
-\]
+$$
 
 where prime factorization is unique.
 
@@ -312,23 +310,23 @@ One of the key properties distinguishing primes is the following.
 
 ### Euclid's Lemma
 
-If \(p\) is prime and
+If $p$ is prime and
 
-\[
+$$
 p\mid ab,
-\]
+$$
 
 then:
 
-\[
+$$
 \boxed{
 p\mid a
 \quad\text{or}\quad
 p\mid b.
 }
-\]
+$$
 
-This is stronger than simply saying that \(p\) has no nontrivial factors.
+This is stronger than simply saying that $p$ has no nontrivial factors.
 
 It tells us how primes interact with products.
 
@@ -336,71 +334,71 @@ It tells us how primes interact with products.
 
 Suppose:
 
-\[
+$$
 p\mid ab.
-\]
+$$
 
 If:
 
-\[
+$$
 p\mid a,
-\]
+$$
 
 we are done.
 
 Otherwise:
 
-\[
+$$
 p\nmid a.
-\]
+$$
 
-Since \(p\) is prime, the only possible positive common divisors of \(p\) and \(a\) are \(1\) and \(p\).
+Since $p$ is prime, the only possible positive common divisors of $p$ and $a$ are $1$ and $p$.
 
-But \(p\nmid a\), so:
+But $p\nmid a$, so:
 
-\[
+$$
 \gcd(p,a)=1.
-\]
+$$
 
-Bézout's identity therefore gives integers \(u,v\) satisfying:
+Bézout's identity therefore gives integers $u,v$ satisfying:
 
-\[
+$$
 up+va=1.
-\]
+$$
 
-Multiply everything by \(b\):
+Multiply everything by $b$:
 
-\[
+$$
 ubp+vab=b.
-\]
+$$
 
 Now:
 
-\[
+$$
 p\mid ubp,
-\]
+$$
 
 and because:
 
-\[
+$$
 p\mid ab,
-\]
+$$
 
 we also have:
 
-\[
+$$
 p\mid vab.
-\]
+$$
 
-Therefore \(p\) divides their sum:
+Therefore $p$ divides their sum:
 
-\[
+$$
 p\mid b.
-\]
+$$
 
 Thus:
 
-\[
+$$
 \boxed{
 p\mid ab
 \Longrightarrow
@@ -408,23 +406,23 @@ p\mid a
 \text{ or }
 p\mid b.
 }
-\]
+$$
 
 ### More than two factors
 
 By induction:
 
-\[
+$$
 p\mid a_1a_2\cdots a_k
-\]
+$$
 
 implies:
 
-\[
+$$
 p\mid a_i
-\]
+$$
 
-for at least one index \(i\).
+for at least one index $i$.
 
 This apparently small lemma is the key to proving uniqueness of prime factorization.
 
@@ -432,17 +430,17 @@ This apparently small lemma is the key to proving uniqueness of prime factorizat
 
 ## The Fundamental Theorem of Arithmetic
 
-The Fundamental Theorem of Arithmetic states that every integer greater than \(1\) can be expressed as a product of primes, and that this decomposition is unique up to the ordering of the factors.
+The Fundamental Theorem of Arithmetic states that every integer greater than $1$ can be expressed as a product of primes, and that this decomposition is unique up to the ordering of the factors.
 
 More precisely, every integer
 
-\[
+$$
 n>1
-\]
+$$
 
 can be written uniquely as:
 
-\[
+$$
 \boxed{
 n
 =
@@ -451,23 +449,23 @@ p_2^{\alpha_2}
 \cdots
 p_r^{\alpha_r}
 }
-\]
+$$
 
 where:
 
-\[
+$$
 p_1<p_2<\cdots<p_r
-\]
+$$
 
 are distinct primes and:
 
-\[
+$$
 \alpha_i\ge1.
-\]
+$$
 
-For a nonzero integer \(z\), we may include the sign as a unit:
+For a nonzero integer $z$, we may include the sign as a unit:
 
-\[
+$$
 z
 =
 u
@@ -476,17 +474,17 @@ p_1^{\alpha_1}
 p_r^{\alpha_r},
 \qquad
 u\in\{-1,1\}.
-\]
+$$
 
 The theorem has two logically separate parts:
 
-\[
+$$
 \boxed{
 \text{existence}
 +
 \text{uniqueness}.
 }
-\]
+$$
 
 ---
 
@@ -494,27 +492,27 @@ The theorem has two logically separate parts:
 
 Let:
 
-\[
+$$
 n>1.
-\]
+$$
 
-If \(n\) is prime, then it is already a product of primes.
+If $n$ is prime, then it is already a product of primes.
 
 If it is composite, then:
 
-\[
+$$
 n=ab
-\]
+$$
 
 for integers satisfying:
 
-\[
+$$
 1<a<n,
 \qquad
 1<b<n.
-\]
+$$
 
-If \(a\) and \(b\) are prime, we are done.
+If $a$ and $b$ are prime, we are done.
 
 If one is composite, factor it again.
 
@@ -526,9 +524,9 @@ At termination, every remaining factor is prime.
 
 Therefore every integer:
 
-\[
+$$
 n>1
-\]
+$$
 
 has at least one prime factorization.
 
@@ -536,39 +534,39 @@ has at least one prime factorization.
 
 ## Why the factorization is unique
 
-Suppose \(n\) has two prime factorizations:
+Suppose $n$ has two prime factorizations:
 
-\[
+$$
 n
 =
 p_1p_2\cdots p_r
 =
 q_1q_2\cdots q_s.
-\]
+$$
 
 Because:
 
-\[
+$$
 p_1
 \mid
 q_1q_2\cdots q_s,
-\]
+$$
 
 Euclid's lemma tells us that:
 
-\[
+$$
 p_1\mid q_j
-\]
+$$
 
-for some \(j\).
+for some $j$.
 
-But both \(p_1\) and \(q_j\) are prime.
+But both $p_1$ and $q_j$ are prime.
 
 Therefore:
 
-\[
+$$
 p_1=q_j.
-\]
+$$
 
 After reordering the second factorization, cancel the common prime.
 
@@ -580,12 +578,12 @@ Thus the two factorizations differ only in ordering.
 
 Therefore:
 
-\[
+$$
 \boxed{
 \text{prime factorization in }\mathbb Z
 \text{ is unique}.
 }
-\]
+$$
 
 This is one of the fundamental structural properties of the integers.
 
@@ -597,21 +595,21 @@ Prime factorization allows many arithmetic questions to become questions about e
 
 Suppose:
 
-\[
+$$
 a
 =
 \prod_p
 p^{\alpha_p}
-\]
+$$
 
 and:
 
-\[
+$$
 b
 =
 \prod_p
 p^{\beta_p},
-\]
+$$
 
 where all but finitely many exponents are zero.
 
@@ -619,79 +617,79 @@ where all but finitely many exponents are zero.
 
 Then:
 
-\[
+$$
 \boxed{
 a\mid b
 \iff
 \alpha_p\le\beta_p
 \text{ for every prime }p.
 }
-\]
+$$
 
 For example:
 
-\[
+$$
 12
 =
 2^2\cdot3
-\]
+$$
 
 divides:
 
-\[
+$$
 360
 =
 2^3\cdot3^2\cdot5
-\]
+$$
 
 because:
 
-\[
+$$
 2\le3
-\]
+$$
 
-for the exponent of \(2\), and:
+for the exponent of $2$, and:
 
-\[
+$$
 1\le2
-\]
+$$
 
-for the exponent of \(3\).
+for the exponent of $3$.
 
 ### Greatest common divisor
 
 The GCD takes the minimum exponent of every prime:
 
-\[
+$$
 \boxed{
 \gcd(a,b)
 =
 \prod_p
 p^{\min(\alpha_p,\beta_p)}.
 }
-\]
+$$
 
 ### Least common multiple
 
 The LCM takes the maximum:
 
-\[
+$$
 \boxed{
 \operatorname{lcm}(a,b)
 =
 \prod_p
 p^{\max(\alpha_p,\beta_p)}.
 }
-\]
+$$
 
 That immediately explains:
 
-\[
+$$
 \gcd(a,b)
 \operatorname{lcm}(a,b)
 =
 |ab|.
-\]
+$$
 
 ### Perfect squares
 
@@ -699,19 +697,19 @@ An integer is a perfect square exactly when every prime exponent is even.
 
 For example:
 
-\[
+$$
 3600
 =
 2^4\cdot3^2\cdot5^2
-\]
+$$
 
 is a square because every exponent is even.
 
 Indeed:
 
-\[
+$$
 3600=60^2.
-\]
+$$
 
 ### Square-free integers
 
@@ -719,31 +717,31 @@ A positive integer is **square-free** when no square of a prime divides it.
 
 Equivalently:
 
-\[
+$$
 n
 =
 p_1p_2\cdots p_r
-\]
+$$
 
-with every prime appearing with exponent exactly \(1\).
+with every prime appearing with exponent exactly $1$.
 
 For example:
 
-\[
+$$
 30
 =
 2\cdot3\cdot5
-\]
+$$
 
 is square-free.
 
 But:
 
-\[
+$$
 12
 =
 2^2\cdot3
-\]
+$$
 
 is not.
 
@@ -751,27 +749,27 @@ Square-free structure will reappear in Korselt's criterion for Carmichael number
 
 ---
 
-## The \(p\)-adic valuation
+## The $p$-adic valuation
 
 Unique factorization lets us isolate the exponent of one particular prime.
 
-Let \(p\) be prime and let:
+Let $p$ be prime and let:
 
-\[
+$$
 n\neq0.
-\]
+$$
 
-The **\(p\)-adic valuation** of \(n\), written:
+The **$p$-adic valuation** of $n$, written:
 
-\[
+$$
 v_p(n),
-\]
+$$
 
-is the exponent of \(p\) in the prime factorization of \(n\).
+is the exponent of $p$ in the prime factorization of $n$.
 
 Equivalently:
 
-\[
+$$
 \boxed{
 v_p(n)
 =
@@ -781,64 +779,64 @@ k\ge0:
 p^k\mid n
 \}.
 }
-\]
+$$
 
 For example:
 
-\[
+$$
 360
 =
 2^3\cdot3^2\cdot5,
-\]
+$$
 
 so:
 
-\[
+$$
 v_2(360)=3,
-\]
+$$
 
-\[
+$$
 v_3(360)=2,
-\]
+$$
 
-\[
+$$
 v_5(360)=1,
-\]
+$$
 
 and:
 
-\[
+$$
 v_7(360)=0.
-\]
+$$
 
 The valuation converts multiplication into addition:
 
-\[
+$$
 \boxed{
 v_p(ab)
 =
 v_p(a)+v_p(b).
 }
-\]
+$$
 
 Likewise:
 
-\[
+$$
 v_p(a^m)
 =
 m\,v_p(a).
-\]
+$$
 
 And:
 
-\[
+$$
 v_p(\gcd(a,b))
 =
 \min
 \{
 v_p(a),v_p(b)
 \}.
-\]
+$$
 
 These identities are simply unique factorization written locally at one prime.
 
@@ -862,61 +860,61 @@ Euclid proved that this cannot happen.
 
 Assume there are only finitely many primes:
 
-\[
+$$
 p_1,p_2,\ldots,p_k.
-\]
+$$
 
 Construct:
 
-\[
+$$
 N
 =
 p_1p_2\cdots p_k+1.
-\]
+$$
 
 Clearly:
 
-\[
+$$
 N>1.
-\]
+$$
 
-Therefore \(N\) has some prime divisor \(q\).
+Therefore $N$ has some prime divisor $q$.
 
-But for every \(p_i\),
+But for every $p_i$,
 
-\[
+$$
 N
 \equiv1
 \pmod{p_i}.
-\]
+$$
 
 So none of the primes:
 
-\[
+$$
 p_1,\ldots,p_k
-\]
+$$
 
-divides \(N\).
+divides $N$.
 
-Therefore \(q\) is a prime that was not on our supposedly complete list.
+Therefore $q$ is a prime that was not on our supposedly complete list.
 
 Contradiction.
 
 Hence:
 
-\[
+$$
 \boxed{
 \text{there are infinitely many primes}.
 }
-\]
+$$
 
 A subtle point is worth remembering.
 
 The number:
 
-\[
+$$
 p_1p_2\cdots p_k+1
-\]
+$$
 
 does **not** itself need to be prime.
 
@@ -932,47 +930,47 @@ Although there are infinitely many primes, primes do not appear at fixed interva
 
 In fact, there are arbitrarily long runs of consecutive composite integers.
 
-Given any positive integer \(k\), consider:
+Given any positive integer $k$, consider:
 
-\[
+$$
 (k+1)!+2,
-\]
+$$
 
-\[
+$$
 (k+1)!+3,
-\]
+$$
 
-\[
+$$
 \ldots,
-\]
+$$
 
-\[
+$$
 (k+1)!+(k+1).
-\]
+$$
 
 For every:
 
-\[
+$$
 j\in\{2,\ldots,k+1\},
-\]
+$$
 
 the number:
 
-\[
+$$
 (k+1)!+j
-\]
+$$
 
-is divisible by \(j\).
+is divisible by $j$.
 
-Therefore all \(k\) numbers are composite.
+Therefore all $k$ numbers are composite.
 
 So:
 
-\[
+$$
 \boxed{
 \text{prime gaps can be arbitrarily large}.
 }
-\]
+$$
 
 This does not contradict the fact that primes have a regular global density.
 
@@ -984,41 +982,41 @@ Local irregularity and global statistical structure coexist.
 
 Let:
 
-\[
+$$
 \pi(x)
-\]
+$$
 
 denote the number of primes satisfying:
 
-\[
+$$
 p\le x.
-\]
+$$
 
 The **Prime Number Theorem** states:
 
-\[
+$$
 \boxed{
 \pi(x)
 \sim
 \frac{x}{\ln x}.
 }
-\]
+$$
 
 Equivalently:
 
-\[
+$$
 \lim_{x\rightarrow\infty}
 \frac{\pi(x)}
 {x/\ln x}
 =
 1.
-\]
+$$
 
-So near a large number \(x\), the rough density of primes is:
+So near a large number $x$, the rough density of primes is:
 
-\[
+$$
 \frac1{\ln x}.
-\]
+$$
 
 This does not predict exactly where the next prime is located.
 
@@ -1026,33 +1024,33 @@ Instead, it gives an asymptotic description of how frequently primes occur.
 
 For example, a rough estimate for the number of primes in:
 
-\[
+$$
 [A,B]
-\]
+$$
 
 is:
 
-\[
+$$
 \frac{B}{\ln B}
 -
 \frac{A}{\ln A}.
-\]
+$$
 
 For better numerical estimates one can use the logarithmic integral:
 
-\[
+$$
 \operatorname{Li}(x).
-\]
+$$
 
 The important conceptual lesson is:
 
-\[
+$$
 \boxed{
 \text{primes look irregular locally}
 \quad\text{but}\quad
 \text{their global density is highly structured}.
 }
-\]
+$$
 
 ---
 
@@ -1064,23 +1062,23 @@ Very roughly, the zeros of the Riemann zeta function govern fluctuations in prim
 
 The Prime Number Theorem gives the leading approximation:
 
-\[
+$$
 \pi(x)
 \sim
 \frac{x}{\ln x}.
-\]
+$$
 
 The Riemann Hypothesis would imply much stronger control over the error between prime-counting functions and their approximations.
 
 So the connection is:
 
-\[
+$$
 \boxed{
 \text{zeta zeros}
 \longleftrightarrow
 \text{fine structure in prime distribution}.
 }
-\]
+$$
 
 We do not need that analytic machinery for cryptographic prime generation, but it shows how deep the study of primes eventually becomes.
 
@@ -1090,27 +1088,27 @@ We do not need that analytic machinery for cryptographic prime generation, but i
 
 The Prime Number Theorem also explains something practical.
 
-Suppose we search for a \(k\)-bit prime.
+Suppose we search for a $k$-bit prime.
 
-A \(k\)-bit integer has size roughly:
+A $k$-bit integer has size roughly:
 
-\[
+$$
 2^k.
-\]
+$$
 
 Near that size, the probability that a random integer is prime is approximately:
 
-\[
+$$
 \frac{1}{\ln(2^k)}
 =
 \frac{1}{k\ln2}.
-\]
+$$
 
-But except for \(2\), every prime is odd.
+But except for $2$, every prime is odd.
 
 If we generate **only odd candidates**, the approximate prime density doubles:
 
-\[
+$$
 \boxed{
 \Pr[
 \text{random odd }k\text{-bit candidate is prime}
@@ -1118,23 +1116,23 @@ If we generate **only odd candidates**, the approximate prime density doubles:
 \approx
 \frac{2}{k\ln2}.
 }
-\]
+$$
 
 So the expected number of odd candidates before encountering a prime is approximately:
 
-\[
+$$
 \boxed{
 \frac{k\ln2}{2}.
 }
-\]
+$$
 
-For example, around \(2048\) bits this is roughly:
+For example, around $2048$ bits this is roughly:
 
-\[
+$$
 \frac{2048\ln2}{2}
 \approx
 710.
-\]
+$$
 
 This does **not** mean prime generation requires trial division against every possible factor.
 
@@ -1285,43 +1283,43 @@ It does **not** give us an efficient algorithm for finding it.
 
 Take:
 
-\[
+$$
 1275.
-\]
+$$
 
 By elementary divisibility:
 
-\[
+$$
 1275
 =
 3\cdot425
-\]
+$$
 
 and:
 
-\[
+$$
 425
 =
 5\cdot85.
-\]
+$$
 
 Then:
 
-\[
+$$
 85
 =
 5\cdot17.
-\]
+$$
 
 So:
 
-\[
+$$
 \boxed{
 1275
 =
 3\cdot5^2\cdot17.
 }
-\]
+$$
 
 A different sequence of divisions must eventually reach the same prime factors because factorization is unique.
 
@@ -1333,48 +1331,48 @@ For carefully generated cryptographic semiprimes, the computational problem is e
 
 ## Input size matters
 
-Suppose the integer to be factored is \(N\).
+Suppose the integer to be factored is $N$.
 
-The natural input size is not \(N\) itself.
+The natural input size is not $N$ itself.
 
 It is approximately the number of bits required to represent it:
 
-\[
+$$
 \boxed{
 \ell
 =
 \lfloor\log_2N\rfloor+1.
 }
-\]
+$$
 
 An algorithm performing:
 
-\[
+$$
 O(N)
-\]
+$$
 
 operations is therefore exponential in the input length.
 
 Even trial division up to:
 
-\[
+$$
 \sqrt N
-\]
+$$
 
 requires approximately:
 
-\[
+$$
 2^{\ell/2}
-\]
+$$
 
-candidate-scale work for an \(\ell\)-bit number.
+candidate-scale work for an $\ell$-bit number.
 
 That is why trial division becomes useless for cryptographic RSA moduli.
 
 More sophisticated classical algorithms exist, including:
 
-- Pollard's \(\rho\),
-- Pollard's \(p-1\),
+- Pollard's $\rho$,
+- Pollard's $p-1$,
 - the quadratic sieve,
 - the general number field sieve.
 
@@ -1388,27 +1386,27 @@ We will study these separately rather than compressing all of integer factorizat
 
 A very important distinction is:
 
-\[
+$$
 \boxed{
 \text{primality testing}
 \neq
 \text{integer factorization}.
 }
-\]
+$$
 
 Suppose we are given:
 
-\[
+$$
 N.
-\]
+$$
 
 The primality-testing problem asks:
 
-> Is \(N\) prime?
+> Is $N$ prime?
 
 The factorization problem asks:
 
-> If \(N\) is composite, what are its prime factors?
+> If $N$ is composite, what are its prime factors?
 
 A primality test can prove or provide overwhelming evidence that a number is composite without giving us its factors.
 
@@ -1424,7 +1422,7 @@ is much less information than:
 N = pq
 ```
 
-with explicit \(p\) and \(q\).
+with explicit $p$ and $q$.
 
 This distinction is especially important cryptographically.
 
@@ -1432,11 +1430,11 @@ Primality testing is known to admit deterministic polynomial-time algorithms.
 
 The AKS result established:
 
-\[
+$$
 \boxed{
 \mathrm{PRIMES}\in\mathbf P.
 }
-\]
+$$
 
 No polynomial-time classical algorithm is currently known for general integer factorization.
 
@@ -1460,9 +1458,9 @@ It is worth separating theory from experimental demonstrations.
 
 In 2001, an NMR-based quantum experiment demonstrated a small instance of Shor's algorithm by factoring:
 
-\[
+$$
 15=3\cdot5.
-\]
+$$
 
 That experiment was historically important as a demonstration of quantum-control techniques.
 
@@ -1486,7 +1484,7 @@ So the old challenge numbers remain valuable historical benchmarks, but they sho
 
 The lesson that remains relevant is broader:
 
-\[
+$$
 \boxed{
 \text{factorization security depends on}
 \text{ parameter size}
@@ -1495,7 +1493,7 @@ The lesson that remains relevant is broader:
 +
 \text{ computational resources}.
 }
-\]
+$$
 
 This is why cryptographic key sizes cannot be chosen simply by saying that a number "looks large."
 
@@ -1587,12 +1585,12 @@ for p, exponent in F:
 
 This directly exposes the representation:
 
-\[
+$$
 n
 =
 \prod_i
 p_i^{e_i}.
-\]
+$$
 
 ### Prime versus composite
 
@@ -1622,51 +1620,51 @@ Prime structure appears throughout cryptography, but in several different roles.
 
 RSA generates secret primes:
 
-\[
+$$
 p
 \qquad\text{and}\qquad
 q
-\]
+$$
 
 and publishes:
 
-\[
+$$
 N=pq.
-\]
+$$
 
 Multiplication is trivial.
 
 Recovering:
 
-\[
+$$
 p,q
-\]
+$$
 
-from \(N\) is intended to be computationally hard.
+from $N$ is intended to be computationally hard.
 
 So RSA depends directly on the gap between:
 
-\[
+$$
 \boxed{
 \text{easy multiplication}
 }
-\]
+$$
 
 and:
 
-\[
+$$
 \boxed{
 \text{hard factor recovery}.
 }
-\]
+$$
 
 ### Modular groups
 
-When \(p\) is prime:
+When $p$ is prime:
 
-\[
+$$
 \mathbb Z_p
-\]
+$$
 
 is a field.
 
@@ -1674,9 +1672,9 @@ Therefore every nonzero element has an inverse.
 
 Its multiplicative group has order:
 
-\[
+$$
 p-1.
-\]
+$$
 
 That simple fact supports:
 
@@ -1690,9 +1688,9 @@ That simple fact supports:
 
 Many cryptographic protocols deliberately work inside groups of prime order:
 
-\[
+$$
 q.
-\]
+$$
 
 Prime order gives particularly clean subgroup structure.
 
@@ -1756,9 +1754,9 @@ That distinction is one of the most important lessons to carry forward.
 
 Classify:
 
-\[
+$$
 1,\quad2,\quad17,\quad21,\quad97,\quad121.
-\]
+$$
 
 For every composite value, give a nontrivial factorization.
 
@@ -1766,21 +1764,21 @@ For every composite value, give a nontrivial factorization.
 
 Suppose:
 
-\[
+$$
 7\mid ab
-\]
+$$
 
 and:
 
-\[
+$$
 7\nmid a.
-\]
+$$
 
 Use Bézout's identity to explain why:
 
-\[
+$$
 7\mid b.
-\]
+$$
 
 Do not merely quote Euclid's lemma.
 
@@ -1790,23 +1788,23 @@ Reconstruct its proof.
 
 Factor:
 
-\[
+$$
 7560
-\]
+$$
 
 into primes.
 
 Then express:
 
-\[
+$$
 \gcd(7560,3600)
-\]
+$$
 
 and:
 
-\[
+$$
 \operatorname{lcm}(7560,3600)
-\]
+$$
 
 directly from the prime exponents.
 
@@ -1814,13 +1812,13 @@ directly from the prime exponents.
 
 Without computing a square root directly, determine whether:
 
-\[
+$$
 2^8 3^4 5^2 7^6
-\]
+$$
 
 is a perfect square.
 
-Now change the exponent of \(7\) from \(6\) to \(5\).
+Now change the exponent of $7$ from $6$ to $5$.
 
 What changes?
 
@@ -1828,27 +1826,27 @@ What changes?
 
 Compute:
 
-\[
+$$
 v_2(3600),
-\]
+$$
 
-\[
+$$
 v_3(3600),
-\]
+$$
 
 and:
 
-\[
+$$
 v_5(3600).
-\]
+$$
 
 Then verify:
 
-\[
+$$
 v_2(3600^3)
 =
 3v_2(3600).
-\]
+$$
 
 ### Exercise 6 — Arbitrarily long composite runs
 
@@ -1860,21 +1858,21 @@ Verify the divisibility of each one.
 
 Using the Prime Number Theorem, estimate:
 
-\[
+$$
 \pi(10^6).
-\]
+$$
 
 Then compare the approximation with the actual value using SageMath.
 
 ### Exercise 8 — Cryptographic candidate density
 
-For \(k=1024\), estimate:
+For $k=1024$, estimate:
 
-\[
+$$
 \frac{2}{k\ln2}.
-\]
+$$
 
-Interpret the result as the approximate probability that a random odd \(1024\)-bit integer is prime.
+Interpret the result as the approximate probability that a random odd $1024$-bit integer is prime.
 
 Then estimate the expected number of candidates before finding a prime.
 
@@ -1899,19 +1897,19 @@ even though the two problems clearly interact.
 You should now be able to explain:
 
 1. The difference between prime and composite integers.
-2. Why prime and irreducible elements coincide in \(\mathbb Z\).
+2. Why prime and irreducible elements coincide in $\mathbb Z$.
 3. Why that equivalence need not hold in arbitrary rings.
 4. Euclid's lemma and its connection to Bézout's identity.
 5. The existence and uniqueness parts of the Fundamental Theorem of Arithmetic.
 6. Why prime exponent vectors determine divisibility.
 7. Why GCD uses minimum exponents and LCM uses maximum exponents.
-8. What \(v_p(n)\) measures.
+8. What $v_p(n)$ measures.
 9. Euclid's proof that infinitely many primes exist.
 10. Why arbitrarily long prime gaps can occur.
 11. What
-    \[
+    $$
     \pi(x)\sim\frac{x}{\ln x}
-    \]
+    $$
     means.
 12. Why the Prime Number Theorem makes random prime search practical.
 13. Why a random odd candidate is not automatically prime.
@@ -1964,9 +1962,9 @@ Nature, 2001.
 
 A historically important experimental demonstration using the small instance:
 
-\[
+$$
 15=3\cdot5.
-\]
+$$
 
 ---
 
@@ -1976,7 +1974,7 @@ We now know what a prime **is**, why prime factorization exists uniquely, and wh
 
 The next computational question is therefore:
 
-> Given a large candidate \(n\), how do we actually decide whether it is prime?
+> Given a large candidate $n$, how do we actually decide whether it is prime?
 
 Trial division works for tiny examples.
 
@@ -1984,7 +1982,7 @@ For cryptographic-size candidates, it does not.
 
 That takes us into:
 
-\[
+$$
 \text{Fermat tests}
 \rightarrow
 \text{pseudoprimes}
@@ -1994,6 +1992,6 @@ That takes us into:
 \text{Miller-Rabin}
 \rightarrow
 \text{practical prime generation}.
-\]
+$$
 
 **Next: Prime Numbers II — Primality Testing and Probable Primes.**

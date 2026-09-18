@@ -22,7 +22,7 @@ draft: false
 
 In Part II of our study of primes, we developed the Miller-Rabin primality test and saw why it is dramatically stronger than a simple Fermat test.
 
-For an odd composite integer \(n\), a random Miller-Rabin base detects compositeness with high probability.
+For an odd composite integer $n$, a random Miller-Rabin base detects compositeness with high probability.
 
 More precisely, the set of strong-liar bases is bounded by a fraction of the available bases.
 
@@ -32,13 +32,13 @@ That naturally raises a more adversarial question:
 
 Suppose an implementation always tests:
 
-\[
+$$
 a_1,a_2,\ldots,a_t
-\]
+$$
 
 and those bases are publicly known.
 
-Can we deliberately construct a composite integer \(N\) that is a strong pseudoprime to every one of those particular bases?
+Can we deliberately construct a composite integer $N$ that is a strong pseudoprime to every one of those particular bases?
 
 The answer is yes.
 
@@ -46,19 +46,19 @@ This does **not** break the mathematical guarantee of randomized Miller-Rabin.
 
 Instead, it exposes a different security model:
 
-\[
+$$
 \boxed{
 \text{random candidate + random bases}
 }
-\]
+$$
 
 is not the same problem as:
 
-\[
+$$
 \boxed{
 \text{adversarial candidate + predictable fixed bases}.
 }
-\]
+$$
 
 The distinction is the central subject of this article.
 
@@ -82,11 +82,11 @@ We will study:
 - [Testing a fixed base in Python](#testing-a-fixed-base-in-python)
 - [Historical context](#historical-context)
 - [Why Carmichael numbers are not enough](#why-carmichael-numbers-are-not-enough)
-- [Korselt’s criterion](#korselts-criterion)
-- [The structural idea behind Arnault’s construction](#the-structural-idea-behind-arnaults-construction)
+- [Korselt's criterion](#korselts-criterion)
+- [The structural idea behind Arnault's construction](#the-structural-idea-behind-arnaults-construction)
 - [Controlling quadratic characters](#controlling-quadratic-characters)
-- [Translating conditions onto (p_1)](#translating-conditions-onto-p_1)
-- [Why the (k_i) are chosen carefully](#why-the-k_i-are-chosen-carefully)
+- [Translating conditions onto $p_1$](#translating-conditions-onto-p1p_1p1)
+- [Why the $k_i$ are chosen carefully](#why-the-kik_iki-are-chosen-carefully)
 - [From local residue conditions to CRT](#from-local-residue-conditions-to-crt)
 - [Constructing the prime factors](#constructing-the-prime-factors)
 - [The construction pipeline](#the-construction-pipeline)
@@ -101,7 +101,7 @@ We will study:
 - [Bounded deterministic Miller-Rabin](#bounded-deterministic-miller-rabin)
 - [Why adding more fixed bases is not a complete argument](#why-adding-more-fixed-bases-is-not-a-complete-argument)
 - [Random versus adversarial candidate generation](#random-versus-adversarial-candidate-generation)
-- [Related approach: Bleichenbacher’s construction](#related-approach-bleichenbachers-construction)
+- [Related approach: Bleichenbacher's construction](#related-approach-bleichenbachers-construction)
 - [Meet-in-the-middle subset search](#meet-in-the-middle-subset-search)
 - [Why this belongs after polynomial congruences](#why-this-belongs-after-polynomial-congruences)
 - [The security lesson](#the-security-lesson)
@@ -120,81 +120,81 @@ Recall the Miller-Rabin condition.
 
 Let:
 
-\[
+$$
 n>2
-\]
+$$
 
 be odd, and write:
 
-\[
+$$
 n-1
 =
 2^s d,
-\]
+$$
 
-where \(d\) is odd.
+where $d$ is odd.
 
-For a base \(a\) satisfying:
+For a base $a$ satisfying:
 
-\[
+$$
 \gcd(a,n)=1,
-\]
+$$
 
 a Miller-Rabin round accepts if either:
 
-\[
+$$
 a^d
 \equiv1
 \pmod n,
-\]
+$$
 
 or if for some:
 
-\[
+$$
 0\le r<s,
-\]
+$$
 
 we have:
 
-\[
+$$
 a^{2^r d}
 \equiv-1
 \pmod n.
-\]
+$$
 
-If \(n\) is prime, every admissible base satisfies this condition.
+If $n$ is prime, every admissible base satisfies this condition.
 
-If \(n\) is composite but still satisfies the condition for a particular base \(a\), then \(n\) is called a:
+If $n$ is composite but still satisfies the condition for a particular base $a$, then $n$ is called a:
 
-\[
+$$
 \boxed{
 \text{strong pseudoprime to base }a.
 }
-\]
+$$
 
 We may write informally:
 
-\[
+$$
 \operatorname{spsp}(n,a).
-\]
+$$
 
 The important phrase is:
 
-> **to base \(a\)**.
+> **to base $a$**.
 
 Strong pseudoprimality is not an intrinsic binary property of the composite integer alone.
 
 It depends on the chosen base.
 
-A composite may pass base \(2\) and fail base \(3\).
+A composite may pass base $2$ and fail base $3$.
 
 Another may pass:
 
-\[
+$$
 2,3,5,7
-\]
+$$
 
-but fail base \(11\).
+but fail base $11$.
 
 ---
 
@@ -202,11 +202,11 @@ but fail base \(11\).
 
 The standard probabilistic interpretation of Miller-Rabin assumes that bases are selected independently from an appropriate distribution.
 
-For every fixed odd composite \(n\), the strong-liar set is small.
+For every fixed odd composite $n$, the strong-liar set is small.
 
 In the usual formulation:
 
-\[
+$$
 \boxed{
 \Pr[
 \text{random base is a strong liar}
@@ -214,11 +214,11 @@ In the usual formulation:
 \le
 \frac14.
 }
-\]
+$$
 
-Thus \(k\) independent random rounds give the familiar upper bound:
+Thus $k$ independent random rounds give the familiar upper bound:
 
-\[
+$$
 \boxed{
 \Pr[
 \text{fixed composite survives all }k\text{ rounds}
@@ -226,32 +226,32 @@ Thus \(k\) independent random rounds give the familiar upper bound:
 \le
 4^{-k}.
 }
-\]
+$$
 
 But suppose an implementation always uses:
 
-\[
+$$
 A
 =
 \{
 2,3,5,7
 \}.
-\]
+$$
 
 Then the adversary does not need to find a composite that fools a random base.
 
 The task becomes:
 
-\[
+$$
 \boxed{
 \text{find composite }N
 \text{ that fools every }a\in A.
 }
-\]
+$$
 
 That is a completely different construction problem.
 
-The \(1/4\) theorem does not say that every set containing four particular bases must expose every composite.
+The $1/4$ theorem does not say that every set containing four particular bases must expose every composite.
 
 It says that, for each fixed composite, most possible bases are witnesses.
 
@@ -263,15 +263,15 @@ A carefully chosen composite may nevertheless contain a specific finite set of b
 
 Consider:
 
-\[
+$$
 N
 =
 3215031751.
-\]
+$$
 
 It is composite:
 
-\[
+$$
 \boxed{
 3215031751
 =
@@ -281,13 +281,13 @@ It is composite:
 \cdot
 28351.
 }
-\]
+$$
 
 Yet it is a strong pseudoprime to each of the bases:
 
-\[
+$$
 2,3,5,7.
-\]
+$$
 
 So a primality routine consisting only of:
 
@@ -300,7 +300,7 @@ Miller-Rabin base 7
 
 would accept this composite.
 
-But base \(11\) exposes it.
+But base $11$ exposes it.
 
 This is the correct mental model:
 
@@ -433,47 +433,47 @@ They reused and extended classical pseudoprime-construction techniques, includin
 
 So the historical line is:
 
-\[
+$$
 \boxed{
 \text{Arnault}
 \rightarrow
 \text{constructed fixed-base strong pseudoprimes}
 }
-\]
+$$
 
-\[
+$$
 \boxed{
 \text{Bleichenbacher}
 \rightarrow
 \text{demonstrated protocol consequences}
 }
-\]
+$$
 
-\[
+$$
 \boxed{
 \text{Albrecht et al.}
 \rightarrow
 \text{systematic adversarial analysis}
 }
-\]
+$$
 
 ---
 
 ## Why Carmichael numbers are not enough
 
-A Carmichael number \(N\) satisfies:
+A Carmichael number $N$ satisfies:
 
-\[
+$$
 a^{N-1}
 \equiv1
 \pmod N
-\]
+$$
 
 for every:
 
-\[
+$$
 \gcd(a,N)=1.
-\]
+$$
 
 So Carmichael numbers defeat ordinary Fermat testing.
 
@@ -481,13 +481,13 @@ But Miller-Rabin examines more structure.
 
 Therefore:
 
-\[
+$$
 \boxed{
 \text{Carmichael}
 \not\Rightarrow
 \text{strong pseudoprime to every base}.
 }
-\]
+$$
 
 In fact, no odd composite integer can be a strong pseudoprime to every admissible base.
 
@@ -497,7 +497,7 @@ So there is no direct Miller-Rabin analogue of a Carmichael number that fools **
 
 Instead, the construction problem is:
 
-> Given a finite set of bases \(A\), construct a Carmichael number that is also a strong pseudoprime to every \(a\in A\).
+> Given a finite set of bases $A$, construct a Carmichael number that is also a strong pseudoprime to every $a\in A$.
 
 This extra condition is where quadratic characters and the structure of the prime factors become important.
 
@@ -505,37 +505,37 @@ This extra condition is where quadratic characters and the structure of the prim
 
 ## Korselt's criterion
 
-Recall that a composite integer \(N\) is Carmichael if and only if:
+Recall that a composite integer $N$ is Carmichael if and only if:
 
-1. \(N\) is square-free;
+1. $N$ is square-free;
 2. for every prime divisor:
-   \[
+   $$
    p\mid N,
-   \]
+   $$
    we have:
-   \[
+   $$
    p-1\mid N-1.
-   \]
+   $$
 
 Thus, if:
 
-\[
+$$
 N
 =
 p_1p_2\cdots p_h
-\]
+$$
 
-with distinct primes \(p_i\), then we want:
+with distinct primes $p_i$, then we want:
 
-\[
+$$
 \boxed{
 p_i-1
 \mid
 N-1
 }
-\]
+$$
 
-for every \(i\).
+for every $i$.
 
 This provides the first structural constraint in an Arnault-style construction.
 
@@ -545,73 +545,73 @@ This provides the first structural constraint in an Arnault-style construction.
 
 Let:
 
-\[
+$$
 A
 =
 \{
 a_1,\ldots,a_t
 \}
-\]
+$$
 
 be the finite set of Miller-Rabin bases that we want the final composite to pass.
 
 We aim to construct:
 
-\[
+$$
 \boxed{
 N
 =
 p_1p_2\cdots p_h
 }
-\]
+$$
 
-where the \(p_i\) are distinct primes.
+where the $p_i$ are distinct primes.
 
 Arnault-style constructions relate the prime factors by equations of the form:
 
-\[
+$$
 \boxed{
 p_i
 =
 k_i(p_1-1)+1,
 }
-\]
+$$
 
 with:
 
-\[
+$$
 k_1=1.
-\]
+$$
 
 Thus:
 
-\[
+$$
 p_i-1
 =
 k_i(p_1-1).
-\]
+$$
 
 The values:
 
-\[
+$$
 k_2,\ldots,k_h
-\]
+$$
 
 are chosen as part of the construction.
 
 However, the relation
 
-\[
+$$
 p_i=k_i(p_1-1)+1
-\]
+$$
 
-**by itself is not sufficient** to prove that \(N\) is Carmichael.
+**by itself is not sufficient** to prove that $N$ is Carmichael.
 
 Additional congruence constraints are imposed so that:
 
-\[
+$$
 p_i-1\mid N-1
-\]
+$$
 
 holds for every factor.
 
@@ -638,23 +638,23 @@ It is a coordinated system of:
 
 Suppose we want a selected base:
 
-\[
+$$
 a\in A
-\]
+$$
 
-to behave in a particular way modulo every prime factor \(p_i\).
+to behave in a particular way modulo every prime factor $p_i$.
 
 One useful sufficient condition is to control its Legendre symbol:
 
-\[
+$$
 \left(
 \frac{a}{p_i}
 \right).
-\]
+$$
 
 For example, we may require:
 
-\[
+$$
 \boxed{
 \left(
 \frac{a}{p_i}
@@ -662,76 +662,76 @@ For example, we may require:
 =
 -1
 }
-\]
+$$
 
-for every prime factor \(p_i\).
+for every prime factor $p_i$.
 
-That means \(a\) is a quadratic non-residue modulo every \(p_i\).
+That means $a$ is a quadratic non-residue modulo every $p_i$.
 
-Quadratic reciprocity allows this condition to be translated into congruence conditions on \(p_i\).
+Quadratic reciprocity allows this condition to be translated into congruence conditions on $p_i$.
 
-For a fixed prime base \(a\), define a set of acceptable residue classes:
+For a fixed prime base $a$, define a set of acceptable residue classes:
 
-\[
+$$
 S_a
 \subseteq
 \mathbb Z_{4a}
-\]
+$$
 
 such that primes in those residue classes have the desired quadratic-character behavior.
 
 Conceptually:
 
-\[
+$$
 \boxed{
 p\bmod4a
 \in S_a
 \Longrightarrow
 \left(\frac ap\right)=-1.
 }
-\]
+$$
 
-The exact computation of \(S_a\) follows from quadratic reciprocity.
+The exact computation of $S_a$ follows from quadratic reciprocity.
 
 ---
 
-## Translating conditions onto \(p_1\)
+## Translating conditions onto $p_1$
 
 Since:
 
-\[
+$$
 p_i
 =
 k_i(p_1-1)+1,
-\]
+$$
 
 requiring:
 
-\[
+$$
 p_i\bmod4a
 \in S_a
-\]
+$$
 
 gives:
 
-\[
+$$
 k_i(p_1-1)+1
 \in S_a
 \pmod{4a}.
-\]
+$$
 
 Rearrange:
 
-\[
+$$
 k_i p_1
 \in
 S_a+k_i-1
 \pmod{4a}.
-\]
+$$
 
-When \(k_i\) is invertible modulo \(4a\), this becomes:
+When $k_i$ is invertible modulo $4a$, this becomes:
 
-\[
+$$
 \boxed{
 p_1
 \bmod4a
@@ -741,13 +741,13 @@ k_i^{-1}
 S_a+k_i-1
 \right).
 }
-\]
+$$
 
-We need this to hold for every \(i\).
+We need this to hold for every $i$.
 
 Therefore:
 
-\[
+$$
 \boxed{
 p_1\bmod4a
 \in
@@ -757,43 +757,43 @@ k_i^{-1}
 S_a+k_i-1
 \right).
 }
-\]
+$$
 
 This intersection is the important object.
 
-If it is empty, the chosen \(k_i\) values are incompatible with that base.
+If it is empty, the chosen $k_i$ values are incompatible with that base.
 
 If it is nonempty, we may select one admissible residue:
 
-\[
+$$
 z_a.
-\]
+$$
 
 Repeat this process for every:
 
-\[
+$$
 a\in A.
-\]
+$$
 
 ---
 
-## Why the \(k_i\) are chosen carefully
+## Why the $k_i$ are chosen carefully
 
 We want:
 
-\[
+$$
 k_i^{-1}\pmod{4a}
-\]
+$$
 
 to exist.
 
 Therefore:
 
-\[
+$$
 \gcd(k_i,4a)=1.
-\]
+$$
 
-A convenient strategy for a set of prime bases is to choose \(k_i\) as small odd primes distinct from all selected bases.
+A convenient strategy for a set of prime bases is to choose $k_i$ as small odd primes distinct from all selected bases.
 
 This is a construction convenience, not a cryptographic requirement.
 
@@ -803,18 +803,18 @@ The mathematical requirement is invertibility with respect to the moduli appeari
 
 ## From local residue conditions to CRT
 
-For every selected base \(a_j\), suppose we have chosen:
+For every selected base $a_j$, suppose we have chosen:
 
-\[
+$$
 p_1
 \equiv
 z_{a_j}
 \pmod{4a_j}.
-\]
+$$
 
 We now have many simultaneous congruence conditions:
 
-\[
+$$
 \begin{aligned}
 p_1
 &\equiv
@@ -830,74 +830,74 @@ p_1
 z_{a_t}
 \pmod{4a_t}.
 \end{aligned}
-\]
+$$
 
 Additional conditions arise from enforcing the Carmichael property.
 
 For the common three-factor setting:
 
-\[
+$$
 N=p_1p_2p_3,
-\]
+$$
 
 one obtains additional congruence restrictions involving:
 
-\[
+$$
 k_2
-\]
+$$
 
 and:
 
-\[
+$$
 k_3.
-\]
+$$
 
 A typical form is:
 
-\[
+$$
 p_1
 \equiv
 k_3^{-1}
 \pmod{k_2},
-\]
+$$
 
 and:
 
-\[
+$$
 p_1
 \equiv
 k_2^{-1}
 \pmod{k_3}.
-\]
+$$
 
 With pairwise compatible moduli, CRT combines everything into one arithmetic progression:
 
-\[
+$$
 \boxed{
 p_1
 \equiv
 z
 \pmod L.
 }
-\]
+$$
 
-The modulus \(L\) is built from the relevant:
+The modulus $L$ is built from the relevant:
 
-\[
+$$
 4a_j
-\]
+$$
 
 and:
 
-\[
+$$
 k_i
-\]
+$$
 
 constraints.
 
 Schematically:
 
-\[
+$$
 L
 =
 \operatorname{lcm}
@@ -905,15 +905,15 @@ L
 4a_1,\ldots,4a_t,
 k_2,\ldots,k_h
 ).
-\]
+$$
 
 So a complicated set of local restrictions becomes:
 
-\[
+$$
 \boxed{
 p_1=z+jL.
 }
-\]
+$$
 
 That is exactly the kind of local-to-global reconstruction for which CRT is designed.
 
@@ -923,49 +923,49 @@ That is exactly the kind of local-to-global reconstruction for which CRT is desi
 
 Once the CRT stage gives:
 
-\[
+$$
 p_1
 \equiv
 z
 \pmod L,
-\]
+$$
 
 we search the arithmetic progression:
 
-\[
+$$
 p_1
 =
 z+jL.
-\]
+$$
 
-For each candidate \(p_1\), define:
+For each candidate $p_1$, define:
 
-\[
+$$
 p_i
 =
 k_i(p_1-1)+1.
-\]
+$$
 
 We then require:
 
-\[
+$$
 p_1,p_2,\ldots,p_h
-\]
+$$
 
 all to be prime.
 
 If that happens, define:
 
-\[
+$$
 \boxed{
 N
 =
 \prod_{i=1}^{h}
 p_i.
 }
-\]
+$$
 
-The resulting \(N\) is certainly composite.
+The resulting $N$ is certainly composite.
 
 If the Carmichael and quadratic-character conditions were constructed correctly, it also has the desired pseudoprime behavior.
 
@@ -1006,29 +1006,29 @@ for every target base
 
 Notice how many earlier topics from this series have now reappeared:
 
-\[
+$$
 \text{primes}
-\]
+$$
 
-\[
+$$
 \text{Legendre symbols}
-\]
+$$
 
-\[
+$$
 \text{modular inverses}
-\]
+$$
 
-\[
+$$
 \text{CRT}
-\]
+$$
 
-\[
+$$
 \text{Carmichael numbers}
-\]
+$$
 
-\[
+$$
 \text{Miller-Rabin}.
-\]
+$$
 
 This is exactly why the construction makes a good final article in the prime-number sequence.
 
@@ -1038,13 +1038,13 @@ This is exactly why the construction makes a good final article in the prime-num
 
 Suppose:
 
-\[
+$$
 N
 =
 p_1p_2\cdots p_h
-\]
+$$
 
-with all \(p_i\) distinct.
+with all $p_i$ distinct.
 
 To establish Carmichael behavior, we do **not** merely test several Fermat bases.
 
@@ -1052,25 +1052,25 @@ We verify Korselt's criterion.
 
 First:
 
-\[
+$$
 N
-\]
+$$
 
 must be square-free.
 
-That is automatic if all the \(p_i\) are distinct primes.
+That is automatic if all the $p_i$ are distinct primes.
 
 Then verify:
 
-\[
+$$
 \boxed{
 p_i-1
 \mid
 N-1
 }
-\]
+$$
 
-for every \(i\).
+for every $i$.
 
 A validation function can express the theorem directly:
 
@@ -1101,13 +1101,13 @@ We verify the structural theorem.
 
 Being Carmichael gives:
 
-\[
+$$
 a^{N-1}
 \equiv1
 \pmod N
-\]
+$$
 
-for every unit \(a\).
+for every unit $a$.
 
 But for strong pseudoprimality, we additionally need the repeated-squaring chain to have the correct shape.
 
@@ -1115,24 +1115,24 @@ The carefully chosen quadratic-character constraints synchronize how the selecte
 
 The goal is to make every:
 
-\[
+$$
 a\in A
-\]
+$$
 
-satisfy the strong probable-prime condition modulo \(N\).
+satisfy the strong probable-prime condition modulo $N$.
 
 Thus:
 
-\[
+$$
 \boxed{
 N
 \text{ is composite}
 }
-\]
+$$
 
 while simultaneously:
 
-\[
+$$
 \boxed{
 \operatorname{MR}(N,a)
 =
@@ -1140,11 +1140,11 @@ while simultaneously:
 \qquad
 \forall a\in A.
 }
-\]
+$$
 
 This is an **adversarially engineered liar set**.
 
-It does not make \(N\) a strong pseudoprime to every possible base.
+It does not make $N$ a strong pseudoprime to every possible base.
 
 Many other bases will still expose its compositeness.
 
@@ -1189,13 +1189,13 @@ together with independent primality tests on every claimed factor.
 
 The experimental principle is:
 
-\[
+$$
 \boxed{
 \text{construct}
 \rightarrow
 \text{verify independently}.
 }
-\]
+$$
 
 ---
 
@@ -1227,21 +1227,21 @@ constructs the residue classes associated with the required Legendre-symbol beha
 choose_k_values(...)
 ```
 
-chooses candidate \(k_i\) values satisfying the required coprimality conditions.
+chooses candidate $k_i$ values satisfying the required coprimality conditions.
 
 ### 4. Intersection
 
-For every base \(a\):
+For every base $a$:
 
-\[
+$$
 \bigcap_i
 k_i^{-1}
 (S_a+k_i-1)
-\]
+$$
 
 is computed.
 
-Empty intersections reject the current \(k_i\) choice.
+Empty intersections reject the current $k_i$ choice.
 
 ### 5. CRT reconstruction
 
@@ -1249,28 +1249,28 @@ Selected residue classes are combined with the additional Carmichael constraints
 
 The output is:
 
-\[
+$$
 p_1
 \equiv
 z
 \pmod L.
-\]
+$$
 
 ### 6. Prime search
 
 Search:
 
-\[
+$$
 p_1=z+jL.
-\]
+$$
 
 For each candidate, construct:
 
-\[
+$$
 p_i=k_i(p_1-1)+1.
-\]
+$$
 
-Accept only if all \(p_i\) are prime.
+Accept only if all $p_i$ are prime.
 
 ### 7. Independent validation
 
@@ -1278,7 +1278,7 @@ Verify:
 
 - primality of all factors,
 - Korselt's criterion,
-- the exact factorization of \(N\),
+- the exact factorization of $N$,
 - every selected Miller-Rabin base.
 
 The implementation should treat each one as a separate invariant.
@@ -1293,17 +1293,17 @@ Small known examples expose the same logical issue.
 
 For example:
 
-\[
+$$
 3215031751
 =
 151\cdot751\cdot28351
-\]
+$$
 
 passes bases:
 
-\[
+$$
 2,3,5,7.
-\]
+$$
 
 A simple experiment is:
 
@@ -1366,21 +1366,21 @@ It implies something much more precise.
 
 ### Randomized Miller-Rabin remains different
 
-For any fixed odd composite \(N\), most bases are witnesses.
+For any fixed odd composite $N$, most bases are witnesses.
 
-An adversarially constructed \(N\) may contain:
+An adversarially constructed $N$ may contain:
 
-\[
+$$
 2,3,5,7,11
-\]
+$$
 
 inside its strong-liar set.
 
 But it cannot make every possible base a liar.
 
-Selecting bases unpredictably after \(N\) has been chosen changes the adversarial problem.
+Selecting bases unpredictably after $N$ has been chosen changes the adversarial problem.
 
-### The \(1/4\) bound still applies
+### The $1/4$ bound still applies
 
 The strong-liar bound is a theorem about the fraction of possible bases for a fixed composite.
 
@@ -1404,7 +1404,7 @@ is too broad.
 
 For bounded integer ranges, there are proven fixed base sets that classify every input correctly.
 
-For example, for unsigned \(64\)-bit integers, a widely used sufficient set is:
+For example, for unsigned $64$-bit integers, a widely used sufficient set is:
 
 ```python
 MR_BASES_64 = (
@@ -1420,11 +1420,11 @@ MR_BASES_64 = (
 
 The important condition is:
 
-\[
+$$
 \boxed{
 n<2^{64}.
 }
-\]
+$$
 
 Here the fixed bases are not being used probabilistically.
 
@@ -1446,9 +1446,9 @@ can describe two very different situations.
 
 We know mathematically or by exhaustive verification that a chosen base set correctly classifies every:
 
-\[
+$$
 n<B.
-\]
+$$
 
 Then the procedure is deterministic over that range.
 
@@ -1466,11 +1466,11 @@ Then specially constructed strong pseudoprimes may defeat it.
 
 So the real rule is:
 
-\[
+$$
 \boxed{
 \text{fixed bases require a proven input bound}.
 }
-\]
+$$
 
 Without that bound, "we tested many small bases" is not a proof of primality.
 
@@ -1480,27 +1480,27 @@ Without that bound, "we tested many small bases" is not a proof of primality.
 
 Suppose we test:
 
-\[
+$$
 2,3,5,7,11.
-\]
+$$
 
 A counterexample may exist.
 
 So we add:
 
-\[
+$$
 13,17,19,23,29.
-\]
+$$
 
 This moves the first counterexample farther away.
 
 But unless we establish a theorem of the form:
 
-\[
+$$
 n<B
 \Longrightarrow
 \text{these bases suffice},
-\]
+$$
 
 we have not obtained a deterministic primality proof.
 
@@ -1548,65 +1548,65 @@ Bleichenbacher considered a related fixed-base pseudoprime construction built ar
 
 Start with an integer:
 
-\[
+$$
 M
-\]
+$$
 
 having many divisors.
 
-Consider primes \(r\) satisfying:
+Consider primes $r$ satisfying:
 
-\[
+$$
 r-1\mid M.
-\]
+$$
 
-Let \(R\) denote a collection of such primes.
+Let $R$ denote a collection of such primes.
 
 If we find a subset:
 
-\[
+$$
 T\subseteq R
-\]
+$$
 
 whose product:
 
-\[
+$$
 C
 =
 \prod_{r\in T}r
-\]
+$$
 
 satisfies:
 
-\[
+$$
 \boxed{
 C\equiv1\pmod M,
 }
-\]
+$$
 
 then for every:
 
-\[
+$$
 r\in T,
-\]
+$$
 
 we have:
 
-\[
+$$
 r-1\mid M
-\]
+$$
 
 and:
 
-\[
+$$
 M\mid C-1.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 r-1\mid C-1.
-\]
+$$
 
 If the factors are distinct, Korselt's criterion gives a Carmichael number.
 
@@ -1614,13 +1614,13 @@ The remaining construction problem is then to choose the factors so that the des
 
 This is another example of the same broad strategy:
 
-\[
+$$
 \boxed{
 \text{engineer algebraic structure first}
 \rightarrow
 \text{make the test accept it}.
 }
-\]
+$$
 
 ---
 
@@ -1628,90 +1628,90 @@ This is another example of the same broad strategy:
 
 One computational subproblem is:
 
-\[
+$$
 \prod_{r\in T}r
 \equiv1
 \pmod M.
-\]
+$$
 
-A naive search over every subset of \(R\) requires:
+A naive search over every subset of $R$ requires:
 
-\[
+$$
 2^{|R|}
-\]
+$$
 
 possibilities.
 
 A meet-in-the-middle strategy splits:
 
-\[
+$$
 R
 =
 R_1\cup R_2.
-\]
+$$
 
-Compute subset products from \(R_1\):
+Compute subset products from $R_1$:
 
-\[
+$$
 P_1
 =
 \prod_{r\in T_1}r
 \bmod M.
-\]
+$$
 
 For each one, store:
 
-\[
+$$
 P_1^{-1}\pmod M.
-\]
+$$
 
 Then enumerate subset products:
 
-\[
+$$
 P_2
 =
 \prod_{r\in T_2}r
 \bmod M
-\]
+$$
 
-from \(R_2\).
+from $R_2$.
 
 If:
 
-\[
+$$
 P_2
 =
 P_1^{-1}
 \pmod M,
-\]
+$$
 
 then:
 
-\[
+$$
 P_1P_2
 \equiv1
 \pmod M.
-\]
+$$
 
 The union:
 
-\[
+$$
 T=T_1\cup T_2
-\]
+$$
 
 therefore satisfies the required condition.
 
 This reduces the search conceptually from:
 
-\[
+$$
 2^{|R|}
-\]
+$$
 
 toward roughly two collections of size:
 
-\[
+$$
 2^{|R|/2}.
-\]
+$$
 
 It is a standard time-memory tradeoff.
 
@@ -1725,51 +1725,51 @@ But mathematically it actually helps.
 
 This construction repeatedly uses simultaneous congruences of the form:
 
-\[
+$$
 p_1
 \equiv
 z_i
 \pmod{m_i}.
-\]
+$$
 
 We then use CRT to collapse them into:
 
-\[
+$$
 p_1
 \equiv
 z
 \pmod L.
-\]
+$$
 
 So Part VIII gave us exactly the tool needed here.
 
 The progression is now:
 
-\[
+$$
 \text{Prime I}
 \rightarrow
 \text{prime structure},
-\]
+$$
 
-\[
+$$
 \text{Prime II}
 \rightarrow
 \text{recognizing primes},
-\]
+$$
 
-\[
+$$
 \text{Polynomial Congruences}
 \rightarrow
 \text{solving modular constraints},
-\]
+$$
 
-\[
+$$
 \boxed{
 \text{Prime III}
 \rightarrow
 \text{engineering composites around those constraints}.
 }
-\]
+$$
 
 That is actually a strong mathematical narrative.
 
@@ -1791,9 +1791,9 @@ The Miller-Rabin error bound applies in its standard probabilistic form.
 
 A fixed base set is backed by a theorem or exhaustive result covering:
 
-\[
+$$
 n<B.
-\]
+$$
 
 The routine is deterministic on that domain.
 
@@ -1844,19 +1844,19 @@ The security question is therefore broader than:
 
 We must also ask:
 
-\[
+$$
 \boxed{
 \text{Who chooses }n?
 }
-\]
+$$
 
 and:
 
-\[
+$$
 \boxed{
 \text{Who knows or controls the bases?}
 }
-\]
+$$
 
 ---
 
@@ -1866,25 +1866,25 @@ and:
 
 Write:
 
-\[
+$$
 N-1
 =
 2^sd
-\]
+$$
 
 for:
 
-\[
+$$
 N=3215031751.
-\]
+$$
 
-Then verify computationally that \(N\) passes Miller-Rabin for:
+Then verify computationally that $N$ passes Miller-Rabin for:
 
-\[
+$$
 2,3,5,7.
-\]
+$$
 
-Finally verify that base \(11\) rejects it.
+Finally verify that base $11$ rejects it.
 
 ---
 
@@ -1892,11 +1892,11 @@ Finally verify that base \(11\) rejects it.
 
 Verify:
 
-\[
+$$
 3215031751
 =
 151\cdot751\cdot28351.
-\]
+$$
 
 Check whether the number satisfies Korselt's criterion.
 
@@ -1908,17 +1908,17 @@ Do not infer the answer merely from its Miller-Rabin behavior.
 
 ### Exercise 3 — Liar-set thinking
 
-For a small odd composite \(n\), enumerate every admissible base:
+For a small odd composite $n$, enumerate every admissible base:
 
-\[
+$$
 2\le a\le n-2
-\]
+$$
 
 with:
 
-\[
+$$
 \gcd(a,n)=1.
-\]
+$$
 
 Partition the bases into:
 
@@ -1940,14 +1940,14 @@ Calculate the liar fraction experimentally.
 
 Suppose an implementation always tests:
 
-\[
+$$
 A=\{2,3,5\}.
-\]
+$$
 
 Explain the difference between:
 
-1. choosing a random composite and asking whether it survives \(A\);
-2. searching deliberately for a composite known to survive \(A\).
+1. choosing a random composite and asking whether it survives $A$;
+2. searching deliberately for a composite known to survive $A$.
 
 Why are these different probability experiments?
 
@@ -1957,23 +1957,23 @@ Why are these different probability experiments?
 
 Given distinct primes:
 
-\[
+$$
 p_1,p_2,p_3,
-\]
+$$
 
 set:
 
-\[
+$$
 N=p_1p_2p_3.
-\]
+$$
 
 Write code that verifies:
 
-\[
+$$
 p_i-1\mid N-1
-\]
+$$
 
-for all \(i\).
+for all $i$.
 
 Do not test Carmichael behavior by sampling Fermat bases.
 
@@ -1985,30 +1985,30 @@ Use Korselt's theorem.
 
 Suppose:
 
-\[
+$$
 p_1
 \equiv3\pmod8,
-\]
+$$
 
-\[
+$$
 p_1
 \equiv5\pmod7,
-\]
+$$
 
 and:
 
-\[
+$$
 p_1
 \equiv2\pmod5.
-\]
+$$
 
 Use CRT to find:
 
-\[
+$$
 p_1
 \equiv z
 \pmod L.
-\]
+$$
 
 Then enumerate several members of the resulting arithmetic progression.
 
@@ -2018,9 +2018,9 @@ Then enumerate several members of the resulting arithmetic progression.
 
 Explain why a fixed base set may be perfectly valid for:
 
-\[
+$$
 n<2^{64}
-\]
+$$
 
 while the same argument cannot automatically be extended to arbitrary-precision integers.
 
@@ -2050,27 +2050,27 @@ Why is adversarial primality testing more relevant in the second setting?
 
 You should now be able to explain:
 
-1. What a strong pseudoprime to base \(a\) is.
+1. What a strong pseudoprime to base $a$ is.
 2. Why strong pseudoprimality is base-dependent.
 3. Why passing several fixed bases does not generally prove primality.
-4. Why this does not contradict the Miller-Rabin \(1/4\) bound.
+4. Why this does not contradict the Miller-Rabin $1/4$ bound.
 5. The difference between random-base and fixed-base testing.
 6. Why Carmichael numbers automatically defeat Fermat testing but not Miller-Rabin for every base.
 7. Why no composite can be a strong pseudoprime to every admissible Miller-Rabin base.
 8. How Arnault-style constructions target a finite chosen base set.
 9. Why relations such as
-   \[
+   $$
    p_i=k_i(p_1-1)+1
-   \]
+   $$
    are only one component of the construction.
 10. Why additional Korselt congruences are necessary.
 11. How Legendre symbols create modular restrictions on the prime factors.
 12. Why quadratic reciprocity converts these restrictions into congruence classes.
 13. Why CRT is central to combining the resulting conditions.
 14. Why the construction ultimately searches an arithmetic progression
-   \[
+   $$
    p_1=z+jL.
-   \]
+   $$
 15. Why every claimed factor must still be prime.
 16. Why independent verification of Korselt's criterion is important.
 17. Why known fixed base sets can nevertheless be deterministic on bounded domains.
@@ -2135,11 +2135,11 @@ The three prime-number articles now form a complete progression.
 
 We asked:
 
-\[
+$$
 \boxed{
 \text{What are primes structurally?}
 }
-\]
+$$
 
 We developed:
 
@@ -2153,11 +2153,11 @@ We developed:
 
 We asked:
 
-\[
+$$
 \boxed{
 \text{How can we recognize primes computationally?}
 }
-\]
+$$
 
 We developed:
 
@@ -2172,11 +2172,11 @@ We developed:
 
 We asked:
 
-\[
+$$
 \boxed{
 \text{What happens when the candidate is deliberately chosen to fool the test?}
 }
-\]
+$$
 
 We encountered:
 
@@ -2190,7 +2190,7 @@ We encountered:
 
 The progression is therefore:
 
-\[
+$$
 \boxed{
 \text{prime structure}
 \rightarrow
@@ -2198,7 +2198,7 @@ The progression is therefore:
 \rightarrow
 \text{adversarial pseudoprimality}.
 }
-\]
+$$
 
 That closes the prime-number subseries while leaving us with a broader lesson that will recur throughout cryptography:
 
@@ -2210,7 +2210,7 @@ This article closes the **Elementary Number Theory Reference** series.
 
 Across these nine references, we moved from the elementary arithmetic of the integers to increasingly structured computational number theory:
 
-\[
+$$
 \text{integers and divisibility}
 \rightarrow
 \text{modular arithmetic}
@@ -2220,9 +2220,9 @@ Across these nine references, we moved from the elementary arithmetic of the int
 \text{groups}
 \rightarrow
 \text{Euler's totient and orders}
-\]
+$$
 
-\[
+$$
 \rightarrow
 \text{prime structure}
 \rightarrow
@@ -2231,7 +2231,7 @@ Across these nine references, we moved from the elementary arithmetic of the int
 \text{polynomial congruences}
 \rightarrow
 \text{adversarial pseudoprimality}.
-\]
+$$
 
 The progression was deliberately cumulative.
 
@@ -2249,7 +2249,7 @@ Prime numbers then connected this algebraic structure to factorization, primalit
 
 Finally, polynomial congruences and adversarial primality testing brought many of these tools back together:
 
-\[
+$$
 \gcd,
 \quad
 \mathbb Z_n^\times,
@@ -2265,7 +2265,7 @@ Finally, polynomial congruences and adversarial primality testing brought many o
 \text{quadratic characters},
 \quad
 \text{prime structure}.
-\]
+$$
 
 The purpose of this series was not to exhaust number theory.
 

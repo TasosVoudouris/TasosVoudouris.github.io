@@ -41,25 +41,25 @@ draft: false
 
 The previous articles developed two important ideas.
 
-**Baby-Step Giant-Step** showed that a discrete logarithm in a cyclic group of order \(n\) can be solved generically in:
+**Baby-Step Giant-Step** showed that a discrete logarithm in a cyclic group of order $n$ can be solved generically in:
 
-\[
+$$
 O(\sqrt n)
-\]
+$$
 
 group operations, but at the cost of:
 
-\[
+$$
 O(\sqrt n)
-\]
+$$
 
 stored group elements.
 
 **Pohlig–Hellman** showed that if the subgroup order factors as:
 
-\[
+$$
 n=\prod_i q_i^{e_i},
-\]
+$$
 
 then the DLP can be reduced to smaller DLPs in the prime-power factors.
 
@@ -69,35 +69,35 @@ Pollard's rho algorithm is designed precisely for this setting.
 
 Let:
 
-\[
+$$
 P\in E(\mathbb F_p)
-\]
+$$
 
 generate a cyclic subgroup of prime order:
 
-\[
+$$
 n.
-\]
+$$
 
 Given:
 
-\[
+$$
 Q=[k]P,
-\]
+$$
 
 the goal is to recover:
 
-\[
+$$
 k\in\{0,\ldots,n-1\}.
-\]
+$$
 
 Pollard rho solves this in expected:
 
-\[
+$$
 \boxed{
 O(\sqrt n)
 }
-\]
+$$
 
 group operations while using only a small amount of memory in its simplest cycle-detection form.
 
@@ -131,9 +131,9 @@ Because the set is finite, the walk eventually enters a cycle.
 
 If we draw the path from the starting point to the cycle and then the cycle itself, its shape resembles the Greek letter:
 
-\[
+$$
 \rho.
-\]
+$$
 
 The algorithm exploits a collision in this walk to recover a linear relation involving the unknown discrete logarithm.
 
@@ -145,65 +145,65 @@ The key implementation idea is that every point visited by the walk is tracked t
 
 Maintain a state:
 
-\[
+$$
 (R,a,b)
-\]
+$$
 
 satisfying:
 
-\[
+$$
 \boxed{
 R=[a]P+[b]Q.
 }
-\]
+$$
 
 Since:
 
-\[
+$$
 Q=[k]P,
-\]
+$$
 
 we also have:
 
-\[
+$$
 R=[a+bk]P.
-\]
+$$
 
-The walk changes \(R\), but we always update \(a,b\) consistently so this identity remains true.
+The walk changes $R$, but we always update $a,b$ consistently so this identity remains true.
 
-This invariant is what eventually converts a point collision into an equation for \(k\).
+This invariant is what eventually converts a point collision into an equation for $k$.
 
 ### Why the coefficients matter
 
 If we only generated points:
 
-\[
+$$
 R_0,R_1,R_2,\ldots
-\]
+$$
 
 and found:
 
-\[
+$$
 R_i=R_j,
-\]
+$$
 
-we would know that the walk collided, but we would not know how that collision relates to \(P\) and \(Q\).
+we would know that the walk collided, but we would not know how that collision relates to $P$ and $Q$.
 
 Tracking:
 
-\[
+$$
 a_i,\ b_i
-\]
+$$
 
 gives:
 
-\[
+$$
 R_i=[a_i]P+[b_i]Q,
-\]
+$$
 
-\[
+$$
 R_j=[a_j]P+[b_j]Q.
-\]
+$$
 
 Then a collision yields a solvable modular relation.
 
@@ -211,11 +211,11 @@ So the real Pollard-rho state is not just the curve point.
 
 It is:
 
-\[
+$$
 \boxed{
 (R_i,a_i,b_i).
 }
-\]
+$$
 
 ---
 
@@ -223,9 +223,9 @@ It is:
 
 Pollard rho needs an iteration function:
 
-\[
+$$
 f:E(\mathbb F_p)\rightarrow E(\mathbb F_p)
-\]
+$$
 
 that behaves sufficiently like a random mapping over the subgroup.
 
@@ -235,115 +235,115 @@ The traditional pedagogical construction partitions the group into a few subsets
 
 Partition the subgroup into:
 
-\[
+$$
 S_0,\ S_1,\ S_2.
-\]
+$$
 
 A simple teaching walk can use:
 
-\[
+$$
 R\in S_0:
 \qquad
 R' = R+P,
-\]
+$$
 
-\[
+$$
 R\in S_1:
 \qquad
 R' = [2]R,
-\]
+$$
 
-\[
+$$
 R\in S_2:
 \qquad
 R' = R+Q.
-\]
+$$
 
 Because:
 
-\[
+$$
 R=[a]P+[b]Q,
-\]
+$$
 
 the coefficient updates are immediate.
 
-### Case 1: add \(P\)
+### Case 1: add $P$
 
 If:
 
-\[
+$$
 R'=R+P,
-\]
+$$
 
 then:
 
-\[
+$$
 R'
 =
 [a+1]P+[b]Q.
-\]
+$$
 
 So:
 
-\[
+$$
 \boxed{
 a'\equiv a+1\pmod n,
 \qquad
 b'\equiv b\pmod n.
 }
-\]
+$$
 
 ### Case 2: double
 
 If:
 
-\[
+$$
 R'=[2]R,
-\]
+$$
 
 then:
 
-\[
+$$
 R'
 =
 [2a]P+[2b]Q.
-\]
+$$
 
 So:
 
-\[
+$$
 \boxed{
 a'\equiv2a\pmod n,
 \qquad
 b'\equiv2b\pmod n.
 }
-\]
+$$
 
-### Case 3: add \(Q\)
+### Case 3: add $Q$
 
 If:
 
-\[
+$$
 R'=R+Q,
-\]
+$$
 
 then:
 
-\[
+$$
 R'
 =
 [a]P+[b+1]Q.
-\]
+$$
 
 Thus:
 
-\[
+$$
 \boxed{
 a'\equiv a\pmod n,
 \qquad
 b'\equiv b+1\pmod n.
 }
-\]
+$$
 
 ### The partition need not be cryptographically secret
 
@@ -394,11 +394,11 @@ So the useful property is not "invertibility."
 
 It is:
 
-\[
+$$
 \boxed{
 \text{deterministic reproducibility + sufficiently random-looking mixing}.
 }
-\]
+$$
 
 ---
 
@@ -406,42 +406,42 @@ It is:
 
 A finite subgroup contains:
 
-\[
+$$
 n
-\]
+$$
 
 points.
 
 If a sequence of points behaves roughly like random samples from that set, the birthday phenomenon suggests that a collision should occur after about:
 
-\[
+$$
 O(\sqrt n)
-\]
+$$
 
 steps.
 
-More precisely, after \(t\) independent uniform samples, the collision probability is approximately:
+More precisely, after $t$ independent uniform samples, the collision probability is approximately:
 
-\[
+$$
 1-
 \exp\left(
 -\frac{t(t-1)}{2n}
 \right).
-\]
+$$
 
 When:
 
-\[
+$$
 t\approx\sqrt n,
-\]
+$$
 
 the exponent becomes a constant.
 
 That square-root collision scale is the reason Pollard rho has expected:
 
-\[
+$$
 O(\sqrt n)
-\]
+$$
 
 running time.
 
@@ -460,9 +460,9 @@ Maintain two states:
 
 If:
 
-\[
+$$
 f^i(R_0)=f^{2i}(R_0),
-\]
+$$
 
 the two walkers have met in the eventual cycle.
 
@@ -472,15 +472,15 @@ The tortoise and hare must each carry their own coefficient pair.
 
 So we evolve:
 
-\[
+$$
 (R_T,a_T,b_T)
-\]
+$$
 
 one step, and:
 
-\[
+$$
 (R_H,a_H,b_H)
-\]
+$$
 
 two steps.
 
@@ -506,9 +506,9 @@ def step(state, P, Q, n):
 
 The invariant:
 
-\[
+$$
 R=[a]P+[b]Q
-\]
+$$
 
 can then be checked mechanically after every step in tests.
 
@@ -518,63 +518,63 @@ can then be checked mechanically after every step in tests.
 
 Suppose the tortoise and hare collide:
 
-\[
+$$
 R_1=R_2.
-\]
+$$
 
 Their tracked representations are:
 
-\[
+$$
 R_1=[a_1]P+[b_1]Q,
-\]
+$$
 
-\[
+$$
 R_2=[a_2]P+[b_2]Q.
-\]
+$$
 
 Since:
 
-\[
+$$
 Q=[k]P,
-\]
+$$
 
 equality implies:
 
-\[
+$$
 [a_1+b_1k]P
 =
 [a_2+b_2k]P.
-\]
+$$
 
-Because \(P\) has order \(n\):
+Because $P$ has order $n$:
 
-\[
+$$
 a_1+b_1k
 \equiv
 a_2+b_2k
 \pmod n.
-\]
+$$
 
 Rearrange:
 
-\[
+$$
 (b_1-b_2)k
 \equiv
 a_2-a_1
 \pmod n.
-\]
+$$
 
 Therefore, if:
 
-\[
+$$
 b_1-b_2
 \not\equiv0
 \pmod n
-\]
+$$
 
-and \(n\) is prime, the denominator is invertible and:
+and $n$ is prime, the denominator is invertible and:
 
-\[
+$$
 \boxed{
 k
 \equiv
@@ -582,29 +582,29 @@ k
 (b_1-b_2)^{-1}
 \pmod n.
 }
-\]
+$$
 
 This is the exact collision equation.
 
 ### Why prime order simplifies everything
 
-If \(n\) is prime, every nonzero value modulo \(n\) is invertible.
+If $n$ is prime, every nonzero value modulo $n$ is invertible.
 
 So there are only two possibilities:
 
 1. 
 
-   \[
+   $$
    b_1-b_2\not\equiv0\pmod n
-   \]
+   $$
 
-   and the collision yields \(k\);
+   and the collision yields $k$;
 
 2. 
 
-   \[
+   $$
    b_1-b_2\equiv0\pmod n
-   \]
+   $$
 
    and then the collision is useless for recovery.
 
@@ -614,15 +614,15 @@ In the second case, restart with a different walk seed or partition salt.
 
 After computing:
 
-\[
+$$
 k,
-\]
+$$
 
 verify:
 
-\[
+$$
 [k]P=Q.
-\]
+$$
 
 This is mandatory in educational code.
 
@@ -662,9 +662,9 @@ R = aP + bQ
 
 all coefficients reduced modulo:
 
-\[
+$$
 n.
-\]
+$$
 
 ### Step function
 
@@ -721,23 +721,23 @@ The `point_mul` parameter is not needed by this particular step rule, but scalar
 
 A fixed seed such as:
 
-\[
+$$
 R_0=P
-\]
+$$
 
 can fall into an unhelpful short cycle for a poor partition.
 
 A more robust toy implementation chooses random:
 
-\[
+$$
 a_0,b_0\in\mathbb Z_n
-\]
+$$
 
 and constructs:
 
-\[
+$$
 R_0=[a_0]P+[b_0]Q.
-\]
+$$
 
 This does not change the mathematics.
 
@@ -848,7 +848,7 @@ This version fixes several issues common in first implementations:
 
 - the point and coefficients are updated together;
 - division is modular inversion, not ordinary `/`;
-- the identity target maps canonically to \(0\);
+- the identity target maps canonically to $0$;
 - the scalar is sampled modulo the subgroup order;
 - useless collisions trigger a restart;
 - the final candidate is verified.
@@ -859,111 +859,111 @@ This version fixes several issues common in first implementations:
 
 Reuse the curve from the BSGS article:
 
-\[
+$$
 E:
 y^2=x^3+2x+2
 \pmod{17}.
-\]
+$$
 
 Take:
 
-\[
+$$
 P=(5,1).
-\]
+$$
 
 We previously verified:
 
-\[
+$$
 \operatorname{ord}(P)=19.
-\]
+$$
 
 Because:
 
-\[
+$$
 19
-\]
+$$
 
 is prime, the subgroup is ideal for demonstrating the simple Pollard-rho collision equation.
 
 Choose:
 
-\[
+$$
 k=16.
-\]
+$$
 
 Then:
 
-\[
+$$
 Q=[16]P=(10,11).
-\]
+$$
 
 The algorithm knows:
 
-\[
+$$
 P,
 \qquad
 Q,
 \qquad
 n=19,
-\]
+$$
 
-but not \(k\).
+but not $k$.
 
 ### A reproducible collision
 
 For a deterministic demonstration, start from:
 
-\[
+$$
 a_0=4,
 \qquad
 b_0=7.
-\]
+$$
 
 So:
 
-\[
+$$
 R_0=[4]P+[7]Q.
-\]
+$$
 
 Under the three-way walk used in this article, Floyd's algorithm eventually reaches a collision between two tracked states.
 
 One valid collision obtained by the executable test is:
 
-\[
+$$
 R_T=R_H.
-\]
+$$
 
 The associated coefficients satisfy:
 
-\[
+$$
 (a_T-a_H)
 +
 (b_T-b_H)k
 \equiv0
 \pmod{19}.
-\]
+$$
 
 The implementation computes:
 
-\[
+$$
 k
 \equiv
 (a_H-a_T)
 (b_T-b_H)^{-1}
 \pmod{19},
-\]
+$$
 
 and recovers:
 
-\[
+$$
 \boxed{k=16}.
-\]
+$$
 
 Finally:
 
-\[
+$$
 [16]P=(10,11)=Q.
-\]
+$$
 
 ### Why this is more than cycle detection
 
@@ -971,25 +971,25 @@ The repeated point is only half the attack.
 
 The essential information is that the same point has two different known linear representations:
 
-\[
+$$
 R
 =
 [a_1]P+[b_1]Q
-\]
+$$
 
 and:
 
-\[
+$$
 R
 =
 [a_2]P+[b_2]Q.
-\]
+$$
 
-That creates a linear congruence in the unknown \(k\).
+That creates a linear congruence in the unknown $k$.
 
 This is the same structural pattern that appears throughout cryptanalysis:
 
-\[
+$$
 \boxed{
 \text{collision}
 +
@@ -997,7 +997,7 @@ This is the same structural pattern that appears throughout cryptanalysis:
 \rightarrow
 \text{secret relation}.
 }
-\]
+$$
 
 ---
 
@@ -1011,77 +1011,77 @@ One run is not guaranteed to succeed.
 
 Suppose:
 
-\[
+$$
 R_1=R_2
-\]
+$$
 
 but:
 
-\[
+$$
 b_1-b_2
 \equiv0
 \pmod n.
-\]
+$$
 
 Then the collision equation becomes:
 
-\[
+$$
 0\cdot k
 \equiv
 a_2-a_1
 \pmod n.
-\]
+$$
 
 In a prime-order group, a valid collision then also forces:
 
-\[
+$$
 a_2-a_1
 \equiv0
 \pmod n,
-\]
+$$
 
 so the two representations are algebraically identical and reveal nothing.
 
 The right response is:
 
-\[
+$$
 \boxed{\text{restart}.}
-\]
+$$
 
 ### Composite-order subgroup
 
-If \(n\) is composite, the denominator:
+If $n$ is composite, the denominator:
 
-\[
+$$
 d=b_1-b_2
-\]
+$$
 
 may be nonzero but not invertible.
 
 Then:
 
-\[
+$$
 dk
 \equiv
 c
 \pmod n
-\]
+$$
 
 is a linear congruence.
 
 Let:
 
-\[
+$$
 g=\gcd(d,n).
-\]
+$$
 
 A solution exists only if:
 
-\[
+$$
 g\mid c.
-\]
+$$
 
-If it does, there are \(g\) residue classes modulo \(n\).
+If it does, there are $g$ residue classes modulo $n$.
 
 Additional validation may distinguish them.
 
@@ -1108,19 +1108,19 @@ That is not the correct scalar domain.
 
 The discrete logarithm is defined modulo:
 
-\[
+$$
 n=\operatorname{ord}(P).
-\]
+$$
 
 So the canonical test range is:
 
-\[
+$$
 \boxed{
 0\le k<n.
 }
-\]
+$$
 
-The field size \(p\) and subgroup order \(n\) are different quantities.
+The field size $p$ and subgroup order $n$ are different quantities.
 
 ### Partition quality matters
 
@@ -1140,9 +1140,9 @@ This is an engineering issue, not a change in the underlying collision equation.
 
 The birthday heuristic gives expected:
 
-\[
+$$
 O(\sqrt n)
-\]
+$$
 
 group operations.
 
@@ -1150,9 +1150,9 @@ The exact constant depends on the walk and collision method.
 
 For a random mapping, the expected collision scale is on the order of:
 
-\[
+$$
 \sqrt{\frac{\pi n}{2}}.
-\]
+$$
 
 Pollard rho therefore has the same asymptotic time as BSGS but much smaller memory in its basic form.
 
@@ -1160,17 +1160,17 @@ Pollard rho therefore has the same asymptotic time as BSGS but much smaller memo
 
 If:
 
-\[
+$$
 n\approx2^{256},
-\]
+$$
 
 then:
 
-\[
+$$
 \sqrt n
 \approx
 2^{128}.
-\]
+$$
 
 So a generic attack still requires an infeasible amount of work.
 
@@ -1182,23 +1182,23 @@ It explains why their generic classical security is around 128 bits.
 
 Elliptic curves satisfy:
 
-\[
+$$
 -(x,y)
 =
 (x,-y).
-\]
+$$
 
 Some Pollard-rho variants identify:
 
-\[
+$$
 R
-\]
+$$
 
 and:
 
-\[
+$$
 -R
-\]
+$$
 
 to reduce the effective search space and improve constants.
 
@@ -1251,23 +1251,23 @@ The companion lab should verify three things:
 
 Use:
 
-\[
+$$
 E:
 y^2=x^3+2x+2
 \pmod{17}.
-\]
+$$
 
 The point:
 
-\[
+$$
 P=(5,1)
-\]
+$$
 
 has order:
 
-\[
+$$
 19.
-\]
+$$
 
 The same arithmetic code from Part 02 can be reused:
 
@@ -1279,15 +1279,15 @@ The same arithmetic code from Part 02 can be reused:
 
 For every state:
 
-\[
+$$
 (R,a,b),
-\]
+$$
 
 verify:
 
-\[
+$$
 R=[a]P+[b]Q.
-\]
+$$
 
 In code:
 
@@ -1391,56 +1391,56 @@ Pollard rho is one of the most important generic attacks on the elliptic-curve d
 
 Given:
 
-\[
+$$
 Q=[k]P
-\]
+$$
 
 in a cyclic subgroup of prime order:
 
-\[
+$$
 n,
-\]
+$$
 
 the algorithm performs a pseudorandom walk while maintaining:
 
-\[
+$$
 \boxed{
 R_i=[a_i]P+[b_i]Q.
 }
-\]
+$$
 
 A collision:
 
-\[
+$$
 R_1=R_2
-\]
+$$
 
 gives:
 
-\[
+$$
 [a_1]P+[b_1]Q
 =
 [a_2]P+[b_2]Q.
-\]
+$$
 
 Since:
 
-\[
+$$
 Q=[k]P,
-\]
+$$
 
 we obtain:
 
-\[
+$$
 (b_1-b_2)k
 \equiv
 a_2-a_1
 \pmod n.
-\]
+$$
 
-For prime \(n\) and a nonzero denominator:
+For prime $n$ and a nonzero denominator:
 
-\[
+$$
 \boxed{
 k
 \equiv
@@ -1448,21 +1448,21 @@ k
 (b_1-b_2)^{-1}
 \pmod n.
 }
-\]
+$$
 
 The collision is expected after roughly square-root work because of the birthday phenomenon:
 
-\[
+$$
 \boxed{
 T=O(\sqrt n).
 }
-\]
+$$
 
 Unlike Baby-Step Giant-Step, the simplest Pollard-rho form does not require storing:
 
-\[
+$$
 O(\sqrt n)
-\]
+$$
 
 group elements.
 
@@ -1475,13 +1475,13 @@ This article also corrects several common implementation mistakes:
 - the walk does not need to be invertible;
 - the point and coefficients must be updated together;
 - modular division requires an inverse;
-- the secret scalar lives modulo \(\operatorname{ord}(P)\), not modulo the field prime;
+- the secret scalar lives modulo $\operatorname{ord}(P)$, not modulo the field prime;
 - degenerate collisions require a restart;
 - every recovered candidate should be checked with:
 
-  \[
+  $$
   [k]P=Q.
-  \]
+  $$
 
 Together, the first four articles now establish a useful generic DLP toolkit:
 

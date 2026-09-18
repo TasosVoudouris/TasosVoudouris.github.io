@@ -27,11 +27,11 @@ The easiest place to see the basic geometry behind lattice cryptography is not a
 
 It is:
 
-\[
+$$
 \boxed{
 \text{dimension }2.
 }
-\]
+$$
 
 In two dimensions we can:
 
@@ -43,7 +43,7 @@ In two dimensions we can:
 
 A recovered set of exercises from an earlier post-quantum cryptography course followed exactly this progression:
 
-\[
+$$
 \boxed{
 \text{2D lattice reduction}
 \rightarrow
@@ -53,7 +53,7 @@ A recovered set of exercises from an earlier post-quantum cryptography course fo
 \rightarrow
 \text{short secret vector}.
 }
-\]
+$$
 
 The original material was primarily computational.
 
@@ -63,11 +63,11 @@ The goal is **not** to model a production NTRU scheme exactly.
 
 It is to isolate one of the central ideas behind NTRU-style lattice geometry:
 
-\[
+$$
 \boxed{
 \text{a public modular relation can define a lattice containing secret small coefficients}.
 }
-\]
+$$
 
 In dimension two, classical Gaussian—or Gauss–Lagrange—reduction is strong enough to recover that short vector directly.
 
@@ -79,27 +79,14 @@ In dimension two, classical Gaussian—or Gauss–Lagrange—reduction is strong
 
 - [Gaussian reduction in dimension two](#gaussian-reduction-in-dimension-two)
 - [A complete two-dimensional reduction example](#a-complete-two-dimensional-reduction-example)
-- [104\cdot23](#104cdot23)
 - [The scalar NTRU-like toy system](#the-scalar-ntru-like-toy-system)
 - [From the public congruence to a lattice](#from-the-public-congruence-to-a-lattice)
-- [\[
-f
-\begin${pmatrix}
-1\
-h
-\end${pmatrix}](#fbeginpmatrix1hendpmatrix)
 - [Recovering the secret by Gaussian reduction](#recovering-the-secret-by-gaussian-reduction)
 - [From the scalar toy to polynomial NTRU](#from-the-scalar-toy-to-polynomial-ntru)
 - [What this experiment actually teaches](#what-this-experiment-actually-teaches)
 - [Companion implementation](#companion-implementation)
 - [The structural picture](#the-structural-picture)
 - [Practice and checkpoint](#practice-and-checkpoint)
-- [\[
-f
-\begin${pmatrix}
-1\
-h
-\end${pmatrix}](#fbeginpmatrix1hendpmatrix-1)
 - [References and further reading](#references-and-further-reading)
 - [Next](#next)
 
@@ -109,26 +96,26 @@ h
 
 Let:
 
-\[
+$$
 b_1,b_2\in\mathbb R^2
-\]
+$$
 
 be linearly independent lattice vectors.
 
 With the column convention used throughout this series, write:
 
-\[
+$$
 B=
 \begin{pmatrix}
 |&|\\
 b_1&b_2\\
 |&|
 \end{pmatrix}.
-\]
+$$
 
 The generated lattice is:
 
-\[
+$$
 \boxed{
 L(B)
 =
@@ -139,23 +126,23 @@ z_1b_1+z_2b_2:
 z_1,z_2\in\mathbb Z
 \}.
 }
-\]
+$$
 
 The basis is not unique.
 
 If:
 
-\[
+$$
 U\in GL_2(\mathbb Z),
-\]
+$$
 
 then:
 
-\[
+$$
 \boxed{
 L(BU)=L(B).
 }
-\]
+$$
 
 So lattice reduction is allowed to replace the basis while preserving the lattice exactly.
 
@@ -165,25 +152,25 @@ So lattice reduction is allowed to replace the basis while preserving the lattic
 
 Assume:
 
-\[
+$$
 \|b_1\|_2
 \le
 \|b_2\|_2.
-\]
+$$
 
-Project \(b_2\) onto the direction of \(b_1\):
+Project $b_2$ onto the direction of $b_1$:
 
-\[
+$$
 \frac{
 \langle b_1,b_2\rangle
 }{
 \langle b_1,b_1\rangle
 }.
-\]
+$$
 
 Choose the nearest integer:
 
-\[
+$$
 \boxed{
 \mu
 =
@@ -195,49 +182,49 @@ Choose the nearest integer:
 }
 \right\rceil.
 }
-\]
+$$
 
 Then perform:
 
-\[
+$$
 \boxed{
 b_2
 \leftarrow
 b_2-\mu b_1.
 }
-\]
+$$
 
 Because:
 
-\[
+$$
 \mu\in\mathbb Z,
-\]
+$$
 
 this is a unimodular basis operation.
 
 For example, the corresponding right-multiplication matrix is:
 
-\[
+$$
 U=
 \begin{pmatrix}
 1&-\mu\\
 0&1
 \end{pmatrix},
-\]
+$$
 
 with:
 
-\[
+$$
 \det U=1.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 \text{the lattice does not change}.
 }
-\]
+$$
 
 ---
 
@@ -245,15 +232,15 @@ Therefore:
 
 After the update:
 
-\[
+$$
 b_2'
 =
 b_2-\mu b_1,
-\]
+$$
 
 the new projection coefficient is:
 
-\[
+$$
 \frac{
 \langle b_1,b_2'\rangle
 }{
@@ -266,11 +253,11 @@ the new projection coefficient is:
 \|b_1\|^2
 }
 -\mu.
-\]
+$$
 
 By nearest-integer rounding:
 
-\[
+$$
 \boxed{
 \left|
 \frac{
@@ -282,9 +269,9 @@ By nearest-integer rounding:
 \le
 \frac12.
 }
-\]
+$$
 
-Thus the component of \(b_2\) parallel to \(b_1\) has been reduced as much as possible using an integer multiple.
+Thus the component of $b_2$ parallel to $b_1$ has been reduced as much as possible using an integer multiple.
 
 ---
 
@@ -292,28 +279,28 @@ Thus the component of \(b_2\) parallel to \(b_1\) has been reduced as much as po
 
 A standard two-dimensional reduced basis satisfies:
 
-\[
+$$
 \boxed{
 \|b_1\|
 \le
 \|b_2\|
 }
-\]
+$$
 
 and:
 
-\[
+$$
 \boxed{
 |\langle b_1,b_2\rangle|
 \le
 \frac12
 \|b_1\|^2.
 }
-\]
+$$
 
 Equivalently:
 
-\[
+$$
 \left|
 \frac{
 \langle b_1,b_2\rangle
@@ -323,19 +310,19 @@ Equivalently:
 \right|
 \le
 \frac12.
-\]
+$$
 
 If the reduction step produces:
 
-\[
+$$
 \|b_2\|<\|b_1\|,
-\]
+$$
 
 swap the vectors and continue.
 
 So the algorithm has the Euclidean-algorithm-like structure:
 
-\[
+$$
 \boxed{
 \text{nearest integer subtraction}
 \rightarrow
@@ -343,7 +330,7 @@ So the algorithm has the Euclidean-algorithm-like structure:
 \rightarrow
 \text{repeat}.
 }
-\]
+$$
 
 ---
 
@@ -353,57 +340,57 @@ In two dimensions, this reduction is extremely strong.
 
 For a Gauss-reduced basis:
 
-\[
+$$
 (b_1,b_2),
-\]
+$$
 
 the first vector:
 
-\[
+$$
 \boxed{
 b_1
 }
-\]
+$$
 
 is a shortest nonzero lattice vector.
 
 To see the basic reason, consider:
 
-\[
+$$
 v=mb_1+nb_2.
-\]
+$$
 
 If:
 
-\[
+$$
 n=0,
-\]
+$$
 
 then:
 
-\[
+$$
 \|v\|
 =
 |m|\|b_1\|
 \ge
 \|b_1\|.
-\]
+$$
 
 If:
 
-\[
+$$
 n\neq0,
-\]
+$$
 
-the reduced geometry prevents the second direction from cancelling enough of \(b_1\) to produce a vector shorter than \(b_1\).
+the reduced geometry prevents the second direction from cancelling enough of $b_1$ to produce a vector shorter than $b_1$.
 
 Thus in dimension two:
 
-\[
+$$
 \boxed{
 \text{basis reduction and exact shortest-vector geometry are tightly connected}.
 }
-\]
+$$
 
 That property does not scale cleanly to high dimension.
 
@@ -413,7 +400,7 @@ That property does not scale cleanly to high dimension.
 
 The previous article introduced:
 
-\[
+$$
 \mu_{i,j}
 =
 \frac{
@@ -421,17 +408,17 @@ The previous article introduced:
 }{
 \langle b_j^*,b_j^*\rangle
 }.
-\]
+$$
 
 In dimension two:
 
-\[
+$$
 b_1^*=b_1,
-\]
+$$
 
 so:
 
-\[
+$$
 \mu_{2,1}
 =
 \frac{
@@ -439,7 +426,7 @@ so:
 }{
 \|b_1\|^2
 }.
-\]
+$$
 
 Gaussian reduction therefore performs precisely the kind of nearest-integer size reduction that appears inside LLL.
 
@@ -451,49 +438,49 @@ This makes Gauss reduction the cleanest low-dimensional precursor to modern latt
 
 The recovered worksheet example begins with:
 
-\[
+$$
 \boxed{
 b_1=(104,62),
 }
-\]
+$$
 
 and:
 
-\[
+$$
 \boxed{
 b_2=(74,23).
 }
-\]
+$$
 
 Their squared lengths are:
 
-\[
+$$
 \|b_1\|^2
 =
 104^2+62^2
 =
 14660,
-\]
+$$
 
 and:
 
-\[
+$$
 \|b_2\|^2
 =
 74^2+23^2
 =
 6005.
-\]
+$$
 
 So first reorder them:
 
-\[
+$$
 b_1=(74,23),
-\]
+$$
 
-\[
+$$
 b_2=(104,62).
-\]
+$$
 
 ---
 
@@ -501,23 +488,23 @@ b_2=(104,62).
 
 Compute:
 
-\[
+$$
 \langle b_1,b_2\rangle
 =
 74\cdot104+23\cdot62.
-\]
+$$
 
 Thus:
 
-\[
+$$
 \langle b_1,b_2\rangle
 =
 9122.
-\]
+$$
 
 Hence:
 
-\[
+$$
 \mu
 =
 \left\lfloor
@@ -525,57 +512,57 @@ Hence:
 \right\rceil
 =
 2.
-\]
+$$
 
 Replace:
 
-\[
+$$
 b_2
 \leftarrow
 b_2-2b_1.
-\]
+$$
 
 Then:
 
-\[
+$$
 b_2
 =
 (104,62)-2(74,23).
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 b_2=(-44,16).
 }
-\]
+$$
 
 Its squared norm is:
 
-\[
+$$
 (-44)^2+16^2
 =
 2192.
-\]
+$$
 
 Since:
 
-\[
+$$
 2192<6005,
-\]
+$$
 
 swap again.
 
 Now:
 
-\[
+$$
 b_1=(-44,16),
-\]
+$$
 
-\[
+$$
 b_2=(74,23).
-\]
+$$
 
 ---
 
@@ -583,31 +570,31 @@ b_2=(74,23).
 
 Compute:
 
-\[
+$$
 \langle b_1,b_2\rangle
 =
 (-44)(74)+(16)(23).
-\]
+$$
 
 So:
 
-\[
+$$
 \langle b_1,b_2\rangle
 =
 -2888.
-\]
+$$
 
 And:
 
-\[
+$$
 \|b_1\|^2
 =
 2192.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \mu
 =
 \left\lfloor
@@ -615,43 +602,43 @@ Therefore:
 \right\rceil
 =
 -1.
-\]
+$$
 
 Hence:
 
-\[
+$$
 b_2
 \leftarrow
 b_2+b_1.
-\]
+$$
 
 Thus:
 
-\[
+$$
 \boxed{
 b_2=(30,39).
 }
-\]
+$$
 
 Now:
 
-\[
+$$
 \|b_2\|^2
 =
 30^2+39^2
 =
 2421.
-\]
+$$
 
 The basis has become:
 
-\[
+$$
 \boxed{
 (-44,16),
 \qquad
 (30,39).
 }
-\]
+$$
 
 ---
 
@@ -659,7 +646,7 @@ The basis has become:
 
 The original determinant is:
 
-\[
+$$
 \det
 \begin{pmatrix}
 104&74\\
@@ -669,19 +656,19 @@ The original determinant is:
 104\cdot23
 -
 74\cdot62.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \det B
 =
 -2196.
-\]
+$$
 
 The reduced basis gives:
 
-\[
+$$
 \det
 \begin{pmatrix}
 -44&30\\
@@ -689,19 +676,19 @@ The reduced basis gives:
 \end{pmatrix}
 =
 (-44)(39)-30(16).
-\]
+$$
 
 Thus:
 
-\[
+$$
 \det B'
 =
 -2196.
-\]
+$$
 
 So:
 
-\[
+$$
 \boxed{
 |\det B|
 =
@@ -709,7 +696,7 @@ So:
 =
 2196.
 }
-\]
+$$
 
 The geometry changed dramatically.
 
@@ -807,56 +794,56 @@ It removes the polynomial ring and keeps only the essential scalar relation.
 
 Choose small integers:
 
-\[
+$$
 f,
 \qquad
 g,
-\]
+$$
 
 and a much larger modulus:
 
-\[
+$$
 q.
-\]
+$$
 
 Require:
 
-\[
+$$
 \boxed{
 \gcd(f,q)=1.
 }
-\]
+$$
 
 Therefore:
 
-\[
+$$
 f^{-1}\pmod q
-\]
+$$
 
 exists.
 
 Publish:
 
-\[
+$$
 \boxed{
 h
 \equiv
 f^{-1}g
 \pmod q.
 }
-\]
+$$
 
 The private information is:
 
-\[
+$$
 (f,g).
-\]
+$$
 
 The public information is:
 
-\[
+$$
 (q,h).
-\]
+$$
 
 ---
 
@@ -864,69 +851,69 @@ The public information is:
 
 Use:
 
-\[
+$$
 \boxed{
 q=122430513841,
 }
-\]
+$$
 
-\[
+$$
 \boxed{
 f=231231,
 }
-\]
+$$
 
-\[
+$$
 \boxed{
 g=195698.
 }
-\]
+$$
 
 Then:
 
-\[
+$$
 \boxed{
 h=39245579300.
 }
-\]
+$$
 
 By construction:
 
-\[
+$$
 \boxed{
 fh\equiv g\pmod q.
 }
-\]
+$$
 
 This means exactly that there exists:
 
-\[
+$$
 u\in\mathbb Z
-\]
+$$
 
 such that:
 
-\[
+$$
 \boxed{
 fh=g+uq.
 }
-\]
+$$
 
 For these values:
 
-\[
+$$
 \boxed{
 u=74122.
 }
-\]
+$$
 
 So:
 
-\[
+$$
 fh
 =
 g+74122q.
-\]
+$$
 
 This integer equation will become the lattice embedding.
 
@@ -936,48 +923,48 @@ This integer equation will become the lattice embedding.
 
 Let:
 
-\[
+$$
 m
-\]
+$$
 
 be a small message and:
 
-\[
+$$
 r
-\]
+$$
 
 a small random integer.
 
 Define:
 
-\[
+$$
 \boxed{
 c
 =
 rh+m
 \pmod q.
 }
-\]
+$$
 
 For:
 
-\[
+$$
 m=123456,
-\]
+$$
 
 and:
 
-\[
+$$
 r=101010,
-\]
+$$
 
 we obtain:
 
-\[
+$$
 \boxed{
 c=18357558717.
 }
-\]
+$$
 
 ---
 
@@ -985,80 +972,80 @@ c=18357558717.
 
 Multiply by:
 
-\[
+$$
 f.
-\]
+$$
 
 Then:
 
-\[
+$$
 fc
 \equiv
 frh+fm
 \pmod q.
-\]
+$$
 
 Because:
 
-\[
+$$
 fh\equiv g\pmod q,
-\]
+$$
 
 we get:
 
-\[
+$$
 \boxed{
 fc
 \equiv
 rg+fm
 \pmod q.
 }
-\]
+$$
 
 For the concrete parameters:
 
-\[
+$$
 rg+fm
 =
 48314309316.
-\]
+$$
 
 And:
 
-\[
+$$
 \frac q2
 =
 61215256920.5.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 |rg+fm|
 <
 \frac q2.
 }
-\]
+$$
 
-So if the residue \(fc\bmod q\) is interpreted using the centered interval:
+So if the residue $fc\bmod q$ is interpreted using the centered interval:
 
-\[
+$$
 \left(
 -\frac q2,
 \frac q2
 \right],
-\]
+$$
 
 there is no modular wrap-around ambiguity.
 
 The integer value recovered is exactly:
 
-\[
+$$
 \boxed{
 rg+fm.
 }
-\]
+$$
 
 ---
 
@@ -1066,82 +1053,82 @@ rg+fm.
 
 Reduce this integer modulo:
 
-\[
+$$
 g.
-\]
+$$
 
 Since:
 
-\[
+$$
 rg
 \equiv0
 \pmod g,
-\]
+$$
 
 we obtain:
 
-\[
+$$
 rg+fm
 \equiv
 fm
 \pmod g.
-\]
+$$
 
 Now:
 
-\[
+$$
 \gcd(f,g)=1,
-\]
+$$
 
 so:
 
-\[
+$$
 f^{-1}\pmod g
-\]
+$$
 
 exists.
 
 Therefore:
 
-\[
+$$
 \boxed{
 m
 \equiv
 f^{-1}(rg+fm)
 \pmod g.
 }
-\]
+$$
 
 For our parameters:
 
-\[
+$$
 f^{-1}
 \equiv
 193495
 \pmod g.
-\]
+$$
 
 The computation returns:
 
-\[
+$$
 \boxed{
 m\equiv123456\pmod{195698}.
 }
-\]
+$$
 
 Because the message was chosen in the representative range:
 
-\[
+$$
 0\le m<g,
-\]
+$$
 
 we recover the actual integer:
 
-\[
+$$
 \boxed{
 m=123456.
 }
-\]
+$$
 
 ---
 
@@ -1151,39 +1138,39 @@ The toy construction therefore relies on two separate conditions.
 
 First, **no wrap-around**:
 
-\[
+$$
 \boxed{
 |rg+fm|
 <
 \frac q2
 }
-\]
+$$
 
 when centered representatives are used.
 
 Second, **unique message representation**:
 
-\[
+$$
 \boxed{
 0\le m<g.
 }
-\]
+$$
 
-Without the first, reduction modulo \(q\) loses the desired integer value.
+Without the first, reduction modulo $q$ loses the desired integer value.
 
 Without the second, the final computation determines only:
 
-\[
+$$
 m\bmod g.
-\]
+$$
 
 This is already a useful preview of real lattice cryptography:
 
-\[
+$$
 \boxed{
 \text{correctness depends on controlling the size of an error-like quantity}.
 }
-\]
+$$
 
 ---
 
@@ -1191,19 +1178,19 @@ This is already a useful preview of real lattice cryptography:
 
 The attacker knows:
 
-\[
+$$
 q
-\]
+$$
 
 and:
 
-\[
+$$
 h.
-\]
+$$
 
 Consider the two public vectors:
 
-\[
+$$
 \boxed{
 b_1=
 \begin{pmatrix}
@@ -1211,11 +1198,11 @@ b_1=
 h
 \end{pmatrix},
 }
-\]
+$$
 
 and:
 
-\[
+$$
 \boxed{
 b_2=
 \begin{pmatrix}
@@ -1223,11 +1210,11 @@ b_2=
 q
 \end{pmatrix}.
 }
-\]
+$$
 
 Their basis matrix is:
 
-\[
+$$
 \boxed{
 B=
 \begin{pmatrix}
@@ -1235,21 +1222,21 @@ B=
 h&q
 \end{pmatrix}.
 }
-\]
+$$
 
 The corresponding public lattice is:
 
-\[
+$$
 \boxed{
 L_h
 =
 L(B).
 }
-\]
+$$
 
 Every vector has the form:
 
-\[
+$$
 a
 \begin{pmatrix}
 1\\
@@ -1266,17 +1253,17 @@ q
 a\\
 ah+bq
 \end{pmatrix}
-\]
+$$
 
 for:
 
-\[
+$$
 a,b\in\mathbb Z.
-\]
+$$
 
 Thus:
 
-\[
+$$
 \boxed{
 L_h
 =
@@ -1285,15 +1272,15 @@ L_h
 b'\equiv ah\pmod q
 \right\}.
 }
-\]
+$$
 
 The lattice is simply the integer solution set of the public modular relation:
 
-\[
+$$
 \boxed{
 y\equiv hx\pmod q.
 }
-\]
+$$
 
 ---
 
@@ -1301,33 +1288,33 @@ y\equiv hx\pmod q.
 
 Recall:
 
-\[
+$$
 fh=g+uq.
-\]
+$$
 
 Then:
 
-\[
+$$
 g
 =
 fh-uq.
-\]
+$$
 
 So choose:
 
-\[
+$$
 a=f,
-\]
+$$
 
 and:
 
-\[
+$$
 b=-u.
-\]
+$$
 
 We obtain:
 
-\[
+$$
 f
 \begin{pmatrix}
 1\\
@@ -1344,11 +1331,11 @@ q
 f\\
 fh-uq
 \end{pmatrix}.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 \begin{pmatrix}
 f\\
@@ -1357,23 +1344,23 @@ g
 \in
 L_h.
 }
-\]
+$$
 
 This is the key geometric transformation:
 
-\[
+$$
 \boxed{
 fh\equiv g\pmod q
 }
-\]
+$$
 
 becomes:
 
-\[
+$$
 \boxed{
 (f,g)\in L_h.
 }
-\]
+$$
 
 A modular relation has become lattice membership.
 
@@ -1383,17 +1370,17 @@ A modular relation has become lattice membership.
 
 The public basis is triangular:
 
-\[
+$$
 B=
 \begin{pmatrix}
 1&0\\
 h&q
 \end{pmatrix}.
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 \det(L_h)
 =
@@ -1401,32 +1388,32 @@ Therefore:
 =
 q.
 }
-\]
+$$
 
 For this example:
 
-\[
+$$
 \boxed{
 \det(L_h)
 =
 122430513841.
 }
-\]
+$$
 
 The natural two-dimensional length scale is therefore roughly:
 
-\[
+$$
 \sqrt q.
-\]
+$$
 
 Numerically:
 
-\[
+$$
 \boxed{
 \sqrt q
 \approx349900.72.
 }
-\]
+$$
 
 ---
 
@@ -1434,26 +1421,26 @@ Numerically:
 
 The secret vector has norm:
 
-\[
+$$
 \|(f,g)\|_2
 =
 \sqrt{
 f^2+g^2
 }.
-\]
+$$
 
 Numerically:
 
-\[
+$$
 \boxed{
 \|(f,g)\|_2
 \approx302928.18.
 }
-\]
+$$
 
 So:
 
-\[
+$$
 \frac{
 \|(f,g)\|
 }{
@@ -1461,33 +1448,33 @@ So:
 }
 \approx
 0.866.
-\]
+$$
 
 This observation is important.
 
 The secret is **enormously shorter than the supplied public basis vectors**:
 
-\[
+$$
 (1,h),
 \qquad
 (0,q),
-\]
+$$
 
 whose coordinates are of order:
 
-\[
+$$
 10^{10}
 \quad\text{to}\quad
 10^{11}.
-\]
+$$
 
 But intrinsically, the secret lies on the natural:
 
-\[
+$$
 \sqrt q
-\]
+$$
 
-scale expected for a two-dimensional lattice of determinant \(q\).
+scale expected for a two-dimensional lattice of determinant $q$.
 
 So the correct lesson is not merely:
 
@@ -1495,11 +1482,11 @@ So the correct lesson is not merely:
 
 Rather:
 
-\[
+$$
 \boxed{
 \text{the public basis is extremely poor, while the lattice itself contains much shorter vectors}.
 }
-\]
+$$
 
 And in dimension two, Gaussian reduction can expose them essentially exactly.
 
@@ -1509,69 +1496,69 @@ And in dimension two, Gaussian reduction can expose them essentially exactly.
 
 The attacker begins only with:
 
-\[
+$$
 q=122430513841
-\]
+$$
 
 and:
 
-\[
+$$
 h=39245579300.
-\]
+$$
 
 Construct the public basis:
 
-\[
+$$
 \boxed{
 b_1=
 (1,39245579300),
 }
-\]
+$$
 
-\[
+$$
 \boxed{
 b_2=
 (0,122430513841).
 }
-\]
+$$
 
-No knowledge of \(f\) or \(g\) is used in this construction.
+No knowledge of $f$ or $g$ is used in this construction.
 
 Now run exact Gaussian reduction.
 
 The resulting reduced basis is:
 
-\[
+$$
 \boxed{
 (-231231,-195698),
 }
-\]
+$$
 
 and:
 
-\[
+$$
 \boxed{
 (-368222,217835).
 }
-\]
+$$
 
 The first vector is:
 
-\[
+$$
 \boxed{
 -(f,g).
 }
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 f=231231,
 \qquad
 g=195698
 }
-\]
+$$
 
 are recovered up to the irrelevant global sign.
 
@@ -1581,41 +1568,41 @@ are recovered up to the irrelevant global sign.
 
 If:
 
-\[
+$$
 v\in L,
-\]
+$$
 
 then:
 
-\[
+$$
 -v\in L.
-\]
+$$
 
 Moreover:
 
-\[
+$$
 \|v\|=\|-v\|.
-\]
+$$
 
 Shortest-vector problems therefore naturally return:
 
-\[
+$$
 \pm v
-\]
+$$
 
 as equivalent geometric solutions.
 
 In the toy system:
 
-\[
+$$
 (-f,-g)
-\]
+$$
 
 contains exactly the same secret relation as:
 
-\[
+$$
 (f,g).
-\]
+$$
 
 ---
 
@@ -1623,9 +1610,9 @@ contains exactly the same secret relation as:
 
 The second reduced vector is:
 
-\[
+$$
 (-368222,217835).
-\]
+$$
 
 Its norm is larger than that of the recovered secret.
 
@@ -1641,13 +1628,13 @@ It reflects the actual two-dimensional shortest-vector geometry.
 
 The public lattice determinant is:
 
-\[
+$$
 q.
-\]
+$$
 
 The reduced basis must therefore satisfy:
 
-\[
+$$
 \left|
 \det
 \begin{pmatrix}
@@ -1657,17 +1644,17 @@ The reduced basis must therefore satisfy:
 \right|
 =
 122430513841.
-\]
+$$
 
 This provides an immediate invariant check:
 
-\[
+$$
 \boxed{
 \det(L_{\mathrm{before}})
 =
 \det(L_{\mathrm{after}}).
 }
-\]
+$$
 
 The basis changed dramatically.
 
@@ -1703,47 +1690,47 @@ Real NTRU-style constructions replace the integer arithmetic with arithmetic in 
 
 A classical model uses:
 
-\[
+$$
 \boxed{
 R
 =
 \mathbb Z[x]/(x^N-1),
 }
-\]
+$$
 
 or a related quotient depending on the construction.
 
 The private quantities become short polynomials:
 
-\[
+$$
 f(x),
 \qquad
 g(x).
-\]
+$$
 
 A core public relation has the form:
 
-\[
+$$
 \boxed{
 h
 \equiv
 f^{-1}g
 \pmod q
 }
-\]
+$$
 
 inside the quotient ring, under one common normalization.
 
 Equivalently:
 
-\[
+$$
 \boxed{
 fh
 \equiv
 g
 \pmod q.
 }
-\]
+$$
 
 Some NTRU variants include additional small multipliers or use different public-key normalizations, so this equation should be understood as the structural relation needed for the lattice analogy rather than a universal specification of every NTRU scheme.
 
@@ -1753,64 +1740,64 @@ Some NTRU variants include additional small multipliers or use different public-
 
 Write:
 
-\[
+$$
 f(x)
 =
 f_0+f_1x+\cdots+f_{N-1}x^{N-1}.
-\]
+$$
 
 Associate the vector:
 
-\[
+$$
 \boxed{
 \mathbf f
 =
 (f_0,\ldots,f_{N-1})^T.
 }
-\]
+$$
 
 Do the same for:
 
-\[
+$$
 g
-\]
+$$
 
 and:
 
-\[
+$$
 h.
-\]
+$$
 
-Multiplication by \(h\) modulo:
+Multiplication by $h$ modulo:
 
-\[
+$$
 x^N-1
-\]
+$$
 
 becomes a linear transformation represented by a circulant matrix:
 
-\[
+$$
 \boxed{
 H.
 }
-\]
+$$
 
 Thus:
 
-\[
+$$
 fh\equiv g\pmod q
-\]
+$$
 
 becomes:
 
-\[
+$$
 \boxed{
 H\mathbf f
 \equiv
 \mathbf g
 \pmod q.
 }
-\]
+$$
 
 ---
 
@@ -1818,7 +1805,7 @@ H\mathbf f
 
 Define:
 
-\[
+$$
 \boxed{
 L_h
 =
@@ -1836,11 +1823,11 @@ H\mathbf a
 \pmod q
 \right\}.
 }
-\]
+$$
 
 One column-basis representation is:
 
-\[
+$$
 \boxed{
 B_h
 =
@@ -1849,60 +1836,60 @@ I_N&0\\
 H&qI_N
 \end{pmatrix}.
 }
-\]
+$$
 
 Indeed, multiplying by:
 
-\[
+$$
 \begin{pmatrix}
 \mathbf a\\
 \mathbf z
 \end{pmatrix}
 \in
 \mathbb Z^{2N}
-\]
+$$
 
 gives:
 
-\[
+$$
 \begin{pmatrix}
 \mathbf a\\
 H\mathbf a+q\mathbf z
 \end{pmatrix}.
-\]
+$$
 
 Because:
 
-\[
+$$
 H\mathbf f
 \equiv
 \mathbf g
 \pmod q,
-\]
+$$
 
 there exists:
 
-\[
+$$
 \mathbf u\in\mathbb Z^N
-\]
+$$
 
 such that:
 
-\[
+$$
 H\mathbf f
 =
 \mathbf g+q\mathbf u.
-\]
+$$
 
 Choosing:
 
-\[
+$$
 \mathbf z=-\mathbf u
-\]
+$$
 
 gives:
 
-\[
+$$
 \boxed{
 \begin{pmatrix}
 \mathbf f\\
@@ -1911,15 +1898,15 @@ gives:
 \in
 L_h.
 }
-\]
+$$
 
 This is the high-dimensional version of the scalar identity:
 
-\[
+$$
 \boxed{
 (f,g)\in L_h.
 }
-\]
+$$
 
 ---
 
@@ -1927,53 +1914,53 @@ This is the high-dimensional version of the scalar identity:
 
 The scalar toy has:
 
-\[
+$$
 \boxed{
 \dim L=2.
 }
-\]
+$$
 
 The polynomial construction has dimension:
 
-\[
+$$
 \boxed{
 2N.
 }
-\]
+$$
 
 For the displayed block basis:
 
-\[
+$$
 B_h=
 \begin{pmatrix}
 I_N&0\\
 H&qI_N
 \end{pmatrix},
-\]
+$$
 
 we have:
 
-\[
+$$
 \boxed{
 \det(L_h)=q^N.
 }
-\]
+$$
 
 So the move from the toy to NTRU is not simply:
 
-\[
+$$
 \text{bigger integers}.
-\]
+$$
 
 It is:
 
-\[
+$$
 \boxed{
 2
 \longrightarrow
 2N
 }
-\]
+$$
 
 dimensions together with strong algebraic structure.
 
@@ -1987,39 +1974,39 @@ In dimension two, Gauss reduction gives exceptionally strong results.
 
 For dimension:
 
-\[
+$$
 2N,
-\]
+$$
 
 there is no direct analogue with the same efficiency and exactness.
 
 We instead rely on algorithms such as:
 
-\[
+$$
 \boxed{
 \text{LLL}
 }
-\]
+$$
 
 and:
 
-\[
+$$
 \boxed{
 \text{BKZ}.
 }
-\]
+$$
 
 These return reduced bases or short vectors with approximation behavior rather than solving arbitrary high-dimensional SVP exactly in polynomial time.
 
 So:
 
-\[
+$$
 \boxed{
 \text{same structural idea}
 \neq
 \text{same computational difficulty}.
 }
-\]
+$$
 
 That distinction is the entire reason the toy example is educational rather than a break of modern NTRU.
 
@@ -2035,29 +2022,29 @@ The example contains several ideas that will reappear throughout lattice-based c
 
 We began with:
 
-\[
+$$
 \boxed{
 fh\equiv g\pmod q.
 }
-\]
+$$
 
 That became:
 
-\[
+$$
 \boxed{
 (f,g)\in L_h.
 }
-\]
+$$
 
 This pattern is extremely general:
 
-\[
+$$
 \boxed{
 \text{modular linear relation}
 \rightarrow
 \text{lattice membership}.
 }
-\]
+$$
 
 Later, SIS will use exactly this kind of transition.
 
@@ -2069,29 +2056,29 @@ The secret coefficients are deliberately sampled from a small range.
 
 Therefore:
 
-\[
+$$
 (f,g)
-\]
+$$
 
 has relatively small Euclidean norm.
 
 In polynomial NTRU, coefficient vectors:
 
-\[
+$$
 (\mathbf f,\mathbf g)
-\]
+$$
 
 play the analogous role.
 
 So:
 
-\[
+$$
 \boxed{
 \text{small coefficients}
 \rightarrow
 \text{short Euclidean vector}.
 }
-\]
+$$
 
 ---
 
@@ -2099,25 +2086,25 @@ So:
 
 The public basis:
 
-\[
+$$
 (1,h),
 \qquad
 (0,q)
-\]
+$$
 
 is extremely long and skewed.
 
 Nothing about its visible vector lengths immediately reveals:
 
-\[
+$$
 (f,g).
-\]
+$$
 
 Yet both bases describe the same lattice.
 
 This is precisely why basis reduction matters:
 
-\[
+$$
 \boxed{
 \text{bad basis}
 \rightarrow
@@ -2125,7 +2112,7 @@ This is precisely why basis reduction matters:
 \rightarrow
 \text{better basis}.
 }
-\]
+$$
 
 ---
 
@@ -2133,17 +2120,17 @@ This is precisely why basis reduction matters:
 
 The toy lattice has dimension:
 
-\[
+$$
 2.
-\]
+$$
 
 Gaussian reduction can solve its reduction problem essentially exactly and extremely efficiently.
 
 Real NTRU-style lattices have dimensions on the order of:
 
-\[
+$$
 2N.
-\]
+$$
 
 The security question is therefore not:
 
@@ -2160,11 +2147,11 @@ The important questions include:
 
 So:
 
-\[
+$$
 \boxed{
 \text{large numbers alone do not create lattice hardness}.
 }
-\]
+$$
 
 ---
 
@@ -2172,14 +2159,14 @@ So:
 
 Gaussian reduction only works because we first recognized the correct public lattice:
 
-\[
+$$
 L_h
 =
 \langle
 (1,h),
 (0,q)
 \rangle.
-\]
+$$
 
 This is the same lesson seen in Coppersmith and Hidden Number Problem attacks.
 
@@ -2187,41 +2174,41 @@ A reduction algorithm is not a magic cryptanalytic black box.
 
 The full process is:
 
-\[
+$$
 \boxed{
 \text{identify algebraic relation}
 }
-\]
+$$
 
-\[
+$$
 \downarrow
-\]
+$$
 
-\[
+$$
 \boxed{
 \text{construct lattice}
 }
-\]
+$$
 
-\[
+$$
 \downarrow
-\]
+$$
 
-\[
+$$
 \boxed{
 \text{identify target geometry}
 }
-\]
+$$
 
-\[
+$$
 \downarrow
-\]
+$$
 
-\[
+$$
 \boxed{
 \text{apply reduction}.
 }
-\]
+$$
 
 The first three steps often contain most of the mathematical insight.
 
@@ -2239,18 +2226,18 @@ It contains:
 
 - exact nearest-integer two-dimensional reduction;
 - the original:
-  \[
+  $$
   (104,62),(74,23)
-  \]
+  $$
   reduction example;
 - the scalar NTRU-like toy;
 - encryption and decryption;
 - explicit no-wrap correctness checks;
 - construction of the public lattice;
 - recovery of:
-  \[
+  $$
   \pm(f,g);
-  \]
+  $$
 - determinant preservation checks.
 
 Because the implementation uses exact integer arithmetic, the experiment does not depend on floating-point approximations.
@@ -2261,15 +2248,15 @@ Because the implementation uses exact integer arithmetic, the experiment does no
 
 Two-dimensional reduction starts with:
 
-\[
+$$
 \boxed{
 L(B)=B\mathbb Z^2.
 }
-\]
+$$
 
 A nearest-integer operation:
 
-\[
+$$
 \boxed{
 b_2
 \leftarrow
@@ -2283,32 +2270,32 @@ b_2-
 \right\rceil
 b_1
 }
-\]
+$$
 
 preserves the lattice while improving its visible geometry.
 
 In the toy NTRU-like system:
 
-\[
+$$
 \boxed{
 h
 \equiv
 f^{-1}g
 \pmod q.
 }
-\]
+$$
 
 Therefore:
 
-\[
+$$
 \boxed{
 fh\equiv g\pmod q.
 }
-\]
+$$
 
 That public congruence defines:
 
-\[
+$$
 \boxed{
 L_h
 =
@@ -2317,19 +2304,19 @@ L_h
 b\equiv ah\pmod q
 \right\}.
 }
-\]
+$$
 
 The secret satisfies:
 
-\[
+$$
 \boxed{
 (f,g)\in L_h.
 }
-\]
+$$
 
 The public basis is:
 
-\[
+$$
 \boxed{
 \begin{pmatrix}
 1\\
@@ -2341,46 +2328,46 @@ h
 q
 \end{pmatrix}.
 }
-\]
+$$
 
 Its determinant is:
 
-\[
+$$
 \boxed{
 q.
 }
-\]
+$$
 
 Gaussian reduction reveals:
 
-\[
+$$
 \boxed{
 \pm(f,g).
 }
-\]
+$$
 
 The polynomial analogue replaces scalars by coefficient vectors:
 
-\[
+$$
 \boxed{
 H\mathbf f
 \equiv
 \mathbf g
 \pmod q,
 }
-\]
+$$
 
 and produces a structured lattice in dimension:
 
-\[
+$$
 \boxed{
 2N.
 }
-\]
+$$
 
 So the complete conceptual bridge is:
 
-\[
+$$
 \boxed{
 \text{public modular equation}
 \rightarrow
@@ -2390,7 +2377,7 @@ So the complete conceptual bridge is:
 \rightarrow
 \text{basis reduction}.
 }
-\]
+$$
 
 That is one of the central geometric ideas behind NTRU.
 
@@ -2402,19 +2389,19 @@ That is one of the central geometric ideas behind NTRU.
 
 Show that:
 
-\[
+$$
 b_2
 \leftarrow
 b_2-\mu b_1,
 \qquad
 \mu\in\mathbb Z,
-\]
+$$
 
 corresponds to multiplication by a matrix in:
 
-\[
+$$
 GL_2(\mathbb Z).
-\]
+$$
 
 Why does this preserve the lattice?
 
@@ -2424,21 +2411,21 @@ Why does this preserve the lattice?
 
 Starting with:
 
-\[
+$$
 b_1=(104,62),
 \qquad
 b_2=(74,23),
-\]
+$$
 
 perform the Gaussian reduction steps by hand.
 
 Verify the reduced basis:
 
-\[
+$$
 (-44,16),
 \qquad
 (30,39)
-\]
+$$
 
 up to signs and ordering.
 
@@ -2450,11 +2437,11 @@ Compute the determinant of both the original and reduced bases from Exercise 2.
 
 Verify:
 
-\[
+$$
 |\det B|
 =
 2196.
-\]
+$$
 
 ---
 
@@ -2462,28 +2449,28 @@ Verify:
 
 Using:
 
-\[
+$$
 q=122430513841,
-\]
+$$
 
-\[
+$$
 f=231231,
-\]
+$$
 
-\[
+$$
 g=195698,
-\]
+$$
 
 verify:
 
-\[
+$$
 h
 =
 f^{-1}g
 \bmod q
 =
 39245579300.
-\]
+$$
 
 ---
 
@@ -2491,7 +2478,7 @@ f^{-1}g
 
 Compute:
 
-\[
+$$
 u
 =
 \frac{
@@ -2499,15 +2486,15 @@ fh-g
 }{
 q
 }.
-\]
+$$
 
 Verify:
 
-\[
+$$
 \boxed{
 u=74122.
 }
-\]
+$$
 
 ---
 
@@ -2515,7 +2502,7 @@ u=74122.
 
 Show explicitly that:
 
-\[
+$$
 f
 \begin{pmatrix}
 1\\
@@ -2532,7 +2519,7 @@ q
 f\\
 g
 \end{pmatrix}.
-\]
+$$
 
 ---
 
@@ -2540,27 +2527,27 @@ g
 
 For:
 
-\[
+$$
 m=123456,
 \qquad
 r=101010,
-\]
+$$
 
 compute:
 
-\[
+$$
 c=rh+m\pmod q.
-\]
+$$
 
 Then verify:
 
-\[
+$$
 fc\bmod q
 =
 rg+fm.
-\]
+$$
 
-Why does this equality hold as an integer rather than merely modulo \(q\) for these parameters?
+Why does this equality hold as an integer rather than merely modulo $q$ for these parameters?
 
 ---
 
@@ -2568,27 +2555,27 @@ Why does this equality hold as an integer rather than merely modulo \(q\) for th
 
 Verify:
 
-\[
+$$
 \gcd(f,g)=1.
-\]
+$$
 
 Find:
 
-\[
+$$
 f^{-1}\pmod g.
-\]
+$$
 
 Recover:
 
-\[
+$$
 m
-\]
+$$
 
 from:
 
-\[
+$$
 rg+fm.
-\]
+$$
 
 ---
 
@@ -2596,19 +2583,19 @@ rg+fm.
 
 Compute:
 
-\[
+$$
 \sqrt q
-\]
+$$
 
 and:
 
-\[
+$$
 \sqrt{f^2+g^2}.
-\]
+$$
 
 Compare the two quantities.
 
-Why is this more informative than merely comparing \(f\) and \(g\) with \(q\)?
+Why is this more informative than merely comparing $f$ and $g$ with $q$?
 
 ---
 
@@ -2616,17 +2603,17 @@ Why is this more informative than merely comparing \(f\) and \(g\) with \(q\)?
 
 Run Gaussian reduction on:
 
-\[
+$$
 (1,h),
 \qquad
 (0,q).
-\]
+$$
 
 Verify that one result is:
 
-\[
+$$
 -(f,g).
-\]
+$$
 
 ---
 
@@ -2634,30 +2621,30 @@ Verify that one result is:
 
 Suppose:
 
-\[
+$$
 H\mathbf f
 \equiv
 \mathbf g
 \pmod q.
-\]
+$$
 
 Show that:
 
-\[
+$$
 \begin{pmatrix}
 \mathbf f\\
 \mathbf g
 \end{pmatrix}
-\]
+$$
 
 belongs to the lattice generated by:
 
-\[
+$$
 \begin{pmatrix}
 I&0\\
 H&qI
 \end{pmatrix}.
-\]
+$$
 
 ---
 
@@ -2665,28 +2652,28 @@ H&qI
 
 If:
 
-\[
+$$
 f,g\in
 \mathbb Z[x]/(x^{N}-1)
-\]
+$$
 
-have \(N\) coefficients each, explain why the corresponding basic NTRU lattice lives in dimension:
+have $N$ coefficients each, explain why the corresponding basic NTRU lattice lives in dimension:
 
-\[
+$$
 2N.
-\]
+$$
 
 Why is the jump from:
 
-\[
+$$
 2
-\]
+$$
 
 to:
 
-\[
+$$
 2N
-\]
+$$
 
 cryptographically significant?
 
@@ -2704,65 +2691,65 @@ You should now be able to explain:
 6. How two-dimensional reduction relates to the Euclidean algorithm.
 7. How it anticipates LLL size reduction.
 8. Why:
-   \[
+   $$
    h=f^{-1}g\pmod q
-   \]
+   $$
    implies:
-   \[
+   $$
    fh=g+uq.
-   \]
+   $$
 9. What correctness conditions the scalar encryption toy requires.
 10. Why:
-    \[
+    $$
     |rg+fm|<q/2
-    \]
+    $$
     prevents centered modular wrap-around.
 11. Why recovering:
-    \[
+    $$
     m\bmod g
-    \]
-    requires a message-range convention to recover \(m\) uniquely.
+    $$
+    requires a message-range convention to recover $m$ uniquely.
 12. How:
-    \[
+    $$
     fh\equiv g\pmod q
-    \]
+    $$
     defines a public lattice.
 13. Why:
-    \[
+    $$
     (f,g)
-    \]
+    $$
     belongs to that lattice.
 14. Why the public lattice has determinant:
-    \[
+    $$
     q.
-    \]
+    $$
 15. Why:
-    \[
+    $$
     \sqrt q
-    \]
+    $$
     is a natural two-dimensional length scale.
-16. Why comparing the secret norm with the lattice determinant scale is more meaningful than merely comparing coefficients with \(q\).
+16. Why comparing the secret norm with the lattice determinant scale is more meaningful than merely comparing coefficients with $q$.
 17. Why Gaussian reduction recovers the toy secret.
 18. Why this does not imply an efficient attack on high-dimensional NTRU.
 19. How scalar multiplication becomes circulant polynomial multiplication.
 20. Why polynomial NTRU produces a structured lattice of dimension roughly:
-    \[
+    $$
     2N.
-    \]
+    $$
 21. Why LLL/BKZ replace Gaussian reduction in higher-dimensional experiments.
 22. Why recognizing the correct lattice embedding is part of the cryptanalytic work.
 
 The central lesson is:
 
-\[
+$$
 \boxed{
 \text{small algebraic secrets can become short geometric vectors}.
 }
-\]
+$$
 
 But whether those vectors can be recovered efficiently depends critically on:
 
-\[
+$$
 \boxed{
 \text{dimension},
 \quad
@@ -2772,7 +2759,7 @@ But whether those vectors can be recovered efficiently depends critically on:
 \quad
 \text{reduction cost}.
 }
-\]
+$$
 
 ---
 
@@ -2809,45 +2796,45 @@ A useful conceptual reference for both constructive and cryptanalytic roles of l
 
 This article used the smallest possible setting:
 
-\[
+$$
 \boxed{
 \mathbb Z^2.
 }
-\]
+$$
 
 The next step is to move from one modular relation:
 
-\[
+$$
 fh\equiv g\pmod q
-\]
+$$
 
 to systems of modular linear relations.
 
 Given:
 
-\[
+$$
 A\in\mathbb Z_q^{m\times n},
-\]
+$$
 
 we will study lattices defined by conditions such as:
 
-\[
+$$
 \boxed{
 Ax\equiv0\pmod q.
 }
-\]
+$$
 
-These are **\(q\)-ary lattices**.
+These are **$q$-ary lattices**.
 
 Inside them appears one of the foundational problems of lattice-based cryptography:
 
-\[
+$$
 \boxed{
 \text{find a short nonzero }x
 \text{ such that }
 Ax\equiv0\pmod q.
 }
-\]
+$$
 
 That is the **Short Integer Solution problem (SIS)**.
 

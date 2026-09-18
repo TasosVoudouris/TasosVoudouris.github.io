@@ -46,7 +46,7 @@ It is a cryptographic security boundary.
 
 ![CRT-RSA fault attack](/images/blog/09-crt-rsa-fault.svg)
 
-*CRT-RSA computes independently modulo \(p\) and \(q\). If a fault corrupts only one branch, the final output may remain correct modulo one secret prime. That asymmetry is exactly what the attacker exploits.*
+*CRT-RSA computes independently modulo $p$ and $q$. If a fault corrupts only one branch, the final output may remain correct modulo one secret prime. That asymmetry is exactly what the attacker exploits.*
 
 ---
 
@@ -71,62 +71,62 @@ It is a cryptographic security boundary.
 
 Let
 
-\[
+$$
 N=pq
-\]
+$$
 
-be an RSA modulus constructed from two secret primes \(p\) and \(q\).
+be an RSA modulus constructed from two secret primes $p$ and $q$.
 
 A private RSA operation computes a value of the form
 
-\[
+$$
 S=M^d\bmod N,
-\]
+$$
 
 where:
 
-- \(M\) is an encoded message representative,
-- \(d\) is the private exponent.
+- $M$ is an encoded message representative,
+- $d$ is the private exponent.
 
-A direct exponentiation modulo \(N\) is possible.
+A direct exponentiation modulo $N$ is possible.
 
 But an implementation that knows the factorization
 
-\[
+$$
 N=pq
-\]
+$$
 
 can perform the computation more efficiently by working separately modulo the two smaller primes.
 
 It computes
 
-\[
+$$
 S_p=M^d\bmod p
-\]
+$$
 
 and
 
-\[
+$$
 S_q=M^d\bmod q.
-\]
+$$
 
 The Chinese Remainder Theorem then reconstructs the unique value
 
-\[
+$$
 S\bmod N
-\]
+$$
 
 satisfying
 
-\[
+$$
 S\equiv S_p\pmod p
-\]
+$$
 
 and
 
-\[
+$$
 S\equiv S_q\pmod q.
-\]
+$$
 
 Conceptually:
 
@@ -169,27 +169,27 @@ The security problem appears when we introduce a **fault model**.
 
 Take a deliberately tiny RSA instance:
 
-\[
+$$
 p=11,
 \qquad
 q=13.
-\]
+$$
 
 Then
 
-\[
+$$
 N=pq=143.
-\]
+$$
 
 Choose the public exponent
 
-\[
+$$
 e=7.
-\]
+$$
 
 For these primes,
 
-\[
+$$
 \lambda(N)
 =
 \operatorname{lcm}(p-1,q-1)
@@ -197,157 +197,157 @@ For these primes,
 \operatorname{lcm}(10,12)
 =
 60.
-\]
+$$
 
 Choose
 
-\[
+$$
 d=43
-\]
+$$
 
 because
 
-\[
+$$
 7\cdot43
 =
 301
 \equiv1\pmod{60}.
-\]
+$$
 
-So \(d\) is a valid RSA private exponent modulo the Carmichael value
+So $d$ is a valid RSA private exponent modulo the Carmichael value
 
-\[
+$$
 \lambda(N)=60.
-\]
+$$
 
 Notice that
 
-\[
+$$
 \varphi(N)
 =
 (p-1)(q-1)
 =
 120,
-\]
+$$
 
 so here we are explicitly using the condition
 
-\[
+$$
 ed\equiv1\pmod{\lambda(N)},
-\]
+$$
 
 which is sufficient for RSA.
 
 Let the encoded message representative be
 
-\[
+$$
 M=42.
-\]
+$$
 
 The correct RSA private operation gives
 
-\[
+$$
 S
 =
 42^{43}\bmod143
 =
 3.
-\]
+$$
 
 Public verification recovers the message representative:
 
-\[
+$$
 S^e
 =
 3^7
 \equiv42\pmod{143}.
-\]
+$$
 
 So the correct result is
 
-\[
+$$
 \boxed{
 S=3
 }
-\]
+$$
 
 and the signature equation holds.
 
 ### The two CRT branches
 
-Modulo \(p=11\),
+Modulo $p=11$,
 
-\[
+$$
 S_p
 =
 42^{43}\bmod11
 =
 3.
-\]
+$$
 
-Modulo \(q=13\),
+Modulo $q=13$,
 
-\[
+$$
 S_q
 =
 42^{43}\bmod13
 =
 3.
-\]
+$$
 
 Thus the correct result satisfies
 
-\[
+$$
 S\equiv3\pmod{11}
-\]
+$$
 
 and
 
-\[
+$$
 S\equiv3\pmod{13}.
-\]
+$$
 
 Everything is consistent.
 
 Now introduce a fault.
 
-Suppose something corrupts only the computation modulo \(p\).
+Suppose something corrupts only the computation modulo $p$.
 
 Instead of
 
-\[
+$$
 S_p=3,
-\]
+$$
 
 the device obtains
 
-\[
+$$
 \widetilde S_p=4.
-\]
+$$
 
-The computation modulo \(q\) remains correct:
+The computation modulo $q$ remains correct:
 
-\[
+$$
 \widetilde S_q=3.
-\]
+$$
 
 CRT recombination now produces a faulty result
 
-\[
+$$
 \widetilde S=81.
-\]
+$$
 
 Indeed,
 
-\[
+$$
 81\equiv4\pmod{11},
-\]
+$$
 
 while
 
-\[
+$$
 81\equiv3\pmod{13}.
-\]
+$$
 
 This is the crucial structure:
 
@@ -367,7 +367,7 @@ mod p → wrong
 mod q → still correct
 ```
 
-The faulty value is globally incorrect modulo \(N\), but it remains correct modulo **one secret factor**.
+The faulty value is globally incorrect modulo $N$, but it remains correct modulo **one secret factor**.
 
 That is exactly what the attacker needs.
 
@@ -377,73 +377,73 @@ That is exactly what the attacker needs.
 
 Compare the correct result
 
-\[
+$$
 S=3
-\]
+$$
 
 with the faulty result
 
-\[
+$$
 \widetilde S=81.
-\]
+$$
 
 Their difference is
 
-\[
+$$
 S-\widetilde S
 =
 3-81
 =
 -78.
-\]
+$$
 
-Because the \(q\)-branch survived the fault,
+Because the $q$-branch survived the fault,
 
-\[
+$$
 S\equiv\widetilde S\pmod q.
-\]
+$$
 
 Therefore,
 
-\[
+$$
 q\mid(S-\widetilde S).
-\]
+$$
 
-But the result is not normally correct modulo \(p\), so in the useful fault case,
+But the result is not normally correct modulo $p$, so in the useful fault case,
 
-\[
+$$
 p\nmid(S-\widetilde S).
-\]
+$$
 
-The difference therefore contains one prime factor of \(N\), but not the other.
+The difference therefore contains one prime factor of $N$, but not the other.
 
 Compute:
 
-\[
+$$
 \gcd(S-\widetilde S,N).
-\]
+$$
 
 For our values,
 
-\[
+$$
 \gcd(3-81,143)
 =
 \gcd(-78,143)
 =
 13.
-\]
+$$
 
 Thus,
 
-\[
+$$
 \boxed{
 q=13
 }
-\]
+$$
 
 and the second factor follows immediately:
 
-\[
+$$
 p
 =
 \frac{N}{q}
@@ -451,21 +451,21 @@ p
 \frac{143}{13}
 =
 11.
-\]
+$$
 
 The RSA modulus is factored.
 
 Once
 
-\[
+$$
 p
-\]
+$$
 
 and
 
-\[
+$$
 q
-\]
+$$
 
 are known, the attacker can reconstruct the private key.
 
@@ -506,128 +506,128 @@ For a cryptographic implementation, one structurally wrong output can be catastr
 
 The previous attack assumed that the attacker possesses both:
 
-\[
+$$
 S
-\]
+$$
 
 and
 
-\[
+$$
 \widetilde S.
-\]
+$$
 
 But there is an even stronger observation.
 
 For a correct RSA signature,
 
-\[
+$$
 S^e\equiv M\pmod N.
-\]
+$$
 
 The faulty signature
 
-\[
+$$
 \widetilde S=81
-\]
+$$
 
 does not satisfy this relation globally.
 
 Indeed,
 
-\[
+$$
 81^7\bmod143
 =
 16
 \neq42.
-\]
+$$
 
 So public verification fails.
 
-But remember: the computation remained correct modulo \(q\).
+But remember: the computation remained correct modulo $q$.
 
 Therefore,
 
-\[
+$$
 \widetilde S
 \equiv
 S
 \pmod q.
-\]
+$$
 
 Raising both sides to the public exponent gives
 
-\[
+$$
 \widetilde S^e
 \equiv
 S^e
 \pmod q.
-\]
+$$
 
 Since the correct signature satisfies
 
-\[
+$$
 S^e\equiv M\pmod q,
-\]
+$$
 
 we obtain
 
-\[
+$$
 \widetilde S^e
 \equiv
 M
 \pmod q.
-\]
+$$
 
 Therefore,
 
-\[
+$$
 q
 \mid
 (\widetilde S^e-M).
-\]
+$$
 
 Now compute:
 
-\[
+$$
 \gcd(\widetilde S^e-M,N).
-\]
+$$
 
 In the toy example,
 
-\[
+$$
 \widetilde S^e\bmod N
 =
 81^7\bmod143
 =
 16.
-\]
+$$
 
 So:
 
-\[
+$$
 \gcd(16-42,143)
 =
 \gcd(-26,143)
 =
 13.
-\]
+$$
 
 Again,
 
-\[
+$$
 \boxed{
 q=13
 }
-\]
+$$
 
 is recovered.
 
 This version requires only:
 
-- the public modulus \(N\),
-- the public exponent \(e\),
-- the message representative \(M\),
-- one faulty RSA signature \(\widetilde S\).
+- the public modulus $N$,
+- the public exponent $e$,
+- the message representative $M$,
+- one faulty RSA signature $\widetilde S$.
 
 The correct signature is unnecessary.
 
@@ -670,38 +670,38 @@ difference has a nontrivial common divisor with N
 GCD reveals the factor
 ```
 
-Algebraically, if the \(q\)-branch remains correct,
+Algebraically, if the $q$-branch remains correct,
 
-\[
+$$
 S\equiv\widetilde S\pmod q.
-\]
+$$
 
 Hence
 
-\[
+$$
 S-\widetilde S
 \equiv0\pmod q.
-\]
+$$
 
 Therefore,
 
-\[
+$$
 q\mid(S-\widetilde S).
-\]
+$$
 
-But if the \(p\)-branch is genuinely corrupted,
+But if the $p$-branch is genuinely corrupted,
 
-\[
+$$
 S\not\equiv\widetilde S\pmod p
-\]
+$$
 
 in the useful fault case.
 
 Thus:
 
-\[
+$$
 \gcd(S-\widetilde S,pq)=q.
-\]
+$$
 
 The GCD acts as a detector for the hidden modular agreement.
 
@@ -715,15 +715,15 @@ The faulty output remembers which secret modular branch remained correct.
 
 Our toy experiment simply changes
 
-\[
+$$
 S_p=3
-\]
+$$
 
 into
 
-\[
+$$
 \widetilde S_p=4.
-\]
+$$
 
 A real attacker obviously does not normally edit an internal Python variable by hand.
 
@@ -753,11 +753,11 @@ An attacker might cause:
 
 Our article uses the cleanest model:
 
-\[
+$$
 \boxed{
 \text{one CRT branch wrong, one CRT branch correct}
 }
-\]
+$$
 
 because it makes the underlying mathematics completely visible.
 
@@ -773,17 +773,17 @@ The most immediate defense follows directly from the attack:
 
 If a private operation computes
 
-\[
+$$
 S=M^d\bmod N,
-\]
+$$
 
 the implementation can verify the public RSA relation before returning the value:
 
-\[
+$$
 S^e\bmod N
 \stackrel{?}{=}
 M.
-\]
+$$
 
 Conceptually:
 
@@ -806,15 +806,15 @@ S^e mod N == M ?
 
 Our faulty signature gives
 
-\[
+$$
 81^7\bmod143=16,
-\]
+$$
 
 while
 
-\[
+$$
 M=42.
-\]
+$$
 
 So verification immediately detects the fault.
 
@@ -824,19 +824,19 @@ The signature must not be released.
 
 Both GCD attacks require the attacker to obtain
 
-\[
+$$
 \widetilde S.
-\]
+$$
 
 If the implementation detects the inconsistency internally and refuses to output the faulty result, the simple attack loses its crucial input.
 
 This leads to a broad implementation principle:
 
-\[
+$$
 \boxed{
 \text{check secret-dependent results before exposing them}
 }
-\]
+$$
 
 when the threat model requires such protection.
 
@@ -874,31 +874,31 @@ This attack is also a nice example of why building cryptography from elementary 
 
 We first encountered the GCD as something simple:
 
-\[
+$$
 \gcd(48,18)=6.
-\]
+$$
 
-Then we used it to determine whether an element is invertible modulo \(n\):
+Then we used it to determine whether an element is invertible modulo $n$:
 
-\[
+$$
 \gcd(a,n)=1.
-\]
+$$
 
 Later we will use the extended Euclidean algorithm to construct modular inverses.
 
 In RSA, the same operation suddenly becomes:
 
-\[
+$$
 \gcd(S-\widetilde S,N)
-\]
+$$
 
 and extracts a secret prime from a faulty private-key computation.
 
 Or, in the single-fault version:
 
-\[
+$$
 \gcd(\widetilde S^e-M,N).
-\]
+$$
 
 The GCD never disappeared.
 
@@ -1032,12 +1032,12 @@ The complete factorization has been recovered.
 Make sure you can explain:
 
 1. Why CRT-RSA uses two independent modular computations.
-2. Why the faulty result remains correct modulo \(q\).
+2. Why the faulty result remains correct modulo $q$.
 3. Why this implies
-   \[
+   $$
    q\mid(S-\widetilde S).
-   \]
-4. Why the GCD does not normally return all of \(N\).
+   $$
+4. Why the GCD does not normally return all of $N$.
 5. Why knowing one factor immediately reveals the other.
 6. Why the stronger variant does not need the correct signature.
 7. Why verifying the private result before release blocks this simple attack.
@@ -1045,7 +1045,7 @@ Make sure you can explain:
 
 The essential structure is:
 
-\[
+$$
 \boxed{
 \text{partial correctness}
 \rightarrow
@@ -1055,7 +1055,7 @@ The essential structure is:
 \rightarrow
 \text{factorization}
 }
-\]
+$$
 
 ---
 
@@ -1084,11 +1084,11 @@ This family of attacks is often informally referred to as the **Bellcore attack*
 
 The important lesson is broader than the historical name:
 
-\[
+$$
 \boxed{
 \text{faults must be included in the implementation threat model}
 }
-\]
+$$
 
 for systems where an attacker may influence physical computation.
 
@@ -1158,13 +1158,13 @@ It appeared here because CRT allows RSA to perform two smaller private computati
 
 It appeared earlier when several small-subgroup leaks revealed:
 
-\[
+$$
 d\bmod3,
 \qquad
 d\bmod4,
 \qquad
 d\bmod5,
-\]
+$$
 
 and CRT combined those modular views into one value.
 
