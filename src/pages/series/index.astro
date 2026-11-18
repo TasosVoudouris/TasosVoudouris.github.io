@@ -73,22 +73,60 @@ const seriesData = SERIES.map((series) => {
 </html>
 
 <style>
-	main { width: 100%; }
-	.page-header, .series-section { width: min(1100px, calc(100% - 3rem)); margin: 0 auto; }
-	.page-header { padding: 7rem 0 5rem; border-bottom: 1px solid #e5e7eb; }
-	.eyebrow, .label { margin: 0; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.13em; text-transform: uppercase; color: #4f46e5; }
-	h1 { margin: 0.7rem 0 1.2rem; font-size: clamp(3.5rem, 8vw, 7rem); line-height: 0.95; letter-spacing: -0.055em; color: #111827; }
-	.intro { max-width: 800px; margin: 0; font-size: 1.1rem; line-height: 1.8; color: #6b7280; }
-	.series-section { padding: 4rem 0 7rem; }
-	.series-group + .series-group { margin-top: 5rem; }
-	.group-heading { display: flex; align-items: baseline; gap: 1rem; padding-bottom: 1.2rem; border-bottom: 1px solid #111827; }
-	.group-heading span { font-family: monospace; font-size: 0.72rem; color: #9ca3af; }
-	.group-heading h2 { margin: 0; font-size: 1rem; letter-spacing: 0.08em; text-transform: uppercase; color: #111827; }
-	.series-card { display: grid; grid-template-columns: 80px 1fr; gap: 2rem; padding: 2.7rem 0; border-bottom: 1px solid #d1d5db; color: inherit; text-decoration: none; }
-	.number { font-family: monospace; font-size: 0.8rem; color: #9ca3af; padding-top: 0.35rem; }
-	h3 { margin: 0.55rem 0 1rem; font-size: clamp(1.8rem, 4vw, 3rem); line-height: 1.03; letter-spacing: -0.04em; color: #111827; }
-	.content > p:not(.label) { max-width: 800px; margin: 0; line-height: 1.75; color: #6b7280; }
-	.meta { display: flex; justify-content: space-between; gap: 1rem; margin-top: 1.6rem; font-family: monospace; font-size: 0.76rem; color: #4f46e5; }
-	.series-card:hover h3 { color: #4f46e5; }
-	@media (max-width: 650px) { .series-card { grid-template-columns: 1fr; gap: 0.7rem; } .number { display: none; } .meta { flex-direction: column; } .group-heading { align-items: flex-start; flex-direction: column; gap: 0.35rem; } }
+	.series-group {
+		margin-bottom: 3.2rem;
+	}
+	.group-heading {
+		justify-content: flex-start;
+		gap: 0.8rem;
+	}
+	.group-heading > span {
+		color: var(--green);
+	}
+	.group-series {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
+		gap: 0.7rem;
+	}
+	.series-card {
+		display: grid;
+		grid-template-columns: 2.2rem minmax(0, 1fr);
+		gap: 0.6rem;
+		padding: 1.2rem 1.2rem 1.1rem 1rem;
+	}
+	.series-card .number {
+		font-family: var(--font-mono);
+		font-size: 0.78rem;
+		color: var(--fg-faint);
+	}
+	.series-card .label {
+		font-size: 0.64rem;
+		color: var(--fg-faint);
+		margin-bottom: 0.4rem;
+	}
+	.series-card h3 {
+		font-size: 1rem;
+		margin-bottom: 0.4rem;
+	}
+	.series-card p {
+		color: var(--fg-dim);
+		font-size: 0.9rem;
+		margin-bottom: 0.8rem;
+	}
+	.series-card .meta {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
+		color: var(--fg-faint);
+	}
+	.series-card .meta span:last-child {
+		color: var(--green);
+	}
+	@media (max-width: 520px) {
+		.group-series {
+			grid-template-columns: 1fr;
+		}
+	}
 </style>

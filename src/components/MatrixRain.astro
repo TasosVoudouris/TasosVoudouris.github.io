@@ -1,0 +1,83 @@
+---
+/*
+ * Quiet "digital rain" behind the home page hero.
+ * Hex digits and a few mathematical symbols fall slowly at low opacity.
+ * Stops when the tab is hidden or the hero leaves the screen, and draws a
+ * single still frame for visitors who prefer reduced motion.
+ */
+---
+
+<canvas class="matrix-rain" aria-hidden="true"></canvas>
+
+<script>
+	const GLYPHS = '0123456789abcdef0123456789ABCDEF∑∏√∞≡⊕λπφℤ𝔽';
+	const canvas = document.querySelector<HTMLCanvasElement>('canvas.matrix-rain');
+	const ctx = canvas?.getContext('2d');
+
+	if (canvas && ctx) {
+		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		const size = 15;
+		let columns: number[] = [];
+		let width = 0;
+		let height = 0;
+		let visible = true;
+		let last = 0;
+
+		const resize = () => {
+			const dpr = Math.min(window.devicePixelRatio || 1, 2);
+			width = canvas.clientWidth;
+			height = canvas.clientHeight;
+			canvas.width = Math.floor(width * dpr);
+			canvas.height = Math.floor(height * dpr);
+			ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+			const count = Math.ceil(width / size);
+			columns = Array.from({ length: count }, () => Math.floor((Math.random() * -height) / size));
+			ctx.fillStyle = '#070907';
+			ctx.fillRect(0, 0, width, height);
+		};
+
+		const step = () => {
+			// Fade the previous frame a little: this makes the trails.
+			ctx.fillStyle = 'rgba(7, 9, 7, 0.10)';
+			ctx.fillRect(0, 0, width, height);
+			ctx.font = `${size - 2}px "JetBrains Mono Variable", monospace`;
+			for (let i = 0; i < columns.length; i++) {
+				const y = columns[i] * size;
+				const glyph = GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+				// Most heads are dim green; a few are bright.
+				ctx.fillStyle = Math.random() < 0.035 ? '#b8ffd3' : 'rgba(57, 226, 125, 0.55)';
+				ctx.fillText(glyph, i * size, y);
+				if (y > height && Math.random() > 0.975) columns[i] = 0;
+				else columns[i]++;
+			}
+		};
+
+		const loop = (t: number) => {
+			if (visible && !document.hidden && t - last > 70) {
+				step();
+				last = t;
+			}
+			requestAnimationFrame(loop);
+		};
+
+		resize();
+		for (let k = 0; k < 40; k++) step();
+		window.addEventListener('resize', resize);
+
+		if (!reduce) {
+			new IntersectionObserver(([entry]) => (visible = entry.isIntersecting)).observe(canvas);
+			requestAnimationFrame(loop);
+		}
+	}
+</script>
+
+<style>
+	.matrix-rain {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		opacity: 0.5;
+		pointer-events: none;
+	}
+</style>

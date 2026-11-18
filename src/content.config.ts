@@ -36,6 +36,27 @@ const blog = defineCollection({
 	}),
 });
 
+// "Root of Trust" research series (src/content/root/, served at /root/).
+const root = defineCollection({
+	loader: glob({
+		base: './src/content/root',
+		pattern: '**/*.{md,mdx}',
+	}),
+
+	schema: z.object({
+		title: z.string(),
+		description: z.string(),
+		part: z.number().int().min(0),
+		pubDate: z.coerce.date(),
+		updatedDate: z.coerce.date().optional(),
+		tags: z.array(z.string()).default([]),
+		// Path of the companion code in this repository, if any.
+		companion: z.string().optional(),
+		draft: z.boolean().default(false),
+	}),
+});
+
 export const collections = {
 	blog,
+	root,
 };

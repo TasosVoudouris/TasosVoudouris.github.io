@@ -1,0 +1,37 @@
+---
+import { type CollectionEntry, getCollection, render } from 'astro:content';
+import RootArticle from '../../layouts/RootArticle.astro';
+
+export async function getStaticPaths() {
+	const parts = (await getCollection('root'))
+		.filter((p) => !p.data.draft)
+		.sort((a, b) => a.data.part - b.data.part);
+	return parts.map((entry, i) => ({
+		params: { slug: entry.id },
+		props: { entry, previous: parts[i - 1], next: parts[i + 1] },
+	}));
+}
+
+type Props = {
+	entry: CollectionEntry<'root'>;
+	previous?: CollectionEntry<'root'>;
+	next?: CollectionEntry<'root'>;
+};
+
+const { entry, previous, next } = Astro.props;
+const { Content, headings } = await render(entry);
+const words = (entry.body ?? '').split(/\s+/).filter(Boolean).length;
+const minutes = Math.max(1, Math.round(words / 220));
+const nav = (e?: CollectionEntry<'root'>) => (e ? { id: e.id, title: e.data.title, part: e.data.part } : undefined);
+---
+
+<RootArticle
+	id={entry.id}
+	{...entry.data}
+	headings={headings}
+	minutes={minutes}
+	previous={nav(previous)}
+	next={nav(next)}
+>
+	<Content />
+</RootArticle>

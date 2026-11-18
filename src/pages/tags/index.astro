@@ -131,146 +131,40 @@ const tags = [...tagMap.entries()]
 </html>
 
 <style>
-	main {
-		width: 100%;
-	}
-
-	.page-header,
-	.tags-section {
-		width: min(1100px, calc(100% - 3rem));
-
-		margin: 0 auto;
-	}
-
-	.page-header {
-		padding: 7rem 0 5rem;
-
-		border-bottom: 1px solid #e5e7eb;
-	}
-
-	.eyebrow,
-	.section-top > p {
-		margin: 0;
-
-		font-size: 0.72rem;
-		font-weight: 700;
-
-		letter-spacing: 0.13em;
-		text-transform: uppercase;
-
-		color: #4f46e5;
-	}
-
-	h1 {
-		margin: 0.7rem 0 1.2rem;
-
-		font-size: clamp(3.5rem, 8vw, 7rem);
-		line-height: 0.95;
-
-		letter-spacing: -0.055em;
-
-		color: #111827;
-	}
-
-	.intro {
-		max-width: 760px;
-
-		margin: 0;
-
-		font-size: 1.1rem;
-		line-height: 1.8;
-
-		color: #6b7280;
-	}
-
-	.tags-section {
-		padding: 4rem 0 7rem;
-	}
-
-	.section-top {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-
-		margin-bottom: 1.5rem;
-	}
-
-	.section-top span {
-		font-family: monospace;
-		font-size: 0.78rem;
-
-		color: #9ca3af;
-	}
-
 	.tag-grid {
 		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-
-		border-top: 1px solid #d1d5db;
+		grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+		gap: 0.5rem;
 	}
-
 	.tag-card {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-
-		gap: 2rem;
-
-		min-height: 120px;
-
-		padding: 1.8rem 2rem;
-
-		border-bottom: 1px solid #d1d5db;
-
-		color: inherit;
-
-		text-decoration: none;
+		gap: 0.6rem;
+		padding: 0.7rem 0.9rem;
 	}
-
-	.tag-card:nth-child(odd) {
-		border-right: 1px solid #d1d5db;
-	}
-
 	.tag-main {
 		display: flex;
 		flex-direction: column;
-
-		gap: 0.5rem;
+		min-width: 0;
 	}
-
 	.tag-name {
-		font-family: monospace;
-
-		font-size: 1.05rem;
-		font-weight: 700;
-
-		color: #111827;
+		font-family: var(--font-mono);
+		font-size: 0.86rem;
+		color: var(--fg-bright);
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
-
 	.tag-count {
-		font-size: 0.78rem;
-
-		color: #9ca3af;
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		color: var(--fg-faint);
 	}
-
 	.arrow {
-		font-family: monospace;
-
-		color: #9ca3af;
+		color: var(--fg-faint);
 	}
-
-	.tag-card:hover .tag-name,
 	.tag-card:hover .arrow {
-		color: #4f46e5;
-	}
-
-	@media (max-width: 700px) {
-		.tag-grid {
-			grid-template-columns: 1fr;
-		}
-
-		.tag-card:nth-child(odd) {
-			border-right: none;
-		}
+		color: var(--green);
 	}
 </style>

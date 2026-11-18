@@ -173,7 +173,7 @@ Already we have converted a mathematical definition into a one-line test.
 
 ---
 
-## The GCD—and why Euclid's trick is not really a trick
+## The GCD and why Euclid's trick is not really a trick
 
 Suppose we want the greatest positive integer dividing both 48 and 18.
 

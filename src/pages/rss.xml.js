@@ -11,15 +11,26 @@ export async function GET(context) {
 				b.id.localeCompare(a.id),
 		);
 
-	return rss({
-		title: SITE_TITLE,
-		description: SITE_DESCRIPTION,
-		site: context.site,
-		items: posts.map((post) => ({
+	const rootParts = (await getCollection('root')).filter((p) => !p.data.draft);
+	const items = [
+		...posts.map((post) => ({
 			title: post.data.title,
 			description: post.data.description,
 			pubDate: post.data.pubDate,
 			link: `/blog/${post.id}/`,
 		})),
+		...rootParts.map((p) => ({
+			title: `Root of Trust ${String(p.data.part).padStart(2, '0')}: ${p.data.title}`,
+			description: p.data.description,
+			pubDate: p.data.pubDate,
+			link: `/root/${p.id}/`,
+		})),
+	].sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+	return rss({
+		title: SITE_TITLE,
+		description: SITE_DESCRIPTION,
+		site: context.site,
+		items,
 	});
 }

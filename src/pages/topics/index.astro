@@ -64,25 +64,43 @@ const topicData = TOPICS.map((topic) => ({
 </html>
 
 <style>
-	main { width: 100%; }
-	.page-header, .topics-section { width: min(1100px, calc(100% - 3rem)); margin: 0 auto; }
-	.page-header { padding: 7rem 0 5rem; border-bottom: 1px solid #e5e7eb; }
-	.eyebrow { margin: 0; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.13em; color: #4f46e5; }
-	h1 { margin: 0.7rem 0 1.2rem; font-size: clamp(3.5rem, 8vw, 7rem); line-height: 0.95; letter-spacing: -0.055em; color: #111827; }
-	.intro { max-width: 820px; margin: 0; font-size: 1.1rem; line-height: 1.8; color: #6b7280; }
-	.intro a { color: #4f46e5; font-weight: 700; text-decoration: none; }
-	.topics-section { padding: 4rem 0 7rem; }
-	.topic-group + .topic-group { margin-top: 4rem; }
-	.group-heading { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 1rem; }
-	.group-heading span { font-family: monospace; font-size: 0.7rem; color: #4f46e5; }
-	.group-heading h2 { margin: 0; font-size: 1.4rem; color: #111827; }
-	.topic-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid #d1d5db; }
-	.topic-card { display: flex; flex-direction: column; justify-content: space-between; min-height: 210px; gap: 2rem; padding: 2rem; border-bottom: 1px solid #d1d5db; color: inherit; text-decoration: none; }
-	.topic-card:nth-child(odd) { border-right: 1px solid #d1d5db; }
-	.topic-card h3 { margin: 0 0 0.7rem; font-size: 1.35rem; letter-spacing: -0.02em; color: #111827; }
-	.topic-card p { margin: 0; line-height: 1.65; color: #6b7280; }
-	.count { font-family: monospace; font-size: 0.72rem; font-weight: 700; color: #4f46e5; }
-	.count.empty { color: #9ca3af; }
-	.topic-card:hover h3 { color: #4f46e5; }
-	@media (max-width: 720px) { .topic-grid { grid-template-columns: 1fr; } .topic-card:nth-child(odd) { border-right: none; } }
+	.topic-group {
+		margin-bottom: 3rem;
+	}
+	.group-heading {
+		justify-content: flex-start;
+		gap: 0.8rem;
+	}
+	.group-heading > span {
+		color: var(--green);
+	}
+	.topic-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+		gap: 0.6rem;
+	}
+	.topic-card {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		gap: 0.8rem;
+		padding: 1rem 1.1rem;
+	}
+	.topic-card h3 {
+		font-size: 0.95rem;
+		margin-bottom: 0.35rem;
+	}
+	.topic-card p {
+		color: var(--fg-dim);
+		font-size: 0.86rem;
+		line-height: 1.55;
+		margin: 0;
+	}
+	.count {
+		color: var(--green);
+		font-size: 0.72rem;
+	}
+	.count.empty {
+		color: var(--amber);
+	}
 </style>

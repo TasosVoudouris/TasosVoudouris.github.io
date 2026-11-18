@@ -117,32 +117,9 @@ const independent = sortNewest(posts.filter((post) => !post.data.series));
 </html>
 
 <style>
-	main { width: 100%; }
-	.page-header, .articles-section { width: min(1100px, calc(100% - 3rem)); margin: 0 auto; }
-	.page-header { padding: 6rem 0 4rem; border-bottom: 1px solid #e5e7eb; }
-	.back { display: inline-block; margin-bottom: 3rem; font-size: 0.85rem; font-weight: 600; color: #6b7280; text-decoration: none; }
-	.back:hover { color: #4f46e5; }
-	.eyebrow, .group-heading p, .empty-label { margin: 0; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.13em; color: #4f46e5; }
-	h1 { max-width: 950px; margin: 0.7rem 0 1.2rem; font-size: clamp(3rem, 7vw, 6rem); line-height: 0.98; letter-spacing: -0.05em; color: #111827; }
-	.intro { max-width: 760px; margin: 0; font-size: 1.05rem; line-height: 1.7; color: #6b7280; }
-	.count { margin: 1.5rem 0 0; font-family: monospace; font-size: 0.78rem; color: #9ca3af; }
-	.articles-section { padding: 4rem 0 7rem; }
-	.article-group + .article-group { margin-top: 4.5rem; }
-	.group-heading { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 1.2rem; }
-	.group-heading h2 { margin: 0.35rem 0 0; font-size: 1.55rem; }
-	.group-heading h2 a { color: #111827; text-decoration: none; }
-	.group-heading h2 a:hover { color: #4f46e5; }
-	.group-heading > span { font-family: monospace; font-size: 0.72rem; color: #9ca3af; }
-	.articles { border-top: 1px solid #d1d5db; }
-	.article { display: grid; grid-template-columns: 70px 1fr; gap: 1.5rem; padding: 2rem 0; border-bottom: 1px solid #d1d5db; }
-	.number { font-family: monospace; font-size: 0.76rem; color: #9ca3af; padding-top: 0.2rem; }
-	.meta { display: flex; flex-wrap: wrap; gap: 0.45rem; font-family: monospace; font-size: 0.68rem; color: #9ca3af; text-transform: uppercase; }
-	.meta a { color: #4f46e5; text-decoration: none; }
-	h3 { margin: 0.65rem 0 0.7rem; font-size: 1.45rem; line-height: 1.2; }
-	h3 a { color: #111827; text-decoration: none; }
-	h3 a:hover { color: #4f46e5; }
-	.article .content > p { max-width: 800px; margin: 0; line-height: 1.65; color: #6b7280; }
-	.empty-state { padding: 4rem 0; }
-	.empty-state h2 { margin: 0.6rem 0; }
-	@media (max-width: 650px) { .article { grid-template-columns: 1fr; gap: 0.5rem; } .number { display: none; } .group-heading { align-items: flex-start; flex-direction: column; } }
+	.topic-groups {
+		display: flex;
+		flex-direction: column;
+		gap: 3rem;
+	}
 </style>

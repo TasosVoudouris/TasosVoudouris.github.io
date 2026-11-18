@@ -382,11 +382,7 @@ def brute_force_discrete_log(g, target, p):
 Run:
 
 ```python
-recovered_a = brute_force_discrete_log(
-    g=5,
-    target=8,
-    p=23,
-)
+recovered_a = brute_force_discrete_log(g=5,target=8,p=23,)
 
 print(recovered_a)
 ```

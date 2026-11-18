@@ -1,0 +1,255 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import { ROOT_DESCRIPTION, ROOT_ROADMAP, ROOT_TAGLINE, ROOT_TITLE, partLabel } from '../../data/root';
+import { SITE_TITLE } from '../../consts';
+
+const published = (await getCollection('root')).filter((p) => !p.data.draft);
+const byPart = new Map(published.map((p) => [p.data.part, p]));
+const rows = ROOT_ROADMAP.map((r) => ({ ...r, entry: byPart.get(r.part) }));
+const done = rows.filter((r) => r.entry).length;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`${ROOT_TITLE} | ${SITE_TITLE}`} description={ROOT_DESCRIPTION} />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<section class="intro-term" aria-label="Introduction">
+				<p><span class="u">guest@cryptocave:~$</span> sudo su -</p>
+				<p class="dim">[sudo] password for guest: ********</p>
+				<p><span class="r">root@cryptocave:~#</span> cat README</p>
+			</section>
+
+			<header class="title">
+				<h1>{ROOT_TITLE}</h1>
+				<p class="tagline">{ROOT_TAGLINE}</p>
+				<p class="lead">{ROOT_DESCRIPTION}</p>
+				<p class="lead">
+					Every part starts from the lowest layer it needs, explains it until it is obvious,
+					and only then builds on it. The figures are drawn by hand. The code runs. Claims point
+					to the standard that makes them true.
+				</p>
+			</header>
+
+			<section class="listing">
+				<p class="cmd"><span class="r">root@cryptocave:~#</span> ls -l /root</p>
+				<p class="total">total {rows.length} &nbsp;·&nbsp; {done} published, {rows.length - done} being written</p>
+				<ol class="ls">
+					{
+						rows.map((r) =>
+							r.entry ? (
+								<li class="pub">
+									<span class="perm">-rw-r--r--</span>
+									<span class="n">{partLabel(r.part)}</span>
+									<span class="what">
+										<a href={`/root/${r.entry.id}/`}>{r.entry.data.title}</a>
+										<span class="about">{r.about}</span>
+									</span>
+									<time datetime={r.entry.data.pubDate.toISOString()}>
+										{r.entry.data.pubDate.toISOString().slice(0, 10)}
+									</time>
+								</li>
+							) : (
+								<li class="wip">
+									<span class="perm">----------</span>
+									<span class="n">{partLabel(r.part)}</span>
+									<span class="what">
+										<span class="t">{r.title}</span>
+										<span class="about">{r.about}</span>
+									</span>
+									<span class="soon">[ wip ]</span>
+								</li>
+							),
+						)
+					}
+				</ol>
+			</section>
+
+			<section class="legend">
+				<p class="cmd"><span class="r">root@cryptocave:~#</span> man root-of-trust</p>
+				<dl>
+					<div>
+						<dt>plates</dt>
+						<dd>Figures on paper are drawn by hand (well, by a pencil simulator) to show structure, not decoration.</dd>
+					</div>
+					<div>
+						<dt>code</dt>
+						<dd>
+							Every part has runnable companion code under <code>experiments/root-of-trust/</code>, with tests for
+							every output the text quotes.
+						</dd>
+					</div>
+					<div>
+						<dt>[ note ]</dt>
+						<dd>Side remarks you can skip on a first read.</dd>
+					</div>
+					<div>
+						<dt>[ warning ]</dt>
+						<dd>Places where intuition fails or real systems were broken.</dd>
+					</div>
+					<div>
+						<dt>sources</dt>
+						<dd>RFCs, FIPS standards and IETF drafts, cited by section, so you can check every claim.</dd>
+					</div>
+				</dl>
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	main {
+		max-width: 64rem;
+	}
+	.intro-term,
+	.cmd,
+	.total {
+		font-family: var(--font-mono);
+		font-size: 0.86rem;
+	}
+	.intro-term p {
+		margin: 0 0 0.2rem;
+	}
+	.u {
+		color: var(--green);
+	}
+	.r {
+		color: var(--red);
+		font-weight: 600;
+	}
+	.dim {
+		color: var(--fg-faint);
+	}
+	.title {
+		padding: 2.5rem 0 3rem;
+		margin-bottom: 3rem;
+		border-bottom: 1px solid var(--line);
+	}
+	.title h1 {
+		font-size: clamp(2.4rem, 1.5rem + 4vw, 4.2rem);
+		letter-spacing: -0.03em;
+		margin-bottom: 0.3rem;
+	}
+	.tagline {
+		font-family: var(--font-mono);
+		font-size: 1rem;
+		color: var(--amber);
+		margin-bottom: 1.8rem;
+	}
+	.tagline::before {
+		content: '# ';
+		color: var(--fg-faint);
+	}
+
+	.listing {
+		margin-bottom: 4rem;
+	}
+	.total {
+		color: var(--fg-faint);
+		margin-bottom: 0.8rem;
+	}
+	.ls {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		font-family: var(--font-mono);
+		font-size: 0.86rem;
+	}
+	.ls li {
+		display: grid;
+		grid-template-columns: 7rem 2.4rem minmax(0, 1fr) 6.5rem;
+		gap: 0.8rem;
+		align-items: baseline;
+		padding: 0.8rem 0.4rem;
+		border-bottom: 1px solid var(--line);
+	}
+	.perm {
+		color: var(--fg-faint);
+	}
+	.n {
+		color: var(--amber);
+	}
+	.what {
+		display: flex;
+		flex-direction: column;
+		gap: 0.15rem;
+	}
+	.what a {
+		color: var(--fg-bright);
+		font-weight: 700;
+		text-decoration: none;
+	}
+	.what a:hover {
+		color: var(--green);
+	}
+	.pub .what a::after {
+		content: ' →';
+		color: var(--green);
+	}
+	.wip .t {
+		color: var(--fg-dim);
+	}
+	.about {
+		font-family: var(--font-body);
+		font-size: 0.9rem;
+		color: var(--fg-faint);
+	}
+	.pub .about {
+		color: var(--fg-dim);
+	}
+	time {
+		color: var(--green);
+		text-align: right;
+	}
+	.soon {
+		color: var(--fg-faint);
+		text-align: right;
+	}
+
+	.legend dl {
+		display: grid;
+		gap: 0.6rem;
+		margin: 1rem 0 0;
+	}
+	.legend dl div {
+		display: grid;
+		grid-template-columns: 8rem minmax(0, 1fr);
+		gap: 1rem;
+	}
+	.legend dt {
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		color: var(--green);
+	}
+	.legend dd {
+		margin: 0;
+		color: var(--fg-dim);
+		font-size: 0.95rem;
+	}
+
+	@media (max-width: 720px) {
+		.ls li {
+			grid-template-columns: 2rem minmax(0, 1fr);
+		}
+		.perm {
+			display: none;
+		}
+		time,
+		.soon {
+			grid-column: 2;
+			text-align: left;
+			font-size: 0.74rem;
+		}
+		.legend dl div {
+			grid-template-columns: 1fr;
+			gap: 0.1rem;
+		}
+	}
+</style>

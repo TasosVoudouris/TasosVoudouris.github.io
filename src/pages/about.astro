@@ -177,179 +177,87 @@ import {
 
 <style>
 	main {
-		width: min(1000px, calc(100% - 3rem));
-
-		margin: 0 auto;
+		max-width: 60rem;
 	}
-
 	.hero {
-		padding: 8rem 0 6rem;
-
-		border-bottom: 1px solid #e5e7eb;
+		padding: 1rem 0 3rem;
+		margin-bottom: 1rem;
+		border-bottom: 1px solid var(--line);
 	}
-
-	.eyebrow,
-	.label {
-		margin: 0;
-
-		font-family: monospace;
-		font-size: 0.7rem;
-		font-weight: 700;
-
-		letter-spacing: 0.14em;
-
-		color: #4f46e5;
+	.hero h1 {
+		max-width: 22ch;
 	}
-
-	h1 {
-		max-width: 950px;
-
-		margin: 1rem 0 2rem;
-
-		font-size: clamp(3.5rem, 8vw, 7rem);
-
-		line-height: 0.95;
-
-		letter-spacing: -0.055em;
-
-		color: #111827;
+	.hero h1::before {
+		content: '> ';
+		color: var(--green);
 	}
-
-	h1 span {
+	.hero h1 span {
 		display: block;
-
-		color: #6b7280;
+		color: var(--green);
 	}
-
-	.intro {
-		max-width: 760px;
-
-		margin: 0;
-
-		font-size: 1.15rem;
-		line-height: 1.8;
-
-		color: #6b7280;
-	}
-
 	.content {
 		display: grid;
-		grid-template-columns: 80px 1fr;
-
-		gap: 2rem;
-
-		padding: 5rem 0;
-
-		border-bottom: 1px solid #e5e7eb;
+		grid-template-columns: 3.5rem minmax(0, 1fr);
+		gap: 1rem;
+		padding: 2.6rem 0;
+		border-bottom: 1px dashed var(--line);
 	}
-
 	.section-number {
-		font-family: monospace;
-
-		color: #9ca3af;
+		font-family: var(--font-mono);
+		font-size: 0.85rem;
+		color: var(--green);
+		padding-top: 0.15rem;
 	}
-
-	h2 {
-		margin: 0.8rem 0 1.8rem;
-
-		font-size: clamp(2rem, 5vw, 3.5rem);
-
-		line-height: 1.05;
-
-		letter-spacing: -0.04em;
-
-		color: #111827;
+	.section-number::before {
+		content: '0x';
+		color: var(--fg-faint);
 	}
-
+	.content h2 {
+		font-size: 1.35rem;
+	}
 	.content p:not(.label) {
-		max-width: 720px;
-
-		font-size: 1.03rem;
-		line-height: 1.85;
-
-		color: #5f6875;
+		color: var(--fg);
+		max-width: var(--measure);
 	}
-
-	.scope-grid {
-		display: grid;
-		grid-template-columns: repeat(2, 1fr);
-
-		margin-top: 2rem;
-
-		border-top: 1px solid #e5e7eb;
+	.scope-grid,
+	.interest-grid {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.45rem;
+		margin-top: 0.5rem;
 	}
-
-	.scope-grid span {
-		padding: 1.2rem 0;
-
-		border-bottom: 1px solid #e5e7eb;
-
-		font-weight: 600;
-
-		color: #374151;
-	}
-
-	.scope-grid span:nth-child(odd) {
-		padding-right: 2rem;
-	}
-
-	.github {
-		display: inline-block;
-
-		margin-top: 1.5rem;
-
-		font-family: monospace;
+	.scope-grid span,
+	.interest-grid span {
+		font-family: var(--font-mono);
 		font-size: 0.8rem;
-		font-weight: 700;
-
-		color: #4f46e5;
-
-		text-decoration: none;
+		padding: 0.3rem 0.65rem;
+		border: 1px solid var(--line-strong);
+		border-radius: var(--radius);
+		color: var(--fg);
 	}
-
+	.scope-grid span:nth-child(odd),
+	.interest-grid span:nth-child(odd) {
+		color: var(--green);
+	}
 	.closing {
-		padding: 7rem 0;
+		padding: 3.5rem 0 1rem;
+		font-family: var(--font-mono);
+		color: var(--fg-dim);
 	}
-
 	.closing p {
-		margin: 0;
-
-		font-size: clamp(2.5rem, 6vw, 5rem);
-
-		line-height: 1.05;
-
-		letter-spacing: -0.05em;
-
-		color: #9ca3af;
+		font-size: 1.3rem;
+		line-height: 1.45;
 	}
-
 	.closing strong {
-		color: #111827;
+		color: var(--green);
 	}
-
-	@media (max-width: 700px) {
-		main {
-			width: calc(100% - 2rem);
-		}
-
-		.hero {
-			padding: 5rem 0 4rem;
-		}
-
+	.github {
+		font-family: var(--font-mono);
+	}
+	@media (max-width: 640px) {
 		.content {
 			grid-template-columns: 1fr;
-		}
-
-		.section-number {
-			display: none;
-		}
-
-		.scope-grid {
-			grid-template-columns: 1fr;
-		}
-
-		.scope-grid span:nth-child(odd) {
-			padding-right: 0;
+			gap: 0.4rem;
 		}
 	}
 </style>

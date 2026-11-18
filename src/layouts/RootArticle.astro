@@ -1,0 +1,324 @@
+---
+import type { MarkdownHeading } from 'astro';
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { ROOT_TITLE, partLabel } from '../data/root';
+import { SOURCE_URL } from '../consts';
+import 'katex/dist/katex.min.css';
+
+interface NavItem {
+	id: string;
+	title: string;
+	part: number;
+}
+
+interface Props {
+	id: string;
+	title: string;
+	description: string;
+	part: number;
+	pubDate: Date;
+	updatedDate?: Date;
+	tags?: string[];
+	companion?: string;
+	headings: MarkdownHeading[];
+	minutes: number;
+	previous?: NavItem;
+	next?: NavItem;
+}
+
+const { id, title, description, part, pubDate, updatedDate, tags = [], companion, headings, minutes, previous, next } =
+	Astro.props;
+
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const fmt = (d: Date) => d.toISOString().slice(0, 10);
+const companionUrl = companion ? `${SOURCE_URL}/tree/main/${companion}` : undefined;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`${partLabel(part)} · ${title} | ${ROOT_TITLE}`} description={description} />
+	</head>
+
+	<body>
+		<Header />
+
+		<main class="root-article">
+			<header class="head">
+				<a class="crumb" href="/root/"><span class="hash">root@cryptocave:~#</span> cat /root/{id}.md</a>
+
+				<p class="part">
+					<span>{ROOT_TITLE}</span>
+					<span class="sep">/</span>
+					<span class="num">part {partLabel(part)}</span>
+				</p>
+				<h1>{title}</h1>
+				<p class="description">{description}</p>
+
+				<dl class="meta">
+					<div><dt>written</dt><dd><time datetime={pubDate.toISOString()}>{fmt(pubDate)}</time></dd></div>
+					{
+						updatedDate && (
+							<div>
+								<dt>updated</dt>
+								<dd>
+									<time datetime={updatedDate.toISOString()}>{fmt(updatedDate)}</time>
+								</dd>
+							</div>
+						)
+					}
+					<div><dt>reading</dt><dd>~{minutes} min</dd></div>
+					{
+						companionUrl && (
+							<div>
+								<dt>code</dt>
+								<dd>
+									<a href={companionUrl} target="_blank" rel="noreferrer">
+										{companion} ↗
+									</a>
+								</dd>
+							</div>
+						)
+					}
+				</dl>
+				{tags.length > 0 && <p class="tags">{tags.map((t) => <span>#{t}</span>)}</p>}
+			</header>
+
+			<div class="layout">
+				<article class="prose"><slot /></article>
+
+				{
+					toc.length > 2 && (
+						<aside class="toc" aria-label="Contents">
+							<p class="toc-title">contents</p>
+							<ol>
+								{toc.map((h) => (
+									<li class={`d${h.depth}`}>
+										<a href={`#${h.slug}`}>{h.text}</a>
+									</li>
+								))}
+							</ol>
+						</aside>
+					)
+				}
+			</div>
+
+			<nav class="parts" aria-label="Previous and next part">
+				{
+					previous ? (
+						<a class="prev" href={`/root/${previous.id}/`}>
+							<span>← part {partLabel(previous.part)}</span>
+							<strong>{previous.title}</strong>
+						</a>
+					) : (
+						<a class="prev" href="/root/">
+							<span>← index</span>
+							<strong>{ROOT_TITLE}</strong>
+						</a>
+					)
+				}
+				{
+					next ? (
+						<a class="next" href={`/root/${next.id}/`}>
+							<span>part {partLabel(next.part)} →</span>
+							<strong>{next.title}</strong>
+						</a>
+					) : (
+						<a class="next" href="/root/">
+							<span>next part: being written →</span>
+							<strong>See the roadmap</strong>
+						</a>
+					)
+				}
+			</nav>
+		</main>
+
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.root-article {
+		padding-top: 2.5rem;
+	}
+	.head {
+		max-width: 48rem;
+		margin: 0 auto 3rem;
+		padding-bottom: 2rem;
+		border-bottom: 1px solid var(--line);
+	}
+	.crumb {
+		display: inline-block;
+		margin-bottom: 2rem;
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		color: var(--fg-dim);
+		text-decoration: none;
+		overflow-wrap: anywhere;
+	}
+	.crumb .hash {
+		color: var(--red);
+	}
+	.crumb:hover {
+		color: var(--fg-bright);
+	}
+	.part {
+		display: flex;
+		gap: 0.5rem;
+		margin: 0 0 0.9rem;
+		font-family: var(--font-mono);
+		font-size: 0.76rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--fg-faint);
+	}
+	.part .num {
+		color: var(--amber);
+	}
+	h1 {
+		font-size: clamp(1.9rem, 1.2rem + 2.6vw, 2.9rem);
+		line-height: 1.15;
+		margin-bottom: 1rem;
+	}
+	.description {
+		font-size: 1.15rem;
+		color: var(--fg-dim);
+		max-width: var(--measure);
+	}
+	.meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem 1.6rem;
+		margin: 1.4rem 0 0.6rem;
+		font-family: var(--font-mono);
+		font-size: 0.76rem;
+	}
+	.meta div {
+		display: flex;
+		gap: 0.5rem;
+	}
+	.meta dt {
+		color: var(--fg-faint);
+	}
+	.meta dt::after {
+		content: ':';
+	}
+	.meta dd {
+		margin: 0;
+		color: var(--fg);
+	}
+	.tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.3rem 0.8rem;
+		margin: 0;
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
+		color: var(--fg-faint);
+	}
+
+	.layout {
+		max-width: 48rem;
+		margin: 0 auto;
+	}
+	.toc {
+		display: none;
+	}
+	@media (min-width: 1240px) {
+		/* Align the header with the article column of the grid below. */
+		.head,
+		.parts {
+			max-width: 66.5rem;
+			padding-right: 18.5rem;
+		}
+		.layout {
+			max-width: none;
+			display: grid;
+			grid-template-columns: minmax(0, 48rem) 15rem;
+			justify-content: center;
+			gap: 3.5rem;
+		}
+		.toc {
+			display: block;
+			position: sticky;
+			top: 5rem;
+			align-self: start;
+			max-height: calc(100vh - 6rem);
+			overflow-y: auto;
+			padding-left: 1rem;
+			border-left: 1px solid var(--line);
+			font-family: var(--font-mono);
+			font-size: 0.74rem;
+		}
+	}
+	.toc-title {
+		margin: 0 0 0.7rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--fg-faint);
+	}
+	.toc ol {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	.toc li {
+		margin: 0.35rem 0;
+		line-height: 1.4;
+	}
+	.toc li.d3 {
+		padding-left: 0.9rem;
+	}
+	.toc a {
+		color: var(--fg-dim);
+		text-decoration: none;
+	}
+	.toc a:hover {
+		color: var(--green);
+	}
+
+	.parts {
+		max-width: 48rem;
+		margin: 4.5rem auto 0;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1rem;
+	}
+	.parts a {
+		display: flex;
+		flex-direction: column;
+		gap: 0.4rem;
+		padding: 1.1rem 1.2rem;
+		background: var(--bg-raised);
+		border: 1px solid var(--line);
+		border-radius: var(--radius);
+		color: var(--fg);
+		text-decoration: none;
+	}
+	.parts a:hover {
+		border-color: var(--green-dim);
+	}
+	.parts span {
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
+		letter-spacing: 0.1em;
+		color: var(--amber);
+	}
+	.parts strong {
+		font-family: var(--font-mono);
+		font-size: 0.92rem;
+	}
+	.parts .next {
+		text-align: right;
+	}
+	@media (max-width: 720px) {
+		.parts {
+			grid-template-columns: 1fr;
+		}
+		.parts .next {
+			text-align: left;
+		}
+	}
+</style>

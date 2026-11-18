@@ -1301,9 +1301,7 @@ g = 3
 value = 1
 
 for exponent in range(16):
-    print(
-        f"{g}^{exponent:2d} mod {p} = {value:2d}"
-    )
+    print(f"{g}^{exponent:2d} mod {p} = {value:2d}")
 
     value = (value * g) % p
 ```
@@ -1680,22 +1678,15 @@ def xor_integers(a, b):
 and verify:
 
 ```python
-assert xor_integers(
-    0b1010,
-    0b1100
-) == 0b0110
+assert xor_integers(0b1010,0b1100) == 0b0110
 ```
-
 Then verify the cancellation identity:
 
 ```python
 x = 123
 mask = 77
 
-assert xor_integers(
-    xor_integers(x, mask),
-    mask
-) == x
+assert xor_integers(xor_integers(x, mask),mask) == x
 ```
 
 Explain why the second XOR removes the same mask.

@@ -345,3 +345,32 @@ draft: false
 ```
 
 Drafts are excluded from public routes, indexes, series/topic/tag pages, and RSS.
+
+## Root of Trust (research series)
+
+`/root/` hosts the long-form series on post-quantum PKI and Merkle Tree Certificates.
+
+```text
+src/content/root/            one Markdown file per part (frontmatter: title, description, part, pubDate, companion)
+src/data/root.ts             series title, tagline and the roadmap of planned parts
+src/layouts/RootArticle.astro
+scripts/figures/             hand-drawn figure generator (rough.js + Caveat font)
+public/images/root/          generated figures (committed)
+experiments/root-of-trust/   runnable companion code and tests
+```
+
+Regenerate the figures after editing `scripts/figures/*.mjs` (needs `pip install fonttools brotli`
+for font subsetting):
+
+```bash
+node scripts/figures/build.mjs
+```
+
+Use a figure in an article as a paper "plate":
+
+```html
+<figure class="plate">
+<img src="/images/root/00-chain.svg" alt="..." width="1100" height="620" loading="lazy" />
+<figcaption>...</figcaption>
+</figure>
+```
