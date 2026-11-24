@@ -248,7 +248,7 @@ $$
 
 The three signatures alone are $3 \times 2420 = 7260$ bytes, the figure the draft itself gives: *"two SCTs and a leaf certificate signature add 7,260 bytes of authentication overhead with ML-DSA-44"* (draft-ietf-plants-merkle-tree-certs-08, §1). And this does not yet count the server's own handshake signature, which proves it holds the leaf's secret key and which every design needs.
 
-Kilobytes matter here. They arrive before the page can start loading, on every new connection, and the first round trip of a connection can only carry a limited amount of data before the client must wait for an acknowledgement. Part 02 measures exactly where those bytes go in a TLS 1.3 handshake.
+Kilobytes matter here. They arrive before the page can start loading, on every new connection, and the first round trip of a connection can only carry a limited amount of data before the client must wait for an acknowledgement. [Part 02](/root/02-the-handshake-bill/) measures exactly where those bytes go in a TLS 1.3 handshake.
 
 <div class="note">
 

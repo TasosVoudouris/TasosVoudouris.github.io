@@ -19,10 +19,10 @@ export const ROOT_ROADMAP: readonly RoadmapPart[] = [
 	{ part: 5, title: 'Notes, checkpoints, witnesses', about: 'How a log signs what it saw, and who checks that it never forks.' },
 	{ part: 6, title: 'The quantum bill', about: 'ML-DSA and friends: why post-quantum signatures do not fit the old design.' },
 	{ part: 7, title: 'Merkle Tree Certificates', about: 'Replacing per-certificate signatures with inclusion proofs.' },
-	{ part: 8, title: 'Subtrees and landmarks', about: 'The clever parts of MTC: valid subtrees, covering, landmark-relative certificates.' },
+	{ part: 8, title: 'Landmarks you can check', about: 'Subtree consistency proofs, cosigned checkpoints, and validating landmarks before any browser trusts them.' },
 	{ part: 9, title: 'Tiled logs', about: 'Serving a transparency log as static files that anyone can cache.' },
 	{ part: 10, title: 'A log that never forks', about: 'Commit order, crashes, and recovering without changing history.' },
-	{ part: 11, title: 'Verifying an MTC', about: 'What a browser checks, step by step, and where it can go wrong.' },
+	{ part: 11, title: 'From toy to QCERT', about: 'Every experiment mapped to the Rust module it becomes, with the test vectors carried over.' },
 ];
 
 export const partLabel = (n: number) => String(n).padStart(2, '0');

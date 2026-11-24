@@ -3,7 +3,7 @@ import type { MarkdownHeading } from 'astro';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
-import { ROOT_TITLE, partLabel } from '../data/root';
+import { ROOT_ROADMAP, ROOT_TITLE, partLabel } from '../data/root';
 import { SOURCE_URL } from '../consts';
 import 'katex/dist/katex.min.css';
 
@@ -127,8 +127,8 @@ const companionUrl = companion ? `${SOURCE_URL}/tree/main/${companion}` : undefi
 						</a>
 					) : (
 						<a class="next" href="/root/">
-							<span>next part: being written →</span>
-							<strong>See the roadmap</strong>
+							<span>{part === ROOT_ROADMAP[ROOT_ROADMAP.length - 1].part ? 'end of the series →' : 'next part: being written →'}</span>
+							<strong>{part === ROOT_ROADMAP[ROOT_ROADMAP.length - 1].part ? 'Back to the index' : 'See the roadmap'}</strong>
 						</a>
 					)
 				}
